@@ -4,17 +4,112 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import { authorize } from "./auth.js";
+import Parser from "rss-parser";
+import fs from "fs";
 
 dotenv.config();
 
 const app = express();
 const PORT = 4000;
+const parser = new Parser();
+const FEEDS_FILE = "./rss-feeds.json";
 
 app.use(cors());
 app.use(express.json());
 
+const loadFeeds = () => {
+  return JSON.parse(fs.readFileSync(FEEDS_FILE, "utf-8"));
+};
+
+const saveFeeds = (feeds) => {
+  fs.writeFileSync(FEEDS_FILE, JSON.stringify(feeds, null, 2));
+};
+
 app.get("/", (req, res) => {
   res.send("Dashboard backend is running");
+});
+
+app.get("/api/news", async (req, res) => {
+  try {
+    const feeds = loadFeeds();
+
+    const results = await Promise.all(
+      feeds.map(async (url) => {
+        try {
+          const feed = await parser.parseURL(url);
+
+          return (feed.items || []).slice(0, 5).map((item) => ({
+            title: item.title || "Untitled",
+            link: item.link || "",
+            pubDate: item.pubDate || "",
+            source: feed.title || "RSS Feed",
+          }));
+        } catch (err) {
+          console.error("RSS feed failed:", url);
+          return [];
+        }
+      })
+    );
+
+    const stories = results
+      .flat()
+      .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+      .slice(0, 20);
+
+    res.json(stories);
+  } catch (error) {
+    console.error("News error:", error);
+    res.status(500).json({ error: "Failed to load news feeds" });
+  }
+});
+
+app.get("/api/news/feeds", (req, res) => {
+  try {
+    res.json(loadFeeds());
+  } catch (error) {
+    console.error("Feed list error:", error);
+    res.status(500).json({ error: "Failed to load feeds" });
+  }
+});
+
+app.post("/api/news/feeds", (req, res) => {
+  try {
+    const feeds = loadFeeds();
+    const newFeed = req.body.url;
+
+    if (!newFeed) {
+      return res.status(400).json({ error: "URL required" });
+    }
+
+    if (!feeds.includes(newFeed)) {
+      feeds.push(newFeed);
+      saveFeeds(feeds);
+    }
+
+    res.json(feeds);
+  } catch (error) {
+    console.error("Feed save error:", error);
+    res.status(500).json({ error: "Failed to save feed" });
+  }
+});
+
+app.delete("/api/news/feeds/:index", (req, res) => {
+  try {
+    const feeds = loadFeeds();
+    const index = Number(req.params.index);
+
+    if (Number.isNaN(index) || index < 0 || index >= feeds.length) {
+      return res.status(400).json({ error: "Invalid feed index" });
+    }
+
+    feeds.splice(index, 1);
+    saveFeeds(feeds);
+
+    res.json(feeds);
+  } catch (error) {
+    console.error("Feed delete error:", error);
+    res.status(500).json({ error: "Failed to delete feed" });
+  }
 });
 
 app.get("/api/calendar/events", async (req, res) => {
@@ -51,7 +146,9 @@ app.get("/api/calendar/events", async (req, res) => {
           time: start.includes("T") ? start.split("T")[1].slice(0, 5) : "",
           endDate: end.split("T")[0],
           endTime: end.includes("T") ? end.split("T")[1].slice(0, 5) : "",
-          category: cal.primary ? "Primary Calendar" : cal.summary || "Google Calendar",
+          category: cal.primary
+            ? "Primary Calendar"
+            : cal.summary || "Google Calendar",
         };
       });
     });
@@ -96,7 +193,6 @@ app.get("/api/calendar/list", async (req, res) => {
 
 app.get("/api/weather/forecast", async (req, res) => {
   try {
-    // Approximate center for Naperville / 60565
     const latitude = 41.7508;
     const longitude = -88.1535;
 
@@ -156,9 +252,11 @@ app.get("/api/weather/forecast", async (req, res) => {
     res.status(500).json({ error: "Failed to load weather forecast" });
   }
 });
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

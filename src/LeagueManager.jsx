@@ -6,153 +6,226 @@ export default function LeagueManager() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [leagueNumber, setLeagueNumber] = useState("");
+  const [editingId, setEditingId] = useState(null);
   const [leagueName, setLeagueName] = useState("");
-  const [homePark, setHomePark] = useState("");
-  const [playerUrls, setPlayerUrls] = useState("");
-const [hitterRoster, setHitterRoster] = useState("");
-const [pitcherRoster, setPitcherRoster] = useState("");
+  const [ballpark, setBallpark] = useState("");
+  const [hitters, setHitters] = useState("");
+  const [pitchers, setPitchers] = useState("");
+  const [matchupPitchers, setMatchupPitchers] = useState("");
+  const [defense, setDefense] = useState("");
+
   useEffect(() => {
     localStorage.setItem("stratLeagues", JSON.stringify(leagues));
   }, [leagues]);
 
-  const addLeague = () => {
-    if (!leagueNumber.trim()) return;
+  const clearForm = () => {
+    setEditingId(null);
+    setLeagueName("");
+    setBallpark("");
+    setHitters("");
+    setPitchers("");
+    setMatchupPitchers("");
+    setDefense("");
+  };
 
-    const newLeague = {
-      id: Date.now(),
-      leagueNumber: leagueNumber.trim(),
-      leagueName: leagueName.trim() || `League ${leagueNumber.trim()}`,
-      homePark: homePark.trim(),
-      playerUrls: playerUrls
-        .split("\n")
-        .map((url) => url.trim())
-        .filter(Boolean),
-        hitterRoster,
-pitcherRoster,
-      createdAt: new Date().toISOString(),
+  const saveLeague = () => {
+    if (!leagueName.trim()) return;
+
+    const leagueData = {
+      id: editingId || Date.now(),
+      name: leagueName.trim(),
+      ballpark: ballpark.trim(),
+      hitters,
+      pitchers,
+      matchupPitchers,
+      defense,
+      updatedAt: new Date().toISOString(),
     };
 
-    setLeagues([...leagues, newLeague]);
+    if (editingId) {
+      setLeagues(
+        leagues.map((league) =>
+          league.id === editingId
+            ? {
+                ...league,
+                ...leagueData,
+              }
+            : league
+        )
+      );
+    } else {
+      setLeagues([
+        ...leagues,
+        {
+          ...leagueData,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+    }
 
-    setLeagueNumber("");
-    setLeagueName("");
-    setHomePark("");
-    setPlayerUrls("");
-    setHitterRoster("");
-setPitcherRoster("");
+    clearForm();
+  };
+
+  const editLeague = (league) => {
+    setEditingId(league.id);
+    setLeagueName(league.name || league.leagueName || "");
+    setBallpark(league.ballpark || league.homePark || "");
+    setHitters(league.hitters || league.hitterRoster || "");
+    setPitchers(league.pitchers || league.pitcherRoster || "");
+    setMatchupPitchers(league.matchupPitchers || "");
+    setDefense(league.defense || league.teamDefense || "");
   };
 
   const deleteLeague = (id) => {
     setLeagues(leagues.filter((league) => league.id !== id));
+
+    if (editingId === id) {
+      clearForm();
+    }
   };
 
   return (
-    <div className="space-y-5">
-      <div className="bg-white p-5 rounded border">
-        <h1 className="text-xl font-bold">League Manager</h1>
-        <p className="text-sm text-gray-500">
-          Save league numbers, home parks, and player URLs for future scouting.
+    <div className="space-y-6">
+      <div className="bg-white border rounded p-4">
+        <h1 className="text-2xl font-bold mb-2">League Manager</h1>
+        <p className="text-sm text-slate-500">
+          Save and edit leagues, rosters, matchup pitchers, defense, and ballpark.
         </p>
       </div>
 
-      <div className="bg-white p-5 rounded border space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <input
-            className="border rounded px-3 py-2 text-sm"
-            placeholder="League # e.g. 477817"
-            value={leagueNumber}
-            onChange={(e) => setLeagueNumber(e.target.value)}
-          />
+      <div className="bg-white border rounded p-4 space-y-4">
+        <h2 className="text-xl font-bold">
+          {editingId ? "Edit League" : "New League"}
+        </h2>
 
-          <input
-            className="border rounded px-3 py-2 text-sm"
-            placeholder="League name"
-            value={leagueName}
-            onChange={(e) => setLeagueName(e.target.value)}
-          />
-
-          <input
-            className="border rounded px-3 py-2 text-sm"
-            placeholder="Home park"
-            value={homePark}
-            onChange={(e) => setHomePark(e.target.value)}
-          />
-        </div>
-
-        <textarea
-          className="w-full h-40 border rounded p-2 font-mono text-sm"
-          placeholder="Paste player URLs, one per line"
-          value={playerUrls}
-          onChange={(e) => setPlayerUrls(e.target.value)}
+        <input
+          value={leagueName}
+          onChange={(e) => setLeagueName(e.target.value)}
+          placeholder="League Name"
+          className="w-full border rounded p-2"
         />
-<textarea
-  className="w-full h-40 border rounded p-2 font-mono text-sm"
-  placeholder="Paste hitter roster text"
-  value={hitterRoster}
-  onChange={(e) => setHitterRoster(e.target.value)}
-/>
 
-<textarea
-  className="w-full h-40 border rounded p-2 font-mono text-sm"
-  placeholder="Paste pitcher roster text"
-  value={pitcherRoster}
-  onChange={(e) => setPitcherRoster(e.target.value)}
-/>
-        <button
-          onClick={addLeague}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Save League
-        </button>
+        <input
+          value={ballpark}
+          onChange={(e) => setBallpark(e.target.value)}
+          placeholder="Home Ballpark"
+          className="w-full border rounded p-2"
+        />
+
+        <TextBox
+          label="Hitters"
+          value={hitters}
+          onChange={setHitters}
+          placeholder="Paste hitter roster text"
+        />
+
+        <TextBox
+          label="Pitchers"
+          value={pitchers}
+          onChange={setPitchers}
+          placeholder="Paste pitcher roster text"
+        />
+
+        <TextBox
+          label="Matchup Pitchers"
+          value={matchupPitchers}
+          onChange={setMatchupPitchers}
+          placeholder={`SP Mario Soto R FB 2 9\nSP Bob Shirley L GB -4 6`}
+        />
+
+        <TextBox
+          label="Team Defense"
+          value={defense}
+          onChange={setDefense}
+          placeholder={`C 2\n1B 3\n2B 4\n3B 3\nSS 2\nLF 2\nCF 3\nRF 2`}
+        />
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={saveLeague}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            {editingId ? "Update League" : "Save League"}
+          </button>
+
+          {editingId && (
+            <button
+              onClick={clearForm}
+              className="bg-slate-200 text-slate-800 px-4 py-2 rounded"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="bg-white p-5 rounded border">
-        <h2 className="font-bold mb-3">Saved Leagues</h2>
+      <div className="bg-white border rounded p-4">
+        <h2 className="text-xl font-bold mb-4">Saved Leagues</h2>
 
         {leagues.length === 0 ? (
-          <div className="text-sm text-gray-500">No leagues saved yet.</div>
+          <p className="text-sm text-slate-500">No leagues saved yet.</p>
         ) : (
           <div className="space-y-3">
-            {leagues.map((league) => (
-              <div key={league.id} className="border rounded p-3">
-                <div className="flex justify-between gap-3">
-                  <div>
-                    <div className="font-semibold">{league.leagueName}</div>
-                    <div className="text-sm text-gray-500">
-                      League #{league.leagueNumber}
-                      {league.homePark && ` · ${league.homePark}`}
+            {leagues.map((league) => {
+              const displayName = league.name || league.leagueName || "Unnamed League";
+              const displayPark = league.ballpark || league.homePark || "";
+
+              return (
+                <div key={league.id} className="border rounded p-3">
+                  <div className="flex justify-between gap-3">
+                    <div>
+                      <div className="font-bold">{displayName}</div>
+
+                      {displayPark && (
+                        <div className="text-sm text-slate-500">{displayPark}</div>
+                      )}
+
+                      <div className="text-xs text-slate-400 mt-1">
+                        {(league.hitters || league.hitterRoster) && "hitters saved"}
+                        {(league.pitchers || league.pitcherRoster) && " · pitchers saved"}
+                        {league.matchupPitchers && " · matchup pitchers saved"}
+                        {(league.defense || league.teamDefense) && " · defense saved"}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
-                      {league.playerUrls.length} player URLs saved
-{league.hitterRoster && " · hitters saved"}
-{league.pitcherRoster && " · pitchers saved"}
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => editLeague(league)}
+                        className="text-blue-600 text-sm hover:underline"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => deleteLeague(league.id)}
+                        className="text-red-600 text-sm hover:underline"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
-
-                  <button
-                    onClick={() => deleteLeague(league.id)}
-                    className="text-red-600 text-sm hover:underline"
-                  >
-                    Delete
-                  </button>
                 </div>
-
-                {league.playerUrls.length > 0 && (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-sm text-blue-600">
-                      View URLs
-                    </summary>
-                    <pre className="mt-2 bg-slate-100 p-2 rounded text-xs whitespace-pre-wrap">
-                      {league.playerUrls.join("\n")}
-                    </pre>
-                  </details>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function TextBox({ label, value, onChange, placeholder }) {
+  return (
+    <div>
+      <div className="font-semibold mb-1 text-sm">{label}</div>
+
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={8}
+        className="w-full border rounded p-2 text-sm font-mono"
+        placeholder={placeholder}
+      />
     </div>
   );
 }

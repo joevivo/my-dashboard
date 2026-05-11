@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import CalendarView from "./CalendarView";
 import LineupAnalyzer from "./LineupAnalyzer";
 import PitchingAnalyzer from "./PitchingAnalyzer";
+import MatchupAnalyzer from "./MatchupAnalyzer";
+import FinanceView from "./FinanceView";
+import SeriesPlanner from "./SeriesPlanner";
 import LeagueManager from "./LeagueManager";
+import WeatherBug from "./WeatherBug";
+import NewsView from "./NewsView";
 
 function PlaceholderPage({ title }) {
   return (
@@ -47,6 +52,8 @@ export default function App() {
             <div className="space-y-1">
               {navButton("Lineup", "Lineup Analyzer")}
               {navButton("Pitching", "Pitching Analyzer")}
+              {navButton("Matchup", "Matchup Analyzer")}
+              {navButton("Series", "Series Planner")}
               {navButton("LeagueManager", "League Manager")}
             </div>
           </div>
@@ -66,15 +73,22 @@ export default function App() {
 
         <div className="flex-1 p-6">
           {activeView === "Calendar" ? (
-            <CalendarView />
+            <>
+              <WeatherBug />
+              <CalendarView />
+            </>
           ) : activeView === "Pitching" ? (
             <PitchingAnalyzer />
+          ) : activeView === "Matchup" ? (
+            <MatchupAnalyzer />
+          ) : activeView === "Series" ? (
+            <SeriesPlanner />
           ) : activeView === "LeagueManager" ? (
             <LeagueManager />
           ) : activeView === "News" ? (
-            <PlaceholderPage title="News" />
+            <NewsView />
           ) : activeView === "Finance" ? (
-            <PlaceholderPage title="Finance" />
+            <FinanceView />
           ) : (
             <LineupAnalyzer />
           )}

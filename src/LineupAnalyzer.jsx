@@ -10,20 +10,126 @@ const ballparks = [
   { name: "Yankee Stadium 1980", siL: 17, siR: 9, hrL: 18, hrR: 2 },
 ];
 
+function SectionCard({ title, children }) {
+  return (
+    <div className="bg-white p-5 rounded border shadow-sm">
+      <h2 className="text-lg font-bold mb-3">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function PlayerLineupCard({ player, index }) {
+  return (
+    <div className="border rounded bg-slate-50 p-3">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-sm text-slate-500">#{index + 1}</div>
+          <div className="font-bold">
+            {player.fieldPos} - {player.name}
+          </div>
+          <div className="text-sm text-slate-600">Bats: {player.bats}</div>
+        </div>
+
+        <div className="text-right">
+          <div className="text-xs text-slate-500">Score</div>
+          <div className="font-bold">{player.score.toFixed(1)}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-2 mt-3 text-sm">
+        <div>
+          <div className="text-xs text-slate-500">OBP</div>
+          <div className="font-semibold">{player.obp.toFixed(3)}</div>
+        </div>
+        <div>
+          <div className="text-xs text-slate-500">PWR</div>
+          <div className="font-semibold">{player.power}</div>
+        </div>
+        <div>
+          <div className="text-xs text-slate-500">SPD</div>
+          <div className="font-semibold">{player.speed}</div>
+        </div>
+        <div>
+          <div className="text-xs text-slate-500">DEF</div>
+          <div className="font-semibold">{player.defense}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LineupCards({ lineup }) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      {lineup.map((player, index) => (
+        <PlayerLineupCard
+          key={`${player.name}-${player.fieldPos}-${index}`}
+          player={player}
+          index={index}
+        />
+      ))}
+    </div>
+  );
+}
+
+function DefenseGrid({ assigned }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      {requiredPositions.map((pos) => {
+        const player = assigned[pos];
+
+        return (
+          <div key={pos} className="border rounded bg-slate-50 p-3">
+            <div className="text-xs text-slate-500">{pos}</div>
+            <div className="font-bold">{player ? player.name : "OPEN"}</div>
+            {player && (
+              <div className="text-sm text-slate-600">
+                DEF {player.defense} · {player.bats}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function BenchList({ bench, hand, getObp }) {
+  if (!bench.length) {
+    return <p className="text-sm text-slate-500">No bench players available.</p>;
+  }
+
+  return (
+    <div className="space-y-2">
+      {bench.map((player) => (
+        <div
+          key={`${player.name}-${hand}`}
+          className="border rounded bg-slate-50 p-3"
+        >
+          <div className="font-bold">{player.name}</div>
+          <div className="text-sm text-slate-600">
+            {player.positions.join("/")} · Bats {player.bats} · DEF{" "}
+            {player.defense} · OBP {getObp(player, hand).toFixed(3)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function LineupAnalyzer() {
   const savedLeagues = JSON.parse(localStorage.getItem("stratLeagues") || "[]");
 
   const [selectedLeagueId, setSelectedLeagueId] = useState("");
   const [rosterText, setRosterText] = useState("");
-  const [analysis, setAnalysis] = useState("");
+  const [analysis, setAnalysis] = useState(null);
   const [ballpark, setBallpark] = useState("Busch Stadium 1980");
 
   const loadLeague = (leagueId) => {
     setSelectedLeagueId(leagueId);
 
-    const league = savedLeagues.find(
-      (l) => String(l.id) === String(leagueId)
-    );
+    const league = savedLeagues.find((l) => String(l.id) === String(leagueId));
 
     if (!league) return;
 
@@ -33,7 +139,7 @@ export default function LineupAnalyzer() {
       setBallpark(league.homePark);
     }
 
-    setAnalysis("");
+    setAnalysis(null);
   };
 
   const parseRoster = () => {
@@ -67,6 +173,35 @@ export default function LineupAnalyzer() {
       si: (park.siL + park.siR) / 2,
       hr: (park.hrL + park.hrR) / 2,
     };
+  };
+
+  const battingValue = (p, hand, park) => {
+    const obp = getObp(p, hand);
+    const parkValues = getParkValues(p, park);
+
+    let score = obp * 100;
+
+    score += p.power * 8;
+    score += p.speed * 1.2;
+
+    const singlesBoost = (parkValues.si - 10) * 0.12;
+    const homerBoost = (parkValues.hr - 10) * 0.35;
+
+    score += p.speed * singlesBoost;
+    score += p.power * homerBoost;
+
+    if (hand === "LHP") {
+      if (p.bats === "R") score += 8;
+      if (p.bats === "S") score += 4;
+      if (p.bats === "L") score -= 5;
+    }
+
+    if (hand === "RHP") {
+      if (p.bats === "L") score += 5;
+      if (p.bats === "S") score += 3;
+    }
+
+    return score;
   };
 
   const baseBatScore = (p, hand) => {
@@ -143,11 +278,28 @@ export default function LineupAnalyzer() {
     const assigned = {};
     const used = new Set();
 
-    const positionOrder = ["SS", "CF", "2B", "1B", "C", "3B", "RF", "LF"];
+    const positionOrder = ["SS", "CF", "C", "2B", "3B", "RF", "LF", "1B"];
+
+    const canPlay = (p, pos) => {
+      if (used.has(p.name)) return false;
+      if (!p.positions.includes(pos)) return false;
+
+      const obp = getObp(p, hand);
+
+      if (pos === "SS" || pos === "2B") {
+        if (obp < 0.300 && p.power <= 2) return false;
+      }
+
+      if (pos === "C") {
+        if (obp < 0.280 && p.power <= 1) return false;
+      }
+
+      return true;
+    };
 
     positionOrder.forEach((pos) => {
       const candidates = players
-        .filter((p) => !used.has(p.name) && p.positions.includes(pos))
+        .filter((p) => canPlay(p, pos))
         .sort(
           (a, b) =>
             positionFitScore(b, pos, hand, park) -
@@ -160,12 +312,42 @@ export default function LineupAnalyzer() {
       }
     });
 
+    const premiumBenchBats = players
+      .filter((p) => !used.has(p.name))
+      .filter((p) => getObp(p, hand) >= 0.370 || battingValue(p, hand, park) >= 75)
+      .sort((a, b) => battingValue(b, hand, park) - battingValue(a, hand, park));
+
+    premiumBenchBats.forEach((bat) => {
+      const possibleSwaps = bat.positions
+        .filter((pos) => pos !== "DH")
+        .filter((pos) => assigned[pos])
+        .map((pos) => {
+          const current = assigned[pos];
+
+          return {
+            pos,
+            current,
+            gain:
+              battingValue(bat, hand, park) -
+              battingValue(current, hand, park),
+          };
+        })
+        .filter((swap) => swap.gain >= 8)
+        .sort((a, b) => b.gain - a.gain);
+
+      const bestSwap = possibleSwaps[0];
+
+      if (bestSwap) {
+        used.delete(bestSwap.current.name);
+        assigned[bestSwap.pos] = bat;
+        used.add(bat.name);
+      }
+    });
+
     const remaining = players.filter((p) => !used.has(p.name));
 
     const dh = [...remaining].sort(
-      (a, b) =>
-        positionFitScore(b, "DH", hand, park) -
-        positionFitScore(a, "DH", hand, park)
+      (a, b) => battingValue(b, hand, park) - battingValue(a, hand, park)
     )[0];
 
     if (dh) {
@@ -185,7 +367,7 @@ export default function LineupAnalyzer() {
       ...player,
       fieldPos,
       obp: getObp(player, hand),
-      score: positionFitScore(player, fieldPos, hand, park),
+      score: battingValue(player, hand, park),
     }));
 
     const bench = players.filter(
@@ -202,15 +384,26 @@ export default function LineupAnalyzer() {
       return pick;
     };
 
-    order[0] = pickBest((p) => p.obp * 100 + p.speed * 3);
-    order[1] = pickBest((p) => p.obp * 90 + p.speed * 2);
-    order[2] = pickBest((p) => p.obp * 100 + p.power * 5);
-    order[3] = pickBest((p) => p.power * 10 + p.obp * 70);
-    order[4] = pickBest((p) => p.power * 8 + p.obp * 60);
+    order[0] = pickBest((p) => p.obp * 100 + p.speed * 2);
+    order[1] = pickBest((p) => p.obp * 115 + p.power * 2 + p.speed);
+    order[2] = pickBest((p) => p.obp * 100 + p.power * 7);
+
+    order[3] = pickBest((p) => {
+      let score = p.power * 9 + p.obp * 95;
+      if (p.obp < 0.320) score -= 25;
+      return score;
+    });
+
+    order[4] = pickBest((p) => {
+      let score = p.obp * 105 + p.power * 4;
+      if (p.obp < 0.320) score -= 15;
+      return score;
+    });
+
     order[5] = pickBest((p) => p.obp * 70 + p.power * 3);
-    order[6] = pickBest((p) => p.obp * 50 + p.speed);
-    order[7] = pickBest((p) => p.obp * 40 + p.power);
-    order[8] = pickBest((p) => p.obp * 30 + p.speed);
+    order[6] = pickBest((p) => p.obp * 55 + p.speed);
+    order[7] = pickBest((p) => p.obp * 45 + p.power);
+    order[8] = pickBest((p) => p.obp * 35 + p.speed);
 
     return {
       park,
@@ -224,80 +417,34 @@ export default function LineupAnalyzer() {
     const rhp = buildLineup("RHP");
     const lhp = buildLineup("LHP");
 
-    const formatLineup = (lineup) =>
-      lineup
-        .map(
-          (p, i) =>
-            `${i + 1}. ${p.fieldPos} ${p.name} (${p.bats}) DEF:${p.defense} SCORE:${p.score.toFixed(
-              1
-            )} — OBP:${p.obp.toFixed(3)} PWR:${p.power} SPD:${p.speed}`
-        )
-        .join("\n");
-
-    const formatDefense = (assigned) =>
-      requiredPositions
-        .map((pos) => {
-          const p = assigned[pos];
-          return `${pos}: ${p ? `${p.name} DEF:${p.defense}` : "OPEN"}`;
-        })
-        .join("\n");
-
-    const formatBench = (bench, hand) =>
-      bench.length
-        ? bench
-            .map(
-              (p) =>
-                `- ${p.name} (${p.positions.join("/")}, ${p.bats}) DEF:${
-                  p.defense
-                } OBP:${getObp(p, hand).toFixed(3)}`
-            )
-            .join("\n")
-        : "No bench";
-
     const league = savedLeagues.find(
       (l) => String(l.id) === String(selectedLeagueId)
     );
 
-    setAnalysis(`Roster: ${league?.leagueName || "Custom roster"}
-Ballpark: ${rhp.park.name}
-SI L/R: ${rhp.park.siL}/${rhp.park.siR} | HR L/R: ${rhp.park.hrL}/${rhp.park.hrR}
-
-VS RHP Lineup:
-${formatLineup(rhp.lineup)}
-
-VS RHP Defense:
-${formatDefense(rhp.assigned)}
-
-Bench vs RHP:
-${formatBench(rhp.bench, "RHP")}
-
-VS LHP Lineup:
-${formatLineup(lhp.lineup)}
-
-VS LHP Defense:
-${formatDefense(lhp.assigned)}
-
-Bench vs LHP:
-${formatBench(lhp.bench, "LHP")}
-`);
+    setAnalysis({
+      leagueName: league?.leagueName || "Custom roster",
+      park: rhp.park,
+      rhp,
+      lhp,
+    });
   };
 
   return (
-   <div
-  className="space-y-5 min-h-screen bg-cover bg-center bg-fixed"
-  style={{
-    backgroundImage: "url('/hitter-bg.svg')",
-  }}
->
-      <div className="bg-white p-5 rounded border">
+    <div
+      className="space-y-5 min-h-screen bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: "url('/hitter-bg.svg')",
+      }}
+    >
+      <div className="bg-white p-5 rounded border shadow-sm">
         <h1 className="text-xl font-bold">Lineup Analyzer</h1>
         <p className="text-sm text-gray-500">
           Format: POS/POS BATS DEF NAME OBPvsR OBPvsL PWR SPD
         </p>
       </div>
 
-      <div className="bg-white p-5 rounded border space-y-3">
-        <div className="flex flex-wrap gap-3">
+      <SectionCard title="Roster Input">
+        <div className="flex flex-wrap gap-3 mb-3">
           <select
             value={selectedLeagueId}
             onChange={(e) => loadLeague(e.target.value)}
@@ -325,7 +472,7 @@ ${formatBench(lhp.bench, "LHP")}
         </div>
 
         <textarea
-          className="w-full h-56 border p-2 font-mono text-sm"
+          className="w-full h-56 border rounded p-3 font-mono text-sm"
           value={rosterText}
           onChange={(e) => {
             setRosterText(e.target.value);
@@ -335,17 +482,54 @@ ${formatBench(lhp.bench, "LHP")}
 
         <button
           onClick={analyze}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
         >
-          Analyze
+          Analyze Lineup
         </button>
-      </div>
+      </SectionCard>
 
-      <div className="bg-white p-5 rounded border">
-        <pre className="bg-black text-green-400 p-3 whitespace-pre-wrap max-h-[700px] overflow-y-auto">
-          {analysis || "Results will appear here"}
-        </pre>
-      </div>
+      {!analysis ? (
+        <SectionCard title="Results">
+          <p className="text-sm text-slate-500">Results will appear here.</p>
+        </SectionCard>
+      ) : (
+        <>
+          <div className="bg-slate-900 text-white p-5 rounded border shadow-sm">
+            <h2 className="text-lg font-bold">{analysis.leagueName}</h2>
+            <p className="text-sm text-slate-300">
+              Ballpark: {analysis.park.name}
+            </p>
+            <p className="text-sm text-slate-300">
+              SI L/R: {analysis.park.siL}/{analysis.park.siR} · HR L/R:{" "}
+              {analysis.park.hrL}/{analysis.park.hrR}
+            </p>
+          </div>
+
+          <SectionCard title="VS RHP Lineup">
+            <LineupCards lineup={analysis.rhp.lineup} />
+          </SectionCard>
+
+          <SectionCard title="VS RHP Defense">
+            <DefenseGrid assigned={analysis.rhp.assigned} />
+          </SectionCard>
+
+          <SectionCard title="Bench vs RHP">
+            <BenchList bench={analysis.rhp.bench} hand="RHP" getObp={getObp} />
+          </SectionCard>
+
+          <SectionCard title="VS LHP Lineup">
+            <LineupCards lineup={analysis.lhp.lineup} />
+          </SectionCard>
+
+          <SectionCard title="VS LHP Defense">
+            <DefenseGrid assigned={analysis.lhp.assigned} />
+          </SectionCard>
+
+          <SectionCard title="Bench vs LHP">
+            <BenchList bench={analysis.lhp.bench} hand="LHP" getObp={getObp} />
+          </SectionCard>
+        </>
+      )}
     </div>
   );
 }

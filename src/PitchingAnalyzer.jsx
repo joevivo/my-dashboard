@@ -46,36 +46,129 @@ export default function PitchingAnalyzer() {
       });
   };
 
+  const getEnduranceValue = (p) => {
+    if (p.endurance.includes("S")) {
+      return parseInt(p.endurance.replace("S", "")) || 0;
+    }
+
+    return parseInt(p.endurance.replace("R", "")) || 0;
+  };
+
+  const getBalanceValue = (balance) => {
+    if (balance === "E") return 8;
+    if (balance.includes("R")) {
+      return 5 - parseInt(balance.replace("R", ""));
+    }
+
+    if (balance.includes("L")) {
+      return 5 - parseInt(balance.replace("L", ""));
+    }
+
+    return 0;
+  };
+
+  const getProfileValue = (profile, role) => {
+    if (profile === "GB") {
+      return role === "SP" ? 8 : 5;
+    }
+
+    if (profile === "POWER") {
+      return role === "RP" ? 9 : 4;
+    }
+
+    if (profile === "FB") {
+      return -4;
+    }
+
+    return 0;
+  };
+
+  const scoreStarter = (p) => {
+    const endurance = getEnduranceValue(p);
+
+    let score = 0;
+
+    score += endurance * 7;
+
+    score += p.hold * -1.5;
+
+    score += getBalanceValue(p.balance);
+
+    score += getProfileValue(p.profile, "SP");
+
+    if (endurance >= 8) score += 10;
+    if (endurance <= 5) score -= 12;
+
+    if (p.profile === "FB" && p.hold >= 1) {
+      score -= 10;
+    }
+
+    score += 18 / Math.max(p.salary, 1);
+
+    return Number(score.toFixed(1));
+  };
+
+  const scoreReliever = (p) => {
+    const endurance = getEnduranceValue(p);
+
+    let score = 0;
+
+    score += p.hold * -5;
+
+    score += endurance * 3;
+
+    score += getBalanceValue(p.balance);
+
+    score += getProfileValue(p.profile, "RP");
+
+    if (p.hold <= -2) score += 12;
+    if (p.hold >= 2) score -= 10;
+
+    if (p.profile === "POWER") score += 8;
+
+    if (p.endurance === "R1") score -= 8;
+
+    score += 14 / Math.max(p.salary, 1);
+
+    return Number(score.toFixed(1));
+  };
+
   const scorePitcher = (p) => {
-    const enduranceScore = p.endurance.includes("S")
-      ? parseInt(p.endurance.replace("S", "")) || 0
-      : parseInt(p.endurance.replace("R", "")) || 0;
-
-    const holdScore = p.hold * -2;
-    const valueScore = p.salary > 0 ? 20 / p.salary : 0;
-
-    const profileScore =
-      p.profile === "GB"
-        ? 6
-        : p.profile === "FB"
-        ? -2
-        : p.profile === "POWER"
-        ? 5
-        : 0;
-
-    return Number(
-      (enduranceScore + holdScore + valueScore + profileScore).toFixed(1)
-    );
+    return p.role === "SP"
+      ? scoreStarter(p)
+      : scoreReliever(p);
   };
 
   const buildRiskFlags = (p) => {
     const flags = [];
 
     if (p.hold >= 2) flags.push("Poor hold");
-if (p.hold <= -2) flags.push("Elite hold");
+
+    if (p.hold <= -2) flags.push("Elite hold");
+
     if (p.profile === "FB") flags.push("HR risk");
-    if (p.salary > 6) flags.push("Expensive");
+
+    if (p.salary >= 7) flags.push("Expensive");
+
     if (p.endurance === "R1") flags.push("Fragile usage");
+
+    if (p.role === "RP" && p.profile === "POWER" && p.hold <= -2) {
+      flags.push("Bullpen weapon");
+    }
+
+    if (
+      p.role === "SP" &&
+      getEnduranceValue(p) <= 5
+    ) {
+      flags.push("Short starter");
+    }
+
+    if (
+      p.role === "SP" &&
+      p.profile === "GB"
+    ) {
+      flags.push("Groundball fit");
+    }
 
     return flags;
   };
@@ -91,8 +184,14 @@ if (p.hold <= -2) flags.push("Elite hold");
   const filteredPitchers = pitchers
     .filter((p) => p.role === analysisView)
     .sort((a, b) => {
-      if (sortField === "salary") return a.salary - b.salary;
-      if (sortField === "hold") return b.hold - a.hold;
+      if (sortField === "salary") {
+        return a.salary - b.salary;
+      }
+
+      if (sortField === "hold") {
+        return a.hold - b.hold;
+      }
+
       return b.score - a.score;
     });
 
@@ -102,11 +201,11 @@ if (p.hold <= -2) flags.push("Elite hold");
 
   return (
     <div
-  className="space-y-5 min-h-screen bg-cover bg-center bg-fixed"
-  style={{
-    backgroundImage: "url('/pitcher-bg.svg')",
-  }}
->
+      className="space-y-5 min-h-screen bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: "url('/pitcher-bg.svg')",
+      }}
+    >
       <div className="bg-white p-5 rounded border">
         <h1 className="text-xl font-bold">Pitching Analyzer</h1>
 
@@ -213,13 +312,25 @@ if (p.hold <= -2) flags.push("Elite hold");
               {filteredPitchers.map((p, index) => (
                 <tr key={`${p.name}-${index}`} className="hover:bg-slate-50">
                   <td className="border p-2 font-medium">{p.name}</td>
+
                   <td className="border p-2">{p.hand}</td>
+
                   <td className="border p-2">{p.endurance}</td>
+
                   <td className="border p-2">{p.hold}</td>
+
                   <td className="border p-2">{p.balance}</td>
-                  <td className="border p-2">${p.salary.toFixed(2)}M</td>
+
+                  <td className="border p-2">
+                    ${p.salary.toFixed(2)}M
+                  </td>
+
                   <td className="border p-2">{p.profile}</td>
-                  <td className="border p-2 font-bold">{p.score}</td>
+
+                  <td className="border p-2 font-bold">
+                    {p.score}
+                  </td>
+
                   <td className="border p-2">
                     <div className="flex flex-wrap gap-1">
                       {p.flags.length === 0 ? (
