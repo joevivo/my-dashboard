@@ -118,6 +118,24 @@ function BenchList({ bench, hand, getObp }) {
   );
 }
 
+
+function IdentityCard({ title, identity }) {
+  return (
+    <div className="border rounded bg-slate-50 p-4">
+      <h3 className="font-bold mb-2">{title}</h3>
+
+      <div className="space-y-1 text-sm">
+        <div><span className="font-semibold">Style:</span> {identity.offenseStyle}</div>
+        <div><span className="font-semibold">Variance:</span> {identity.varianceProfile}</div>
+        <div><span className="font-semibold">Dead Zones:</span> {identity.deadZones}</div>
+        <div><span className="font-semibold">Playoff Burst Potential:</span> {identity.playoffBurst}</div>
+        <div><span className="font-semibold">Avg OBP:</span> {identity.avgObp.toFixed(3)}</div>
+        <div><span className="font-semibold">Avg Power:</span> {identity.avgPower.toFixed(1)}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function LineupAnalyzer() {
   const savedLeagues = JSON.parse(localStorage.getItem("stratLeagues") || "[]");
 
@@ -133,10 +151,10 @@ export default function LineupAnalyzer() {
 
     if (!league) return;
 
-    setRosterText(league.hitterRoster || "");
+    setRosterText(league.hitterRoster || league.hitters || "");
 
-    if (league.homePark) {
-      setBallpark(league.homePark);
+    if (league.homePark || league.ballpark) {
+      setBallpark(league.homePark || league.ballpark);
     }
 
     setAnalysis(null);
@@ -374,6 +392,91 @@ export default function LineupAnalyzer() {
       (p) => !starters.some((s) => s.name === p.name)
     );
 
+    const avgObp =
+      starters.reduce((sum, p) => sum + p.obp, 0) /
+      Math.max(starters.length, 1);
+
+    const avgPower =
+      starters.reduce((sum, p) => sum + p.power, 0) /
+      Math.max(starters.length, 1);
+
+    const elitePowerCount = starters.filter((p) => p.power >= 8).length;
+
+    const weakBatCount = starters.filter(
+      (p) => p.obp < 0.300 && p.power <= 3
+    ).length;
+
+    const speedPressure = starters.filter((p) => p.speed >= 7).length;
+
+    let offenseStyle = "Balanced";
+// OFFENSIVE ARCHETYPES
+//
+// Sustainable Pressure
+// - sequencing offense
+// - medium OBP
+// - low HR dependence
+// - low dead zones
+//
+// Athletic Pressure
+// - elite speed
+// - advancement pressure
+// - doubles/triples pressure
+// - defensive stress
+//
+// Explosive Pressure
+// - HR concentration
+// - inning spike potential
+// - few easy outs
+//
+// Star-Driven Offense
+// - concentrated elite hitters
+// - weak bottom third
+// - volatile scoring
+//
+// Prevention Team
+// - defense-first
+// - bullpen leverage
+// - suppresses variance
+
+if (avgPower >= 6.5 && elitePowerCount >= 3) {
+  offenseStyle = "Explosive Power";
+} else if (speedPressure >= 3 && avgObp >= 0.330) {
+  offenseStyle = "Sustainable Pressure";
+} else if (avgObp >= 0.340) {
+  offenseStyle = "Contact Pressure";
+}
+    if (avgPower >= 6.5 && elitePowerCount >= 3) {
+      offenseStyle = "Explosive Power";
+    } else if (speedPressure >= 3 && avgObp >= 0.330) {
+      offenseStyle = "Sustainable Pressure";
+    } else if (avgObp >= 0.340) {
+      offenseStyle = "Contact Pressure";
+    }
+
+    let varianceProfile = "Moderate";
+
+    if (elitePowerCount >= 4) {
+      varianceProfile = "High Variance";
+    } else if (avgObp >= 0.335 && weakBatCount <= 1) {
+      varianceProfile = "Low Variance";
+    }
+
+    let playoffBurst = "Moderate";
+
+    if (elitePowerCount >= 4) {
+      playoffBurst = "Elite";
+    } else if (elitePowerCount >= 2) {
+      playoffBurst = "Strong";
+    }
+
+    let deadZones = "Low";
+
+    if (weakBatCount >= 3) {
+      deadZones = "High";
+    } else if (weakBatCount === 2) {
+      deadZones = "Moderate";
+    }
+
     const remaining = [...starters];
     const order = [];
 
@@ -410,6 +513,12 @@ export default function LineupAnalyzer() {
       lineup: order.filter(Boolean),
       assigned,
       bench,
+      avgObp,
+      avgPower,
+      offenseStyle,
+      varianceProfile,
+      playoffBurst,
+      deadZones,
     };
   };
 
@@ -422,7 +531,7 @@ export default function LineupAnalyzer() {
     );
 
     setAnalysis({
-      leagueName: league?.leagueName || "Custom roster",
+      leagueName: league?.leagueName || league?.name || "Custom roster",
       park: rhp.park,
       rhp,
       lhp,
@@ -453,7 +562,7 @@ export default function LineupAnalyzer() {
             <option value="">Load saved league</option>
             {savedLeagues.map((league) => (
               <option key={league.id} value={league.id}>
-                {league.leagueName}
+                {league.leagueName || league.name || "Unnamed League"}
               </option>
             ))}
           </select>
@@ -504,6 +613,13 @@ export default function LineupAnalyzer() {
               {analysis.park.hrL}/{analysis.park.hrR}
             </p>
           </div>
+
+          <SectionCard title="Team Identity">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <IdentityCard title="VS RHP" identity={analysis.rhp} />
+              <IdentityCard title="VS LHP" identity={analysis.lhp} />
+            </div>
+          </SectionCard>
 
           <SectionCard title="VS RHP Lineup">
             <LineupCards lineup={analysis.rhp.lineup} />

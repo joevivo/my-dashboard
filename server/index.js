@@ -6,13 +6,19 @@ import { google } from "googleapis";
 import { authorize } from "./auth.js";
 import Parser from "rss-parser";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-dotenv.config();
+dotenv.config({
+  path: path.join(__dirname, ".env"),
+});
 
 const app = express();
 const PORT = 4000;
 const parser = new Parser();
-const FEEDS_FILE = "./rss-feeds.json";
+const FEEDS_FILE = path.join(__dirname, "rss-feeds.json");
 
 app.use(cors());
 app.use(express.json());
@@ -34,18 +40,19 @@ app.get("/api/news", async (req, res) => {
     const feeds = loadFeeds();
 
     const results = await Promise.all(
-      feeds.map(async (url) => {
+      feeds.map(async (feedSource) => {
         try {
-          const feed = await parser.parseURL(url);
+          const feed = await parser.parseURL(feedSource.url);
 
           return (feed.items || []).slice(0, 5).map((item) => ({
             title: item.title || "Untitled",
             link: item.link || "",
             pubDate: item.pubDate || "",
-            source: feed.title || "RSS Feed",
+            source: feedSource.name || feed.title || "RSS Feed",
+            category: feedSource.category || "General",
           }));
         } catch (err) {
-          console.error("RSS feed failed:", url);
+          console.error("RSS feed failed:", feedSource.url);
           return [];
         }
       })
@@ -112,6 +119,87 @@ app.delete("/api/news/feeds/:index", (req, res) => {
   }
 });
 
+
+app.get("/api/quotes", async (req, res) => {
+  try {
+    const apiKey = process.env.FINNHUB_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "Missing FINNHUB_API_KEY in .env",
+      });
+    }
+
+    const symbols = String(req.query.symbols || "")
+      .split(",")
+      .map((symbol) => symbol.trim().toUpperCase())
+      .filter(Boolean);
+
+    if (!symbols.length) {
+      return res.status(400).json({
+        error:
+          "Missing symbols query parameter. Example: /api/quotes?symbols=AAPL,QQQ,SMH",
+      });
+    }
+
+    const uniqueSymbols = [...new Set(symbols)];
+
+    const quoteResults = await Promise.all(
+      uniqueSymbols.map(async (symbol) => {
+        try {
+          const url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(
+            symbol
+          )}&token=${apiKey}`;
+
+          const response = await fetch(url);
+
+          if (!response.ok) {
+            throw new Error(`Finnhub error ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          return {
+            symbol,
+            price: data.c ?? null,
+            previousClose: data.pc ?? null,
+            change: data.d ?? null,
+            changePercent: data.dp ?? null,
+            high: data.h ?? null,
+            low: data.l ?? null,
+            open: data.o ?? null,
+            timestamp: data.t ?? null,
+            error: null,
+          };
+        } catch (error) {
+          console.error(`Quote failed for ${symbol}:`, error.message);
+
+          return {
+            symbol,
+            price: null,
+            previousClose: null,
+            change: null,
+            changePercent: null,
+            high: null,
+            low: null,
+            open: null,
+            timestamp: null,
+            error: "Failed to load quote",
+          };
+        }
+      })
+    );
+
+    res.json({
+      source: "Finnhub",
+      quotes: quoteResults,
+    });
+  } catch (error) {
+    console.error("Quotes error:", error);
+    res.status(500).json({ error: "Failed to load quotes" });
+  }
+});
+
 app.get("/api/calendar/events", async (req, res) => {
   try {
     const auth = await authorize();
@@ -119,11 +207,15 @@ app.get("/api/calendar/events", async (req, res) => {
 
     const calendarListResponse = await calendar.calendarList.list();
 
-    const calendars = calendarListResponse.data.items.filter((cal) => {
-      const name = (cal.summary || "").toLowerCase();
-      return !name.includes("sunrise") && !name.includes("sunset");
-    });
+const calendars = calendarListResponse.data.items.filter((cal) => {
+  const name = (cal.summary || "").toLowerCase();
 
+  return (
+    !name.includes("sunrise") &&
+    !name.includes("sunset") &&
+    !name.includes("vivo's summer schedule")
+  );
+});
     const eventRequests = calendars.map(async (cal) => {
       const response = await calendar.events.list({
         calendarId: cal.id,
@@ -260,3 +352,20 @@ app.get("/api/test", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+.ticker-track {
+  animation: ticker-scroll 42s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}

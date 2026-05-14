@@ -1,6 +1,73 @@
 [
-  "https://www.espn.com/espn/rss/mlb/news",
-  "https://feeds.npr.org/1001/rss.xml",
-  "https://www.theverge.com/rss/index.xml",
-  "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml"
+  {
+    "name": "Ars Technica AI",
+    "url": "https://feeds.arstechnica.com/arstechnica/technology-lab",
+    "category": "AI"
+  },
+  {
+    "name": "LessWrong",
+    "url": "https://www.lesswrong.com/feed.xml",
+    "category": "AI"
+  },
+  {
+    "name": "FanGraphs",
+    "url": "https://blogs.fangraphs.com/feed/",
+    "category": "Baseball"
+  },
+  {
+    "name": "Baseball Prospectus",
+    "url": "https://www.baseballprospectus.com/feed/",
+    "category": "Baseball"
+  },
+  {
+    "name": "Block Club Chicago",
+    "url": "https://blockclubchicago.org/feed/",
+    "category": "Chicago"
+  },
+  {
+    "name": "WBEZ",
+    "url": "https://feeds.wbez.org/wbez/rss",
+    "category": "Chicago"
+  },
+  {
+    "name": "Stereogum",
+    "url": "https://www.stereogum.com/feed/",
+    "category": "Music"
+  },
+  {
+    "name": "The Quietus",
+    "url": "https://thequietus.com/feed/",
+    "category": "Music"
+  },
+  {
+    "name": "Calculated Risk",
+    "url": "https://www.calculatedriskblog.com/feeds/posts/default",
+    "category": "Markets"
+  },
+  {
+    "name": "SemiAnalysis",
+    "url": "https://semianalysis.com/feed/",
+    "category": "Markets"
+  }
+,
+{
+  "name": "Wired AI",
+  "url": "https://www.wired.com/feed/tag/ai/latest/rss",
+  "category": "Artificial Intelligence"
+},
+{
+  "name": "Scrum.org",
+  "url": "https://www.scrum.org/resources/blog/rss.xml",
+  "category": "Agile"
+},
+{
+  "name": "Project Management Blogs",
+  "url": "https://feeds.feedburner.com/Project-Management-Blogs",
+  "category": "Project Management"
+},
+{
+  "name": "Mountain Goat",
+  "url": "https://www.mountaingoatsoftware.com/blog/rss",
+  "category": "Agile"
+}
 ]

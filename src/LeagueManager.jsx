@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from "react";
 
+function normalizeLeague(league) {
+  return {
+    id: league.id || Date.now(),
+    name: league.name || league.leagueName || "Unnamed League",
+    type: league.type || "team",
+    ballpark: league.ballpark || league.homePark || "",
+    hittersText: league.hittersText || league.hitters || league.hitterRoster || "",
+    pitchersText: league.pitchersText || league.pitchers || league.pitcherRoster || "",
+    matchupPitchersText:
+      league.matchupPitchersText || league.matchupPitchers || "",
+    defenseText: league.defenseText || league.defense || league.teamDefense || "",
+    notes: league.notes || "",
+    createdAt: league.createdAt || new Date().toISOString(),
+    updatedAt: league.updatedAt || new Date().toISOString(),
+  };
+}
+
 export default function LeagueManager() {
   const [leagues, setLeagues] = useState(() => {
     const saved = localStorage.getItem("stratLeagues");
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved).map(normalizeLeague) : [];
   });
 
   const [editingId, setEditingId] = useState(null);
@@ -31,69 +48,73 @@ export default function LeagueManager() {
   const saveLeague = () => {
     if (!leagueName.trim()) return;
 
+    const existingLeague = leagues.find(
+      (league) => String(league.id) === String(editingId)
+    );
+
     const leagueData = {
       id: editingId || Date.now(),
       name: leagueName.trim(),
+      type: "team",
       ballpark: ballpark.trim(),
-      hitters,
-      pitchers,
-      matchupPitchers,
-      defense,
+      hittersText: hitters,
+      pitchersText: pitchers,
+      matchupPitchersText: matchupPitchers,
+      defenseText: defense,
+      notes: existingLeague?.notes || "",
+      createdAt: existingLeague?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
     if (editingId) {
       setLeagues(
         leagues.map((league) =>
-          league.id === editingId
-            ? {
+          String(league.id) === String(editingId)
+            ? normalizeLeague({
                 ...league,
                 ...leagueData,
-              }
+              })
             : league
         )
       );
     } else {
-      setLeagues([
-        ...leagues,
-        {
-          ...leagueData,
-          createdAt: new Date().toISOString(),
-        },
-      ]);
+      setLeagues([...leagues, normalizeLeague(leagueData)]);
     }
 
     clearForm();
   };
 
   const editLeague = (league) => {
-    setEditingId(league.id);
-    setLeagueName(league.name || league.leagueName || "");
-    setBallpark(league.ballpark || league.homePark || "");
-    setHitters(league.hitters || league.hitterRoster || "");
-    setPitchers(league.pitchers || league.pitcherRoster || "");
-    setMatchupPitchers(league.matchupPitchers || "");
-    setDefense(league.defense || league.teamDefense || "");
+    const normalized = normalizeLeague(league);
+
+    setEditingId(normalized.id);
+    setLeagueName(normalized.name);
+    setBallpark(normalized.ballpark);
+    setHitters(normalized.hittersText);
+    setPitchers(normalized.pitchersText);
+    setMatchupPitchers(normalized.matchupPitchersText);
+    setDefense(normalized.defenseText);
   };
 
   const deleteLeague = (id) => {
-    setLeagues(leagues.filter((league) => league.id !== id));
+    setLeagues(leagues.filter((league) => String(league.id) !== String(id)));
 
-    if (editingId === id) {
+    if (String(editingId) === String(id)) {
       clearForm();
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border rounded p-4">
+      <div className="dashboard-panel p-6">
         <h1 className="text-2xl font-bold mb-2">League Manager</h1>
         <p className="text-sm text-slate-500">
-          Save and edit leagues, rosters, matchup pitchers, defense, and ballpark.
+          Save and edit canonical team records for rosters, matchup pitchers,
+          defense, and ballpark.
         </p>
       </div>
 
-      <div className="bg-white border rounded p-4 space-y-4">
+      <div className="dashboard-panel p-6 space-y-4">
         <h2 className="text-xl font-bold">
           {editingId ? "Edit League" : "New League"}
         </h2>
@@ -102,14 +123,14 @@ export default function LeagueManager() {
           value={leagueName}
           onChange={(e) => setLeagueName(e.target.value)}
           placeholder="League Name"
-          className="w-full border rounded p-2"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
         />
 
         <input
           value={ballpark}
           onChange={(e) => setBallpark(e.target.value)}
           placeholder="Home Ballpark"
-          className="w-full border rounded p-2"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
         />
 
         <TextBox
@@ -143,7 +164,7 @@ export default function LeagueManager() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={saveLeague}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg"
           >
             {editingId ? "Update League" : "Save League"}
           </button>
@@ -151,7 +172,7 @@ export default function LeagueManager() {
           {editingId && (
             <button
               onClick={clearForm}
-              className="bg-slate-200 text-slate-800 px-4 py-2 rounded"
+              className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg"
             >
               Cancel Edit
             </button>
@@ -159,7 +180,7 @@ export default function LeagueManager() {
         </div>
       </div>
 
-      <div className="bg-white border rounded p-4">
+      <div className="dashboard-panel p-6">
         <h2 className="text-xl font-bold mb-4">Saved Leagues</h2>
 
         {leagues.length === 0 ? (
@@ -167,37 +188,49 @@ export default function LeagueManager() {
         ) : (
           <div className="space-y-3">
             {leagues.map((league) => {
-              const displayName = league.name || league.leagueName || "Unnamed League";
-              const displayPark = league.ballpark || league.homePark || "";
+              const normalized = normalizeLeague(league);
 
               return (
-                <div key={league.id} className="border rounded p-3">
+                <div
+                  key={normalized.id}
+                  className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/80 hover:bg-white hover:border-slate-300 transition"
+                >
                   <div className="flex justify-between gap-3">
                     <div>
-                      <div className="font-bold">{displayName}</div>
+                      <div className="font-bold text-slate-950">
+                        {normalized.name}
+                      </div>
 
-                      {displayPark && (
-                        <div className="text-sm text-slate-500">{displayPark}</div>
+                      {normalized.ballpark && (
+                        <div className="text-sm text-slate-500">
+                          {normalized.ballpark}
+                        </div>
                       )}
 
                       <div className="text-xs text-slate-400 mt-1">
-                        {(league.hitters || league.hitterRoster) && "hitters saved"}
-                        {(league.pitchers || league.pitcherRoster) && " · pitchers saved"}
-                        {league.matchupPitchers && " · matchup pitchers saved"}
-                        {(league.defense || league.teamDefense) && " · defense saved"}
+                        {normalized.hittersText && "hitters saved"}
+                        {normalized.pitchersText && " · pitchers saved"}
+                        {normalized.matchupPitchersText &&
+                          " · matchup pitchers saved"}
+                        {normalized.defenseText && " · defense saved"}
+                      </div>
+
+                      <div className="text-xs text-slate-400 mt-1">
+                        Canonical fields: name · ballpark · hittersText ·
+                        pitchersText · matchupPitchersText · defenseText
                       </div>
                     </div>
 
                     <div className="flex gap-3">
                       <button
-                        onClick={() => editLeague(league)}
-                        className="text-blue-600 text-sm hover:underline"
+                        onClick={() => editLeague(normalized)}
+                        className="text-blue-700 text-sm hover:underline"
                       >
                         Edit
                       </button>
 
                       <button
-                        onClick={() => deleteLeague(league.id)}
+                        onClick={() => deleteLeague(normalized.id)}
                         className="text-red-600 text-sm hover:underline"
                       >
                         Delete
@@ -223,7 +256,7 @@ function TextBox({ label, value, onChange, placeholder }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={8}
-        className="w-full border rounded p-2 text-sm font-mono"
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-300"
         placeholder={placeholder}
       />
     </div>
