@@ -49,16 +49,49 @@ export function parseCardOutcomeProfile(rawText = "") {
   };
 }
 
-export function describeOutcomeProfile(profile) {
+export function describeOutcomeProfile(profile, cardType = "hitter") {
   const tags = [];
+if (cardType === "pitcher") {
+  if (profile.homers >= 4) tags.push("HR risk");
+  if (profile.homers <= 1) tags.push("HR suppression");
 
-  if (profile.homers >= 4) tags.push("HR threat");
-  if (profile.doubles >= 4) tags.push("gap power");
-  if (profile.singles >= 8) tags.push("contact-heavy");
-  if (profile.walks >= 3) tags.push("walks");
-  if (profile.strikeouts >= 4) tags.push("strikeout risk");
+  if (profile.doubles >= 4) tags.push("extra-base risk");
+
+  if (profile.singles >= 8) tags.push("allows contact");
+
+  if (profile.walks >= 3) tags.push("walk risk");
+  if (profile.walks <= 1) tags.push("low-walk");
+
+  if (profile.strikeouts >= 7) tags.push("strikeout arm");
+  else if (profile.strikeouts >= 4) tags.push("some strikeouts");
+
   if (profile.groundballs >= 8) tags.push("groundball-heavy");
-  if (profile.xChances >= 5) tags.push("X-chart involved");
+  if (profile.flyballs >= 8) tags.push("flyball-heavy");
+
+  if (profile.xChances >= 9) tags.push("X-chart heavy");
+  else if (profile.xChances >= 5) tags.push("X-chart involved");
+
+  return tags.length ? tags.join(" · ") : "balanced pitcher profile";
+}
+  if (profile.homers >= 4) tags.push("HR threat");
+if (profile.homers <= 1) tags.push("HR suppression");
+
+if (profile.doubles >= 4) tags.push("gap power");
+
+if (profile.singles >= 8) tags.push("contact-heavy");
+
+if (profile.walks >= 3) tags.push("walks");
+if (profile.walks <= 1) tags.push("low-walk");
+
+if (profile.strikeouts >= 4) tags.push("strikeout risk");
+if (profile.strikeouts >= 7) tags.push("strikeout arm");
+
+if (profile.groundballs >= 8) tags.push("groundball-heavy");
+
+if (profile.flyballs >= 8) tags.push("flyball-heavy");
+
+if (profile.xChances >= 5) tags.push("X-chart involved");
+if (profile.xChances >= 9) tags.push("X-chart heavy");
 
   return tags.length ? tags.join(" · ") : "balanced profile";
 }

@@ -352,20 +352,3 @@ app.get("/api/test", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-.ticker-track {
-  animation: ticker-scroll 42s linear infinite;
-}
-
-.ticker-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes ticker-scroll {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}

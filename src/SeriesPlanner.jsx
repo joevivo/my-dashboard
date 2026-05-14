@@ -3,6 +3,33 @@ import { parks1980 } from "./parks1980";
 import { getParkData, getParkStrategySummary } from "./engine/parkEngine";
 import { buildCardAwareLineup } from "./engine/lineupEngine";
 
+function normalizeName(name) {
+  return (name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .trim();
+}
+
+function getSavedPitcherCards() {
+  const saved = localStorage.getItem("stratPlayerCards1980");
+  const cards = saved ? JSON.parse(saved) : [];
+
+  const map = {};
+
+  cards
+    .filter((card) => card.cardType === "pitcher")
+    .forEach((card) => {
+      map[normalizeName(card.name)] = card;
+    });
+
+  return map;
+}
+
+function getPitcherCardByName(name) {
+  const pitcherCards = getSavedPitcherCards();
+  return pitcherCards[normalizeName(name)];
+}
+
 function getTeamHittersText(team) {
   return team?.hittersText || team?.hitters || team?.hitterRoster || "";
 }
@@ -54,7 +81,95 @@ function parseStarterLine(line) {
   };
 }
 
-function getPitcherPlan(pitcher, park) {
+function getPitcherCardNotes(pitcherCard) {
+  if (!pitcherCard) {
+    return [
+      "Use standard handedness-based strategy; no saved pitcher card found.",
+    ];
+  }
+
+  const profile = (pitcherCard.outcomeDescription || "").toLowerCase();
+
+  const defenseNotes = [];
+  const offenseNotes = [];
+  const runningNotes = [];
+
+  if (
+    profile.includes("x-chart heavy") ||
+    profile.includes("groundball-heavy")
+  ) {
+    defenseNotes.push(
+      "Defense-first game: SS, 2B, CF, and catcher defense matter heavily."
+    );
+  }
+
+  if (profile.includes("flyball-heavy")) {
+    defenseNotes.push(
+      "Outfield defense and gap coverage matter more than usual."
+    );
+  }
+
+  if (
+    profile.includes("walk risk") ||
+    profile.includes("allows contact")
+  ) {
+    offenseNotes.push(
+      "Prioritize OBP, contact, and sustained traffic over all-or-nothing power."
+    );
+  }
+
+  if (profile.includes("hr risk")) {
+    offenseNotes.push(
+      "Mistake pitches can be punished; selective power bats gain value."
+    );
+  }
+
+  if (profile.includes("strikeout arm")) {
+    offenseNotes.push(
+      "Avoid low-contact bats and emphasize contact-oriented hitters."
+    );
+  }
+
+  const holdValue = Number(pitcherCard.hold);
+
+  if (!Number.isNaN(holdValue)) {
+    if (holdValue > 0) {
+      runningNotes.push(
+        `Running game favorable (HOLD ${pitcherCard.hold}).`
+      );
+    }
+
+    if (holdValue < 0) {
+      runningNotes.push(
+        `Running game less favorable (HOLD ${pitcherCard.hold}).`
+      );
+    }
+  }
+
+  return [
+    ...defenseNotes.slice(0, 1),
+    ...offenseNotes.slice(0, 1),
+    ...runningNotes.slice(0, 1),
+  ];
+}
+
+
+function formatPitcherCardSummary(pitcherCard) {
+  if (!pitcherCard) {
+    return "No saved pitcher card found.";
+  }
+
+  return [
+    `Throws: ${pitcherCard.throws || "?"}`,
+    `Hold: ${pitcherCard.hold || "?"}`,
+    `Endurance: S${pitcherCard.starterEndurance || "?"}`,
+    `Relief: R${pitcherCard.reliefEndurance || "?"}/${pitcherCard.reliefAvailability || "?"}`,
+    `Defense: P-${pitcherCard.pitcherDefense || "?"}e${pitcherCard.pitcherError || "?"}`,
+    `Profile: ${pitcherCard.outcomeDescription || "No profile saved."}`,
+  ].join("\n");
+}
+
+function getPitcherPlan(pitcher, park, pitcherCard) {
   const isLefty = pitcher.handedness === "L";
   const lower = pitcher.raw.toLowerCase();
 
@@ -89,6 +204,10 @@ function getPitcherPlan(pitcher, park) {
       "Because this is a low-HR environment, expect fewer cheap HRs and more value from defense."
     );
   }
+
+  getPitcherCardNotes(pitcherCard).forEach((note) => {
+    plan.push(note);
+  });
 
   return plan;
 }
@@ -167,7 +286,8 @@ export default function SeriesPlanner() {
 
     const starterReports = starters
       .map((starter, index) => {
-        const plan = getPitcherPlan(starter, park);
+        const pitcherCard = getPitcherCardByName(starter.name);
+        const plan = getPitcherPlan(starter, park, pitcherCard);
 
         const lineup = buildCardAwareLineup({
           hittersText: getTeamHittersText(myLeague),
@@ -176,6 +296,9 @@ export default function SeriesPlanner() {
         });
 
         return `Game ${index + 1}: ${starter.name} (${starter.handedness})
+
+Pitcher Card:
+${formatPitcherCardSummary(pitcherCard)}
 
 Recommended posture:
 ${plan.map((item) => `• ${item}`).join("\n")}

@@ -18,7 +18,7 @@ function getCardMap() {
   return map;
 }
 
-function parseRoster(hittersText) {
+function parseRoster(hittersText = "") {
   return hittersText
     .split("\n")
     .map((line) => line.trim())
@@ -62,6 +62,7 @@ function getSmallBallBonus(card) {
   if (card?.hitAndRun === "A") bonus += 4;
   if (card?.hitAndRun === "B") bonus += 2;
 
+  if (card?.stealing === "AA") bonus += 5;
   if (card?.stealing === "A") bonus += 4;
   if (card?.stealing === "B") bonus += 2;
 
@@ -70,6 +71,7 @@ function getSmallBallBonus(card) {
 
   return bonus;
 }
+
 function getOutcomeProfileBonus(card, park) {
   if (!card?.outcomeDescription) return 0;
 
@@ -77,10 +79,12 @@ function getOutcomeProfileBonus(card, park) {
   const profile = card.outcomeDescription.toLowerCase();
 
   if (park?.environment?.includes("Low")) {
-    if (profile.includes("contact-heavy")) bonus += 4;
-    if (profile.includes("gap power")) bonus += 2;
-    if (profile.includes("strikeout risk")) bonus -= 3;
-    if (profile.includes("hr threat")) bonus -= 1;
+    if (profile.includes("contact-heavy")) bonus += 9;
+    if (profile.includes("walks")) bonus += 5;
+    if (profile.includes("gap power")) bonus += 3;
+    if (profile.includes("strikeout risk")) bonus -= 7;
+    if (profile.includes("hr threat")) bonus -= 3;
+    if (profile.includes("groundball-heavy")) bonus -= 2;
   }
 
   if (park?.environment === "High Power") {
@@ -89,8 +93,15 @@ function getOutcomeProfileBonus(card, park) {
     if (profile.includes("groundball-heavy")) bonus -= 2;
   }
 
+  if (park?.environment === "Contact Friendly") {
+    if (profile.includes("contact-heavy")) bonus += 6;
+    if (profile.includes("walks")) bonus += 4;
+    if (profile.includes("strikeout risk")) bonus -= 4;
+  }
+
   return bonus;
 }
+
 function scoreBat(player, pitcherHand, park) {
   const cardMap = getCardMap();
   const card = cardMap[normalizeName(player.name)];
@@ -121,6 +132,7 @@ function scoreBat(player, pitcherHand, park) {
   if (card) {
     score += getRunningBonus(card);
     score += getSmallBallBonus(card);
+    score += getOutcomeProfileBonus(card, park);
   }
 
   return score;
@@ -131,12 +143,13 @@ function scorePositionFit(player, position, pitcherHand, park) {
   const defenseScore = 6 - player.defense;
 
   if (position === "DH") {
-  return (
-    getObp(player, pitcherHand) * 130 +
-    player.power * 8 +
-    player.speed * 0.25
-  );
-}
+    return (
+      getObp(player, pitcherHand) * 130 +
+      player.power * 8 +
+      player.speed * 0.25 +
+      scoreBat(player, pitcherHand, park) * 0.15
+    );
+  }
 
   let positionalWeight = 2;
 
@@ -148,21 +161,18 @@ function scorePositionFit(player, position, pitcherHand, park) {
 
   let score = batScore + defenseScore * positionalWeight;
 
-  // Strong penalty for bad defense at premium positions.
   if (["C", "SS", "2B"].includes(position) && player.defense >= 4) {
-  score -= 25;
-}
+    score -= 25;
+  }
 
-if (position === "CF" && player.defense >= 3) {
-  score -= 30;
-}
+  if (position === "CF" && player.defense >= 3) {
+    score -= 30;
+  }
 
-  // Extra catcher penalty: avoid bat-first emergency catchers.
   if (position === "C" && player.defense >= 4) {
     score -= 25;
   }
 
-  // Astrodome-type parks should care even more about run prevention.
   if (park?.environment?.includes("Low")) {
     if (["C", "SS", "CF", "2B"].includes(position)) {
       score += defenseScore * 3;
@@ -192,15 +202,10 @@ function optimizeBattingOrder(lineup, pitcherHand, park) {
   const remaining = [...lineup];
 
   const pickBest = (fn) => {
-    const sorted = [...remaining].sort(
-      (a, b) => fn(b) - fn(a)
-    );
-
+    const sorted = [...remaining].sort((a, b) => fn(b) - fn(a));
     const pick = sorted[0];
 
-    const index = remaining.findIndex(
-      (p) => p.name === pick.name
-    );
+    const index = remaining.findIndex((p) => p.name === pick.name);
 
     if (index !== -1) {
       remaining.splice(index, 1);
@@ -211,47 +216,44 @@ function optimizeBattingOrder(lineup, pitcherHand, park) {
 
   const order = [];
 
-  // 1st: elite OBP + speed
   order[0] = pickBest(
     (p) =>
       getObp(p, pitcherHand) * 100 +
-      p.speed * 3
+      p.speed * 3 +
+      scoreBat(p, pitcherHand, park) * 0.15
   );
 
-  // 2nd: OBP/contact
   order[1] = pickBest(
     (p) =>
-      getObp(p, pitcherHand) * 100 +
+      getObp(p, pitcherHand) * 115 +
       p.speed +
-      p.power
+      p.power +
+      scoreBat(p, pitcherHand, park) * 0.1
   );
 
-  // 3rd: best hitter
   order[2] = pickBest(
-    (p) =>
-      getObp(p, pitcherHand) * 120 +
-      p.power * 5
-  );
+  (p) =>
+    getObp(p, pitcherHand) * 155 +
+    p.power * 3 +
+    scoreBat(p, pitcherHand, park) * 0.2
+);
 
-  // 4th: cleanup
   order[3] = pickBest(
-    (p) =>
-      getObp(p, pitcherHand) * 90 +
-      p.power * 7
-  );
+  (p) =>
+    getObp(p, pitcherHand) * 120 +
+    p.power * 5 +
+    scoreBat(p, pitcherHand, park) * 0.2
+);
 
-  // 5th: next run producer
   order[4] = pickBest(
     (p) =>
-      getObp(p, pitcherHand) * 80 +
-      p.power * 5
+      getObp(p, pitcherHand) * 85 +
+      p.power * 5 +
+      scoreBat(p, pitcherHand, park) * 0.2
   );
 
-  // Remaining hitters
   const rest = remaining.sort(
-    (a, b) =>
-      scoreBat(b, pitcherHand, park) -
-      scoreBat(a, pitcherHand, park)
+    (a, b) => scoreBat(b, pitcherHand, park) - scoreBat(a, pitcherHand, park)
   );
 
   order.push(...rest);
