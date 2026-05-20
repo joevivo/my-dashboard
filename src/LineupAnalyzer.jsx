@@ -409,42 +409,7 @@ export default function LineupAnalyzer() {
     const speedPressure = starters.filter((p) => p.speed >= 7).length;
 
     let offenseStyle = "Balanced";
-// OFFENSIVE ARCHETYPES
-//
-// Sustainable Pressure
-// - sequencing offense
-// - medium OBP
-// - low HR dependence
-// - low dead zones
-//
-// Athletic Pressure
-// - elite speed
-// - advancement pressure
-// - doubles/triples pressure
-// - defensive stress
-//
-// Explosive Pressure
-// - HR concentration
-// - inning spike potential
-// - few easy outs
-//
-// Star-Driven Offense
-// - concentrated elite hitters
-// - weak bottom third
-// - volatile scoring
-//
-// Prevention Team
-// - defense-first
-// - bullpen leverage
-// - suppresses variance
 
-if (avgPower >= 6.5 && elitePowerCount >= 3) {
-  offenseStyle = "Explosive Power";
-} else if (speedPressure >= 3 && avgObp >= 0.330) {
-  offenseStyle = "Sustainable Pressure";
-} else if (avgObp >= 0.340) {
-  offenseStyle = "Contact Pressure";
-}
     if (avgPower >= 6.5 && elitePowerCount >= 3) {
       offenseStyle = "Explosive Power";
     } else if (speedPressure >= 3 && avgObp >= 0.330) {
