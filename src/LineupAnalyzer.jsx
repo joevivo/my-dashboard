@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { buildCardAwareLineup } from "./engine/lineupEngine";
 
 const requiredPositions = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
 
