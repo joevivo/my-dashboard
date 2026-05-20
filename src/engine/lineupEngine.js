@@ -53,9 +53,26 @@ function getRunningBonus(card) {
   if (max >= 15) return 2;
   if (max <= 11) return -2;
 
-  return 0;
+    return 0;
 }
 
+function getCardDefenseRating(player, position, card) {
+  if (position === "DH") return Number(player.defense) || 5;
+
+  const fallbackDefense = Number(player.defense) || 5;
+  const defenseText = card?.defense?.toLowerCase();
+
+  if (!defenseText) return fallbackDefense;
+
+  const normalizedPosition = position.toLowerCase();
+  const match = defenseText.match(
+    new RegExp(`(^|[^a-z0-9])${normalizedPosition}-(\\d)`, "i")
+  );
+
+  if (!match) return fallbackDefense;
+
+  return Number(match[2]) || fallbackDefense;
+}
 function getSmallBallBonus(card) {
   let bonus = 0;
 
@@ -194,7 +211,7 @@ function scoreBat(player, pitcherHand, park) {
   return score;
 }
 
-function getLowRunEnvironmentDefenseAdjustment(player, position, park) {
+function getLowRunEnvironmentDefenseAdjustment(player, position, park, defenseRating) {
   if (!park?.environment?.includes("Low")) return 0;
 
   let penalty = 0;
@@ -202,37 +219,37 @@ function getLowRunEnvironmentDefenseAdjustment(player, position, park) {
   // In Busch/Astrodome-type games, C/SS/CF defense should be treated
   // as run prevention, not cosmetic positioning.
   if (position === "C") {
-    if (player.defense >= 5) penalty -= 55;
-    else if (player.defense >= 4) penalty -= 35;
-    else if (player.defense <= 2) penalty += 8;
+    if (defenseRating >= 5) penalty -= 55;
+    else if (defenseRating >= 4) penalty -= 35;
+    else if (defenseRating <= 2) penalty += 8;
   }
 
   if (position === "SS") {
-    if (player.defense >= 4) penalty -= 45;
-    else if (player.defense <= 1) penalty += 12;
+    if (defenseRating >= 4) penalty -= 45;
+    else if (defenseRating <= 1) penalty += 12;
   }
 
   if (position === "CF") {
-    if (player.defense >= 4) penalty -= 60;
-    else if (player.defense >= 3) penalty -= 35;
-    else if (player.defense <= 2) penalty += 12;
+    if (defenseRating >= 4) penalty -= 60;
+    else if (defenseRating >= 3) penalty -= 35;
+    else if (defenseRating <= 2) penalty += 12;
   }
 
   if (position === "2B") {
-    if (player.defense >= 4) penalty -= 28;
-    else if (player.defense <= 2) penalty += 7;
+    if (defenseRating >= 4) penalty -= 28;
+    else if (defenseRating <= 2) penalty += 7;
   }
 
   // Corner outfield defense matters less than CF, but bad range can still
   // leak doubles and extra bases in low-HR tactical games.
   if (["LF", "RF"].includes(position)) {
-    if (player.defense >= 5) penalty -= 24;
-    else if (player.defense >= 4) penalty -= 14;
-    else if (player.defense <= 2) penalty += 5;
+    if (defenseRating >= 5) penalty -= 24;
+    else if (defenseRating >= 4) penalty -= 14;
+    else if (defenseRating <= 2) penalty += 5;
   }
 
   // Weak 1B defense is tolerable only if the bat clearly earns it.
-  if (position === "1B" && player.defense >= 5) {
+  if (position === "1B" && defenseRating >= 5) {
     penalty -= player.power >= 7 ? 8 : 18;
   }
 
@@ -240,12 +257,16 @@ function getLowRunEnvironmentDefenseAdjustment(player, position, park) {
 }
 
 function scorePositionFit(player, position, pitcherHand, park) {
+  const cardMap = getCardMap();
+  const card = cardMap[normalizeName(player.name)];
+  const defenseRating = getCardDefenseRating(player, position, card);
+
   const batScore = scoreBat(player, pitcherHand, park);
-  const defenseScore = 6 - player.defense;
+  const defenseScore = 6 - defenseRating;
 
   if (position === "DH") {
     const hideBadDefenseBonus =
-      player.defense >= 5 ? 38 : player.defense >= 4 ? 12 : 0;
+      defenseRating >= 5 ? 38 : defenseRating >= 4 ? 12 : 0;
 
     return (
       getObp(player, pitcherHand) * 135 +
@@ -267,29 +288,29 @@ function scorePositionFit(player, position, pitcherHand, park) {
   let score =
     batScore +
     defenseScore * positionalWeight +
-    getLowRunEnvironmentDefenseAdjustment(player, position, park);
+    getLowRunEnvironmentDefenseAdjustment(player, position, park, defenseRating);
 
-  if (["SS", "2B"].includes(position) && player.defense >= 4) {
+  if (["SS", "2B"].includes(position) && defenseRating >= 4) {
     score -= 25;
   }
 
-     if (position === "CF" && player.defense >= 3) {
+  if (position === "CF" && defenseRating >= 3) {
     score -= 30;
   }
 
-  if (position === "CF" && player.defense >= 4) {
+  if (position === "CF" && defenseRating >= 4) {
     score -= 35;
   }
 
-  if (position === "C" && player.defense >= 4) {
+  if (position === "C" && defenseRating >= 4) {
     score -= 35;
   }
 
-  if (position === "C" && player.defense >= 5) {
+  if (position === "C" && defenseRating >= 5) {
     score -= 55;
   }
 
-  if (["LF", "RF"].includes(position) && player.defense >= 5) {
+  if (["LF", "RF"].includes(position) && defenseRating >= 5) {
     score -= 25;
   }
 
@@ -299,7 +320,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
     }
   }
 
-  return score;
+    return score;
 }
 
 function pickBestForPosition({ roster, usedNames, position, pitcherHand, park }) {
@@ -322,6 +343,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
   if (!park?.environment?.includes("Low")) return lineup;
 
   const usedNames = new Set(lineup.map((player) => player.name));
+  const cardMap = getCardMap();
   const adjusted = [...lineup];
 
   const defensivePositions = ["C", "SS", "CF", "2B"];
@@ -332,7 +354,14 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
 
     if (!current) return;
 
-    const currentPenalty = getLowRunEnvironmentDefenseAdjustment(current, position, park);
+    const currentCard = cardMap[normalizeName(current.name)];
+    const currentDefenseRating = getCardDefenseRating(current, position, currentCard);
+    const currentPenalty = getLowRunEnvironmentDefenseAdjustment(
+      current,
+      position,
+      park,
+      currentDefenseRating
+    );
 
     // Only consider replacement if the current defender is materially risky.
     if (currentPenalty > -25) return;
@@ -341,12 +370,25 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
       .filter((player) => player.positions.includes(position))
       .filter((player) => !usedNames.has(player.name) || player.name === current.name)
       .map((player) => {
-        const offensiveGap =
+                const offensiveGap =
           scoreBat(current, pitcherHand, park) - scoreBat(player, pitcherHand, park);
 
+        const playerCard = cardMap[normalizeName(player.name)];
+        const playerDefenseRating = getCardDefenseRating(player, position, playerCard);
+
         const defensiveGain =
-          getLowRunEnvironmentDefenseAdjustment(player, position, park) -
-          getLowRunEnvironmentDefenseAdjustment(current, position, park);
+          getLowRunEnvironmentDefenseAdjustment(
+            player,
+            position,
+            park,
+            playerDefenseRating
+          ) -
+          getLowRunEnvironmentDefenseAdjustment(
+            current,
+            position,
+            park,
+            currentDefenseRating
+          );
 
         return {
           player,
@@ -563,3 +605,4 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
 
   return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park);
 }
+
