@@ -194,7 +194,7 @@ function scoreBat(player, pitcherHand, park) {
   return score;
 }
 
-function getLowRunEnvironmentDefensePenalty(player, position, park) {
+function getLowRunEnvironmentDefenseAdjustment(player, position, park) {
   if (!park?.environment?.includes("Low")) return 0;
 
   let penalty = 0;
@@ -266,7 +266,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
   let score =
     batScore +
     defenseScore * positionalWeight +
-    getLowRunEnvironmentDefensePenalty(player, position, park);
+    getLowRunEnvironmentDefenseAdjustment(player, position, park);
 
   if (["SS", "2B"].includes(position) && player.defense >= 4) {
     score -= 25;
@@ -319,7 +319,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
 
     if (!current) return;
 
-    const currentPenalty = getLowRunEnvironmentDefensePenalty(current, position, park);
+    const currentPenalty = getLowRunEnvironmentDefenseAdjustment(current, position, park);
 
     // Only consider replacement if the current defender is materially risky.
     if (currentPenalty > -25) return;
@@ -332,8 +332,8 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
           scoreBat(current, pitcherHand, park) - scoreBat(player, pitcherHand, park);
 
         const defensiveGain =
-          getLowRunEnvironmentDefensePenalty(player, position, park) -
-          getLowRunEnvironmentDefensePenalty(current, position, park);
+          getLowRunEnvironmentDefenseAdjustment(player, position, park) -
+          getLowRunEnvironmentDefenseAdjustment(current, position, park);
 
         return {
           player,
