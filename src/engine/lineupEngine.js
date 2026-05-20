@@ -62,6 +62,7 @@ function getSmallBallBonus(card) {
   if (card?.hitAndRun === "A") bonus += 4;
   if (card?.hitAndRun === "B") bonus += 2;
 
+  if (card?.stealing === "AAA") bonus += 6;
   if (card?.stealing === "AA") bonus += 5;
   if (card?.stealing === "A") bonus += 4;
   if (card?.stealing === "B") bonus += 2;
@@ -81,15 +82,15 @@ function getOutcomeProfileBonus(card, park) {
   if (park?.environment?.includes("Low")) {
     if (profile.includes("contact-heavy")) bonus += 9;
     if (profile.includes("walks")) bonus += 5;
-    if (profile.includes("gap power")) bonus += 3;
+    if (profile.includes("gap power")) bonus += 4;
     if (profile.includes("strikeout risk")) bonus -= 7;
-    if (profile.includes("hr threat")) bonus -= 3;
+    if (profile.includes("hr threat")) bonus -= 2;
     if (profile.includes("groundball-heavy")) bonus -= 2;
   }
 
   if (park?.environment === "High Power") {
-    if (profile.includes("hr threat")) bonus += 5;
-    if (profile.includes("gap power")) bonus += 2;
+    if (profile.includes("hr threat")) bonus += 7;
+    if (profile.includes("gap power")) bonus += 3;
     if (profile.includes("groundball-heavy")) bonus -= 2;
   }
 
@@ -102,6 +103,60 @@ function getOutcomeProfileBonus(card, park) {
   return bonus;
 }
 
+function getImpactBonus(player, pitcherHand, park) {
+  const obp = getObp(player, pitcherHand);
+  let bonus = 0;
+
+  if (player.power >= 8) bonus += 14;
+  else if (player.power >= 6) bonus += 10;
+  else if (player.power >= 5) bonus += 7;
+  else if (player.power <= 1) bonus -= 8;
+  else if (player.power <= 2) bonus -= 5;
+
+  if (obp >= 0.400) bonus += 10;
+  else if (obp >= 0.370) bonus += 6;
+  else if (obp < 0.300) bonus -= 14;
+  else if (obp < 0.315) bonus -= 8;
+
+  if (park?.environment?.includes("Low") && player.power >= 5 && obp >= 0.330) {
+    bonus += 4;
+  }
+  const positions = player.positions || [];
+
+  if (
+    positions.includes("SS") &&
+    player.power >= 3 &&
+    obp >= 0.295
+  ) {
+    bonus += 10;
+  }
+
+  if (
+    positions.includes("C") &&
+    player.power >= 3 &&
+    obp >= 0.310
+  ) {
+    bonus += 6;
+  }
+
+  if (
+    positions.includes("CF") &&
+    player.power >= 3 &&
+    obp >= 0.310
+  ) {
+    bonus += 5;
+  }
+  return bonus;
+}
+
+function isWeakBat(player, pitcherHand) {
+  return getObp(player, pitcherHand) < 0.325 && player.power <= 2;
+}
+
+function isBottomOnlyBat(player, pitcherHand) {
+  return getObp(player, pitcherHand) < 0.315 && player.power <= 2;
+}
+
 function scoreBat(player, pitcherHand, park) {
   const cardMap = getCardMap();
   const card = cardMap[normalizeName(player.name)];
@@ -111,7 +166,8 @@ function scoreBat(player, pitcherHand, park) {
   let score =
     obp * 100 +
     player.power * 4 +
-    player.speed * 1.5;
+    player.speed * 1.15 +
+    getImpactBonus(player, pitcherHand, park);
 
   if (pitcherHand === "L") {
     if (player.bats === "R") score += 7;
@@ -125,8 +181,8 @@ function scoreBat(player, pitcherHand, park) {
   }
 
   if (park?.environment?.includes("Low")) {
-    score += player.speed * 1.5;
-    score -= player.power * 0.6;
+    score += player.speed * 0.75;
+    score -= player.power * 0.25;
   }
 
   if (card) {
@@ -138,16 +194,64 @@ function scoreBat(player, pitcherHand, park) {
   return score;
 }
 
+function getLowRunEnvironmentDefensePenalty(player, position, park) {
+  if (!park?.environment?.includes("Low")) return 0;
+
+  let penalty = 0;
+
+  // In Busch/Astrodome-type games, C/SS/CF defense should be treated
+  // as run prevention, not cosmetic positioning.
+  if (position === "C") {
+    if (player.defense >= 5) penalty -= 55;
+    else if (player.defense >= 4) penalty -= 35;
+    else if (player.defense <= 2) penalty += 8;
+  }
+
+  if (position === "SS") {
+    if (player.defense >= 4) penalty -= 45;
+    else if (player.defense <= 1) penalty += 12;
+  }
+
+  if (position === "CF") {
+    if (player.defense >= 4) penalty -= 60;
+    else if (player.defense >= 3) penalty -= 35;
+    else if (player.defense <= 2) penalty += 12;
+  }
+
+  if (position === "2B") {
+    if (player.defense >= 4) penalty -= 28;
+    else if (player.defense <= 2) penalty += 7;
+  }
+
+  // Corner outfield defense matters less than CF, but bad range can still
+  // leak doubles and extra bases in low-HR tactical games.
+  if (["LF", "RF"].includes(position)) {
+    if (player.defense >= 5) penalty -= 24;
+    else if (player.defense >= 4) penalty -= 14;
+    else if (player.defense <= 2) penalty += 5;
+  }
+
+  // Weak 1B defense is tolerable only if the bat clearly earns it.
+  if (position === "1B" && player.defense >= 5) {
+    penalty -= player.power >= 7 ? 8 : 18;
+  }
+
+  return penalty;
+}
+
 function scorePositionFit(player, position, pitcherHand, park) {
   const batScore = scoreBat(player, pitcherHand, park);
   const defenseScore = 6 - player.defense;
 
   if (position === "DH") {
+    const hideBadDefenseBonus = player.defense >= 5 ? 18 : 0;
+
     return (
-      getObp(player, pitcherHand) * 130 +
-      player.power * 8 +
-      player.speed * 0.25 +
-      scoreBat(player, pitcherHand, park) * 0.15
+      getObp(player, pitcherHand) * 135 +
+      player.power * 10 +
+      getImpactBonus(player, pitcherHand, park) +
+      scoreBat(player, pitcherHand, park) * 0.1 +
+      hideBadDefenseBonus
     );
   }
 
@@ -159,7 +263,10 @@ function scorePositionFit(player, position, pitcherHand, park) {
   if (position === "2B") positionalWeight = 6;
   if (position === "3B") positionalWeight = 4;
 
-  let score = batScore + defenseScore * positionalWeight;
+  let score =
+    batScore +
+    defenseScore * positionalWeight +
+    getLowRunEnvironmentDefensePenalty(player, position, park);
 
   if (["C", "SS", "2B"].includes(position) && player.defense >= 4) {
     score -= 25;
@@ -198,12 +305,67 @@ function pickBestForPosition({ roster, usedNames, position, pitcherHand, park })
   return candidates[0]?.player || null;
 }
 
+function improveLowRunDefense(lineup, roster, pitcherHand, park) {
+  if (!park?.environment?.includes("Low")) return lineup;
+
+  const usedNames = new Set(lineup.map((player) => player.name));
+  const adjusted = [...lineup];
+
+  const defensivePositions = ["C", "SS", "CF", "2B"];
+
+  defensivePositions.forEach((position) => {
+    const currentIndex = adjusted.findIndex((player) => player.fieldPos === position);
+    const current = adjusted[currentIndex];
+
+    if (!current) return;
+
+    const currentPenalty = getLowRunEnvironmentDefensePenalty(current, position, park);
+
+    // Only consider replacement if the current defender is materially risky.
+    if (currentPenalty > -25) return;
+
+    const candidates = roster
+      .filter((player) => player.positions.includes(position))
+      .filter((player) => !usedNames.has(player.name) || player.name === current.name)
+      .map((player) => {
+        const offensiveGap =
+          scoreBat(current, pitcherHand, park) - scoreBat(player, pitcherHand, park);
+
+        const defensiveGain =
+          getLowRunEnvironmentDefensePenalty(player, position, park) -
+          getLowRunEnvironmentDefensePenalty(current, position, park);
+
+        return {
+          player,
+          netGain: defensiveGain - offensiveGap * 0.65,
+        };
+      })
+      .sort((a, b) => b.netGain - a.netGain);
+
+    const replacement = candidates[0];
+
+    if (!replacement || replacement.player.name === current.name) return;
+
+    // Require clear net gain so we do not make twitchy swaps.
+    if (replacement.netGain < 12) return;
+
+    usedNames.delete(current.name);
+    usedNames.add(replacement.player.name);
+
+    adjusted[currentIndex] = {
+      ...replacement.player,
+      fieldPos: position,
+    };
+  });
+
+  return adjusted;
+}
+
 function optimizeBattingOrder(lineup, pitcherHand, park) {
   const remaining = [...lineup];
 
-  const pickBest = (fn) => {
-    const sorted = [...remaining].sort((a, b) => fn(b) - fn(a));
-    const pick = sorted[0];
+  const removePick = (pick) => {
+    if (!pick) return null;
 
     const index = remaining.findIndex((p) => p.name === pick.name);
 
@@ -214,51 +376,140 @@ function optimizeBattingOrder(lineup, pitcherHand, park) {
     return pick;
   };
 
+  const pickBest = (fn) => {
+    const sorted = [...remaining].sort((a, b) => fn(b) - fn(a));
+    return removePick(sorted[0]);
+  };
+
+  const middleOrderPenalty = (p) => {
+    let penalty = 0;
+
+    if (isWeakBat(p, pitcherHand)) penalty -= 30;
+    if (isBottomOnlyBat(p, pitcherHand)) penalty -= 45;
+    if (p.power <= 2) penalty -= 16;
+    if (getObp(p, pitcherHand) < 0.315) penalty -= 12;
+
+    return penalty;
+  };
+
+  const impactBatBoost = (p) => {
+    let boost = 0;
+    const obp = getObp(p, pitcherHand);
+
+    if (p.power >= 8) boost += 18;
+    else if (p.power >= 6) boost += 13;
+    else if (p.power >= 5) boost += 9;
+
+    if (obp >= 0.390 && p.power >= 4) boost += 9;
+    if (obp >= 0.370 && p.power >= 5) boost += 7;
+
+    return boost;
+  };
+
+  const tableSetterBoost = (p) => {
+    let boost = 0;
+    const obp = getObp(p, pitcherHand);
+
+    if (obp >= 0.400) boost += 14;
+    else if (obp >= 0.370) boost += 8;
+
+    if (p.power >= 7) boost -= 5;
+
+    return boost;
+  };
+
+  const roleScore = {
+    leadoff: (p) =>
+      getObp(p, pitcherHand) * 125 +
+      p.speed * 2.4 +
+      scoreBat(p, pitcherHand, park) * 0.08,
+
+    twoHole: (p) =>
+      getObp(p, pitcherHand) * 160 +
+      p.speed * 0.8 +
+      tableSetterBoost(p) +
+      scoreBat(p, pitcherHand, park) * 0.08,
+
+    bestBat: (p) =>
+      getObp(p, pitcherHand) * 125 +
+      p.power * 7 +
+      impactBatBoost(p) +
+      middleOrderPenalty(p) +
+      scoreBat(p, pitcherHand, park) * 0.18,
+
+    cleanup: (p) =>
+      getObp(p, pitcherHand) * 75 +
+      p.power * 13 +
+      impactBatBoost(p) +
+      middleOrderPenalty(p) +
+      scoreBat(p, pitcherHand, park) * 0.16,
+
+    fifth: (p) =>
+      getObp(p, pitcherHand) * 85 +
+      p.power * 9 +
+      impactBatBoost(p) +
+      middleOrderPenalty(p) +
+      scoreBat(p, pitcherHand, park) * 0.14,
+
+    sixth: (p) =>
+      getObp(p, pitcherHand) * 80 +
+      p.power * 5 +
+      scoreBat(p, pitcherHand, park) * 0.12 +
+      (isWeakBat(p, pitcherHand) ? -25 : 0),
+
+    bottom: (p) =>
+      scoreBat(p, pitcherHand, park) +
+      (isWeakBat(p, pitcherHand) ? -25 : 0) +
+      (isBottomOnlyBat(p, pitcherHand) ? -20 : 0),
+  };
+
   const order = [];
 
-  order[0] = pickBest(
-    (p) =>
-      getObp(p, pitcherHand) * 100 +
-      p.speed * 3 +
-      scoreBat(p, pitcherHand, park) * 0.15
-  );
+  order[0] = pickBest(roleScore.leadoff);
 
-  order[1] = pickBest(
-    (p) =>
-      getObp(p, pitcherHand) * 115 +
-      p.speed +
-      p.power +
-      scoreBat(p, pitcherHand, park) * 0.1
-  );
+  order[3] = pickBest((p) => {
+    let score = roleScore.cleanup(p);
 
-  order[2] = pickBest(
-  (p) =>
-    getObp(p, pitcherHand) * 155 +
-    p.power * 3 +
-    scoreBat(p, pitcherHand, park) * 0.2
-);
+    if (p.power <= 3) score -= 30;
+    if (getObp(p, pitcherHand) >= 0.400 && p.power <= 3) score -= 12;
 
-  order[3] = pickBest(
-  (p) =>
-    getObp(p, pitcherHand) * 120 +
-    p.power * 5 +
-    scoreBat(p, pitcherHand, park) * 0.2
-);
+    return score;
+  });
 
-  order[4] = pickBest(
-    (p) =>
-      getObp(p, pitcherHand) * 85 +
-      p.power * 5 +
-      scoreBat(p, pitcherHand, park) * 0.2
-  );
+  order[1] = pickBest((p) => {
+    let score = roleScore.twoHole(p);
 
-  const rest = remaining.sort(
-    (a, b) => scoreBat(b, pitcherHand, park) - scoreBat(a, pitcherHand, park)
-  );
+    if (isWeakBat(p, pitcherHand)) score -= 35;
+    if (p.power >= 7) score -= 5;
+
+    return score;
+  });
+
+  order[2] = pickBest((p) => {
+    let score = roleScore.bestBat(p);
+
+    if (p.power <= 2) score -= 22;
+    if (isWeakBat(p, pitcherHand)) score -= 35;
+
+    return score;
+  });
+
+  order[4] = pickBest((p) => {
+    let score = roleScore.fifth(p);
+
+    if (p.power <= 2) score -= 25;
+    if (isWeakBat(p, pitcherHand)) score -= 35;
+
+    return score;
+  });
+
+  order[5] = pickBest(roleScore.sixth);
+
+  const rest = remaining.sort((a, b) => roleScore.bottom(b) - roleScore.bottom(a));
 
   order.push(...rest);
 
-  return order.map((player) => ({
+  return order.filter(Boolean).map((player) => ({
     ...player,
     obp: getObp(player, pitcherHand),
   }));
@@ -290,5 +541,12 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
     }
   });
 
-  return optimizeBattingOrder(lineup, pitcherHand, park);
+  const defenseAwareLineup = improveLowRunDefense(
+    lineup,
+    roster,
+    pitcherHand,
+    park
+  );
+
+  return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park);
 }

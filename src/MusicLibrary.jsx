@@ -1,0 +1,1395 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+
+const defaultData = {
+  artists: [],
+  albums: [],
+  playlists: [],
+  shows: [],
+  explore: [],
+};
+
+const emptyArtist = {
+  name: "",
+  tags: "",
+  favoriteEra: "",
+  notes: "",
+};
+
+const emptyAlbum = {
+  artist: "",
+  title: "",
+  year: "",
+  rating: "",
+  favoriteTracks: "",
+  tags: "",
+  essential: false,
+  coverUrl: "",
+  appleMusicUrl: "",
+  notes: "",
+};
+
+const emptyPlaylist = {
+  title: "",
+  theme: "",
+  tags: "",
+  platform: "",
+  link: "",
+  notes: "",
+};
+
+const emptyShow = {
+  artist: "",
+  venue: "",
+  date: "",
+  rating: "",
+  tags: "",
+  notes: "",
+};
+
+const emptyExplore = {
+  name: "",
+  type: "",
+  tags: "",
+  reason: "",
+  link: "",
+  notes: "",
+};
+
+function normalizeMusicData(data) {
+  return {
+    artists: Array.isArray(data?.artists) ? data.artists : [],
+    albums: Array.isArray(data?.albums) ? data.albums : [],
+    playlists: Array.isArray(data?.playlists) ? data.playlists : [],
+    shows: Array.isArray(data?.shows) ? data.shows : [],
+    explore: Array.isArray(data?.explore) ? data.explore : [],
+  };
+}
+
+function normalizeText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function itemMentionsArtist(item, artistName) {
+  const target = normalizeText(artistName);
+
+  if (!target) return false;
+
+  return Object.values(item).some((value) =>
+    normalizeText(value).includes(target)
+  );
+}
+
+function itemHasTag(item, selectedTag) {
+  const target = normalizeText(selectedTag);
+
+  if (!target) return true;
+
+  return String(item.tags || "")
+    .split(",")
+    .map((tag) => normalizeText(tag))
+    .includes(target);
+}
+
+function collectAllTags(data) {
+  const tagCounts = {};
+
+  ["artists", "albums", "playlists", "shows", "explore"].forEach((section) => {
+    data[section].forEach((item) => {
+      String(item.tags || "")
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .forEach((tag) => {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+    });
+  });
+
+  return Object.entries(tagCounts).sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return a[0].localeCompare(b[0]);
+  });
+}
+
+export default function MusicLibrary() {
+  const fileInputRef = useRef(null);
+
+  const [musicData, setMusicData] = useState(() => {
+    const saved = localStorage.getItem("musicLibrary");
+
+    if (!saved) return defaultData;
+
+    try {
+      return normalizeMusicData(JSON.parse(saved));
+    } catch {
+      return defaultData;
+    }
+  });
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedArtist, setSelectedArtist] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+
+  const [artist, setArtist] = useState(emptyArtist);
+  const [album, setAlbum] = useState(emptyAlbum);
+  const [playlist, setPlaylist] = useState(emptyPlaylist);
+  const [show, setShow] = useState(emptyShow);
+  const [explore, setExplore] = useState(emptyExplore);
+
+  const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
+  const [importMessage, setImportMessage] = useState("");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("musicLibrary", JSON.stringify(musicData));
+    } catch (error) {
+      console.error("Failed saving music library", error);
+    }
+  }, [musicData]);
+
+  const addItem = (section, item, resetFn, emptyItem) => {
+    const hasValue = Object.values(item).some((value) =>
+      String(value || "").trim()
+    );
+
+    if (!hasValue) return;
+
+    setMusicData((prev) => ({
+      ...prev,
+      [section]: [...prev[section], item],
+    }));
+
+    resetFn(emptyItem);
+  };
+
+  const removeItem = (section, index) => {
+    setMusicData((prev) => ({
+      ...prev,
+      [section]: prev[section].filter((_, i) => i !== index),
+    }));
+
+    if (section === "albums" && editingAlbumIndex === index) {
+      setEditingAlbumIndex(null);
+      setAlbum(emptyAlbum);
+    }
+  };
+
+  const saveAlbum = () => {
+    const hasValue = Object.values(album).some((value) =>
+      String(value || "").trim()
+    );
+
+    if (!hasValue) return;
+
+    if (editingAlbumIndex !== null) {
+      const updatedAlbums = [...musicData.albums];
+
+      updatedAlbums[editingAlbumIndex] = album;
+
+      setMusicData((prev) => ({
+        ...prev,
+        albums: updatedAlbums,
+      }));
+
+      setEditingAlbumIndex(null);
+      setAlbum(emptyAlbum);
+
+      return;
+    }
+
+    addItem("albums", album, setAlbum, emptyAlbum);
+  };
+
+  const cancelAlbumEdit = () => {
+    setEditingAlbumIndex(null);
+    setAlbum(emptyAlbum);
+  };
+
+  const exportMusicLibrary = () => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      version: 1,
+      musicLibrary: normalizeMusicData(musicData),
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "music-library-backup.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
+  const importMusicLibrary = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+
+        const importedData = parsed.musicLibrary ? parsed.musicLibrary : parsed;
+
+        setMusicData(normalizeMusicData(importedData));
+        setEditingAlbumIndex(null);
+        setSelectedArtist("");
+        setSelectedTag("");
+        setAlbum(emptyAlbum);
+        setImportMessage("Music library imported successfully.");
+      } catch (error) {
+        console.error("Failed importing music library", error);
+        setImportMessage("Import failed. Make sure this is a valid JSON backup.");
+      }
+
+      event.target.value = "";
+    };
+
+    reader.readAsText(file);
+  };
+
+  const filteredData = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
+    const matchesSearch = (item) => {
+      if (!query) return true;
+
+      return Object.values(item).some((value) =>
+        String(value || "").toLowerCase().includes(query)
+      );
+    };
+
+    const matchesFilters = (item) =>
+      matchesSearch(item) && itemHasTag(item, selectedTag);
+
+    return {
+      artists: musicData.artists.filter(matchesFilters),
+      albums: musicData.albums.filter(matchesFilters),
+      playlists: musicData.playlists.filter(matchesFilters),
+      shows: musicData.shows.filter(matchesFilters),
+      explore: musicData.explore.filter(matchesFilters),
+    };
+  }, [musicData, searchTerm, selectedTag]);
+
+  const allTags = useMemo(() => collectAllTags(musicData), [musicData]);
+
+  const recentItems = useMemo(() => {
+    const combined = [
+      ...musicData.albums.map((item, index) => ({
+        ...item,
+        section: "Album",
+        display: item.title || "Untitled Album",
+        subdisplay: item.artist || "",
+        key: `album-${index}`,
+      })),
+      ...musicData.artists.map((item, index) => ({
+        ...item,
+        section: "Artist",
+        display: item.name || "Untitled Artist",
+        subdisplay: item.favoriteEra || "",
+        key: `artist-${index}`,
+      })),
+      ...musicData.playlists.map((item, index) => ({
+        ...item,
+        section: "Playlist",
+        display: item.title || "Untitled Playlist",
+        subdisplay: item.theme || "",
+        key: `playlist-${index}`,
+      })),
+      ...musicData.shows.map((item, index) => ({
+        ...item,
+        section: "Show",
+        display: item.artist || "Untitled Show",
+        subdisplay: item.venue || "",
+        key: `show-${index}`,
+      })),
+    ];
+
+    return combined.slice(-6).reverse();
+  }, [musicData]);
+
+  const selectedArtistRecord = useMemo(() => {
+    if (!selectedArtist) return null;
+
+    return musicData.artists.find(
+      (item) => normalizeText(item.name) === normalizeText(selectedArtist)
+    );
+  }, [musicData.artists, selectedArtist]);
+
+  const artistRelated = useMemo(() => {
+    if (!selectedArtist) {
+      return {
+        albums: [],
+        playlists: [],
+        shows: [],
+        explore: [],
+      };
+    }
+
+    return {
+      albums: musicData.albums.filter((item) =>
+        itemMentionsArtist(item, selectedArtist)
+      ),
+      playlists: musicData.playlists.filter((item) =>
+        itemMentionsArtist(item, selectedArtist)
+      ),
+      shows: musicData.shows.filter((item) =>
+        itemMentionsArtist(item, selectedArtist)
+      ),
+      explore: musicData.explore.filter((item) =>
+        itemMentionsArtist(item, selectedArtist)
+      ),
+    };
+  }, [musicData, selectedArtist]);
+
+  const essentialAlbums = filteredData.albums.filter((item) => item.essential);
+
+  return (
+    <div className="space-y-6">
+      <div className="dashboard-panel p-6">
+        <h1 className="text-2xl font-bold mb-2">Music Library</h1>
+
+        <p className="text-sm text-slate-500">
+          Favorite artists, albums, playlists, shows attended, and future
+          listening notes.
+        </p>
+      </div>
+
+      <div className="p-6 border rounded-2xl shadow-sm bg-white border-slate-200 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold">Library Frame</h2>
+            <p className="text-sm text-slate-500">
+              Search across your music notes and click an artist to create a
+              connected spotlight view.
+            </p>
+          </div>
+
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search music library..."
+            className="w-full md:w-80 border border-slate-200 bg-white rounded-lg p-2.5 text-sm"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <StatCard label="Artists" value={musicData.artists.length} />
+          <StatCard label="Albums" value={musicData.albums.length} />
+          <StatCard
+            label="Essential"
+            value={musicData.albums.filter((item) => item.essential).length}
+          />
+          <StatCard label="Playlists" value={musicData.playlists.length} />
+          <StatCard label="Shows" value={musicData.shows.length} />
+        </div>
+
+        <div className="flex flex-wrap gap-2 pt-2">
+          <button
+            onClick={exportMusicLibrary}
+            className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg text-sm"
+          >
+            Export Music Library
+          </button>
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Import Music Library
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={importMusicLibrary}
+            className="hidden"
+          />
+        </div>
+
+        {importMessage && (
+          <div className="text-sm text-slate-500">
+            {importMessage}
+          </div>
+        )}
+      </div>
+      <MusicSection title="Music Stats" color="sky">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          <StatCard
+            label="Avg Rating"
+            value={
+              musicData.albums.length
+                ? (
+                    musicData.albums.reduce(
+                      (sum, album) => sum + Number(album.rating || 0),
+                      0
+                    ) / musicData.albums.length
+                  ).toFixed(1)
+                : "0"
+            }
+          />
+
+          <StatCard
+            label="Essential"
+            value={
+              musicData.albums.filter((album) => album.essential).length
+            }
+          />
+
+          <StatCard
+            label="Shows"
+            value={musicData.shows.length}
+          />
+
+          <StatCard
+            label="Playlists"
+            value={musicData.playlists.length}
+          />
+
+          <StatCard
+            label="Artists"
+            value={musicData.artists.length}
+          />
+
+          <StatCard
+            label="Albums"
+            value={musicData.albums.length}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <TopTagsCard albums={musicData.albums} />
+          <TopArtistsCard albums={musicData.albums} />
+        </div>
+      </MusicSection>
+
+      <MusicSection title="Tag Browser" color="green">
+        <TagBrowser
+          tags={allTags}
+          selectedTag={selectedTag}
+          setSelectedTag={setSelectedTag}
+        />
+      </MusicSection>
+
+      <MusicSection title="Artist Spotlight" color="purple">
+        {!selectedArtist ? (
+          <p className="text-sm text-slate-500">
+            Click an artist card below to see related albums, playlists, shows,
+            and exploration notes.
+          </p>
+        ) : (
+          <ArtistSpotlight
+            artistName={selectedArtist}
+            artist={selectedArtistRecord}
+            related={artistRelated}
+            clearArtist={() => setSelectedArtist("")}
+          />
+        )}
+      </MusicSection>
+
+      <MusicSection title="Recently Added" color="slate">
+        {recentItems.length === 0 ? (
+          <p className="text-sm text-slate-500">No recent entries yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {recentItems.map((item) => (
+              <div
+                key={item.key}
+                className="border border-slate-200 rounded-xl p-4 bg-slate-50"
+              >
+                <div className="text-xs uppercase text-slate-400 font-bold">
+                  {item.section}
+                </div>
+                <div className="font-bold text-slate-900">{item.display}</div>
+                {item.subdisplay && (
+                  <div className="text-sm text-slate-500">
+                    {item.subdisplay}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </MusicSection>
+
+      <MusicSection title="Essential Albums" color="amber">
+        <AlbumGallery
+          items={essentialAlbums}
+          removeItem={removeItem}
+          setAlbum={setAlbum}
+          setEditingAlbumIndex={setEditingAlbumIndex}
+          sourceItems={musicData.albums}
+        />
+      </MusicSection>
+
+      <MusicSection title="Favorite Artists" color="purple">
+        <Input
+          label="Artist"
+          value={artist.name}
+          onChange={(v) => setArtist({ ...artist, name: v })}
+        />
+
+        <Input
+          label="Tags / Genres"
+          value={artist.tags}
+          onChange={(v) => setArtist({ ...artist, tags: v })}
+        />
+
+        <Input
+          label="Favorite Era"
+          value={artist.favoriteEra}
+          onChange={(v) => setArtist({ ...artist, favoriteEra: v })}
+        />
+
+        <Input
+          label="Notes"
+          value={artist.notes}
+          onChange={(v) => setArtist({ ...artist, notes: v })}
+        />
+
+        <AddButton
+          onClick={() => addItem("artists", artist, setArtist, emptyArtist)}
+        />
+
+        <StandardCardList
+          items={filteredData.artists}
+          section="artists"
+          removeItem={removeItem}
+          titleKey="name"
+          sourceItems={musicData.artists}
+          onTitleClick={(item) => setSelectedArtist(item.name)}
+          actionLabel="Spotlight"
+        />
+      </MusicSection>
+
+      <MusicSection title="Favorite Albums" color="amber">
+        {editingAlbumIndex !== null && (
+          <div className="bg-amber-100 border border-amber-200 text-amber-900 rounded-xl px-4 py-3 text-sm">
+            Editing album. Update the fields below, then click{" "}
+            <span className="font-semibold">Save Changes</span>.
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Artist"
+            value={album.artist}
+            onChange={(v) => setAlbum({ ...album, artist: v })}
+          />
+
+          <Input
+            label="Album"
+            value={album.title}
+            onChange={(v) => setAlbum({ ...album, title: v })}
+          />
+
+          <Input
+            label="Year"
+            value={album.year}
+            onChange={(v) => setAlbum({ ...album, year: v })}
+          />
+
+          <Input
+            label="Rating"
+            value={album.rating}
+            onChange={(v) => setAlbum({ ...album, rating: v })}
+          />
+
+          <Input
+            label="Favorite Tracks"
+            value={album.favoriteTracks}
+            onChange={(v) => setAlbum({ ...album, favoriteTracks: v })}
+          />
+
+          <Input
+            label="Tags / Genres"
+            value={album.tags}
+            onChange={(v) => setAlbum({ ...album, tags: v })}
+          />
+
+          <Checkbox
+            label="Essential album"
+            checked={album.essential}
+            onChange={(checked) =>
+              setAlbum({ ...album, essential: checked })
+            }
+          />
+
+          <Input
+            label="Cover Image URL"
+            value={album.coverUrl}
+            onChange={(v) => setAlbum({ ...album, coverUrl: v })}
+          />
+
+          <Input
+            label="Apple Music URL"
+            value={album.appleMusicUrl}
+            onChange={(v) => setAlbum({ ...album, appleMusicUrl: v })}
+          />
+
+          <Input
+            label="Notes"
+            value={album.notes}
+            onChange={(v) => setAlbum({ ...album, notes: v })}
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <AddButton
+            label={editingAlbumIndex !== null ? "Save Changes" : "Add Album"}
+            onClick={saveAlbum}
+          />
+
+          {editingAlbumIndex !== null && (
+            <button
+              onClick={cancelAlbumEdit}
+              className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+
+        <AlbumGallery
+          items={filteredData.albums}
+          removeItem={removeItem}
+          setAlbum={setAlbum}
+          setEditingAlbumIndex={setEditingAlbumIndex}
+          sourceItems={musicData.albums}
+          onArtistClick={setSelectedArtist}
+        />
+      </MusicSection>
+
+      <MusicSection title="Playlists" color="sky">
+        <Input
+          label="Title"
+          value={playlist.title}
+          onChange={(v) => setPlaylist({ ...playlist, title: v })}
+        />
+
+        <Input
+          label="Theme"
+          value={playlist.theme}
+          onChange={(v) => setPlaylist({ ...playlist, theme: v })}
+        />
+
+        <Input
+          label="Tags"
+          value={playlist.tags}
+          onChange={(v) => setPlaylist({ ...playlist, tags: v })}
+        />
+
+        <Input
+          label="Platform"
+          value={playlist.platform}
+          onChange={(v) => setPlaylist({ ...playlist, platform: v })}
+        />
+
+        <Input
+          label="Link"
+          value={playlist.link}
+          onChange={(v) => setPlaylist({ ...playlist, link: v })}
+        />
+
+        <Input
+          label="Notes"
+          value={playlist.notes}
+          onChange={(v) => setPlaylist({ ...playlist, notes: v })}
+        />
+
+        <AddButton
+          onClick={() =>
+            addItem("playlists", playlist, setPlaylist, emptyPlaylist)
+          }
+        />
+
+        <StandardCardList
+          items={filteredData.playlists}
+          section="playlists"
+          removeItem={removeItem}
+          titleKey="title"
+          sourceItems={musicData.playlists}
+        />
+      </MusicSection>
+
+      <MusicSection title="Shows Attended" color="rose">
+        <Input
+          label="Artist"
+          value={show.artist}
+          onChange={(v) => setShow({ ...show, artist: v })}
+        />
+
+        <Input
+          label="Venue"
+          value={show.venue}
+          onChange={(v) => setShow({ ...show, venue: v })}
+        />
+
+        <Input
+          label="Date"
+          value={show.date}
+          onChange={(v) => setShow({ ...show, date: v })}
+        />
+
+        <Input
+          label="Rating"
+          value={show.rating}
+          onChange={(v) => setShow({ ...show, rating: v })}
+        />
+
+        <Input
+          label="Tags"
+          value={show.tags}
+          onChange={(v) => setShow({ ...show, tags: v })}
+        />
+
+        <Input
+          label="Notes"
+          value={show.notes}
+          onChange={(v) => setShow({ ...show, notes: v })}
+        />
+
+        <AddButton onClick={() => addItem("shows", show, setShow, emptyShow)} />
+
+        <StandardCardList
+          items={filteredData.shows}
+          section="shows"
+          removeItem={removeItem}
+          titleKey="artist"
+          sourceItems={musicData.shows}
+          onTitleClick={(item) => setSelectedArtist(item.artist)}
+          actionLabel="Spotlight"
+        />
+      </MusicSection>
+
+      <MusicSection title="Want to Explore" color="green">
+        <Input
+          label="Name"
+          value={explore.name}
+          onChange={(v) => setExplore({ ...explore, name: v })}
+        />
+
+        <Input
+          label="Type"
+          value={explore.type}
+          onChange={(v) => setExplore({ ...explore, type: v })}
+        />
+
+        <Input
+          label="Tags"
+          value={explore.tags}
+          onChange={(v) => setExplore({ ...explore, tags: v })}
+        />
+
+        <Input
+          label="Reason"
+          value={explore.reason}
+          onChange={(v) => setExplore({ ...explore, reason: v })}
+        />
+
+        <Input
+          label="Link"
+          value={explore.link}
+          onChange={(v) => setExplore({ ...explore, link: v })}
+        />
+
+        <Input
+          label="Notes"
+          value={explore.notes}
+          onChange={(v) => setExplore({ ...explore, notes: v })}
+        />
+
+        <AddButton
+          onClick={() => addItem("explore", explore, setExplore, emptyExplore)}
+        />
+
+        <StandardCardList
+          items={filteredData.explore}
+          section="explore"
+          removeItem={removeItem}
+          titleKey="name"
+          sourceItems={musicData.explore}
+        />
+      </MusicSection>
+    </div>
+  );
+}
+
+
+function TagBrowser({ tags, selectedTag, setSelectedTag }) {
+  if (!tags.length) {
+    return (
+      <p className="text-sm text-slate-500">
+        No tags yet. Add comma-separated tags to albums, artists, playlists,
+        shows, or explore notes.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {tags.map(([tag, count]) => {
+          const active = normalizeText(tag) === normalizeText(selectedTag);
+
+          return (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(active ? "" : tag)}
+              className={
+                active
+                  ? "text-xs bg-slate-900 text-white px-3 py-1 rounded-full border border-slate-900"
+                  : "text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-50"
+              }
+            >
+              {tag} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {selectedTag && (
+        <button
+          onClick={() => setSelectedTag("")}
+          className="text-sm text-slate-500 hover:text-slate-900 hover:underline"
+        >
+          Clear tag filter: {selectedTag}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ArtistSpotlight({ artistName, artist, related, clearArtist }) {
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div>
+          <div className="text-xs uppercase text-slate-400 font-bold">
+            Selected Artist
+          </div>
+
+          <h2 className="text-3xl font-bold text-slate-900">
+            {artistName}
+          </h2>
+
+          {artist?.favoriteEra && (
+            <div className="text-sm text-slate-500 mt-1">
+              Favorite era: {artist.favoriteEra}
+            </div>
+          )}
+
+          {artist?.tags && <TagPills value={artist.tags} />}
+
+          {artist?.notes && (
+            <p className="text-sm text-slate-600 mt-3 max-w-3xl">
+              {artist.notes}
+            </p>
+          )}
+        </div>
+
+        <button
+          onClick={clearArtist}
+          className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+        >
+          Clear Spotlight
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard label="Albums" value={related.albums.length} />
+        <StatCard label="Playlists" value={related.playlists.length} />
+        <StatCard label="Shows" value={related.shows.length} />
+        <StatCard label="Explore" value={related.explore.length} />
+      </div>
+
+      <SpotlightMiniSection title="Related Albums" items={related.albums} primaryKey="title" secondaryKey="artist" />
+      <SpotlightMiniSection title="Related Playlists" items={related.playlists} primaryKey="title" secondaryKey="theme" />
+      <SpotlightMiniSection title="Related Shows" items={related.shows} primaryKey="venue" secondaryKey="date" />
+      <SpotlightMiniSection title="Explore Notes" items={related.explore} primaryKey="name" secondaryKey="reason" />
+    </div>
+  );
+}
+
+function SpotlightMiniSection({ title, items, primaryKey, secondaryKey }) {
+  return (
+    <div>
+      <h3 className="font-bold text-slate-900 mb-2">{title}</h3>
+
+      {items.length === 0 ? (
+        <p className="text-sm text-slate-500">No related entries yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {items.map((item, index) => (
+            <div
+              key={`${title}-${index}`}
+              className="border border-slate-200 rounded-xl p-4 bg-white"
+            >
+              <div className="font-bold text-slate-900">
+                {item[primaryKey] || "Untitled"}
+              </div>
+
+              {item[secondaryKey] && (
+                <div className="text-sm text-slate-500">
+                  {item[secondaryKey]}
+                </div>
+              )}
+
+              {item.tags && <TagPills value={item.tags} />}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MusicSection({ title, color = "slate", children }) {
+  let sectionClasses = "border-slate-200 bg-white";
+
+  if (color === "purple") {
+    sectionClasses = "border-purple-200 bg-purple-50/70";
+  }
+
+  if (color === "amber") {
+    sectionClasses = "border-amber-200 bg-amber-50/70";
+  }
+
+  if (color === "sky") {
+    sectionClasses = "border-sky-200 bg-sky-50/70";
+  }
+
+  if (color === "rose") {
+    sectionClasses = "border-rose-200 bg-rose-50/70";
+  }
+
+  if (color === "green") {
+    sectionClasses = "border-emerald-200 bg-emerald-50/70";
+  }
+
+  return (
+    <div
+      className={`p-6 space-y-4 border rounded-2xl shadow-sm ${sectionClasses}`}
+    >
+      <h2 className="text-xl font-bold">{title}</h2>
+
+      {children}
+    </div>
+  );
+}
+
+function Input({ label, value, onChange }) {
+  return (
+    <div>
+      <label className="text-xs uppercase text-slate-400 font-bold">
+        {label}
+      </label>
+
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm"
+      />
+    </div>
+  );
+}
+
+function Checkbox({ label, checked, onChange }) {
+  return (
+    <label className="flex items-center gap-2 text-sm text-slate-700 mt-5">
+      <input
+        type="checkbox"
+        checked={Boolean(checked)}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      {label}
+    </label>
+  );
+}
+
+function AddButton({ onClick, label = "Add" }) {
+  return (
+    <button
+      onClick={onClick}
+      className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg"
+    >
+      {label}
+    </button>
+  );
+}
+
+function AlbumGallery({
+  items,
+  removeItem,
+  setAlbum,
+  setEditingAlbumIndex,
+  sourceItems,
+  onArtistClick,
+}) {
+  if (!items.length) {
+    return (
+      <p className="text-sm text-slate-500">
+        No albums added yet.
+      </p>
+    );
+  }
+
+  const getSourceIndex = (item, fallbackIndex) => {
+    const index = sourceItems.findIndex((sourceItem) => sourceItem === item);
+    return index === -1 ? fallbackIndex : index;
+  };
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-5">
+      {items.map((item, index) => {
+        const sourceIndex = getSourceIndex(item, index);
+
+        return (
+          <div
+            key={`${item.title}-${item.artist}-${index}`}
+            className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition"
+          >
+            <div className="aspect-square bg-slate-100 overflow-hidden">
+              {item.coverUrl ? (
+                <img
+                  src={item.coverUrl}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
+                  No Cover
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 space-y-2">
+              <div>
+                <div className="font-bold text-slate-900 leading-tight">
+                  {item.title || "Untitled"}
+                </div>
+
+                {item.artist && onArtistClick ? (
+                  <button
+                    onClick={() => onArtistClick(item.artist)}
+                    className="text-sm text-purple-700 hover:underline text-left"
+                  >
+                    {item.artist}
+                  </button>
+                ) : (
+                  <div className="text-sm text-slate-500">
+                    {item.artist || "Unknown Artist"}
+                  </div>
+                )}
+              </div>
+
+              {item.year && (
+                <div className="text-xs text-slate-400">
+                  {item.year}
+                </div>
+              )}
+
+              {item.rating && (
+                <div className="text-sm font-medium text-amber-600">
+                  ★ {item.rating}
+                </div>
+              )}
+
+              {item.essential && (
+                <div className="inline-flex text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
+                  Essential
+                </div>
+              )}
+
+              {item.tags && <TagPills value={item.tags} />}
+
+              {item.favoriteTracks && (
+                <div className="text-xs text-slate-500 line-clamp-3">
+                  {item.favoriteTracks}
+                </div>
+              )}
+
+              <div className="flex justify-between items-center pt-2">
+                <div className="flex gap-3">
+                  {item.appleMusicUrl && (
+                    <a
+                      href={item.appleMusicUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-rose-600 hover:underline"
+                    >
+                      Apple Music
+                    </a>
+                  )}
+
+             
+                  <button
+                    onClick={() => {
+                      setAlbum({
+                        artist: item.artist || "",
+                        title: item.title || "",
+                        year: item.year || "",
+                        rating: item.rating || "",
+                        favoriteTracks: item.favoriteTracks || "",
+                        tags: item.tags || "",
+                        essential: Boolean(item.essential),
+                        coverUrl: item.coverUrl || "",
+                        appleMusicUrl: item.appleMusicUrl || "",
+                        notes: item.notes || "",
+                      });
+
+                      setEditingAlbumIndex(sourceIndex);
+
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                    className="text-xs text-slate-500 hover:text-slate-900"
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => removeItem("albums", sourceIndex)}
+                  className="text-xs text-slate-400 hover:text-red-500"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function StandardCardList({
+  items,
+  section,
+  removeItem,
+  titleKey,
+  sourceItems,
+  onTitleClick,
+  actionLabel = "Open",
+}) {
+  if (!items.length) {
+    return <p className="text-sm text-slate-500">No entries yet.</p>;
+  }
+
+  const getSourceIndex = (item, fallbackIndex) => {
+    const index = sourceItems.findIndex((sourceItem) => sourceItem === item);
+    return index === -1 ? fallbackIndex : index;
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {items.map((item, index) => {
+        const sourceIndex = getSourceIndex(item, index);
+
+        return (
+          <div
+            key={`${item[titleKey]}-${index}`}
+            className="border border-slate-200 rounded-xl p-4 bg-slate-50"
+          >
+            <div className="flex justify-between gap-4">
+              <div>
+                {onTitleClick ? (
+                  <button
+                    onClick={() => onTitleClick(item)}
+                    className="font-bold text-purple-700 hover:underline text-left"
+                  >
+                    {item[titleKey] || "Untitled"}
+                  </button>
+                ) : (
+                  <div className="font-bold text-slate-900">
+                    {item[titleKey] || "Untitled"}
+                  </div>
+                )}
+
+                {Object.entries(item)
+                  .filter(
+                    ([key, value]) =>
+                      key !== titleKey &&
+                      value &&
+                      key !== "coverUrl" &&
+                      key !== "appleMusicUrl" &&
+                      key !== "essential"
+                  )
+                  .map(([key, value]) =>
+                    key === "tags" ? (
+                      <TagPills key={key} value={value} />
+                    ) : (
+                      <div
+                        key={key}
+                        className="text-sm text-slate-500"
+                      >
+                        <span className="font-semibold">
+                          {formatLabel(key)}:
+                        </span>{" "}
+                        {value}
+                      </div>
+                    )
+                  )}
+              </div>
+{onTitleClick && (
+  <button
+    onClick={() => onTitleClick(item)}
+    className="text-xs text-purple-700 hover:underline mt-2"
+  >
+    {actionLabel}
+  </button>
+)}
+              <button
+                onClick={() => removeItem(section, sourceIndex)}
+                className="text-red-600 text-sm hover:underline"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function TagPills({ value }) {
+  const tags = String(value || "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  if (!tags.length) return null;
+
+  return (
+    <div className="flex flex-wrap gap-1 mt-2">
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="text-xs bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-full"
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function StatCard({ label, value }) {
+  return (
+    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+      <div className="text-xs uppercase text-slate-400 font-bold">
+        {label}
+      </div>
+
+      <div className="text-2xl font-bold text-slate-900 mt-2">
+        {value}
+      </div>
+    </div>
+  );
+}
+function TopTagsCard({ albums }) {
+  const tagCounts = {};
+
+  albums.forEach((album) => {
+    String(album.tags || "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .forEach((tag) => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+  });
+
+  const topTags = Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+
+  return (
+    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+      <h3 className="font-bold text-slate-900 mb-3">
+        Top Genres / Tags
+      </h3>
+
+      <div className="flex flex-wrap gap-2">
+        {topTags.length ? (
+          topTags.map(([tag, count]) => (
+            <span
+              key={tag}
+              className="text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full"
+            >
+              {tag} ({count})
+            </span>
+          ))
+        ) : (
+          <p className="text-sm text-slate-500">
+            No tags yet.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TopArtistsCard({ albums }) {
+  const artistCounts = {};
+
+  albums.forEach((album) => {
+    const artist = album.artist?.trim();
+
+    if (!artist) return;
+
+    artistCounts[artist] = (artistCounts[artist] || 0) + 1;
+  });
+
+  const topArtists = Object.entries(artistCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+
+  return (
+    <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+      <h3 className="font-bold text-slate-900 mb-3">
+        Top Artists
+      </h3>
+
+      <div className="space-y-2">
+        {topArtists.length ? (
+          topArtists.map(([artist, count]) => (
+            <div
+              key={artist}
+              className="flex justify-between text-sm"
+            >
+              <span>{artist}</span>
+              <span className="text-slate-500">
+                {count} albums
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-slate-500">
+            No artist data yet.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+function formatLabel(key) {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (char) => char.toUpperCase());
+}

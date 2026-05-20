@@ -10,7 +10,7 @@ import OpponentManager from "./OpponentManager";
 import WeatherBug from "./WeatherBug";
 import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
-
+import MusicLibrary from "./MusicLibrary";
 export default function App() {
   const [activeView, setActiveView] = useState("Lineup");
 
@@ -73,6 +73,7 @@ export default function App() {
               {navButton("Calendar", "Calendar")}
               {navButton("News", "News")}
               {navButton("Finance", "Finance")}
+              {navButton("Music", "Music")}
             </div>
           </div>
         </aside>
@@ -100,6 +101,9 @@ export default function App() {
               <NewsView />
             ) : activeView === "Finance" ? (
               <FinanceView />
+              
+            ) : activeView === "Music" ? (
+              <MusicLibrary />
             ) : (
               <LineupAnalyzer />
             )}
