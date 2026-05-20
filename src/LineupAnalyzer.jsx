@@ -380,14 +380,24 @@ export default function LineupAnalyzer() {
   const buildLineup = (hand) => {
     const park = ballparks.find((p) => p.name === ballpark) || ballparks[0];
     const players = parseRoster();
-    const assigned = assignPositions(players, hand, park);
+    const pitcherHand = hand === "RHP" ? "R" : "L";
 
-    const starters = Object.entries(assigned).map(([fieldPos, player]) => ({
+    const engineLineup = buildCardAwareLineup({
+      hittersText: rosterText,
+      pitcherHand,
+      park,
+    });
+
+    const starters = engineLineup.map((player) => ({
       ...player,
-      fieldPos,
       obp: getObp(player, hand),
       score: battingValue(player, hand, park),
     }));
+
+    const assigned = starters.reduce((acc, player) => {
+      acc[player.fieldPos] = player;
+      return acc;
+    }, {});
 
     const bench = players.filter(
       (p) => !starters.some((s) => s.name === p.name)
