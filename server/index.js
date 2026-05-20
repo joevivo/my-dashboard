@@ -82,13 +82,27 @@ app.get("/api/news/feeds", (req, res) => {
 app.post("/api/news/feeds", (req, res) => {
   try {
     const feeds = loadFeeds();
-    const newFeed = req.body.url;
+    const { name, url, category } = req.body;
 
-    if (!newFeed) {
+    if (!url) {
       return res.status(400).json({ error: "URL required" });
     }
 
-    if (!feeds.includes(newFeed)) {
+    const newFeed = {
+      name: name?.trim() || "RSS Feed",
+      url: url.trim(),
+      category: category?.trim() || "General",
+    };
+
+    const alreadyExists = feeds.some((feed) => {
+      if (typeof feed === "string") {
+        return feed === newFeed.url;
+      }
+
+      return feed.url === newFeed.url;
+    });
+
+    if (!alreadyExists) {
       feeds.push(newFeed);
       saveFeeds(feeds);
     }
