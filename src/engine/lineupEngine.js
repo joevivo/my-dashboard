@@ -244,7 +244,8 @@ function scorePositionFit(player, position, pitcherHand, park) {
   const defenseScore = 6 - player.defense;
 
   if (position === "DH") {
-    const hideBadDefenseBonus = player.defense >= 5 ? 18 : 0;
+    const hideBadDefenseBonus =
+      player.defense >= 5 ? 38 : player.defense >= 4 ? 12 : 0;
 
     return (
       getObp(player, pitcherHand) * 135 +
@@ -272,12 +273,24 @@ function scorePositionFit(player, position, pitcherHand, park) {
     score -= 25;
   }
 
-  if (position === "CF" && player.defense >= 3) {
+     if (position === "CF" && player.defense >= 3) {
     score -= 30;
+  }
+
+  if (position === "CF" && player.defense >= 4) {
+    score -= 35;
   }
 
   if (position === "C" && player.defense >= 4) {
     score -= 35;
+  }
+
+  if (position === "C" && player.defense >= 5) {
+    score -= 55;
+  }
+
+  if (["LF", "RF"].includes(position) && player.defense >= 5) {
+    score -= 25;
   }
 
   if (park?.environment?.includes("Low")) {
