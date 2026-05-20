@@ -268,7 +268,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
     defenseScore * positionalWeight +
     getLowRunEnvironmentDefensePenalty(player, position, park);
 
-  if (["C", "SS", "2B"].includes(position) && player.defense >= 4) {
+  if (["SS", "2B"].includes(position) && player.defense >= 4) {
     score -= 25;
   }
 
@@ -277,7 +277,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
   }
 
   if (position === "C" && player.defense >= 4) {
-    score -= 25;
+    score -= 35;
   }
 
   if (park?.environment?.includes("Low")) {
