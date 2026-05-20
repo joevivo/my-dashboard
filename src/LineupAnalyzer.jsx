@@ -152,11 +152,18 @@ export default function LineupAnalyzer() {
 
     if (!league) return;
 
-    setRosterText(league.hitterRoster || league.hitters || "");
+    setRosterText(
+  league.hitterRoster ||
+    league.hitters ||
+    league.hittersText ||
+    league.rosterText ||
+    league.roster ||
+    ""
+);
 
-    if (league.homePark || league.ballpark) {
-      setBallpark(league.homePark || league.ballpark);
-    }
+    if (league.homePark || league.ballpark || league.park) {
+  setBallpark(league.homePark || league.ballpark || league.park);
+}
 
     setAnalysis(null);
   };
