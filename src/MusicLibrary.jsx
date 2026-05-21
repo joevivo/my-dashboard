@@ -436,6 +436,153 @@ export default function MusicLibrary() {
           </div>
         )}
       </div>
+   
+<MusicSection title="Listening Eras" color="purple">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Input
+      label="Title"
+      value={era.title}
+      onChange={(v) => setEra({ ...era, title: v })}
+    />
+
+    <Input
+      label="Timeframe"
+      value={era.timeframe}
+      onChange={(v) => setEra({ ...era, timeframe: v })}
+    />
+
+    <Input
+      label="Emotional State"
+      value={era.emotionalState}
+      onChange={(v) => setEra({ ...era, emotionalState: v })}
+    />
+
+    <Input
+      label="Season"
+      value={era.season}
+      onChange={(v) => setEra({ ...era, season: v })}
+    />
+
+    <Input
+      label="Key Artists"
+      value={era.keyArtists}
+      onChange={(v) => setEra({ ...era, keyArtists: v })}
+    />
+
+    <Input
+      label="Key Albums"
+      value={era.keyAlbums}
+      onChange={(v) => setEra({ ...era, keyAlbums: v })}
+    />
+
+    <Input
+      label="Playlists"
+      value={era.playlists}
+      onChange={(v) => setEra({ ...era, playlists: v })}
+    />
+
+    <Input
+      label="Locations"
+      value={era.locations}
+      onChange={(v) => setEra({ ...era, locations: v })}
+    />
+
+    <div className="md:col-span-2">
+      <Input
+        label="Notes"
+        value={era.notes}
+        onChange={(v) => setEra({ ...era, notes: v })}
+      />
+    </div>
+  </div>
+
+  <AddButton
+    label="Add Era"
+    onClick={() => addItem("eras", era, setEra, emptyEra)}
+  />
+
+  {musicData.eras.length === 0 ? (
+    <p className="text-sm text-slate-500">
+      No listening eras yet. Add one to begin mapping music to emotional seasons.
+    </p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {musicData.eras.map((item, index) => (
+        <div
+          key={`${item.title}-${index}`}
+          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm"
+        >
+          <div className="flex justify-between gap-4">
+            <div>
+              <div className="text-xs uppercase text-purple-400 font-bold">
+                {item.timeframe || "Untimed Era"}
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-900 mt-1">
+                {item.title || "Untitled Era"}
+              </h3>
+
+              {item.emotionalState && (
+                <div className="text-sm text-purple-700 font-medium mt-1">
+                  {item.emotionalState}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => removeItem("eras", index)}
+              className="text-xs text-slate-400 hover:text-red-500"
+            >
+              Delete
+            </button>
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm text-slate-600">
+            {item.season && (
+              <div>
+                <span className="font-semibold">Season:</span> {item.season}
+              </div>
+            )}
+
+            {item.keyArtists && (
+              <div>
+                <span className="font-semibold">Key artists:</span>{" "}
+                {item.keyArtists}
+              </div>
+            )}
+
+            {item.keyAlbums && (
+              <div>
+                <span className="font-semibold">Key albums:</span>{" "}
+                {item.keyAlbums}
+              </div>
+            )}
+
+            {item.playlists && (
+              <div>
+                <span className="font-semibold">Playlists:</span>{" "}
+                {item.playlists}
+              </div>
+            )}
+
+            {item.locations && (
+              <div>
+                <span className="font-semibold">Locations:</span>{" "}
+                {item.locations}
+              </div>
+            )}
+
+            {item.notes && (
+              <p className="pt-2 text-slate-700 leading-relaxed">
+                {item.notes}
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</MusicSection>
       <MusicSection title="Music Stats" color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
