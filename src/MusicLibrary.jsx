@@ -164,14 +164,29 @@ export default function MusicLibrary() {
   const [editingEraIndex, setEditingEraIndex] = useState(null);
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
-const [openSections, setOpenSections] = useState({
-  eras: false,
-  essentialAlbums: false,
-  favoriteArtists: false,
-  favoriteAlbums: false,
-  playlists: false,
-  shows: false,
-  explore: false,
+const [openSections, setOpenSections] = useState(() => {
+  const defaultOpenSections = {
+    eras: false,
+    essentialAlbums: false,
+    favoriteArtists: false,
+    favoriteAlbums: false,
+    playlists: false,
+    shows: false,
+    explore: false,
+  };
+
+  const saved = localStorage.getItem("musicOpenSections");
+
+  if (!saved) return defaultOpenSections;
+
+  try {
+    return {
+      ...defaultOpenSections,
+      ...JSON.parse(saved),
+    };
+  } catch {
+    return defaultOpenSections;
+  }
 });
 
 const toggleSection = (sectionName) => {
@@ -180,15 +195,20 @@ const toggleSection = (sectionName) => {
     [sectionName]: !current[sectionName],
   }));
 };
-  useEffect(() => {
-    try {
-      localStorage.setItem("musicLibrary", JSON.stringify(musicData));
-    } catch (error) {
-      console.error("Failed saving music library", error);
-    }
-  }, [musicData]);
 
-  const addItem = (section, item, resetFn, emptyItem) => {
+useEffect(() => {
+  try {
+    localStorage.setItem("musicLibrary", JSON.stringify(musicData));
+  } catch (error) {
+    console.error("Failed saving music library", error);
+  }
+}, [musicData]);
+
+useEffect(() => {
+  localStorage.setItem("musicOpenSections", JSON.stringify(openSections));
+}, [openSections]);
+
+const addItem = (section, item, resetFn, emptyItem) => {
     const hasValue = Object.values(item).some((value) =>
       String(value || "").trim()
     );
@@ -686,8 +706,7 @@ const cancelEraEdit = () => {
     </div>
   )}
 </MusicSection>
-      <MusicSection title="Music Stats"
-  Icon={BarChart3} color="sky">
+      <MusicSection title="Music Stats" color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
             label="Avg Rating"
@@ -737,8 +756,7 @@ const cancelEraEdit = () => {
         </div>
       </MusicSection>
 
-      <MusicSection title="Tag Browser"
-  Icon={Tags} color="green">
+      <MusicSection title="Tag Browser" color="green">
         <TagBrowser
           tags={allTags}
           selectedTag={selectedTag}
@@ -746,8 +764,7 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Artist Spotlight"
-  Icon={UserRoundSearch} color="purple">
+      <MusicSection title="Artist Spotlight" color="purple">
         {!selectedArtist ? (
           <p className="text-sm text-slate-500">
             Click an artist card below to see related albums, playlists, shows,
@@ -763,8 +780,7 @@ const cancelEraEdit = () => {
         )}
       </MusicSection>
 
-      <MusicSection title="Recently Added"
-  Icon={Sparkles} color="slate">
+      <MusicSection title="Recently Added" color="slate">
         {recentItems.length === 0 ? (
           <p className="text-sm text-slate-500">No recent entries yet.</p>
         ) : (
@@ -791,7 +807,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Essential Albums"
-  Icon={Disc3}
   color="amber"
   isOpen={openSections.essentialAlbums}
   onToggle={() => toggleSection("essentialAlbums")}
@@ -807,7 +822,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Favorite Artists"
-  Icon={Mic2}
   color="purple"
   isOpen={openSections.favoriteArtists}
   onToggle={() => toggleSection("favoriteArtists")}
@@ -853,7 +867,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Favorite Albums"
-  Icon={Star}
   color="amber"
   isOpen={openSections.favoriteAlbums}
   onToggle={() => toggleSection("favoriteAlbums")}
@@ -957,7 +970,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Playlists"
-  Icon={Headphones}
   color="sky"
   isOpen={openSections.playlists}
   onToggle={() => toggleSection("playlists")}
@@ -1015,7 +1027,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Shows Attended"
-  Icon={Ticket}
   color="rose"
   isOpen={openSections.shows}
   onToggle={() => toggleSection("shows")}
@@ -1071,7 +1082,6 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Want to Explore"
-  Icon={Compass}
   color="green"
   isOpen={openSections.explore}
   onToggle={() => toggleSection("explore")}
@@ -1261,6 +1271,7 @@ function MusicSection({
   title,
   Icon,
   color = "slate",
+  summary,
   children,
   isOpen = true,
   onToggle,
@@ -1301,7 +1312,13 @@ function MusicSection({
       <Icon className="h-5 w-5 text-slate-500 group-hover:text-slate-700 transition" />
     )}
 
-    <h2 className="text-xl font-bold">{title}</h2>
+    <div>
+  <h2 className="text-xl font-bold">{title}</h2>
+
+  {!isOpen && summary && (
+    <p className="text-sm text-slate-500 mt-1">{summary}</p>
+  )}
+</div>
   </div>
 
   <ChevronDown
@@ -1720,6 +1737,4 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
-
-
 
