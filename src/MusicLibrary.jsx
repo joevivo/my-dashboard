@@ -151,7 +151,22 @@ export default function MusicLibrary() {
   const [editingEraIndex, setEditingEraIndex] = useState(null);
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
+const [openSections, setOpenSections] = useState({
+  eras: true,
+  essentialAlbums: false,
+  favoriteArtists: false,
+  favoriteAlbums: false,
+  playlists: false,
+  shows: false,
+  explore: false,
+});
 
+const toggleSection = (sectionName) => {
+  setOpenSections((current) => ({
+    ...current,
+    [sectionName]: !current[sectionName],
+  }));
+};
   useEffect(() => {
     try {
       localStorage.setItem("musicLibrary", JSON.stringify(musicData));
@@ -467,7 +482,12 @@ const cancelEraEdit = () => {
         )}
       </div>
    
-<MusicSection title="Listening Eras" color="purple">
+<MusicSection
+  title="Listening Eras"
+  color="purple"
+  isOpen={openSections.eras}
+  onToggle={() => toggleSection("eras")}
+>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <Input
       label="Title"
