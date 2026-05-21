@@ -831,7 +831,12 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Favorite Albums" color="amber">
+      <MusicSection
+  title="Favorite Albums"
+  color="amber"
+  isOpen={openSections.favoriteAlbums}
+  onToggle={() => toggleSection("favoriteAlbums")}
+>
         {editingAlbumIndex !== null && (
           <div className="bg-amber-100 border border-amber-200 text-amber-900 rounded-xl px-4 py-3 text-sm">
             Editing album. Update the fields below, then click{" "}
@@ -929,7 +934,12 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Playlists" color="sky">
+      <MusicSection
+  title="Playlists"
+  color="sky"
+  isOpen={openSections.playlists}
+  onToggle={() => toggleSection("playlists")}
+>
         <Input
           label="Title"
           value={playlist.title}
@@ -981,7 +991,12 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Shows Attended" color="rose">
+      <MusicSection
+  title="Shows Attended"
+  color="rose"
+  isOpen={openSections.shows}
+  onToggle={() => toggleSection("shows")}
+>
         <Input
           label="Artist"
           value={show.artist}
@@ -1031,7 +1046,12 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Want to Explore" color="green">
+      <MusicSection
+  title="Want to Explore"
+  color="green"
+  isOpen={openSections.explore}
+  onToggle={() => toggleSection("explore")}
+>
         <Input
           label="Name"
           value={explore.name}
@@ -1213,7 +1233,13 @@ function SpotlightMiniSection({ title, items, primaryKey, secondaryKey }) {
   );
 }
 
-function MusicSection({ title, color = "slate", children }) {
+function MusicSection({
+  title,
+  color = "slate",
+  children,
+  isOpen = true,
+  onToggle,
+}) {
   let sectionClasses = "border-slate-200 bg-white";
 
   if (color === "purple") {
@@ -1240,9 +1266,19 @@ function MusicSection({ title, color = "slate", children }) {
     <div
       className={`p-6 space-y-4 border rounded-2xl shadow-sm ${sectionClasses}`}
     >
-      <h2 className="text-xl font-bold">{title}</h2>
+      <button
+  type="button"
+  onClick={onToggle}
+  className="w-full flex items-center justify-between text-left"
+>
+  <h2 className="text-xl font-bold">{title}</h2>
 
-      {children}
+  <span className="text-sm text-slate-500">
+    {isOpen ? "−" : "+"}
+  </span>
+</button>
+
+{isOpen && children}
     </div>
   );
 }
@@ -1651,3 +1687,4 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
