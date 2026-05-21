@@ -107,9 +107,11 @@ export default function App() {
             ) : (
               <LineupAnalyzer />
             )}
-          </div>
+                   </div>
         </main>
       </div>
+
+      <ScrollToTopButton />
     </div>
   );
 }
