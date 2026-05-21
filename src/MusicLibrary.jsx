@@ -1,5 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-
+import {
+  BarChart3,
+  ChevronDown,
+  Clock3,
+  Compass,
+  Disc3,
+  Headphones,
+  Mic2,
+  Sparkles,
+  Star,
+  Tags,
+  Ticket,
+  UserRoundSearch,
+} from "lucide-react";
 const defaultData = {
   artists: [],
   albums: [],
@@ -484,6 +497,7 @@ const cancelEraEdit = () => {
    
 <MusicSection
   title="Listening Eras"
+  Icon={Clock3}
   color="purple"
   isOpen={openSections.eras}
   onToggle={() => toggleSection("eras")}
@@ -672,7 +686,8 @@ const cancelEraEdit = () => {
     </div>
   )}
 </MusicSection>
-      <MusicSection title="Music Stats" color="sky">
+      <MusicSection title="Music Stats"
+  Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
             label="Avg Rating"
@@ -722,7 +737,8 @@ const cancelEraEdit = () => {
         </div>
       </MusicSection>
 
-      <MusicSection title="Tag Browser" color="green">
+      <MusicSection title="Tag Browser"
+  Icon={Tags} color="green">
         <TagBrowser
           tags={allTags}
           selectedTag={selectedTag}
@@ -730,7 +746,8 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Artist Spotlight" color="purple">
+      <MusicSection title="Artist Spotlight"
+  Icon={UserRoundSearch} color="purple">
         {!selectedArtist ? (
           <p className="text-sm text-slate-500">
             Click an artist card below to see related albums, playlists, shows,
@@ -746,7 +763,8 @@ const cancelEraEdit = () => {
         )}
       </MusicSection>
 
-      <MusicSection title="Recently Added" color="slate">
+      <MusicSection title="Recently Added"
+  Icon={Sparkles} color="slate">
         {recentItems.length === 0 ? (
           <p className="text-sm text-slate-500">No recent entries yet.</p>
         ) : (
@@ -773,6 +791,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Essential Albums"
+  Icon={Disc3}
   color="amber"
   isOpen={openSections.essentialAlbums}
   onToggle={() => toggleSection("essentialAlbums")}
@@ -788,6 +807,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Favorite Artists"
+  Icon={Mic2}
   color="purple"
   isOpen={openSections.favoriteArtists}
   onToggle={() => toggleSection("favoriteArtists")}
@@ -833,6 +853,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Favorite Albums"
+  Icon={Star}
   color="amber"
   isOpen={openSections.favoriteAlbums}
   onToggle={() => toggleSection("favoriteAlbums")}
@@ -936,6 +957,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Playlists"
+  Icon={Headphones}
   color="sky"
   isOpen={openSections.playlists}
   onToggle={() => toggleSection("playlists")}
@@ -993,6 +1015,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Shows Attended"
+  Icon={Ticket}
   color="rose"
   isOpen={openSections.shows}
   onToggle={() => toggleSection("shows")}
@@ -1048,6 +1071,7 @@ const cancelEraEdit = () => {
 
       <MusicSection
   title="Want to Explore"
+  Icon={Compass}
   color="green"
   isOpen={openSections.explore}
   onToggle={() => toggleSection("explore")}
@@ -1235,6 +1259,7 @@ function SpotlightMiniSection({ title, items, primaryKey, secondaryKey }) {
 
 function MusicSection({
   title,
+  Icon,
   color = "slate",
   children,
   isOpen = true,
@@ -1266,16 +1291,24 @@ function MusicSection({
     <div
       className={`p-6 space-y-4 border rounded-2xl shadow-sm ${sectionClasses}`}
     >
-      <button
+     <button
   type="button"
   onClick={onToggle}
-  className="w-full flex items-center justify-between text-left"
+  className="w-full flex items-center justify-between text-left group"
 >
-  <h2 className="text-xl font-bold">{title}</h2>
+  <div className="flex items-center gap-3">
+    {Icon && (
+      <Icon className="h-5 w-5 text-slate-500 group-hover:text-slate-700 transition" />
+    )}
 
-  <span className="text-sm text-slate-500">
-    {isOpen ? "−" : "+"}
-  </span>
+    <h2 className="text-xl font-bold">{title}</h2>
+  </div>
+
+  <ChevronDown
+    className={`h-5 w-5 text-slate-400 transition-transform duration-200 ${
+      isOpen ? "rotate-180" : ""
+    }`}
+  />
 </button>
 
 {isOpen && children}
@@ -1687,4 +1720,6 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
+
 
