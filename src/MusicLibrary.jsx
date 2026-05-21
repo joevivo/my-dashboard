@@ -55,7 +55,17 @@ const emptyExplore = {
   link: "",
   notes: "",
 };
-
+const emptyEra = {
+  title: "",
+  timeframe: "",
+  emotionalState: "",
+  keyArtists: "",
+  keyAlbums: "",
+  playlists: "",
+  locations: "",
+  season: "",
+  notes: "",
+};
 function normalizeMusicData(data) {
   return {
     artists: Array.isArray(data?.artists) ? data.artists : [],
@@ -137,7 +147,7 @@ export default function MusicLibrary() {
   const [playlist, setPlaylist] = useState(emptyPlaylist);
   const [show, setShow] = useState(emptyShow);
   const [explore, setExplore] = useState(emptyExplore);
-
+  const [era, setEra] = useState(emptyEra);
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
 
