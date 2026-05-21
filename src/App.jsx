@@ -11,6 +11,7 @@ import WeatherBug from "./WeatherBug";
 import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
+import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("Lineup");
 
