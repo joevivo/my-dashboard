@@ -22,7 +22,12 @@ export default function NewsView() {
     url: "",
     category: "General",
   });
-
+  const [editingFeedIndex, setEditingFeedIndex] = useState(null);
+  const [editingFeed, setEditingFeed] = useState({
+    name: "",
+    url: "",
+    category: "General",
+  });
      async function loadNews() {
     try {
       setError("");
@@ -114,7 +119,71 @@ export default function NewsView() {
       setFeedError(err.message);
     }
   }
+  function startEditingFeed(feed, index) {
+    setEditingFeedIndex(index);
 
+    if (typeof feed === "string") {
+      setEditingFeed({
+        name: "RSS Feed",
+        url: feed,
+        category: "General",
+      });
+      return;
+    }
+
+    setEditingFeed({
+      name: feed.name || "RSS Feed",
+      url: feed.url || "",
+      category: feed.category || "General",
+    });
+  }
+
+  function cancelEditingFeed() {
+    setEditingFeedIndex(null);
+    setEditingFeed({
+      name: "",
+      url: "",
+      category: "General",
+    });
+  }
+
+  async function saveEditingFeed() {
+    try {
+      setFeedError("");
+
+      if (editingFeedIndex === null) {
+        setFeedError("No feed selected for editing.");
+        return;
+      }
+
+      if (!editingFeed.url.trim()) {
+        setFeedError("RSS URL is required.");
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:4000/api/news/feeds/${editingFeedIndex}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editingFeed),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update RSS feed");
+      }
+
+      const data = await response.json();
+      setFeeds(data);
+      cancelEditingFeed();
+      await loadNews();
+    } catch (err) {
+      setFeedError(err.message);
+    }
+  }
   async function deleteFeed(index) {
     try {
       setFeedError("");
@@ -274,21 +343,87 @@ export default function NewsView() {
                   key={`${feedUrl}-${index}`}
                   className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border border-slate-200 rounded-lg bg-slate-50 px-3 py-2"
                 >
-                  <div>
-                    <div className="font-semibold text-sm text-slate-900">
-                      {feedName}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {feedCategory} · {feedUrl}
-                    </div>
-                  </div>
+                                    {editingFeedIndex === index ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 flex-1">
+                      <input
+                        value={editingFeed.name}
+                        onChange={(e) =>
+                          setEditingFeed((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                      />
 
-                  <button
-                    onClick={() => deleteFeed(index)}
-                    className="self-start md:self-auto text-xs px-2 py-1 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-                  >
-                    Delete
-                  </button>
+                      <input
+                        value={editingFeed.category}
+                        onChange={(e) =>
+                          setEditingFeed((prev) => ({
+                            ...prev,
+                            category: e.target.value,
+                          }))
+                        }
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                      />
+
+                      <input
+                        value={editingFeed.url}
+                        onChange={(e) =>
+                          setEditingFeed((prev) => ({
+                            ...prev,
+                            url: e.target.value,
+                          }))
+                        }
+                        className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="font-semibold text-sm text-slate-900">
+                        {feedName}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {feedCategory} · {feedUrl}
+                      </div>
+                    </div>
+                  )}
+
+<div className="flex gap-2 self-start md:self-auto">
+  {editingFeedIndex === index ? (
+    <>
+      <button
+        onClick={saveEditingFeed}
+        className="text-xs px-2 py-1 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+      >
+        Save
+      </button>
+
+      <button
+        onClick={cancelEditingFeed}
+        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+      >
+        Cancel
+      </button>
+    </>
+  ) : (
+    <>
+      <button
+        onClick={() => startEditingFeed(feed, index)}
+        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+      >
+        Edit
+      </button>
+
+      <button
+        onClick={() => deleteFeed(index)}
+        className="text-xs px-2 py-1 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+      >
+        Delete
+      </button>
+    </>
+  )}
+</div>
                 </div>
               );
             })}
