@@ -114,6 +114,34 @@ app.post("/api/news/feeds", (req, res) => {
   }
 });
 
+app.put("/api/news/feeds/:index", (req, res) => {
+  try {
+    const feeds = loadFeeds();
+    const index = Number(req.params.index);
+    const { name, url, category } = req.body;
+
+    if (Number.isNaN(index) || index < 0 || index >= feeds.length) {
+      return res.status(400).json({ error: "Invalid feed index" });
+    }
+
+    if (!url) {
+      return res.status(400).json({ error: "URL required" });
+    }
+
+    feeds[index] = {
+      name: name?.trim() || "RSS Feed",
+      url: url.trim(),
+      category: category?.trim() || "General",
+    };
+
+    saveFeeds(feeds);
+
+    res.json(feeds);
+  } catch (error) {
+    console.error("Feed update error:", error);
+    res.status(500).json({ error: "Failed to update feed" });
+  }
+});
 app.delete("/api/news/feeds/:index", (req, res) => {
   try {
     const feeds = loadFeeds();
