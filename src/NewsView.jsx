@@ -12,27 +12,54 @@ const categories = [
 
 export default function NewsView() {
   const [stories, setStories] = useState([]);
+  const [feeds, setFeeds] = useState([]);
   const [savedStories, setSavedStories] = useState([]);
   const [error, setError] = useState("");
+  const [feedError, setFeedError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [newFeed, setNewFeed] = useState({
+    name: "",
+    url: "",
+    category: "General",
+  });
+
+     async function loadNews() {
+    try {
+      setError("");
+
+      const response = await fetch("http://localhost:4000/api/news");
+
+      if (!response.ok) {
+        throw new Error("Failed to load news");
+      }
+
+      const data = await response.json();
+      setStories(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function loadFeeds() {
+    try {
+      setFeedError("");
+
+      const response = await fetch("http://localhost:4000/api/news/feeds");
+
+      if (!response.ok) {
+        throw new Error("Failed to load RSS feeds");
+      }
+
+      const data = await response.json();
+      setFeeds(data);
+    } catch (err) {
+      setFeedError(err.message);
+    }
+  }
 
   useEffect(() => {
-    async function loadNews() {
-      try {
-        const response = await fetch("http://localhost:4000/api/news");
-
-        if (!response.ok) {
-          throw new Error("Failed to load news");
-        }
-
-        const data = await response.json();
-        setStories(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-
     loadNews();
+    loadFeeds();
 
     const saved = localStorage.getItem("savedNewsStories");
 
@@ -53,6 +80,63 @@ export default function NewsView() {
       (saved) => saved.link === story.link
     );
   }
+  async function addFeed() {
+    try {
+      setFeedError("");
+
+      if (!newFeed.url.trim()) {
+        setFeedError("RSS URL is required.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:4000/api/news/feeds", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newFeed),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add RSS feed");
+      }
+
+      const data = await response.json();
+      setFeeds(data);
+      setNewFeed({
+        name: "",
+        url: "",
+        category: "General",
+      });
+
+      await loadNews();
+    } catch (err) {
+      setFeedError(err.message);
+    }
+  }
+
+  async function deleteFeed(index) {
+    try {
+      setFeedError("");
+
+      const response = await fetch(
+        `http://localhost:4000/api/news/feeds/${index}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete RSS feed");
+      }
+
+      const data = await response.json();
+      setFeeds(data);
+      await loadNews();
+    } catch (err) {
+      setFeedError(err.message);
+    }
+    }
 
   function toggleSaved(story) {
     if (isSaved(story)) {
@@ -115,7 +199,102 @@ export default function NewsView() {
           })}
         </div>
       </div>
+      <div className="dashboard-panel p-5">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-950">
+              Manage RSS Feeds
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              Add or remove feeds used by the News dashboard.
+            </p>
+          </div>
 
+          <button
+            onClick={loadNews}
+            className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
+          >
+            Refresh Stories
+          </button>
+        </div>
+
+        {feedError && (
+          <p className="text-sm text-red-600 mb-3">{feedError}</p>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+          <input
+            value={newFeed.name}
+            onChange={(e) =>
+              setNewFeed((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder="Feed name"
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
+          />
+
+          <input
+            value={newFeed.category}
+            onChange={(e) =>
+              setNewFeed((prev) => ({ ...prev, category: e.target.value }))
+            }
+            placeholder="Category"
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm"
+          />
+
+          <input
+            value={newFeed.url}
+            onChange={(e) =>
+              setNewFeed((prev) => ({ ...prev, url: e.target.value }))
+            }
+            placeholder="RSS URL"
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm md:col-span-2"
+          />
+        </div>
+
+        <button
+          onClick={addFeed}
+          className="mb-4 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-800"
+        >
+          Add Feed
+        </button>
+
+        {feeds.length === 0 ? (
+          <p className="text-sm text-slate-500">No feeds configured.</p>
+        ) : (
+          <div className="space-y-2">
+            {feeds.map((feed, index) => {
+              const feedName =
+                typeof feed === "string" ? "RSS Feed" : feed.name || "RSS Feed";
+              const feedUrl = typeof feed === "string" ? feed : feed.url;
+              const feedCategory =
+                typeof feed === "string" ? "General" : feed.category || "General";
+
+              return (
+                <div
+                  key={`${feedUrl}-${index}`}
+                  className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border border-slate-200 rounded-lg bg-slate-50 px-3 py-2"
+                >
+                  <div>
+                    <div className="font-semibold text-sm text-slate-900">
+                      {feedName}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      {feedCategory} · {feedUrl}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => deleteFeed(index)}
+                    className="self-start md:self-auto text-xs px-2 py-1 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
+                  >
+                    Delete
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
       <div className="dashboard-panel p-5">
         {error ? (
           <p className="text-red-600 text-sm">{error}</p>
