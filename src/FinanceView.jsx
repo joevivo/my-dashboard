@@ -323,7 +323,19 @@ export default function FinanceView() {
         {quoteError && <p className="text-sm text-red-600 mt-3">{quoteError}</p>}
       </div>
 
-      <TickerTape items={tickerTapeItems} getQuote={getQuote} formatCurrency={formatCurrency} formatPercent={formatPercent} changeClass={changeClass} />
+      <DashboardSection
+        title="Market Pulse"
+        color="purple"
+        summary={`${tickerTapeItems.length} tracked market indicators`}
+      >
+        <TickerTape
+          items={tickerTapeItems}
+          getQuote={getQuote}
+          formatCurrency={formatCurrency}
+          formatPercent={formatPercent}
+          changeClass={changeClass}
+        />
+      </DashboardSection>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <SummaryCard
@@ -576,5 +588,6 @@ function MiniMetric({ label, value, valueClass = "" }) {
     </div>
   );
 }
+
 
 
