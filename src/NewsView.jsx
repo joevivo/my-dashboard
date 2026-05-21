@@ -17,6 +17,7 @@ export default function NewsView() {
   const [error, setError] = useState("");
   const [feedError, setFeedError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showFeedManager, setShowFeedManager] = useState(false);
   const [newFeed, setNewFeed] = useState({
     name: "",
     url: "",
@@ -28,7 +29,7 @@ export default function NewsView() {
     url: "",
     category: "General",
   });
-     async function loadNews() {
+  async function loadNews() {
     try {
       setError("");
 
@@ -244,7 +245,7 @@ export default function NewsView() {
           </div>
 
           <div className="text-xs text-slate-400">
-            {filteredStories.length} shown · {stories.length} total
+            {filteredStories.length} shown Ãƒâ€šÃ‚Â· {stories.length} total
           </div>
         </div>
 
@@ -279,14 +280,25 @@ export default function NewsView() {
             </p>
           </div>
 
-          <button
-            onClick={loadNews}
-            className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
-          >
-            Refresh Stories
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={loadNews}
+              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
+            >
+              Refresh Stories
+            </button>
+
+            <button
+              onClick={() => setShowFeedManager((prev) => !prev)}
+              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
+            >
+              {showFeedManager ? "Hide Feeds" : "Manage Feeds"}
+            </button>
+          </div>
         </div>
 
+        {showFeedManager && (
+          <>
         {feedError && (
           <p className="text-sm text-red-600 mb-3">{feedError}</p>
         )}
@@ -343,7 +355,7 @@ export default function NewsView() {
                   key={`${feedUrl}-${index}`}
                   className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border border-slate-200 rounded-lg bg-slate-50 px-3 py-2"
                 >
-                                    {editingFeedIndex === index ? (
+                  {editingFeedIndex === index ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 flex-1">
                       <input
                         value={editingFeed.name}
@@ -384,12 +396,12 @@ export default function NewsView() {
                         {feedName}
                       </div>
                       <div className="text-xs text-slate-500">
-                        {feedCategory} · {feedUrl}
+                        {feedCategory} Ãƒâ€šÃ‚Â· {feedUrl}
                       </div>
                     </div>
                   )}
 
-<div className="flex gap-2 self-start md:self-auto">
+                      <div className="flex gap-2 self-start md:self-auto">
   {editingFeedIndex === index ? (
     <>
       <button
@@ -428,6 +440,8 @@ export default function NewsView() {
               );
             })}
           </div>
+        )}
+          </>
         )}
       </div>
       <div className="dashboard-panel p-5">
