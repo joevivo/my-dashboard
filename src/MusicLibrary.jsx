@@ -771,7 +771,12 @@ const cancelEraEdit = () => {
         )}
       </MusicSection>
 
-      <MusicSection title="Essential Albums" color="amber">
+      <MusicSection
+  title="Essential Albums"
+  color="amber"
+  isOpen={openSections.essentialAlbums}
+  onToggle={() => toggleSection("essentialAlbums")}
+>
         <AlbumGallery
           items={essentialAlbums}
           removeItem={removeItem}
@@ -781,7 +786,12 @@ const cancelEraEdit = () => {
         />
       </MusicSection>
 
-      <MusicSection title="Favorite Artists" color="purple">
+      <MusicSection
+  title="Favorite Artists"
+  color="purple"
+  isOpen={openSections.favoriteArtists}
+  onToggle={() => toggleSection("favoriteArtists")}
+>
         <Input
           label="Artist"
           value={artist.name}
