@@ -6,6 +6,7 @@ const defaultData = {
   playlists: [],
   shows: [],
   explore: [],
+  eras: [],
 };
 
 const emptyArtist = {
@@ -62,6 +63,7 @@ function normalizeMusicData(data) {
     playlists: Array.isArray(data?.playlists) ? data.playlists : [],
     shows: Array.isArray(data?.shows) ? data.shows : [],
     explore: Array.isArray(data?.explore) ? data.explore : [],
+    eras: Array.isArray(data?.eras) ? data.eras : [],
   };
 }
 
