@@ -3,13 +3,7 @@ import { buildCardAwareLineup } from "./engine/lineupEngine";
 
 const requiredPositions = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
 
-const ballparks = [
-  { name: "Astrodome 1980", siL: 18, siR: 6, hrL: 1, hrR: 1 },
-  { name: "Busch Stadium 1980", siL: 19, siR: 13, hrL: 1, hrR: 4 },
-  { name: "County Stadium 1980", siL: 1, siR: 7, hrL: 5, hrR: 5 },
-  { name: "Riverfront Stdm 1980", siL: 1, siR: 1, hrL: 19, hrR: 19 },
-  { name: "Yankee Stadium 1980", siL: 17, siR: 9, hrL: 18, hrR: 2 },
-];
+const ballparks = parks1980;
 
 function SectionCard({ title, children }) {
   return (
@@ -231,7 +225,7 @@ export default function LineupAnalyzer() {
   };
 
   const buildLineup = (hand) => {
-    const park = ballparks.find((p) => p.name === ballpark) || ballparks[0];
+    const park = getParkData(ballpark) || getParkData(ballparks[0]?.name);
     const players = parseRoster();
     const pitcherHand = hand === "RHP" ? "R" : "L";
 
@@ -478,4 +472,5 @@ export default function LineupAnalyzer() {
     </div>
   );
 }
+
 
