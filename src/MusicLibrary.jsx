@@ -152,7 +152,7 @@ export default function MusicLibrary() {
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
 const [openSections, setOpenSections] = useState({
-  eras: true,
+  eras: false,
   essentialAlbums: false,
   favoriteArtists: false,
   favoriteAlbums: false,
