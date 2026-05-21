@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import DashboardSection from "./components/DashboardSection";
 import {
   BarChart3,
   ChevronDown,
@@ -515,7 +516,7 @@ const cancelEraEdit = () => {
         )}
       </div>
    
-<MusicSection
+<DashboardSection
   title="Listening Eras"
   Icon={Clock3}
   color="purple"
@@ -705,8 +706,8 @@ const cancelEraEdit = () => {
       ))}
     </div>
   )}
-</MusicSection>
-      <MusicSection title="Music Stats" color="sky">
+</DashboardSection>
+      <DashboardSection title="Music Stats" color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
             label="Avg Rating"
@@ -754,17 +755,17 @@ const cancelEraEdit = () => {
           <TopTagsCard albums={musicData.albums} />
           <TopArtistsCard albums={musicData.albums} />
         </div>
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection title="Tag Browser" color="green">
+      <DashboardSection title="Tag Browser" color="green">
         <TagBrowser
           tags={allTags}
           selectedTag={selectedTag}
           setSelectedTag={setSelectedTag}
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection title="Artist Spotlight" color="purple">
+      <DashboardSection title="Artist Spotlight" color="purple">
         {!selectedArtist ? (
           <p className="text-sm text-slate-500">
             Click an artist card below to see related albums, playlists, shows,
@@ -778,9 +779,9 @@ const cancelEraEdit = () => {
             clearArtist={() => setSelectedArtist("")}
           />
         )}
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection title="Recently Added" color="slate">
+      <DashboardSection title="Recently Added" color="slate">
         {recentItems.length === 0 ? (
           <p className="text-sm text-slate-500">No recent entries yet.</p>
         ) : (
@@ -803,9 +804,9 @@ const cancelEraEdit = () => {
             ))}
           </div>
         )}
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Essential Albums"
   color="amber"
   isOpen={openSections.essentialAlbums}
@@ -818,9 +819,9 @@ const cancelEraEdit = () => {
           setEditingAlbumIndex={setEditingAlbumIndex}
           sourceItems={musicData.albums}
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Favorite Artists"
   color="purple"
   isOpen={openSections.favoriteArtists}
@@ -863,9 +864,9 @@ const cancelEraEdit = () => {
           onTitleClick={(item) => setSelectedArtist(item.name)}
           actionLabel="Spotlight"
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Favorite Albums"
   color="amber"
   isOpen={openSections.favoriteAlbums}
@@ -966,9 +967,9 @@ const cancelEraEdit = () => {
           sourceItems={musicData.albums}
           onArtistClick={setSelectedArtist}
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Playlists"
   color="sky"
   isOpen={openSections.playlists}
@@ -1023,9 +1024,9 @@ const cancelEraEdit = () => {
           titleKey="title"
           sourceItems={musicData.playlists}
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Shows Attended"
   color="rose"
   isOpen={openSections.shows}
@@ -1078,9 +1079,9 @@ const cancelEraEdit = () => {
           onTitleClick={(item) => setSelectedArtist(item.artist)}
           actionLabel="Spotlight"
         />
-      </MusicSection>
+      </DashboardSection>
 
-      <MusicSection
+      <DashboardSection
   title="Want to Explore"
   color="green"
   isOpen={openSections.explore}
@@ -1133,7 +1134,7 @@ const cancelEraEdit = () => {
           titleKey="name"
           sourceItems={musicData.explore}
         />
-      </MusicSection>
+      </DashboardSection>
     </div>
   );
 }
@@ -1263,74 +1264,6 @@ function SpotlightMiniSection({ title, items, primaryKey, secondaryKey }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function MusicSection({
-  title,
-  Icon,
-  color = "slate",
-  summary,
-  children,
-  isOpen = true,
-  onToggle,
-}) {
-  let sectionClasses = "border-slate-200 bg-white";
-
-  if (color === "purple") {
-    sectionClasses = "border-purple-200 bg-purple-50/70";
-  }
-
-  if (color === "amber") {
-    sectionClasses = "border-amber-200 bg-amber-50/70";
-  }
-
-  if (color === "sky") {
-    sectionClasses = "border-sky-200 bg-sky-50/70";
-  }
-
-  if (color === "rose") {
-    sectionClasses = "border-rose-200 bg-rose-50/70";
-  }
-
-  if (color === "green") {
-    sectionClasses = "border-emerald-200 bg-emerald-50/70";
-  }
-
-  return (
-    <div
-      className={`p-6 space-y-4 border rounded-2xl shadow-sm transition hover:shadow-md ${sectionClasses}`}
-    >
-      <button
-        type="button"
-        onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 text-left group rounded-xl"
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          {Icon && (
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/70 border border-white/80 shadow-sm">
-              <Icon className="h-5 w-5 text-slate-500 group-hover:text-slate-700 transition" />
-            </span>
-          )}
-
-          <div className="min-w-0">
-            <h2 className="text-xl font-bold leading-tight">{title}</h2>
-
-            {!isOpen && summary && (
-              <p className="text-sm text-slate-500 mt-1">{summary}</p>
-            )}
-          </div>
-        </div>
-
-        <ChevronDown
-          className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-slate-600 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isOpen && children}
     </div>
   );
 }
@@ -1739,5 +1672,7 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
+
 
 
