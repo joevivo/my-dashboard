@@ -188,7 +188,69 @@ app.get("/api/quotes", async (req, res) => {
 
     const quoteResults = await Promise.all(
       uniqueSymbols.map(async (symbol) => {
+        const manualQuotes = {
+  CASH: {
+    price: 1,
+    previousClose: 1,
+    change: 0,
+    changePercent: 0,
+    high: 1,
+    low: 1,
+    open: 1,
+    timestamp: null,
+    error: null,
+  },
+  VMFXX: {
+    price: 1,
+    previousClose: 1,
+    change: 0,
+    changePercent: 0,
+    high: 1,
+    low: 1,
+    open: 1,
+    timestamp: null,
+    error: null,
+  },
+};
+
+if (manualQuotes[symbol]) {
+  return {
+    symbol,
+    ...manualQuotes[symbol],
+  };
+}
         try {
+          const manualQuotes = {
+  CASH: {
+    price: 1,
+    previousClose: 1,
+    change: 0,
+    changePercent: 0,
+    high: 1,
+    low: 1,
+    open: 1,
+    timestamp: null,
+    error: null,
+  },
+  VMFXX: {
+    price: 1,
+    previousClose: 1,
+    change: 0,
+    changePercent: 0,
+    high: 1,
+    low: 1,
+    open: 1,
+    timestamp: null,
+    error: null,
+  },
+};
+
+if (manualQuotes[symbol]) {
+  return {
+    symbol,
+    ...manualQuotes[symbol],
+  };
+}
           const url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(
             symbol
           )}&token=${apiKey}`;
@@ -199,20 +261,42 @@ app.get("/api/quotes", async (req, res) => {
             throw new Error(`Finnhub error ${response.status}`);
           }
 
-          const data = await response.json();
+        const data = await response.json();
 
-          return {
-            symbol,
-            price: data.c ?? null,
-            previousClose: data.pc ?? null,
-            change: data.d ?? null,
-            changePercent: data.dp ?? null,
-            high: data.h ?? null,
-            low: data.l ?? null,
-            open: data.o ?? null,
-            timestamp: data.t ?? null,
-            error: null,
-          };
+const hasQuoteData =
+  Number(data.c) > 0 ||
+  Number(data.pc) > 0 ||
+  Number(data.h) > 0 ||
+  Number(data.l) > 0 ||
+  Number(data.o) > 0;
+
+if (!hasQuoteData) {
+  return {
+    symbol,
+    price: null,
+    previousClose: null,
+    change: null,
+    changePercent: null,
+    high: null,
+    low: null,
+    open: null,
+    timestamp: data.t ?? null,
+    error: "No quote data returned",
+  };
+}
+
+return {
+  symbol,
+  price: data.c ?? null,
+  previousClose: data.pc ?? null,
+  change: data.d ?? null,
+  changePercent: data.dp ?? null,
+  high: data.h ?? null,
+  low: data.l ?? null,
+  open: data.o ?? null,
+  timestamp: data.t ?? null,
+  error: null,
+};
         } catch (error) {
           console.error(`Quote failed for ${symbol}:`, error.message);
 

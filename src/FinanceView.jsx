@@ -139,7 +139,7 @@ export default function FinanceView() {
   }, [holdings]);
 
   const getQuote = (tickerSymbol) => {
-    if (tickerSymbol.toUpperCase() === "CASH") {
+    if (["CASH", "VMFXX"].includes(tickerSymbol.toUpperCase())) {
       return {
         symbol: "CASH",
         price: 1,

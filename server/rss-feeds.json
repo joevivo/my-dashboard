@@ -48,26 +48,22 @@
     "name": "SemiAnalysis",
     "url": "https://semianalysis.com/feed/",
     "category": "Markets"
-  }
-,
-{
-  "name": "Wired AI",
-  "url": "https://www.wired.com/feed/tag/ai/latest/rss",
-  "category": "Artificial Intelligence"
-},
-{
-  "name": "Scrum.org",
-  "url": "https://www.scrum.org/resources/blog/rss.xml",
-  "category": "Agile"
-},
-{
-  "name": "Project Management Blogs",
-  "url": "https://feeds.feedburner.com/Project-Management-Blogs",
-  "category": "Project Management"
-},
-{
-  "name": "Mountain Goat",
-  "url": "https://www.mountaingoatsoftware.com/blog/rss",
-  "category": "Agile"
-}
+  },
+  {
+    "name": "Scrum.org",
+    "url": "https://www.scrum.org/resources/blog/rss.xml",
+    "category": "Agile"
+  },
+  {
+    "name": "Project Management Blogs",
+    "url": "https://feeds.feedburner.com/Project-Management-Blogs",
+    "category": "Project Management"
+  },
+  {
+    "name": "Mountain Goat",
+    "url": "https://www.mountaingoatsoftware.com/blog/rss",
+    "category": "Agile"
+  },
+  "https://www.naperville-lib.org/RSSFeed.aspx?ModID=76&CID=All-0",
+  "https://i0.wp.com/www.positivelynaperville.com/wp-content/uploads/2016/06/pn-fAVICON.png?fit=32%2C32&#038;ssl=1"
 ]
