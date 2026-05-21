@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-
+import DashboardSection from "./components/DashboardSection";
 const startingHoldings = [
   { account: "JV401K", ticker: "CGDV", shares: 424 },
   { account: "JV401K", ticker: "FTHI", shares: 1073 },
@@ -576,3 +576,4 @@ function MiniMetric({ label, value, valueClass = "" }) {
     </div>
   );
 }
+
