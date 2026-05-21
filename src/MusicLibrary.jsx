@@ -148,6 +148,7 @@ export default function MusicLibrary() {
   const [show, setShow] = useState(emptyShow);
   const [explore, setExplore] = useState(emptyExplore);
   const [era, setEra] = useState(emptyEra);
+  const [editingEraIndex, setEditingEraIndex] = useState(null);
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
 
@@ -216,7 +217,36 @@ export default function MusicLibrary() {
     setEditingAlbumIndex(null);
     setAlbum(emptyAlbum);
   };
+const saveEra = () => {
+  const hasValue = Object.values(era).some((value) =>
+    String(value || "").trim()
+  );
 
+  if (!hasValue) return;
+
+  if (editingEraIndex !== null) {
+    const updatedEras = [...musicData.eras];
+
+    updatedEras[editingEraIndex] = era;
+
+    setMusicData((prev) => ({
+      ...prev,
+      eras: updatedEras,
+    }));
+
+    setEditingEraIndex(null);
+    setEra(emptyEra);
+
+    return;
+  }
+
+  addItem("eras", era, setEra, emptyEra);
+};
+
+const cancelEraEdit = () => {
+  setEditingEraIndex(null);
+  setEra(emptyEra);
+};
   const exportMusicLibrary = () => {
     const payload = {
       exportedAt: new Date().toISOString(),
@@ -496,10 +526,21 @@ export default function MusicLibrary() {
     </div>
   </div>
 
+  <div className="flex gap-2">
   <AddButton
-    label="Add Era"
-    onClick={() => addItem("eras", era, setEra, emptyEra)}
+    label={editingEraIndex !== null ? "Save Changes" : "Add Era"}
+    onClick={saveEra}
   />
+
+  {editingEraIndex !== null && (
+    <button
+      onClick={cancelEraEdit}
+      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg"
+    >
+      Cancel
+    </button>
+  )}
+</div>
 
   {musicData.eras.length === 0 ? (
     <p className="text-sm text-slate-500">
@@ -529,12 +570,40 @@ export default function MusicLibrary() {
               )}
             </div>
 
-            <button
-              onClick={() => removeItem("eras", index)}
-              className="text-xs text-slate-400 hover:text-red-500"
-            >
-              Delete
-            </button>
+            <div className="flex gap-3">
+  <button
+    onClick={() => {
+      setEra({
+        title: item.title || "",
+        timeframe: item.timeframe || "",
+        emotionalState: item.emotionalState || "",
+        keyArtists: item.keyArtists || "",
+        keyAlbums: item.keyAlbums || "",
+        playlists: item.playlists || "",
+        locations: item.locations || "",
+        season: item.season || "",
+        notes: item.notes || "",
+      });
+
+      setEditingEraIndex(index);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }}
+    className="text-xs text-purple-700 hover:underline"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => removeItem("eras", index)}
+    className="text-xs text-slate-400 hover:text-red-500"
+  >
+    Delete
+  </button>
+</div>
           </div>
 
           <div className="mt-4 space-y-2 text-sm text-slate-600">
