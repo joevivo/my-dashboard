@@ -475,16 +475,6 @@ const cancelEraEdit = () => {
           />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <StatCard label="Artists" value={musicData.artists.length} />
-          <StatCard label="Albums" value={musicData.albums.length} />
-          <StatCard
-            label="Essential"
-            value={musicData.albums.filter((item) => item.essential).length}
-          />
-          <StatCard label="Playlists" value={musicData.playlists.length} />
-          <StatCard label="Shows" value={musicData.shows.length} />
-        </div>
 
         <div className="flex flex-wrap gap-2 pt-2">
           <button
