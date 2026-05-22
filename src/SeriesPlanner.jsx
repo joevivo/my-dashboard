@@ -2,33 +2,7 @@ import React, { useState } from "react";
 import { parks1980 } from "./parks1980";
 import { getParkData, getParkStrategySummary } from "./engine/parkEngine";
 import { buildCardAwareLineup } from "./engine/lineupEngine";
-
-function normalizeName(name) {
-  return (name || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .trim();
-}
-
-function getSavedPitcherCards() {
-  const saved = localStorage.getItem("stratPlayerCards1980");
-  const cards = saved ? JSON.parse(saved) : [];
-
-  const map = {};
-
-  cards
-    .filter((card) => card.cardType === "pitcher")
-    .forEach((card) => {
-      map[normalizeName(card.name)] = card;
-    });
-
-  return map;
-}
-
-function getPitcherCardByName(name) {
-  const pitcherCards = getSavedPitcherCards();
-  return pitcherCards[normalizeName(name)];
-}
+import { getPitcherCard } from "./engine/cardStore";
 
 function getTeamHittersText(team) {
   return team?.hittersText || team?.hitters || team?.hitterRoster || "";
@@ -286,7 +260,7 @@ export default function SeriesPlanner() {
 
     const starterReports = starters
       .map((starter, index) => {
-        const pitcherCard = getPitcherCardByName(starter.name);
+        const pitcherCard = getPitcherCard(starter.name);
         const plan = getPitcherPlan(starter, park, pitcherCard);
 
         const lineup = buildCardAwareLineup({
@@ -488,3 +462,4 @@ G3 Jon Matlack L`}
     </div>
   );
 }
+
