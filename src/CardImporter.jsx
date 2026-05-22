@@ -955,7 +955,7 @@ function CardMatchupTester({ cards }) {
           ? "Park effect leans toward the hitter profile."
           : "Park effect leans against the hitter profile.";
 
-    return `Experimental park-adjusted preview: ${adjustedScore.toFixed(1)} (${deltaText} from base ${base.toFixed(1)}). ${direction} SI component ${singleAdjustment.toFixed(1)}, HR component ${homeRunAdjustment.toFixed(1)}. Base Matchup Score is unchanged.`;
+    return `Experimental park preview: ${adjustedScore.toFixed(1)} (${deltaText} from base ${base.toFixed(1)}). ${direction} SI component ${singleAdjustment.toFixed(1)}, HR component ${homeRunAdjustment.toFixed(1)}. Base Matchup Score is unchanged.`;
   };
   const getMatchupRead = (score) => {
     if (score >= 40) return "Strong hitter edge";
@@ -1159,7 +1159,7 @@ function CardMatchupTester({ cards }) {
           />
         
           <Field
-            label="Park-Adjusted Preview"
+            label="Experimental Park Preview"
             value={parkAdjustedPreview}
             className="md:col-span-3"
           />
@@ -1315,6 +1315,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
