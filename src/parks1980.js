@@ -286,6 +286,31 @@ export const parks1980 = [
     notes: "Strong LH park. Park factors: SI L/R 17/9; HR L/R 18/2.",
   },
 ];
+
+function normalizePark1980Fields(park) {
+  if (!park) return park;
+
+  return {
+    ...park,
+
+    // Canonical short names used by parks1980.js
+    singlesL: park.singlesL ?? park.singlesLeft,
+    singlesR: park.singlesR ?? park.singlesRight,
+    homersL: park.homersL ?? park.homeRunsLeft,
+    homersR: park.homersR ?? park.homeRunsRight,
+
+    // Compatibility aliases used by older park/matchup helpers
+    singlesLeft: park.singlesLeft ?? park.singlesL,
+    singlesRight: park.singlesRight ?? park.singlesR,
+    homeRunsLeft: park.homeRunsLeft ?? park.homersL,
+    homeRunsRight: park.homeRunsRight ?? park.homersR,
+  };
+}
+
+parks1980.forEach((park, index) => {
+  parks1980[index] = normalizePark1980Fields(park);
+});
+
 export function getParkNotes(park) {
   if (!park) return "No park notes available.";
 
