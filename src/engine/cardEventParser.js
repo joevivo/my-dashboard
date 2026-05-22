@@ -1,23 +1,23 @@
-function normalizeSide(line = "") {
+function detectHandednessHeader(line = "") {
   const text = line.toLowerCase();
 
-  if (
-    text.includes("vs rhp") ||
-    text.includes("vs right") ||
-    text.includes("right-handed pitcher") ||
-    text.includes("right handed pitcher")
-  ) {
-    return "vsRHP";
-  }
-
-  if (
+  const hasLeft =
+    /vs\W*lefty/.test(text) ||
+    /vs\W*left/.test(text) ||
     text.includes("vs lhp") ||
-    text.includes("vs left") ||
     text.includes("left-handed pitcher") ||
-    text.includes("left handed pitcher")
-  ) {
-    return "vsLHP";
-  }
+    text.includes("left handed pitcher");
+
+  const hasRight =
+    /vs\W*righty/.test(text) ||
+    /vs\W*right/.test(text) ||
+    text.includes("vs rhp") ||
+    text.includes("right-handed pitcher") ||
+    text.includes("right handed pitcher");
+
+  if (hasLeft && hasRight) return "dual";
+  if (hasLeft) return "vsLHP";
+  if (hasRight) return "vsRHP";
 
   return null;
 }
@@ -41,26 +41,45 @@ function detectOutcomeType(result = "") {
   if (/\bgb\b/.test(text) || /\bgb\(/.test(text)) return "GROUNDBALL";
   if (/\bfb\b/.test(text) || /\bfly\b/.test(text)) return "FLYBALL";
   if (/\blo\b/.test(text) || /\blineout\b/.test(text)) return "LINEOUT";
+  if (/\bpopout\b/.test(text)) return "POPOUT";
+  if (/\bfoulout\b/.test(text)) return "FOULOUT";
 
   return "UNKNOWN";
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*(\d+)\s*[-–]\s*(\d+)\s+(.+)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d+)\s*[-–]\s*(\d+)\s+(.+)$/);
 
   if (!match) {
     return {
       column: null,
       roll: null,
       result: line.trim(),
+      isPrimaryRoll: false,
     };
   }
 
   return {
-    column: Number(match[1]),
+    column: null,
     roll: match[2],
     result: match[3].trim(),
+    isPrimaryRoll: true,
   };
+}
+
+function isColumnHeader(line = "") {
+  return /^\s*1\s+2\s+3\s+1\s+2\s+3\s*$/.test(line);
+}
+
+function getSideFromBlockIndex(blockIndex) {
+  if (blockIndex >= 0 && blockIndex <= 2) return "vsLHP";
+  if (blockIndex >= 3 && blockIndex <= 5) return "vsRHP";
+  return "unknown";
+}
+
+function getColumnFromBlockIndex(blockIndex) {
+  if (blockIndex < 0) return null;
+  return (blockIndex % 3) + 1;
 }
 
 export function parseCardEvents(rawText = "") {
@@ -70,17 +89,37 @@ export function parseCardEvents(rawText = "") {
     .filter(Boolean);
 
   let currentSide = "unknown";
+  let copiedTableMode = false;
+  let blockIndex = -1;
+  let currentColumn = null;
 
   return lines
     .map((line, index) => {
-      const detectedSide = normalizeSide(line);
+      const handednessHeader = detectHandednessHeader(line);
 
-      if (detectedSide) {
-        currentSide = detectedSide;
+      if (handednessHeader === "dual") {
+        copiedTableMode = true;
+        currentSide = "vsLHP";
+        return null;
+      }
+
+      if (handednessHeader) {
+        currentSide = handednessHeader;
+        return null;
+      }
+
+      if (isColumnHeader(line)) {
         return null;
       }
 
       const parsed = parseRollPrefix(line);
+
+      if (copiedTableMode && parsed.isPrimaryRoll && parsed.roll === "2") {
+        blockIndex += 1;
+        currentSide = getSideFromBlockIndex(blockIndex);
+        currentColumn = getColumnFromBlockIndex(blockIndex);
+      }
+
       const outcomeType = detectOutcomeType(parsed.result);
 
       if (!parsed.result || outcomeType === "UNKNOWN") return null;
@@ -88,7 +127,7 @@ export function parseCardEvents(rawText = "") {
       return {
         id: `${currentSide}-${index}`,
         side: currentSide,
-        column: parsed.column,
+        column: currentColumn,
         roll: parsed.roll,
         result: parsed.result,
         outcomeType,
