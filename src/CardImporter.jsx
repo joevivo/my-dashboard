@@ -16,6 +16,10 @@ import {
 import {
   compareCardSides,
 } from "./engine/cardProbabilityEngine";
+import {
+  combineCardMetrics,
+  scoreCombinedMatchup,
+} from "./engine/cardMatchupEngine";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -388,6 +392,8 @@ export default function CardImporter() {
         </div>
       </div>
 
+      <CardMatchupTester cards={cards} />
+
       <CoverageReport
         cards={cards}
         selectedLeagueId={selectedLeagueId}
@@ -734,6 +740,93 @@ export default function CardImporter() {
   );
 }
 
+
+function CardMatchupTester({ cards }) {
+  const hitters = cards.filter((card) => card.cardType !== "pitcher");
+  const pitchers = cards.filter((card) => card.cardType === "pitcher");
+
+  const [selectedHitterName, setSelectedHitterName] = useState("");
+  const [selectedPitcherName, setSelectedPitcherName] = useState("");
+
+  const selectedHitter = hitters.find((card) => card.name === selectedHitterName);
+  const selectedPitcher = pitchers.find((card) => card.name === selectedPitcherName);
+
+  const getBatterHand = (card) => {
+    if (card?.bats) return card.bats;
+
+    const rawMatch = String(card?.rawText || "").match(/\b([LSR])\s*\|/);
+    return rawMatch?.[1] || "R";
+  };
+
+  const matchup =
+    selectedHitter && selectedPitcher
+      ? combineCardMetrics({
+          hitterProfile: selectedHitter.cardProbabilityProfile,
+          pitcherProfile: selectedPitcher.cardProbabilityProfile,
+          hitterBats: getBatterHand(selectedHitter),
+          pitcherThrows: selectedPitcher.throws,
+        })
+      : null;
+
+  const formatPct = (value) => `${((value || 0) * 100).toFixed(1)}%`;
+
+  return (
+    <div className="dashboard-panel p-6">
+      <h2 className="text-xl font-bold mb-4">Card Matchup Tester</h2>
+
+      <p className="text-sm text-slate-500 mb-4">
+        Preview-only comparison using saved card probability profiles.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <select
+          value={selectedHitterName}
+          onChange={(event) => setSelectedHitterName(event.target.value)}
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+        >
+          <option value="">Select hitter</option>
+          {hitters.map((card) => (
+            <option key={card.id || card.name} value={card.name}>
+              {card.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedPitcherName}
+          onChange={(event) => setSelectedPitcherName(event.target.value)}
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+        >
+          <option value="">Select pitcher</option>
+          {pitchers.map((card) => (
+            <option key={card.id || card.name} value={card.name}>
+              {card.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {matchup ? (
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-sm">
+          <Field label="Hitter Side" value={matchup.hitterSide} />
+          <Field label="Pitcher Side" value={matchup.pitcherSide} />
+          <Field label="Combined OB" value={formatPct(matchup.onBase)} />
+          <Field label="Combined XBH" value={formatPct(matchup.extraBase)} />
+          <Field label="Combined HR" value={formatPct(matchup.homeRuns)} />
+          <Field label="Combined K" value={formatPct(matchup.strikeouts)} />
+          <Field
+            label="Matchup Score"
+            value={scoreCombinedMatchup(matchup).toFixed(1)}
+          />
+        </div>
+      ) : (
+        <p className="text-sm text-slate-500">
+          Select one saved hitter and one saved pitcher to preview a card-based matchup.
+        </p>
+      )}
+    </div>
+  );
+}
 function Field({ label, value }) {
   return (
     <div className="border border-slate-200 rounded-lg p-3 bg-slate-50">
@@ -874,6 +967,8 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
 
 
 
