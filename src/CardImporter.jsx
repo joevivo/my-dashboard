@@ -294,6 +294,41 @@ export default function CardImporter() {
     );
   };
 
+  const exportStratData = () => {
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      source: "my-dashboard",
+      version: 1,
+      data: {
+        stratPlayerCards1980: JSON.parse(
+          localStorage.getItem("stratPlayerCards1980") || "[]"
+        ),
+        stratLeagues: JSON.parse(localStorage.getItem("stratLeagues") || "[]"),
+        stratOpponents: JSON.parse(
+          localStorage.getItem("stratOpponents") || "[]"
+        ),
+      },
+    };
+
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {
+      type: "application/json",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `strat-data-backup-${new Date()
+      .toISOString()
+      .slice(0, 10)}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       <div className="dashboard-panel p-6">
@@ -329,6 +364,13 @@ export default function CardImporter() {
             className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg"
           >
             Save Card
+          </button>
+
+          <button
+            onClick={exportStratData}
+            className="bg-emerald-700 hover:bg-emerald-800 transition text-white px-4 py-2 rounded-lg"
+          >
+            Export Strat Backup
           </button>
 
           <button
@@ -696,6 +738,11 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
+
+
+
 
 
 
