@@ -1104,6 +1104,8 @@ function CardMatchupTester({ cards }) {
           />
 
           
+          <SectionDivider label="Park Interpretation" />
+
           <Field
             label="Park Pressure"
             value={parkPressure}
@@ -1158,6 +1160,8 @@ function CardMatchupTester({ cards }) {
             value={getMatchupRead(matchupScore)}
           />
         
+          <SectionDivider label="Experimental Preview" />
+
           <Field
             label="Experimental Park Preview"
             value={parkAdjustedPreview}
@@ -1175,6 +1179,15 @@ function CardMatchupTester({ cards }) {
           Select one saved hitter and one saved pitcher to preview a card-based matchup.
         </p>
       )}
+    </div>
+  );
+}
+function SectionDivider({ label }) {
+  return (
+    <div className="md:col-span-3 border-t border-slate-200 pt-3 mt-1">
+      <div className="text-xs font-bold uppercase tracking-wide text-slate-500">
+        {label}
+      </div>
     </div>
   );
 }
@@ -1321,6 +1334,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
