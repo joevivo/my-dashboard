@@ -666,6 +666,34 @@ export default function CardImporter() {
               }
             />
 
+          <Field
+            label="Hitter Card Input"
+            value={
+              "OB " +
+              formatPct(matchup.hitterMetrics?.onBase) +
+              " | XBH " +
+              formatPct(matchup.hitterMetrics?.extraBase) +
+              " | HR " +
+              formatPct(matchup.hitterMetrics?.homeRuns) +
+              " | K " +
+              formatPct(matchup.hitterMetrics?.strikeouts)
+            }
+          />
+
+          <Field
+            label="Pitcher Card Allowed"
+            value={
+              "OB " +
+              formatPct(matchup.pitcherMetrics?.onBase) +
+              " | XBH " +
+              formatPct(matchup.pitcherMetrics?.extraBase) +
+              " | HR " +
+              formatPct(matchup.pitcherMetrics?.homeRuns) +
+              " | K " +
+              formatPct(matchup.pitcherMetrics?.strikeouts)
+            }
+          />
+
             <Field
               label="Park SI / HR"
               value={
@@ -770,6 +798,16 @@ function CardMatchupTester({ cards }) {
 
   const formatPct = (value) => `${((value || 0) * 100).toFixed(1)}%`;
 
+  const getMatchupRead = (score) => {
+    if (score >= 40) return "Strong hitter edge";
+    if (score >= 30) return "Hitter edge";
+    if (score >= 20) return "Neutral / playable";
+    if (score >= 10) return "Pitcher edge";
+    return "Strong pitcher edge";
+  };
+
+  const matchupScore = matchup ? scoreCombinedMatchup(matchup) : null;
+
   return (
     <div className="dashboard-panel p-6">
       <h2 className="text-xl font-bold mb-4">Card Matchup Tester</h2>
@@ -807,16 +845,58 @@ function CardMatchupTester({ cards }) {
       </div>
 
       {matchup ? (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-sm">
-          <Field label="Hitter Side" value={matchup.hitterSide} />
-          <Field label="Pitcher Side" value={matchup.pitcherSide} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+          <Field
+            label="Hitter Card Used"
+            value={matchup.hitterSide === "vsLHP" ? "vs LHP" : "vs RHP"}
+          />
+
+          <Field
+            label="Pitcher Card Used"
+            value={matchup.pitcherSide === "vsLHP" ? "vs LHB" : "vs RHB"}
+          />
+
+          <Field
+            label="Hitter Card Input"
+            value={
+              "OB " +
+              formatPct(matchup.hitterMetrics?.onBase) +
+              " | XBH " +
+              formatPct(matchup.hitterMetrics?.extraBase) +
+              " | HR " +
+              formatPct(matchup.hitterMetrics?.homeRuns) +
+              " | K " +
+              formatPct(matchup.hitterMetrics?.strikeouts)
+            }
+          />
+
+          <Field
+            label="Pitcher Card Allowed"
+            value={
+              "OB " +
+              formatPct(matchup.pitcherMetrics?.onBase) +
+              " | XBH " +
+              formatPct(matchup.pitcherMetrics?.extraBase) +
+              " | HR " +
+              formatPct(matchup.pitcherMetrics?.homeRuns) +
+              " | K " +
+              formatPct(matchup.pitcherMetrics?.strikeouts)
+            }
+          />
+
           <Field label="Combined OB" value={formatPct(matchup.onBase)} />
           <Field label="Combined XBH" value={formatPct(matchup.extraBase)} />
           <Field label="Combined HR" value={formatPct(matchup.homeRuns)} />
           <Field label="Combined K" value={formatPct(matchup.strikeouts)} />
+
           <Field
             label="Matchup Score"
-            value={scoreCombinedMatchup(matchup).toFixed(1)}
+            value={matchupScore.toFixed(1)}
+          />
+
+          <Field
+            label="Matchup Read"
+            value={getMatchupRead(matchupScore)}
           />
         </div>
       ) : (
@@ -967,6 +1047,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
