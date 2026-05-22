@@ -50,7 +50,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-â€“]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-Ã¢â‚¬â€œ]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +71,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-â€“]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-Ã¢â‚¬â€œ]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -220,23 +220,27 @@ export function summarizeCardEvents(events = []) {
   return events.reduce(
     (summary, event) => {
       summary.total += 1;
+
       summary.bySide[event.side] = (summary.bySide[event.side] || 0) + 1;
-      summary.byOutcome[event.outcomeType] =
-        (summary.byOutcome[event.outcomeType] || 0) + 1;
 
       if (!summary.bySideOutcome[event.side]) {
         summary.bySideOutcome[event.side] = {};
       }
 
-      summary.bySideOutcome[event.side][event.outcomeType] =
-        (summary.bySideOutcome[event.side][event.outcomeType] || 0) + 1;
+      const addOutcome = (outcomeType) => {
+        if (!outcomeType) return;
+
+        summary.byOutcome[outcomeType] =
+          (summary.byOutcome[outcomeType] || 0) + 1;
+
+        summary.bySideOutcome[event.side][outcomeType] =
+          (summary.bySideOutcome[event.side][outcomeType] || 0) + 1;
+      };
+
+      addOutcome(event.outcomeType);
 
       event.splitOutcomes?.forEach((splitOutcome) => {
-        summary.byOutcome[splitOutcome.outcomeType] =
-          (summary.byOutcome[splitOutcome.outcomeType] || 0) + 1;
-
-        summary.bySideOutcome[event.side][splitOutcome.outcomeType] =
-          (summary.bySideOutcome[event.side][splitOutcome.outcomeType] || 0) + 1;
+        addOutcome(splitOutcome.outcomeType);
       });
 
       if (event.splitOutcomes?.length) {
