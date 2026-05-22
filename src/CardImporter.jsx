@@ -635,7 +635,11 @@ export default function CardImporter() {
             />
 
             <Field
-              label="vs LHP Card Score"
+              label={
+                preview.cardType === "pitcher"
+                  ? "vs LHB Allowed Score"
+                  : "vs LHP Card Score"
+              }
               value={
                 preview.cardProbabilityProfile
                   ? preview.cardProbabilityProfile.vsLHP.score.toFixed(1)
@@ -644,7 +648,11 @@ export default function CardImporter() {
             />
 
             <Field
-              label="vs RHP Card Score"
+              label={
+                preview.cardType === "pitcher"
+                  ? "vs RHB Allowed Score"
+                  : "vs RHP Card Score"
+              }
               value={
                 preview.cardProbabilityProfile
                   ? preview.cardProbabilityProfile.vsRHP.score.toFixed(1)
@@ -866,6 +874,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
