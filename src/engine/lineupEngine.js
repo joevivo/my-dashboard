@@ -1,22 +1,4 @@
-function normalizeName(name) {
-  return (name || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .trim();
-}
-
-function getCardMap() {
-  const saved = localStorage.getItem("stratPlayerCards1980");
-  const cards = saved ? JSON.parse(saved) : [];
-
-  const map = {};
-
-  cards.forEach((card) => {
-    map[normalizeName(card.name)] = card;
-  });
-
-  return map;
-}
+import { getCardMap, normalizeCardName } from "./cardStore";
 
 function parseRoster(hittersText = "") {
   return hittersText
@@ -176,7 +158,7 @@ function isBottomOnlyBat(player, pitcherHand) {
 
 function scoreBat(player, pitcherHand, park) {
   const cardMap = getCardMap();
-  const card = cardMap[normalizeName(player.name)];
+  const card = cardMap[normalizeCardName(player.name)];
 
   const obp = getObp(player, pitcherHand);
 
@@ -258,7 +240,7 @@ function getLowRunEnvironmentDefenseAdjustment(player, position, park, defenseRa
 
 function scorePositionFit(player, position, pitcherHand, park) {
   const cardMap = getCardMap();
-  const card = cardMap[normalizeName(player.name)];
+  const card = cardMap[normalizeCardName(player.name)];
   const defenseRating = getCardDefenseRating(player, position, card);
 
   const batScore = scoreBat(player, pitcherHand, park);
@@ -354,7 +336,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
 
     if (!current) return;
 
-    const currentCard = cardMap[normalizeName(current.name)];
+    const currentCard = cardMap[normalizeCardName(current.name)];
     const currentDefenseRating = getCardDefenseRating(current, position, currentCard);
     const currentPenalty = getLowRunEnvironmentDefenseAdjustment(
       current,
@@ -373,7 +355,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
                 const offensiveGap =
           scoreBat(current, pitcherHand, park) - scoreBat(player, pitcherHand, park);
 
-        const playerCard = cardMap[normalizeName(player.name)];
+        const playerCard = cardMap[normalizeCardName(player.name)];
         const playerDefenseRating = getCardDefenseRating(player, position, playerCard);
 
         const defensiveGain =
@@ -605,4 +587,5 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
 
   return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park);
 }
+
 
