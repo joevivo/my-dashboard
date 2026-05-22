@@ -42,3 +42,33 @@ export function getPitcherCard(name, cards = getAllCards()) {
 export function getCardsByType(cardType, cards = getAllCards()) {
   return cards.filter((card) => card.cardType === cardType);
 }
+
+export function saveAllCards(cards = []) {
+  localStorage.setItem("stratPlayerCards1980", JSON.stringify(cards));
+  return cards;
+}
+
+export function replaceCard(card, cards = getAllCards()) {
+  if (!card?.name) return cards;
+
+  const nextCards = [
+    card,
+    ...cards.filter((existingCard) => existingCard.name !== card.name),
+  ];
+
+  saveAllCards(nextCards);
+  return nextCards;
+}
+
+export function deleteCard(cardToDelete, cards = getAllCards()) {
+  const nextCards = cards.filter((card) => {
+    if (cardToDelete?.id && card?.id) {
+      return card.id !== cardToDelete.id;
+    }
+
+    return card.name !== cardToDelete?.name;
+  });
+
+  saveAllCards(nextCards);
+  return nextCards;
+}
