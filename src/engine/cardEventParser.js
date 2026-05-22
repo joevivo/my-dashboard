@@ -41,6 +41,7 @@ function detectOutcomeType(result = "") {
   if (/\bgb\b/.test(text) || /\bgb\(/.test(text)) return "GROUNDBALL";
   if (/\bfb\b/.test(text) || /\bfly\b/.test(text)) return "FLYBALL";
   if (/\blo\b/.test(text) || /\blineout\b/.test(text)) return "LINEOUT";
+  if (/\binj\b/.test(text) || /\binjury\b/.test(text)) return "INJURY";
   if (/\bpopout\b/.test(text)) return "POPOUT";
   if (/\bfoulout\b/.test(text)) return "FOULOUT";
 
@@ -48,7 +49,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d+)\s*[-–]\s*(\d+)\s+(.+)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-–]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -59,11 +60,16 @@ function parseRollPrefix(line = "") {
     };
   }
 
+  const rollNumber = Number(match[1]);
+  const result = match[2].trim();
+
+  const isPrimaryRoll = rollNumber >= 2 && rollNumber <= 12;
+
   return {
     column: null,
-    roll: match[2],
-    result: match[3].trim(),
-    isPrimaryRoll: true,
+    roll: String(rollNumber),
+    result,
+    isPrimaryRoll,
   };
 }
 
