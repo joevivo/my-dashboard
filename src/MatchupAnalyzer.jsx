@@ -264,14 +264,14 @@ export default function MatchupAnalyzer() {
 
   return (
     <div className="space-y-5">
-      <div className="bg-white p-6 rounded border">
+      <div className="dashboard-panel p-6">
         <h1 className="text-2xl font-bold mb-2">Matchup Analyzer</h1>
         <p className="text-sm text-slate-500">
           Analyze opponent threats, defense context, ballpark fit, and pitching matchups.
         </p>
       </div>
 
-      <div className="bg-white p-6 rounded border">
+      <div className="dashboard-panel p-6">
         <h2 className="font-bold mb-2">Load Saved League</h2>
 
         <select
@@ -289,7 +289,7 @@ export default function MatchupAnalyzer() {
         </select>
       </div>
 
-      <div className="bg-white p-6 rounded border space-y-3">
+      <div className="dashboard-panel p-6 space-y-3">
         <h2 className="font-bold">Opponent Library</h2>
 
         <select
@@ -339,7 +339,7 @@ export default function MatchupAnalyzer() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded border">
+      <div className="dashboard-panel p-6">
         <h2 className="font-bold mb-2">Ballpark</h2>
 
         <select
@@ -385,7 +385,7 @@ export default function MatchupAnalyzer() {
 
       {analysis && (
         <>
-          <div className="bg-white p-6 rounded border">
+          <div className="dashboard-panel p-6">
             <h2 className="text-xl font-bold mb-4">Opponent Overview</h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -417,10 +417,10 @@ export default function MatchupAnalyzer() {
 
 function InputSection({ title, example, value, onChange }) {
   return (
-    <div className="bg-white p-6 rounded border">
+    <div className="dashboard-panel p-6">
       <h2 className="font-bold mb-2">{title}</h2>
 
-      <div className="font-mono text-sm bg-slate-100 p-3 rounded mb-3 whitespace-pre-line">
+      <div className="font-mono text-sm bg-slate-50 border border-slate-200 p-3 rounded mb-3 whitespace-pre-line">
         {example}
       </div>
 
@@ -435,7 +435,7 @@ function InputSection({ title, example, value, onChange }) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="bg-slate-100 rounded p-4">
+    <div className="bg-slate-50 border border-slate-200 rounded p-4">
       <div className="text-xs uppercase text-slate-500">{label}</div>
       <div className="text-lg font-bold mt-1">{value}</div>
     </div>
@@ -444,7 +444,7 @@ function StatCard({ label, value }) {
 
 function ThreatSection({ title, players }) {
   return (
-    <div className="bg-white p-6 rounded border">
+    <div className="dashboard-panel p-6">
       <h2 className="text-xl font-bold mb-3">{title}</h2>
 
       {players.length === 0 ? (
@@ -470,7 +470,7 @@ function ThreatSection({ title, players }) {
 
 function PitcherSection({ title, pitchers }) {
   return (
-    <div className="bg-white p-6 rounded border">
+    <div className="dashboard-panel p-6">
       <h2 className="text-xl font-bold mb-3">{title}</h2>
 
       {pitchers.length === 0 ? (
