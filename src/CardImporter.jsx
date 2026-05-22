@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+  getAllCards,
+  saveAllCards,
+  replaceCard,
+  deleteCard as deleteStoredCard,
+} from "./engine/cardStore";
+import {
   parseCardOutcomeProfile,
   describeOutcomeProfile,
 } from "./engine/cardOutcomeParser";
@@ -238,7 +244,7 @@ export default function CardImporter() {
   const [selectedLeagueId, setSelectedLeagueId] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("stratPlayerCards1980", JSON.stringify(cards));
+    saveAllCards(cards);
   }, [cards]);
 
   const parsePreview = () => {
@@ -587,3 +593,4 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
