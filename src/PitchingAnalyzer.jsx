@@ -206,7 +206,7 @@ export default function PitchingAnalyzer() {
         backgroundImage: "url('/pitcher-bg.svg')",
       }}
     >
-      <div className="bg-white p-5 rounded border">
+      <div className="dashboard-panel p-5">
         <h1 className="text-xl font-bold">Pitching Analyzer</h1>
 
         <p className="text-sm text-gray-500 mt-1">
@@ -214,7 +214,7 @@ export default function PitchingAnalyzer() {
         </p>
       </div>
 
-      <div className="bg-white p-5 rounded border space-y-4">
+      <div className="dashboard-panel p-5 space-y-4">
         <div className="flex flex-wrap gap-3">
           <select
             value={selectedLeagueId}
@@ -249,7 +249,7 @@ export default function PitchingAnalyzer() {
         />
       </div>
 
-      <div className="bg-white p-5 rounded border space-y-4">
+      <div className="dashboard-panel p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex gap-2">
             <button
