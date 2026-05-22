@@ -7,6 +7,7 @@ import {
   Compass,
   Disc3,
   Headphones,
+  ListMusic,
   Mic2,
   Sparkles,
   Star,
@@ -710,6 +711,7 @@ const cancelEraEdit = () => {
       <DashboardSection title="Music Stats" color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
+            icon={Star}
             label="Avg Rating"
             value={
               musicData.albums.length
@@ -724,6 +726,7 @@ const cancelEraEdit = () => {
           />
 
           <StatCard
+            icon={Sparkles}
             label="Essential"
             value={
               musicData.albums.filter((album) => album.essential).length
@@ -731,21 +734,25 @@ const cancelEraEdit = () => {
           />
 
           <StatCard
+            icon={Ticket}
             label="Shows"
             value={musicData.shows.length}
           />
 
           <StatCard
+            icon={ListMusic}
             label="Playlists"
             value={musicData.playlists.length}
           />
 
           <StatCard
+            icon={UserRoundSearch}
             label="Artists"
             value={musicData.artists.length}
           />
 
           <StatCard
+            icon={Disc3}
             label="Albums"
             value={musicData.albums.length}
           />
@@ -1568,11 +1575,15 @@ function TagPills({ value }) {
   );
 }
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, icon: Icon }) {
   return (
     <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-      <div className="text-xs uppercase text-slate-400 font-bold">
-        {label}
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-xs uppercase text-slate-400 font-bold">
+          {label}
+        </div>
+
+        {Icon && <Icon className="h-4 w-4 text-sky-500" />}
       </div>
 
       <div className="text-2xl font-bold text-slate-900 mt-2">
@@ -1581,6 +1592,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 function TopTagsCard({ albums }) {
   const tagCounts = {};
 
