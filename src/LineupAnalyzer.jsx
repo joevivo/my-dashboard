@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { buildCardAwareLineup } from "./engine/lineupEngine";
+import { parks1980 } from "./parks1980";
+import { getParkData } from "./engine/parkEngine";
 
 const requiredPositions = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
 
@@ -472,5 +474,6 @@ export default function LineupAnalyzer() {
     </div>
   );
 }
+
 
 
