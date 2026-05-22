@@ -50,7 +50,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +71,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -216,6 +216,84 @@ export function parseCardEvents(rawText = "") {
   return events;
 }
 
+function getRollWeight(roll) {
+  const weights = {
+    "2": 1,
+    "3": 2,
+    "4": 3,
+    "5": 4,
+    "6": 5,
+    "7": 6,
+    "8": 5,
+    "9": 4,
+    "10": 3,
+    "11": 2,
+    "12": 1,
+  };
+
+  if (!roll || !weights[String(roll)]) return 0;
+
+  return weights[String(roll)] / 108;
+}
+
+function getSplitWeight(splitOutcome) {
+  if (
+    splitOutcome?.rangeStart == null ||
+    splitOutcome?.rangeEnd == null
+  ) {
+    return 1;
+  }
+
+  return (
+    (Number(splitOutcome.rangeEnd) - Number(splitOutcome.rangeStart) + 1) / 20
+  );
+}
+
+function applyWeightedOutcome(summary, side, outcomeType, weight) {
+  if (!summary.bySideWeighted[side]) {
+    summary.bySideWeighted[side] = {
+      onBase: 0,
+      extraBase: 0,
+      outs: 0,
+      strikeouts: 0,
+      homeRuns: 0,
+    };
+  }
+
+  if (
+    ["SINGLE", "DOUBLE", "TRIPLE", "HOME_RUN", "WALK", "HBP"].includes(
+      outcomeType
+    )
+  ) {
+    summary.bySideWeighted[side].onBase += weight;
+  }
+
+  if (["DOUBLE", "TRIPLE", "HOME_RUN"].includes(outcomeType)) {
+    summary.bySideWeighted[side].extraBase += weight;
+  }
+
+  if (outcomeType === "HOME_RUN") {
+    summary.bySideWeighted[side].homeRuns += weight;
+  }
+
+  if (
+    [
+      "GROUNDBALL",
+      "FLYBALL",
+      "LINEOUT",
+      "POPOUT",
+      "FOULOUT",
+      "STRIKEOUT",
+    ].includes(outcomeType)
+  ) {
+    summary.bySideWeighted[side].outs += weight;
+  }
+
+  if (outcomeType === "STRIKEOUT") {
+    summary.bySideWeighted[side].strikeouts += weight;
+  }
+}
+
 export function summarizeCardEvents(events = []) {
   return events.reduce(
     (summary, event) => {
@@ -281,6 +359,21 @@ export function summarizeCardEvents(events = []) {
         addOutcome(splitOutcome.outcomeType);
       });
 
+      const eventWeight = getRollWeight(event.roll);
+
+      if (event.splitOutcomes?.length) {
+        event.splitOutcomes.forEach((splitOutcome) => {
+          applyWeightedOutcome(
+            summary,
+            event.side,
+            splitOutcome.outcomeType,
+            eventWeight * getSplitWeight(splitOutcome)
+          );
+        });
+      } else {
+        applyWeightedOutcome(summary, event.side, event.outcomeType, eventWeight);
+      }
+
       if (event.splitOutcomes?.length) {
         summary.splitEvents += 1;
       }
@@ -298,6 +391,7 @@ export function summarizeCardEvents(events = []) {
       byOutcome: {},
       bySideOutcome: {},
       bySideShape: {},
+      bySideWeighted: {},
       splitEvents: 0,
       xChances: 0,
       injuryEvents: 0,

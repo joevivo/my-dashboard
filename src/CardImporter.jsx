@@ -557,6 +557,40 @@ export default function CardImporter() {
             />
 
             <Field
+              label="vs LHP Weighted"
+              value={
+                preview.cardEventSummary
+                  ? "OB " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsLHP?.onBase || 0) * 100).toFixed(1) +
+                    "% | XBH " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsLHP?.extraBase || 0) * 100).toFixed(1) +
+                    "% | HR " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsLHP?.homeRuns || 0) * 100).toFixed(1) +
+                    "% | K " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsLHP?.strikeouts || 0) * 100).toFixed(1) +
+                    "%"
+                  : ""
+              }
+            />
+
+            <Field
+              label="vs RHP Weighted"
+              value={
+                preview.cardEventSummary
+                  ? "OB " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsRHP?.onBase || 0) * 100).toFixed(1) +
+                    "% | XBH " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsRHP?.extraBase || 0) * 100).toFixed(1) +
+                    "% | HR " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsRHP?.homeRuns || 0) * 100).toFixed(1) +
+                    "% | K " +
+                    ((preview.cardEventSummary.bySideWeighted?.vsRHP?.strikeouts || 0) * 100).toFixed(1) +
+                    "%"
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
