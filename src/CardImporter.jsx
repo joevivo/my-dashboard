@@ -857,6 +857,11 @@ function CardMatchupTester({ cards }) {
           />
 
           <Field
+            label="Actual Batter Hand"
+            value={matchup.actualBatterHand || "?"}
+          />
+
+          <Field
             label="Hitter Card Input"
             value={
               "OB " +
@@ -1047,6 +1052,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
