@@ -517,6 +517,62 @@ const cancelEraEdit = () => {
         )}
       </div>
    
+      <DashboardSection title="Music Stats" Icon={BarChart3} color="sky">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          <StatCard
+            icon={Star}
+            label="Avg Rating"
+            value={
+              musicData.albums.length
+                ? (
+                    musicData.albums.reduce(
+                      (sum, album) => sum + Number(album.rating || 0),
+                      0
+                    ) / musicData.albums.length
+                  ).toFixed(1)
+                : "0"
+            }
+          />
+
+          <StatCard
+            icon={Sparkles}
+            label="Essential"
+            value={
+              musicData.albums.filter((album) => album.essential).length
+            }
+          />
+
+          <StatCard
+            icon={Ticket}
+            label="Shows"
+            value={musicData.shows.length}
+          />
+
+          <StatCard
+            icon={ListMusic}
+            label="Playlists"
+            value={musicData.playlists.length}
+          />
+
+          <StatCard
+            icon={UserRoundSearch}
+            label="Artists"
+            value={musicData.artists.length}
+          />
+
+          <StatCard
+            icon={Disc3}
+            label="Albums"
+            value={musicData.albums.length}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <TopTagsCard albums={musicData.albums} />
+          <TopArtistsCard albums={musicData.albums} />
+        </div>
+      </DashboardSection>
+
 <DashboardSection
   title="Listening Eras"
   Icon={Clock3}
@@ -708,61 +764,6 @@ const cancelEraEdit = () => {
     </div>
   )}
 </DashboardSection>
-      <DashboardSection title="Music Stats" Icon={BarChart3} color="sky">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
-          <StatCard
-            icon={Star}
-            label="Avg Rating"
-            value={
-              musicData.albums.length
-                ? (
-                    musicData.albums.reduce(
-                      (sum, album) => sum + Number(album.rating || 0),
-                      0
-                    ) / musicData.albums.length
-                  ).toFixed(1)
-                : "0"
-            }
-          />
-
-          <StatCard
-            icon={Sparkles}
-            label="Essential"
-            value={
-              musicData.albums.filter((album) => album.essential).length
-            }
-          />
-
-          <StatCard
-            icon={Ticket}
-            label="Shows"
-            value={musicData.shows.length}
-          />
-
-          <StatCard
-            icon={ListMusic}
-            label="Playlists"
-            value={musicData.playlists.length}
-          />
-
-          <StatCard
-            icon={UserRoundSearch}
-            label="Artists"
-            value={musicData.artists.length}
-          />
-
-          <StatCard
-            icon={Disc3}
-            label="Albums"
-            value={musicData.albums.length}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <TopTagsCard albums={musicData.albums} />
-          <TopArtistsCard albums={musicData.albums} />
-        </div>
-      </DashboardSection>
 
       <DashboardSection title="Tag Browser" Icon={Tags} color="green">
         <TagBrowser
