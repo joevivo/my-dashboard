@@ -29,6 +29,8 @@ function detectOutcomeType(result = "") {
   if (/\bfbx\b/.test(text) || /\bfb\(.*\)x\b/.test(text)) return "FBX";
   if (/\bx\b/.test(text)) return "X_CHANCE";
 
+  if (/\binj\b/.test(text) || /\binjury\b/.test(text)) return "INJURY";
+
   if (/\bhr\b/.test(text) || /\bhomerun\b/.test(text)) return "HOME_RUN";
   if (/\bsi\b/.test(text) || /\bsingle\b/.test(text)) return "SINGLE";
   if (/\bdo\b/.test(text) || /\bdouble\b/.test(text)) return "DOUBLE";
@@ -41,7 +43,6 @@ function detectOutcomeType(result = "") {
   if (/\bgb\b/.test(text) || /\bgb\(/.test(text)) return "GROUNDBALL";
   if (/\bfb\b/.test(text) || /\bfly\b/.test(text)) return "FLYBALL";
   if (/\blo\b/.test(text) || /\blineout\b/.test(text)) return "LINEOUT";
-  if (/\binj\b/.test(text) || /\binjury\b/.test(text)) return "INJURY";
   if (/\bpopout\b/.test(text)) return "POPOUT";
   if (/\bfoulout\b/.test(text)) return "FOULOUT";
 
@@ -53,7 +54,6 @@ function parseRollPrefix(line = "") {
 
   if (!match) {
     return {
-      column: null,
       roll: null,
       result: line.trim(),
       isPrimaryRoll: false,
@@ -63,13 +63,27 @@ function parseRollPrefix(line = "") {
   const rollNumber = Number(match[1]);
   const result = match[2].trim();
 
-  const isPrimaryRoll = rollNumber >= 2 && rollNumber <= 12;
-
   return {
-    column: null,
     roll: String(rollNumber),
     result,
-    isPrimaryRoll,
+    isPrimaryRoll: rollNumber >= 2 && rollNumber <= 12,
+  };
+}
+
+function parseSplitResult(result = "") {
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const outcome = match[1].trim();
+
+  return {
+    result: outcome,
+    outcomeType: detectOutcomeType(outcome),
+    rangeStart: Number(match[2]),
+    rangeEnd: Number(match[3]),
   };
 }
 
@@ -88,6 +102,40 @@ function getColumnFromBlockIndex(blockIndex) {
   return (blockIndex % 3) + 1;
 }
 
+function buildEvent({
+  currentSide,
+  currentColumn,
+  parsed,
+  line,
+  index,
+}) {
+  const splitResult = parseSplitResult(parsed.result);
+  const baseResult = splitResult ? splitResult.result : parsed.result;
+  const outcomeType = detectOutcomeType(baseResult);
+
+  if (!baseResult || outcomeType === "UNKNOWN") return null;
+
+  return {
+    id: `${currentSide}-${index}`,
+    side: currentSide,
+    column: currentColumn,
+    roll: parsed.roll,
+    result: baseResult,
+    outcomeType,
+    rawLine: line,
+    splitOutcomes: splitResult ? [splitResult] : [],
+    isXChance:
+      outcomeType === "GBX" ||
+      outcomeType === "FBX" ||
+      outcomeType === "X_CHANCE",
+    isInjury: /\binj\b|\binjury\b|\+\s*injury/i.test(line),
+    isBallparkSingle:
+      /\bballpark\b.*\bsi\b|\bsi\b.*\bballpark\b/i.test(line),
+    isBallparkHomeRun:
+      /\bballpark\b.*\bhr\b|\bhr\b.*\bballpark\b/i.test(line),
+  };
+}
+
 export function parseCardEvents(rawText = "") {
   const lines = rawText
     .split("\n")
@@ -98,58 +146,74 @@ export function parseCardEvents(rawText = "") {
   let copiedTableMode = false;
   let blockIndex = -1;
   let currentColumn = null;
+  let lastPrimaryEvent = null;
 
-  return lines
-    .map((line, index) => {
-      const handednessHeader = detectHandednessHeader(line);
+  const events = [];
 
-      if (handednessHeader === "dual") {
-        copiedTableMode = true;
-        currentSide = "vsLHP";
-        return null;
+  lines.forEach((line, index) => {
+    const handednessHeader = detectHandednessHeader(line);
+
+    if (handednessHeader === "dual") {
+      copiedTableMode = true;
+      currentSide = "vsLHP";
+      return;
+    }
+
+    if (handednessHeader) {
+      currentSide = handednessHeader;
+      return;
+    }
+
+    if (isColumnHeader(line)) return;
+
+    const parsed = parseRollPrefix(line);
+
+    if (copiedTableMode && parsed.isPrimaryRoll && parsed.roll === "2") {
+      blockIndex += 1;
+      currentSide = getSideFromBlockIndex(blockIndex);
+      currentColumn = getColumnFromBlockIndex(blockIndex);
+    }
+
+    if (!parsed.isPrimaryRoll) {
+      const splitResult = parseSplitResult(parsed.result);
+      const continuationType = detectOutcomeType(parsed.result);
+
+      if (splitResult && lastPrimaryEvent) {
+        lastPrimaryEvent.splitOutcomes.push(splitResult);
+        return;
       }
 
-      if (handednessHeader) {
-        currentSide = handednessHeader;
-        return null;
+      if (continuationType === "INJURY") {
+        const injuryEvent = buildEvent({
+          currentSide,
+          currentColumn,
+          parsed,
+          line,
+          index,
+        });
+
+        if (injuryEvent) events.push(injuryEvent);
+        return;
       }
 
-      if (isColumnHeader(line)) {
-        return null;
-      }
+      return;
+    }
 
-      const parsed = parseRollPrefix(line);
+    const event = buildEvent({
+      currentSide,
+      currentColumn,
+      parsed,
+      line,
+      index,
+    });
 
-      if (copiedTableMode && parsed.isPrimaryRoll && parsed.roll === "2") {
-        blockIndex += 1;
-        currentSide = getSideFromBlockIndex(blockIndex);
-        currentColumn = getColumnFromBlockIndex(blockIndex);
-      }
+    if (!event) return;
 
-      const outcomeType = detectOutcomeType(parsed.result);
+    events.push(event);
+    lastPrimaryEvent = event;
+  });
 
-      if (!parsed.result || outcomeType === "UNKNOWN") return null;
-
-      return {
-        id: `${currentSide}-${index}`,
-        side: currentSide,
-        column: currentColumn,
-        roll: parsed.roll,
-        result: parsed.result,
-        outcomeType,
-        rawLine: line,
-        isXChance:
-          outcomeType === "GBX" ||
-          outcomeType === "FBX" ||
-          outcomeType === "X_CHANCE",
-        isInjury: /\binj\b|\binjury\b|\+\s*injury/i.test(line),
-        isBallparkSingle:
-          /\bballpark\b.*\bsi\b|\bsi\b.*\bballpark\b/i.test(line),
-        isBallparkHomeRun:
-          /\bballpark\b.*\bhr\b|\bhr\b.*\bballpark\b/i.test(line),
-      };
-    })
-    .filter(Boolean);
+  return events;
 }
 
 export function summarizeCardEvents(events = []) {
@@ -159,6 +223,10 @@ export function summarizeCardEvents(events = []) {
       summary.bySide[event.side] = (summary.bySide[event.side] || 0) + 1;
       summary.byOutcome[event.outcomeType] =
         (summary.byOutcome[event.outcomeType] || 0) + 1;
+
+      if (event.splitOutcomes?.length) {
+        summary.splitEvents += 1;
+      }
 
       if (event.isXChance) summary.xChances += 1;
       if (event.isInjury) summary.injuryEvents += 1;
@@ -171,6 +239,7 @@ export function summarizeCardEvents(events = []) {
       total: 0,
       bySide: {},
       byOutcome: {},
+      splitEvents: 0,
       xChances: 0,
       injuryEvents: 0,
       ballparkSingles: 0,
