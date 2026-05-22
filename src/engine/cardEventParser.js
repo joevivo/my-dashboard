@@ -46,7 +46,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*(\d+)\s*[-–]\s*(\d+)\s+(.+)$/);
+  const match = line.match(/^\s*(\d+)\s*[-â€“]\s*(\d+)\s+(.+)$/);
 
   if (!match) {
     return {
@@ -93,10 +93,15 @@ export function parseCardEvents(rawText = "") {
         result: parsed.result,
         outcomeType,
         rawLine: line,
-        isXChance: outcomeType === "GBX" || outcomeType === "FBX" || outcomeType === "X_CHANCE",
+        isXChance:
+          outcomeType === "GBX" ||
+          outcomeType === "FBX" ||
+          outcomeType === "X_CHANCE",
         isInjury: /\binj\b|\binjury\b|\+\s*injury/i.test(line),
-        isBallparkSingle: /\bballpark\b.*\bsi\b|\bsi\b.*\bballpark\b/i.test(line),
-        isBallparkHomeRun: /\bballpark\b.*\bhr\b|\bhr\b.*\bballpark\b/i.test(line),
+        isBallparkSingle:
+          /\bballpark\b.*\bsi\b|\bsi\b.*\bballpark\b/i.test(line),
+        isBallparkHomeRun:
+          /\bballpark\b.*\bhr\b|\bhr\b.*\bballpark\b/i.test(line),
       };
     })
     .filter(Boolean);

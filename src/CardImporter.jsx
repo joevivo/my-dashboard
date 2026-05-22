@@ -9,6 +9,10 @@ import {
   parseCardOutcomeProfile,
   describeOutcomeProfile,
 } from "./engine/cardOutcomeParser";
+import {
+  parseCardEvents,
+  summarizeCardEvents,
+} from "./engine/cardEventParser";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -632,5 +636,8 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
+
 
 
