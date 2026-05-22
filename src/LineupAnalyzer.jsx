@@ -9,7 +9,7 @@ const ballparks = parks1980;
 
 function SectionCard({ title, children }) {
   return (
-    <div className="bg-white p-5 rounded border shadow-sm">
+    <div className="dashboard-panel p-5">
       <h2 className="text-lg font-bold mb-3">{title}</h2>
       {children}
     </div>
@@ -370,7 +370,7 @@ export default function LineupAnalyzer() {
         backgroundImage: "url('/hitter-bg.svg')",
       }}
     >
-      <div className="bg-white p-5 rounded border shadow-sm">
+      <div className="dashboard-panel p-5">
         <h1 className="text-xl font-bold">Lineup Analyzer</h1>
         <p className="text-sm text-gray-500">
           Format: POS/POS BATS DEF NAME OBPvsR OBPvsL PWR SPD
