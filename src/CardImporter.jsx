@@ -170,9 +170,13 @@ function parseCard(rawText, existingCard = {}) {
     "";
 
   const outcomeProfile = parseCardOutcomeProfile(rawText);
+  const cardEvents = parseCardEvents(rawText);
+  const cardEventSummary = summarizeCardEvents(cardEvents);
 
   const outcomeDescription = describeOutcomeProfile(
     outcomeProfile,
+    cardEvents,
+    cardEventSummary,
     isPitcher ? "pitcher" : "hitter"
   );
 
@@ -208,6 +212,8 @@ function parseCard(rawText, existingCard = {}) {
     vsRight,
 
     outcomeProfile,
+    cardEvents,
+    cardEventSummary,
     outcomeDescription,
 
     rawText,
@@ -389,6 +395,39 @@ export default function CardImporter() {
             />
 
             <Field label="Profile" value={preview.outcomeDescription} />
+
+            <Field
+              label="Parsed Events"
+              value={
+                preview.cardEventSummary
+                  ? `${preview.cardEventSummary.total} total | RHP ${
+                      preview.cardEventSummary.bySide?.vsRHP || 0
+                    } | LHP ${preview.cardEventSummary.bySide?.vsLHP || 0}`
+                  : ""
+              }
+            />
+
+            <Field
+              label="X / Injury"
+              value={
+                preview.cardEventSummary
+                  ? `${preview.cardEventSummary.xChances || 0} X | ${
+                      preview.cardEventSummary.injuryEvents || 0
+                    } injury`
+                  : ""
+              }
+            />
+
+            <Field
+              label="Park SI / HR"
+              value={
+                preview.cardEventSummary
+                  ? `${preview.cardEventSummary.ballparkSingles || 0} SI | ${
+                      preview.cardEventSummary.ballparkHomeRuns || 0
+                    } HR`
+                  : ""
+              }
+            />
           </div>
         </div>
       )}
@@ -593,4 +632,5 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
