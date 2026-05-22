@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { parks1980 } from "./parks1980";
+import { getParkData } from "./engine/parkEngine";
 
-const ballparks = [
-  { name: "Astrodome 1980", hrL: 1, hrR: 1 },
-  { name: "Busch Stadium 1980", hrL: 1, hrR: 4 },
-  { name: "Riverfront Stadium 1980", hrL: 19, hrR: 19 },
-  { name: "Arlington Stadium 1980", hrL: 7, hrR: 7 },
-  { name: "Memorial Stadium 1980", hrL: 8, hrR: 17 },
-  { name: "Yankee Stadium 1980", hrL: 18, hrR: 2 },
-  { name: "Tiger Stadium 1980", hrL: 19, hrR: 16 },
-  { name: "Comiskey Park 1980", hrL: 1, hrR: 1 },
-];
+const ballparks = parks1980;
 
 function getLeagueName(league) {
   return league.leagueName || league.name || "Unnamed League";
@@ -117,7 +110,7 @@ export default function MatchupAnalyzer() {
   };
 
   const analyzeMatchup = () => {
-    const park = ballparks.find((item) => item.name === ballpark) || ballparks[0];
+    const park = getParkData(ballpark) || getParkData(ballparks[0]?.name);
 
     const hitters = lineupText
       .split("\n")
@@ -504,3 +497,5 @@ function PitcherSection({ title, pitchers }) {
     </div>
   );
 }
+
+
