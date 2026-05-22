@@ -821,6 +821,50 @@ function CardMatchupTester({ cards }) {
     selectedPark?.homeRunsRight ?? selectedPark?.homeRunRight ?? selectedPark?.hrRight
   );
 
+  const describeParkPressure = (singleValue, homeRunValue, batterHand) => {
+    const si = Number(singleValue);
+    const hr = Number(homeRunValue);
+
+    if (!Number.isFinite(si) || !Number.isFinite(hr)) {
+      return "Park pressure unavailable; base matchup score is unchanged.";
+    }
+
+    const handLabel =
+      batterHand === "L" ? "LH hitter" : batterHand === "R" ? "RH hitter" : "Batter";
+
+    const singleRead =
+      si >= 15
+        ? "strongly boosts singles"
+        : si >= 11
+          ? "leans singles-friendly"
+          : si <= 4
+            ? "heavily suppresses singles"
+            : si <= 7
+              ? "leans against singles"
+              : "is near neutral for singles";
+
+    const homeRunRead =
+      hr >= 15
+        ? "strongly boosts HR chances"
+        : hr >= 11
+          ? "leans HR-friendly"
+          : hr <= 4
+            ? "heavily suppresses HR chances"
+            : hr <= 7
+              ? "leans against HRs"
+              : "is near neutral for HRs";
+
+    return `${handLabel} park pressure: SI ${si} ${singleRead}; HR ${hr} ${homeRunRead}. Base matchup score is unchanged.`;
+  };
+
+  const parkPressure = matchup
+    ? describeParkPressure(
+        applicableParkSingle,
+        applicableParkHomeRun,
+        matchup.actualBatterHand
+      )
+    : "";
+
   const getMatchupRead = (score) => {
     if (score >= 40) return "Strong hitter edge";
     if (score >= 30) return "Hitter edge";
@@ -957,7 +1001,13 @@ function CardMatchupTester({ cards }) {
             value={applicableParkHomeRun}
           />
 
+          
           <Field
+            label="Park Pressure"
+            value={parkPressure}
+            className="md:col-span-3"
+          />
+<Field
             label="Hitter Card Input"
             value={
               "OB " +
@@ -1008,12 +1058,15 @@ function CardMatchupTester({ cards }) {
     </div>
   );
 }
-function Field({ label, value }) {
+function Field({ label, value, className = "" }) {
+  const displayValue =
+    value === null || value === undefined || value === "" ? "\u2014" : value;
+
   return (
-    <div className="border border-slate-200 rounded-lg p-3 bg-slate-50">
+    <div className={`border border-slate-200 rounded-lg p-3 bg-slate-50 ${className}`}>
       <div className="text-xs uppercase text-slate-400">{label}</div>
 
-      <div className="font-semibold text-slate-900 mt-1">{value || "—"}</div>
+      <div className="font-semibold text-slate-900 mt-1">{displayValue}</div>
     </div>
   );
 }
@@ -1148,6 +1201,8 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
 
 
 
