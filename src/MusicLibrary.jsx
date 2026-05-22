@@ -708,7 +708,7 @@ const cancelEraEdit = () => {
     </div>
   )}
 </DashboardSection>
-      <DashboardSection title="Music Stats" color="sky">
+      <DashboardSection title="Music Stats" Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
             icon={Star}
@@ -764,7 +764,7 @@ const cancelEraEdit = () => {
         </div>
       </DashboardSection>
 
-      <DashboardSection title="Tag Browser" color="green">
+      <DashboardSection title="Tag Browser" Icon={Tags} color="green">
         <TagBrowser
           tags={allTags}
           selectedTag={selectedTag}
@@ -772,7 +772,7 @@ const cancelEraEdit = () => {
         />
       </DashboardSection>
 
-      <DashboardSection title="Artist Spotlight" color="purple">
+      <DashboardSection title="Artist Spotlight" Icon={UserRoundSearch} color="purple">
         {!selectedArtist ? (
           <p className="text-sm text-slate-500">
             Click an artist card below to see related albums, playlists, shows,
@@ -788,7 +788,7 @@ const cancelEraEdit = () => {
         )}
       </DashboardSection>
 
-      <DashboardSection title="Recently Added" color="slate">
+      <DashboardSection title="Recently Added" Icon={Clock3} color="slate">
         {recentItems.length === 0 ? (
           <p className="text-sm text-slate-500">No recent entries yet.</p>
         ) : (
@@ -814,7 +814,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Essential Albums"
+  title="Essential Albums" Icon={Sparkles}
   color="amber"
   isOpen={openSections.essentialAlbums}
   onToggle={() => toggleSection("essentialAlbums")}
@@ -829,7 +829,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Favorite Artists"
+  title="Favorite Artists" Icon={UserRoundSearch}
   color="purple"
   isOpen={openSections.favoriteArtists}
   onToggle={() => toggleSection("favoriteArtists")}
@@ -874,7 +874,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Favorite Albums"
+  title="Favorite Albums" Icon={Disc3}
   color="amber"
   isOpen={openSections.favoriteAlbums}
   onToggle={() => toggleSection("favoriteAlbums")}
@@ -977,7 +977,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Playlists"
+  title="Playlists" Icon={ListMusic}
   color="sky"
   isOpen={openSections.playlists}
   onToggle={() => toggleSection("playlists")}
@@ -1034,7 +1034,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Shows Attended"
+  title="Shows Attended" Icon={Ticket}
   color="rose"
   isOpen={openSections.shows}
   onToggle={() => toggleSection("shows")}
@@ -1089,7 +1089,7 @@ const cancelEraEdit = () => {
       </DashboardSection>
 
       <DashboardSection
-  title="Want to Explore"
+  title="Want to Explore" Icon={Compass}
   color="green"
   isOpen={openSections.explore}
   onToggle={() => toggleSection("explore")}
