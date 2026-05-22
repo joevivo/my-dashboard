@@ -20,6 +20,8 @@ import {
   combineCardMetrics,
   scoreCombinedMatchup,
 } from "./engine/cardMatchupEngine";
+import { parks1980 } from "./parks1980";
+import { getParkData } from "./engine/parkEngine";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -775,6 +777,9 @@ function CardMatchupTester({ cards }) {
 
   const [selectedHitterName, setSelectedHitterName] = useState("");
   const [selectedPitcherName, setSelectedPitcherName] = useState("");
+  const [selectedBallpark, setSelectedBallpark] = useState("Astrodome 1980");
+  const parkOptions = Array.isArray(parks1980) ? parks1980 : Object.values(parks1980);
+  const selectedPark = getParkData(selectedBallpark);
 
   const selectedHitter = hitters.find((card) => card.name === selectedHitterName);
   const selectedPitcher = pitchers.find((card) => card.name === selectedPitcherName);
@@ -816,7 +821,7 @@ function CardMatchupTester({ cards }) {
         Preview-only comparison using saved card probability profiles.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
         <select
           value={selectedHitterName}
           onChange={(event) => setSelectedHitterName(event.target.value)}
@@ -842,10 +847,73 @@ function CardMatchupTester({ cards }) {
             </option>
           ))}
         </select>
+
+        <select
+          value={selectedBallpark}
+          onChange={(event) => setSelectedBallpark(event.target.value)}
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+        >
+          <option value="">Select ballpark</option>
+          {parkOptions.map((park) => (
+            <option key={park.id || park.name} value={park.name}>
+              {park.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {matchup ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+          <Field
+            label="Ballpark"
+            value={selectedPark?.name || selectedBallpark}
+          />
+
+
+
+          <Field
+            label="Park SI L/R"
+            value={
+              String(
+                selectedPark?.singlesLeft ??
+                  selectedPark?.singleLeft ??
+                  selectedPark?.siLeft ??
+                  "?"
+              ) +
+              "/" +
+              String(
+                selectedPark?.singlesRight ??
+                  selectedPark?.singleRight ??
+                  selectedPark?.siRight ??
+                  "?"
+              )
+            }
+          />
+
+          <Field
+            label="Park HR L/R"
+            value={
+              String(
+                selectedPark?.homeRunsLeft ??
+                  selectedPark?.homeRunLeft ??
+                  selectedPark?.hrLeft ??
+                  "?"
+              ) +
+              "/" +
+              String(
+                selectedPark?.homeRunsRight ??
+                  selectedPark?.homeRunRight ??
+                  selectedPark?.hrRight ??
+                  "?"
+              )
+            }
+          />
+
+          <Field
+            label="Park Environment"
+            value={selectedPark?.environment || "Unknown"}
+          />
+
           <Field
             label="Hitter Card Used"
             value={matchup.hitterSide === "vsLHP" ? "vs LHP" : "vs RHP"}
