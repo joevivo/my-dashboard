@@ -22,11 +22,7 @@ import {
 } from "./engine/cardMatchupEngine";
 import { parks1980 } from "./parks1980";
 import { getParkData } from "./engine/parkEngine";
-import {
-  describeParkPressure,
-  describeParkFitRead,
-  describeParkAdjustedPreview,
-} from "./engine/parkPreviewEngine";
+import { getParkPreviewSummary } from "./engine/parkPreviewEngine";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -826,49 +822,6 @@ function CardMatchupTester({ cards }) {
   );
 
 
-  const parkPressure = matchup
-    ? describeParkPressure(
-        applicableParkSingle,
-        applicableParkHomeRun,
-        matchup.actualBatterHand
-      )
-    : "";
-
-
-
-  const parkFitRead = matchup
-    ? describeParkFitRead(matchup, applicableParkSingle, applicableParkHomeRun)
-    : "";
-
-  const describeParkAdjustedPreview = (matchupData, baseScore, singleValue, homeRunValue) => {
-    const si = Number(singleValue);
-    const hr = Number(homeRunValue);
-    const base = Number(baseScore);
-
-    if (!Number.isFinite(si) || !Number.isFinite(hr) || !Number.isFinite(base)) {
-      return "Park-adjusted preview unavailable. Base matchup score is unchanged.";
-    }
-
-    const combinedOb = Number(matchupData?.onBase || 0) * 100;
-    const combinedHr = Number(matchupData?.homeRuns || 0) * 100;
-
-    const singleAdjustment = ((si - 10) / 9) * Math.min(combinedOb, 35) * 0.08;
-    const homeRunAdjustment = ((hr - 10) / 9) * Math.min(combinedHr, 8) * 0.9;
-    const rawDelta = singleAdjustment + homeRunAdjustment;
-
-    const adjustedScore = Math.max(0, Math.min(50, base + rawDelta));
-    const effectiveDelta = adjustedScore - base;
-    const deltaText = effectiveDelta >= 0 ? `+${effectiveDelta.toFixed(1)}` : effectiveDelta.toFixed(1);
-
-    const direction =
-      Math.abs(effectiveDelta) < 0.5
-        ? "Park effect is essentially neutral for this matchup shape."
-        : effectiveDelta > 0
-          ? "Park effect leans toward the hitter profile."
-          : "Park effect leans against the hitter profile.";
-
-    return `Experimental park preview: ${adjustedScore.toFixed(1)} (${deltaText} from base ${base.toFixed(1)}). ${direction} SI component ${singleAdjustment.toFixed(1)}, HR component ${homeRunAdjustment.toFixed(1)}. Base Matchup Score is unchanged.`;
-  };
   const getMatchupRead = (score) => {
     if (score >= 40) return "Strong hitter edge";
     if (score >= 30) return "Hitter edge";
@@ -879,15 +832,22 @@ function CardMatchupTester({ cards }) {
 
   const matchupScore = matchup ? scoreCombinedMatchup(matchup) : null;
 
-  const parkAdjustedPreview =
+  const parkPreviewSummary =
     matchup && matchupScore !== null
-      ? describeParkAdjustedPreview(
+      ? getParkPreviewSummary({
           matchup,
-          matchupScore,
+          baseScore: matchupScore,
           applicableParkSingle,
-          applicableParkHomeRun
-        )
-      : "";
+          applicableParkHomeRun,
+          batterHand: matchup.actualBatterHand,
+        })
+      : {
+          parkPressure: "",
+          parkFitRead: "",
+          parkAdjustedPreview: "",
+        };
+
+  const { parkPressure, parkFitRead, parkAdjustedPreview } = parkPreviewSummary;
 
   return (
     <div className="dashboard-panel p-6">
@@ -1246,6 +1206,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 

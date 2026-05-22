@@ -121,3 +121,38 @@ export function describeParkAdjustedPreview(matchupData, baseScore, singleValue,
 
   return `Experimental park preview: ${adjustedScore.toFixed(1)} (${deltaText} from base ${base.toFixed(1)}). ${direction} SI component ${singleAdjustment.toFixed(1)}, HR component ${homeRunAdjustment.toFixed(1)}. Base Matchup Score is unchanged.`;
 }
+
+export function getParkPreviewSummary({
+  matchup,
+  baseScore,
+  applicableParkSingle,
+  applicableParkHomeRun,
+  batterHand,
+}) {
+  if (!matchup || baseScore === null || baseScore === undefined) {
+    return {
+      parkPressure: "",
+      parkFitRead: "",
+      parkAdjustedPreview: "",
+    };
+  }
+
+  return {
+    parkPressure: describeParkPressure(
+      applicableParkSingle,
+      applicableParkHomeRun,
+      batterHand
+    ),
+    parkFitRead: describeParkFitRead(
+      matchup,
+      applicableParkSingle,
+      applicableParkHomeRun
+    ),
+    parkAdjustedPreview: describeParkAdjustedPreview(
+      matchup,
+      baseScore,
+      applicableParkSingle,
+      applicableParkHomeRun
+    ),
+  };
+}
