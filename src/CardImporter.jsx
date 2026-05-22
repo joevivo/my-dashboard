@@ -1163,6 +1163,12 @@ function CardMatchupTester({ cards }) {
             value={parkAdjustedPreview}
             className="md:col-span-3"
           />
+
+          <Field
+            label="Formula Note"
+            value="Experimental preview uses applicable SI/HR park factors against the combined card shape. It is directional context, not a validated Strat simulation."
+            className="md:col-span-3"
+          />
 </div>
       ) : (
         <p className="text-sm text-slate-500">
@@ -1315,6 +1321,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
