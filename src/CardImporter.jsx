@@ -423,6 +423,15 @@ export default function CardImporter() {
             />
 
             <Field
+              label="Split Events"
+              value={
+                preview.cardEventSummary
+                  ? `${preview.cardEventSummary.splitEvents || 0} grouped splits`
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
@@ -636,6 +645,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
