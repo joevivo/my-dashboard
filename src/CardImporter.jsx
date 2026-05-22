@@ -432,6 +432,19 @@ export default function CardImporter() {
             />
 
             <Field
+              label="Outcome Breakdown"
+              value={
+                preview.cardEventSummary
+                  ? `HR ${preview.cardEventSummary.byOutcome?.HOME_RUN || 0} | SI ${
+                      preview.cardEventSummary.byOutcome?.SINGLE || 0
+                    } | DO ${preview.cardEventSummary.byOutcome?.DOUBLE || 0} | BB ${
+                      preview.cardEventSummary.byOutcome?.WALK || 0
+                    } | K ${preview.cardEventSummary.byOutcome?.STRIKEOUT || 0}`
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
@@ -645,6 +658,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
