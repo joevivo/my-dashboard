@@ -803,6 +803,24 @@ function CardMatchupTester({ cards }) {
 
   const formatPct = (value) => `${((value || 0) * 100).toFixed(1)}%`;
 
+  const getParkSplitForBatter = (leftValue, rightValue) => {
+    if (!matchup?.actualBatterHand) return "?";
+
+    return matchup.actualBatterHand === "L"
+      ? leftValue ?? "?"
+      : rightValue ?? "?";
+  };
+
+  const applicableParkSingle = getParkSplitForBatter(
+    selectedPark?.singlesLeft ?? selectedPark?.singleLeft ?? selectedPark?.siLeft,
+    selectedPark?.singlesRight ?? selectedPark?.singleRight ?? selectedPark?.siRight
+  );
+
+  const applicableParkHomeRun = getParkSplitForBatter(
+    selectedPark?.homeRunsLeft ?? selectedPark?.homeRunLeft ?? selectedPark?.hrLeft,
+    selectedPark?.homeRunsRight ?? selectedPark?.homeRunRight ?? selectedPark?.hrRight
+  );
+
   const getMatchupRead = (score) => {
     if (score >= 40) return "Strong hitter edge";
     if (score >= 30) return "Hitter edge";
@@ -927,6 +945,16 @@ function CardMatchupTester({ cards }) {
           <Field
             label="Actual Batter Hand"
             value={matchup.actualBatterHand || "?"}
+          />
+
+          <Field
+            label="Applicable Park SI"
+            value={applicableParkSingle}
+          />
+
+          <Field
+            label="Applicable Park HR"
+            value={applicableParkHomeRun}
           />
 
           <Field
