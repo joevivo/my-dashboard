@@ -591,6 +591,44 @@ export default function CardImporter() {
             />
 
             <Field
+              label="vs LHP Weighted Outcomes"
+              value={
+                preview.cardEventSummary
+                  ? "HR " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsLHP?.HOME_RUN || 0) * 100).toFixed(1) +
+                    "% | SI " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsLHP?.SINGLE || 0) * 100).toFixed(1) +
+                    "% | DO " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsLHP?.DOUBLE || 0) * 100).toFixed(1) +
+                    "% | BB " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsLHP?.WALK || 0) * 100).toFixed(1) +
+                    "% | K " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsLHP?.STRIKEOUT || 0) * 100).toFixed(1) +
+                    "%"
+                  : ""
+              }
+            />
+
+            <Field
+              label="vs RHP Weighted Outcomes"
+              value={
+                preview.cardEventSummary
+                  ? "HR " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsRHP?.HOME_RUN || 0) * 100).toFixed(1) +
+                    "% | SI " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsRHP?.SINGLE || 0) * 100).toFixed(1) +
+                    "% | DO " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsRHP?.DOUBLE || 0) * 100).toFixed(1) +
+                    "% | BB " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsRHP?.WALK || 0) * 100).toFixed(1) +
+                    "% | K " +
+                    ((preview.cardEventSummary.bySideWeightedOutcome?.vsRHP?.STRIKEOUT || 0) * 100).toFixed(1) +
+                    "%"
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
