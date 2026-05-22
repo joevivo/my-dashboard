@@ -13,6 +13,9 @@ import {
   parseCardEvents,
   summarizeCardEvents,
 } from "./engine/cardEventParser";
+import {
+  compareCardSides,
+} from "./engine/cardProbabilityEngine";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -176,11 +179,13 @@ function parseCard(rawText, existingCard = {}) {
   const outcomeProfile = parseCardOutcomeProfile(rawText);
   const cardEvents = parseCardEvents(rawText);
   const cardEventSummary = summarizeCardEvents(cardEvents);
+  const cardProbabilityProfile = compareCardSides(cardEventSummary);
 
   const outcomeDescription = describeOutcomeProfile(
     outcomeProfile,
     cardEvents,
     cardEventSummary,
+    cardProbabilityProfile,
     isPitcher ? "pitcher" : "hitter"
   );
 
@@ -218,6 +223,7 @@ function parseCard(rawText, existingCard = {}) {
     outcomeProfile,
     cardEvents,
     cardEventSummary,
+    cardProbabilityProfile,
     outcomeDescription,
 
     rawText,
@@ -629,6 +635,24 @@ export default function CardImporter() {
             />
 
             <Field
+              label="vs LHP Card Score"
+              value={
+                preview.cardProbabilityProfile
+                  ? preview.cardProbabilityProfile.vsLHP.score.toFixed(1)
+                  : ""
+              }
+            />
+
+            <Field
+              label="vs RHP Card Score"
+              value={
+                preview.cardProbabilityProfile
+                  ? preview.cardProbabilityProfile.vsRHP.score.toFixed(1)
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
@@ -842,6 +866,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
