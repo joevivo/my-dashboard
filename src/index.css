@@ -62,3 +62,101 @@ body {
     transform: translateX(-50%);
   }
 }
+
+/* Shared dark mode surfaces */
+.dark .dashboard-panel {
+  background: rgba(15, 23, 42, 0.86);
+  border-color: rgba(51, 65, 85, 0.9);
+  color: rgb(226, 232, 240);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.28),
+    0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.dark .dashboard-panel:hover {
+  border-color: rgba(100, 116, 139, 0.8);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.34),
+    0 22px 50px rgba(0, 0, 0, 0.34);
+}
+
+.dark .dashboard-section {
+  background: rgba(15, 23, 42, 0.78);
+  border-color: rgba(51, 65, 85, 0.9);
+  color: rgb(226, 232, 240);
+}
+
+.dark .dashboard-section:hover {
+  border-color: rgba(100, 116, 139, 0.8);
+}
+
+.dark .dashboard-section-icon {
+  background: rgba(30, 41, 59, 0.78);
+  border-color: rgba(71, 85, 105, 0.85);
+}
+
+.dark .dashboard-section-icon-svg,
+.dark .dashboard-section-chevron {
+  color: rgb(203, 213, 225);
+}
+
+.dark .dashboard-section-title {
+  color: rgb(248, 250, 252);
+}
+
+.dark .dashboard-section-summary {
+  color: rgb(148, 163, 184);
+}
+
+.dark .dashboard-panel .text-slate-900,
+.dark .dashboard-section .text-slate-900 {
+  color: rgb(248, 250, 252);
+}
+
+.dark .dashboard-panel .text-slate-700,
+.dark .dashboard-panel .text-slate-600,
+.dark .dashboard-section .text-slate-700,
+.dark .dashboard-section .text-slate-600 {
+  color: rgb(203, 213, 225);
+}
+
+.dark .dashboard-panel .text-slate-500,
+.dark .dashboard-panel .text-slate-400,
+.dark .dashboard-section .text-slate-500,
+.dark .dashboard-section .text-slate-400 {
+  color: rgb(148, 163, 184);
+}
+
+.dark .dashboard-panel .bg-white,
+.dark .dashboard-section .bg-white {
+  background-color: rgba(15, 23, 42, 0.72);
+}
+
+.dark .dashboard-panel .bg-slate-50,
+.dark .dashboard-section .bg-slate-50 {
+  background-color: rgba(30, 41, 59, 0.6);
+}
+
+.dark .dashboard-panel .border-slate-200,
+.dark .dashboard-section .border-slate-200 {
+  border-color: rgba(51, 65, 85, 0.9);
+}
+
+.dark .dashboard-panel input,
+.dark .dashboard-panel select,
+.dark .dashboard-panel textarea,
+.dark .dashboard-section input,
+.dark .dashboard-section select,
+.dark .dashboard-section textarea {
+  background-color: rgba(15, 23, 42, 0.76);
+  border-color: rgba(71, 85, 105, 0.9);
+  color: rgb(226, 232, 240);
+}
+
+.dark .dashboard-panel input::placeholder,
+.dark .dashboard-panel textarea::placeholder,
+.dark .dashboard-section input::placeholder,
+.dark .dashboard-section textarea::placeholder {
+  color: rgb(148, 163, 184);
+}
+

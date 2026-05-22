@@ -33,7 +33,7 @@ export default function DashboardSection({
 
   return (
     <div
-      className={`p-6 space-y-4 border rounded-2xl shadow-sm transition hover:shadow-md ${sectionClasses}`}
+      className={`dashboard-section p-6 space-y-4 border rounded-2xl shadow-sm transition hover:shadow-md ${sectionClasses}`}
     >
       <button
         type="button"
@@ -42,22 +42,22 @@ export default function DashboardSection({
       >
         <div className="flex items-center gap-3 min-w-0">
           {Icon && (
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/70 border border-white/80 shadow-sm">
-              <Icon className="h-5 w-5 text-slate-500 group-hover:text-slate-700 transition" />
+            <span className="dashboard-section-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/70 border border-white/80 shadow-sm">
+              <Icon className="dashboard-section-icon-svg h-5 w-5 text-slate-500 group-hover:text-slate-700 transition" />
             </span>
           )}
 
           <div className="min-w-0">
-            <h2 className="text-xl font-bold leading-tight">{title}</h2>
+            <h2 className="dashboard-section-title text-xl font-bold leading-tight">{title}</h2>
 
             {!isOpen && summary && (
-              <p className="text-sm text-slate-500 mt-1">{summary}</p>
+              <p className="dashboard-section-summary text-sm text-slate-500 mt-1">{summary}</p>
             )}
           </div>
         </div>
 
         <ChevronDown
-          className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-slate-600 ${
+          className={`dashboard-section-chevron h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-slate-600 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
