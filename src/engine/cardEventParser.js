@@ -50,7 +50,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-Ã¢â‚¬â€œ]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +71,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-Ã¢â‚¬â€œ]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -227,6 +227,15 @@ export function summarizeCardEvents(events = []) {
         summary.bySideOutcome[event.side] = {};
       }
 
+      if (!summary.bySideShape[event.side]) {
+        summary.bySideShape[event.side] = {
+          onBase: 0,
+          extraBase: 0,
+          outs: 0,
+          strikeouts: 0,
+        };
+      }
+
       const addOutcome = (outcomeType) => {
         if (!outcomeType) return;
 
@@ -235,6 +244,35 @@ export function summarizeCardEvents(events = []) {
 
         summary.bySideOutcome[event.side][outcomeType] =
           (summary.bySideOutcome[event.side][outcomeType] || 0) + 1;
+
+        if (
+          ["SINGLE", "DOUBLE", "TRIPLE", "HOME_RUN", "WALK", "HBP"].includes(
+            outcomeType
+          )
+        ) {
+          summary.bySideShape[event.side].onBase += 1;
+        }
+
+        if (["DOUBLE", "TRIPLE", "HOME_RUN"].includes(outcomeType)) {
+          summary.bySideShape[event.side].extraBase += 1;
+        }
+
+        if (
+          [
+            "GROUNDBALL",
+            "FLYBALL",
+            "LINEOUT",
+            "POPOUT",
+            "FOULOUT",
+            "STRIKEOUT",
+          ].includes(outcomeType)
+        ) {
+          summary.bySideShape[event.side].outs += 1;
+        }
+
+        if (outcomeType === "STRIKEOUT") {
+          summary.bySideShape[event.side].strikeouts += 1;
+        }
       };
 
       addOutcome(event.outcomeType);
@@ -259,6 +297,7 @@ export function summarizeCardEvents(events = []) {
       bySide: {},
       byOutcome: {},
       bySideOutcome: {},
+      bySideShape: {},
       splitEvents: 0,
       xChances: 0,
       injuryEvents: 0,

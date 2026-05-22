@@ -525,6 +525,38 @@ export default function CardImporter() {
             />
 
             <Field
+              label="vs LHP Shape"
+              value={
+                preview.cardEventSummary
+                  ? "OB " +
+                    (preview.cardEventSummary.bySideShape?.vsLHP?.onBase || 0) +
+                    " | XBH " +
+                    (preview.cardEventSummary.bySideShape?.vsLHP?.extraBase || 0) +
+                    " | Outs " +
+                    (preview.cardEventSummary.bySideShape?.vsLHP?.outs || 0) +
+                    " | K " +
+                    (preview.cardEventSummary.bySideShape?.vsLHP?.strikeouts || 0)
+                  : ""
+              }
+            />
+
+            <Field
+              label="vs RHP Shape"
+              value={
+                preview.cardEventSummary
+                  ? "OB " +
+                    (preview.cardEventSummary.bySideShape?.vsRHP?.onBase || 0) +
+                    " | XBH " +
+                    (preview.cardEventSummary.bySideShape?.vsRHP?.extraBase || 0) +
+                    " | Outs " +
+                    (preview.cardEventSummary.bySideShape?.vsRHP?.outs || 0) +
+                    " | K " +
+                    (preview.cardEventSummary.bySideShape?.vsRHP?.strikeouts || 0)
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
@@ -738,6 +770,8 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
 
 
 
