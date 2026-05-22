@@ -22,6 +22,11 @@ import {
 } from "./engine/cardMatchupEngine";
 import { parks1980 } from "./parks1980";
 import { getParkData } from "./engine/parkEngine";
+import {
+  describeParkPressure,
+  describeParkFitRead,
+  describeParkAdjustedPreview,
+} from "./engine/parkPreviewEngine";
 
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
@@ -820,41 +825,6 @@ function CardMatchupTester({ cards }) {
     selectedPark?.homeRunsRight ?? selectedPark?.homeRunRight ?? selectedPark?.hrRight
   );
 
-  const describeParkPressure = (singleValue, homeRunValue, batterHand) => {
-    const si = Number(singleValue);
-    const hr = Number(homeRunValue);
-
-    if (!Number.isFinite(si) || !Number.isFinite(hr)) {
-      return "Park pressure unavailable; base matchup score is unchanged.";
-    }
-
-    const handLabel =
-      batterHand === "L" ? "LH hitter" : batterHand === "R" ? "RH hitter" : "Batter";
-
-    const singleRead =
-      si >= 15
-        ? "strongly boosts singles"
-        : si >= 11
-          ? "leans singles-friendly"
-          : si <= 4
-            ? "heavily suppresses singles"
-            : si <= 7
-              ? "leans against singles"
-              : "is near neutral for singles";
-
-    const homeRunRead =
-      hr >= 15
-        ? "strongly boosts HR chances"
-        : hr >= 11
-          ? "leans HR-friendly"
-          : hr <= 4
-            ? "heavily suppresses HR chances"
-            : hr <= 7
-              ? "leans against HRs"
-              : "is near neutral for HRs";
-
-    return `${handLabel} park pressure: SI ${si} ${singleRead}; HR ${hr} ${homeRunRead}. Base matchup score is unchanged.`;
-  };
 
   const parkPressure = matchup
     ? describeParkPressure(
@@ -865,64 +835,6 @@ function CardMatchupTester({ cards }) {
     : "";
 
 
-  const describeParkFitRead = (matchupData, singleValue, homeRunValue) => {
-    const si = Number(singleValue);
-    const hr = Number(homeRunValue);
-    const combinedHr = Number(matchupData?.homeRuns || 0) * 100;
-    const combinedXbh = Number(matchupData?.extraBase || 0) * 100;
-    const combinedOb = Number(matchupData?.onBase || 0) * 100;
-
-    if (!Number.isFinite(si) || !Number.isFinite(hr)) {
-      return "Park fit unavailable; base matchup score is unchanged.";
-    }
-
-    const hrShape =
-      combinedHr >= 5
-        ? "strong HR shape"
-        : combinedHr >= 3
-          ? "meaningful HR shape"
-          : combinedHr >= 1.5
-            ? "some HR shape"
-            : "limited HR shape";
-
-    const xbhShape =
-      combinedXbh >= 10
-        ? "strong extra-base shape"
-        : combinedXbh >= 6
-          ? "playable extra-base shape"
-          : "limited extra-base shape";
-
-    const obShape =
-      combinedOb >= 28
-        ? "strong on-base shape"
-        : combinedOb >= 20
-          ? "playable on-base shape"
-          : "limited on-base shape";
-
-    const singleFit =
-      si >= 15
-        ? "strongly supports singles/on-base pressure"
-        : si >= 11
-          ? "supports singles/on-base pressure"
-          : si <= 4
-            ? "works sharply against singles/on-base pressure"
-            : si <= 7
-              ? "leans against singles/on-base pressure"
-              : "is near neutral for singles/on-base pressure";
-
-    const hrFit =
-      hr >= 15
-        ? "amplifies HR risk/opportunity"
-        : hr >= 11
-          ? "leans toward HR support"
-          : hr <= 4
-            ? "works sharply against HR outcomes"
-            : hr <= 7
-              ? "leans against HR outcomes"
-              : "is near neutral for HR outcomes";
-
-    return `Park fit: ${obShape}, ${xbhShape}, and ${hrShape} against this pitcher card. The applicable park SI ${si} ${singleFit}; applicable park HR ${hr} ${hrFit}. Base matchup score is unchanged.`;
-  };
 
   const parkFitRead = matchup
     ? describeParkFitRead(matchup, applicableParkSingle, applicableParkHomeRun)
@@ -1334,6 +1246,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
