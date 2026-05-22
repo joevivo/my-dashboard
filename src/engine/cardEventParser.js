@@ -50,7 +50,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-–]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-â€“]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +71,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-â€“]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -224,6 +224,21 @@ export function summarizeCardEvents(events = []) {
       summary.byOutcome[event.outcomeType] =
         (summary.byOutcome[event.outcomeType] || 0) + 1;
 
+      if (!summary.bySideOutcome[event.side]) {
+        summary.bySideOutcome[event.side] = {};
+      }
+
+      summary.bySideOutcome[event.side][event.outcomeType] =
+        (summary.bySideOutcome[event.side][event.outcomeType] || 0) + 1;
+
+      event.splitOutcomes?.forEach((splitOutcome) => {
+        summary.byOutcome[splitOutcome.outcomeType] =
+          (summary.byOutcome[splitOutcome.outcomeType] || 0) + 1;
+
+        summary.bySideOutcome[event.side][splitOutcome.outcomeType] =
+          (summary.bySideOutcome[event.side][splitOutcome.outcomeType] || 0) + 1;
+      });
+
       if (event.splitOutcomes?.length) {
         summary.splitEvents += 1;
       }
@@ -239,6 +254,7 @@ export function summarizeCardEvents(events = []) {
       total: 0,
       bySide: {},
       byOutcome: {},
+      bySideOutcome: {},
       splitEvents: 0,
       xChances: 0,
       injuryEvents: 0,

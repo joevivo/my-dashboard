@@ -445,6 +445,44 @@ export default function CardImporter() {
             />
 
             <Field
+              label="vs LHP Outcomes"
+              value={
+                preview.cardEventSummary
+                  ? `HR ${
+                      preview.cardEventSummary.bySideOutcome?.vsLHP?.HOME_RUN || 0
+                    } | SI ${
+                      preview.cardEventSummary.bySideOutcome?.vsLHP?.SINGLE || 0
+                    } | DO ${
+                      preview.cardEventSummary.bySideOutcome?.vsLHP?.DOUBLE || 0
+                    } | BB ${
+                      preview.cardEventSummary.bySideOutcome?.vsLHP?.WALK || 0
+                    } | K ${
+                      preview.cardEventSummary.bySideOutcome?.vsLHP?.STRIKEOUT || 0
+                    }`
+                  : ""
+              }
+            />
+
+            <Field
+              label="vs RHP Outcomes"
+              value={
+                preview.cardEventSummary
+                  ? `HR ${
+                      preview.cardEventSummary.bySideOutcome?.vsRHP?.HOME_RUN || 0
+                    } | SI ${
+                      preview.cardEventSummary.bySideOutcome?.vsRHP?.SINGLE || 0
+                    } | DO ${
+                      preview.cardEventSummary.bySideOutcome?.vsRHP?.DOUBLE || 0
+                    } | BB ${
+                      preview.cardEventSummary.bySideOutcome?.vsRHP?.WALK || 0
+                    } | K ${
+                      preview.cardEventSummary.bySideOutcome?.vsRHP?.STRIKEOUT || 0
+                    }`
+                  : ""
+              }
+            />
+
+            <Field
               label="Park SI / HR"
               value={
                 preview.cardEventSummary
@@ -658,6 +696,7 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
 
 
 
