@@ -226,17 +226,45 @@ export default function FinanceView() {
       }
 
       const data = await response.json();
-      const nextQuotes = {};
+      const quoteList = data.quotes || [];
+      const failedQuotes = quoteList.filter((quote) => quote?.error || quote?.price == null);
 
-      (data.quotes || []).forEach((quote) => {
-        nextQuotes[quote.symbol] = quote;
+      setQuotes((previousQuotes) => {
+        const nextQuotes = { ...previousQuotes };
+
+        quoteList.forEach((quote) => {
+          const symbol = quote.symbol?.toUpperCase();
+
+          if (!symbol) return;
+
+          if (quote.price != null) {
+            nextQuotes[symbol] = quote;
+            return;
+          }
+
+          if (!nextQuotes[symbol]) {
+            nextQuotes[symbol] = quote;
+          }
+        });
+
+        return nextQuotes;
       });
 
-      setQuotes(nextQuotes);
+      if (failedQuotes.length) {
+        setQuoteError(
+          failedQuotes.length +
+            " quote" +
+            (failedQuotes.length === 1 ? "" : "s") +
+            " failed to refresh. Showing last good prices where available."
+        );
+      } else {
+        setQuoteError("");
+      }
+
       setQuoteStatus("loaded");
     } catch (error) {
       console.error("Quote fetch error:", error);
-      setQuoteError("Unable to load quotes. Make sure backend is running.");
+      setQuoteError("Unable to refresh quotes. Showing last good prices if available.");
       setQuoteStatus("error");
     }
   };
