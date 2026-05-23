@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import DashboardSection from "./components/DashboardSection";
+import { loadImportedMusicLibrary } from "./music/musicStore";
+import { selectImportedMusicStats } from "./music/musicSelectors";
 import {
   BarChart3,
   ChevronDown,
@@ -156,6 +158,44 @@ export default function MusicLibrary() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+
+  const [importedMusicLibrary, setImportedMusicLibrary] = useState(null);
+  const [importedMusicStatus, setImportedMusicStatus] = useState("idle");
+  const [importedMusicError, setImportedMusicError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    setImportedMusicStatus("loading");
+
+    loadImportedMusicLibrary()
+      .then((library) => {
+        if (!isMounted) return;
+
+        setImportedMusicLibrary(library || null);
+        setImportedMusicStatus("loaded");
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+
+        console.error("Failed loading imported music library", error);
+        setImportedMusicError("Unable to load imported music library.");
+        setImportedMusicStatus("error");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const importedMusicStats = useMemo(
+    () => selectImportedMusicStats(importedMusicLibrary),
+    [importedMusicLibrary]
+  );
+
+  const latestImportedMusicImport =
+    importedMusicLibrary?.imports?.[importedMusicLibrary.imports.length - 1] ||
+    null;
 
   const [artist, setArtist] = useState(emptyArtist);
   const [album, setAlbum] = useState(emptyAlbum);
@@ -507,6 +547,70 @@ const cancelEraEdit = () => {
         )}
       </div>
    
+      <DashboardSection title="Imported Music Library" Icon={Headphones} color="slate">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          <StatCard
+            icon={Disc3}
+            label="Tracks"
+            value={importedMusicStats.tracks.toLocaleString()}
+          />
+
+          <StatCard
+            icon={UserRoundSearch}
+            label="Artists"
+            value={importedMusicStats.artists.toLocaleString()}
+          />
+
+          <StatCard
+            icon={Headphones}
+            label="Albums"
+            value={importedMusicStats.albums.toLocaleString()}
+          />
+
+          <StatCard
+            icon={ListMusic}
+            label="Playlists"
+            value={importedMusicStats.playlists.toLocaleString()}
+          />
+
+          <StatCard
+            icon={Tags}
+            label="Playlist Links"
+            value={importedMusicStats.playlistTrackLinks.toLocaleString()}
+          />
+
+          <StatCard
+            icon={Clock3}
+            label="Imports"
+            value={importedMusicStats.imports.toLocaleString()}
+          />
+        </div>
+
+        {importedMusicStatus === "loading" && (
+          <p className="text-sm text-slate-500">
+            Checking for imported music data...
+          </p>
+        )}
+
+        {importedMusicStatus === "error" && (
+          <p className="text-sm text-red-600">{importedMusicError}</p>
+        )}
+
+        {importedMusicStatus === "loaded" && !importedMusicLibrary && (
+          <p className="text-sm text-slate-500">
+            No imported music library loaded yet. This panel is ready for Apple
+            Music export data once we have the file format.
+          </p>
+        )}
+
+        {latestImportedMusicImport && (
+          <p className="text-sm text-slate-500">
+            Last import: {latestImportedMusicImport.source} �{" "}
+            {new Date(latestImportedMusicImport.importedAt).toLocaleString()}
+          </p>
+        )}
+      </DashboardSection>
+
       <DashboardSection title="Music Stats" Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
