@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import DashboardSection from "./components/DashboardSection";
 import { loadImportedMusicLibrary } from "./music/musicStore";
 import { selectImportedMusicStats } from "./music/musicSelectors";
+import { parseAlbumCsv } from "./music/albumCsvImport";
 import {
   BarChart3,
   ChevronDown,
@@ -142,6 +143,7 @@ function collectAllTags(data) {
 
 export default function MusicLibrary() {
   const fileInputRef = useRef(null);
+  const albumCsvInputRef = useRef(null);
 
   const [musicData, setMusicData] = useState(() => {
     const saved = localStorage.getItem("musicLibrary");
@@ -390,6 +392,50 @@ const cancelEraEdit = () => {
     reader.readAsText(file);
   };
 
+  const importAlbumCsv = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const input = event.target;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const { albums, skipped } = parseAlbumCsv(String(reader.result || ""));
+
+        if (!albums.length) {
+          setImportMessage(
+            skipped
+              ? `No albums imported. Skipped ${skipped} incomplete row${skipped === 1 ? "" : "s"}.`
+              : "No albums imported. Make sure the CSV includes artist and title columns."
+          );
+
+          return;
+        }
+
+        setMusicData((prev) => ({
+          ...prev,
+          albums: [...prev.albums, ...albums],
+        }));
+
+        setEditingAlbumIndex(null);
+        setAlbum(emptyAlbum);
+
+        setImportMessage(
+          `Imported ${albums.length} album${albums.length === 1 ? "" : "s"} from CSV${skipped ? `; skipped ${skipped} incomplete row${skipped === 1 ? "" : "s"}` : ""}.`
+        );
+      } catch (error) {
+        console.error("Failed importing album CSV", error);
+        setImportMessage("Album CSV import failed. Check the file format.");
+      } finally {
+        input.value = "";
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   const filteredData = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -536,6 +582,21 @@ const cancelEraEdit = () => {
             type="file"
             accept="application/json,.json"
             onChange={importMusicLibrary}
+            className="hidden"
+          />
+
+          <button
+            onClick={() => albumCsvInputRef.current?.click()}
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Bulk Import Albums CSV
+          </button>
+
+          <input
+            ref={albumCsvInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            onChange={importAlbumCsv}
             className="hidden"
           />
         </div>
