@@ -517,14 +517,14 @@ export default function FinanceView() {
             value={account}
             onChange={(e) => setAccount(e.target.value)}
             placeholder="Account"
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
           />
 
           <input
             value={ticker}
             onChange={(e) => setTicker(e.target.value)}
             placeholder="Ticker"
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
           />
 
           <input
@@ -533,7 +533,7 @@ export default function FinanceView() {
             placeholder="Shares"
             type="number"
             step="0.001"
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
           />
 
           <button onClick={addHolding} className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg">
@@ -543,7 +543,7 @@ export default function FinanceView() {
 
         <button
           onClick={resetToStartingHoldings}
-          className="mt-3 bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg text-sm"
+          className="mt-3 bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg text-sm dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
         >
           Reset to Starting Holdings
         </button>
@@ -616,6 +616,7 @@ function MiniMetric({ label, value, valueClass = "" }) {
     </div>
   );
 }
+
 
 
 

@@ -237,7 +237,7 @@ export default function NewsView() {
       <div className="dashboard-panel p-5">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-slate-950">News</h1>
+            <h1 className="text-xl font-bold text-slate-900">News</h1>
 
             <p className="text-sm text-slate-500 mt-1">
               Latest stories from your curated RSS feeds.
@@ -260,7 +260,7 @@ export default function NewsView() {
                 className={`px-3 py-1.5 rounded-lg text-sm border transition ${
                   active
                     ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-                    : "bg-white/80 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300"
+                    : "bg-white/80 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300 dark:bg-slate-800/80 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-600"
                 }`}
               >
                 {category}
@@ -272,7 +272,7 @@ export default function NewsView() {
       <div className="dashboard-panel p-5">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-950">
+            <h2 className="text-lg font-bold text-slate-900">
               Manage RSS Feeds
             </h2>
             <p className="text-sm text-slate-500 mt-1">
@@ -283,14 +283,14 @@ export default function NewsView() {
           <div className="flex gap-2">
             <button
               onClick={loadNews}
-              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
+              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Refresh Stories
             </button>
 
             <button
               onClick={() => setShowFeedManager((prev) => !prev)}
-              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100"
+              className="text-sm px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               {showFeedManager ? "Hide Feeds" : "Manage Feeds"}
             </button>
@@ -413,7 +413,7 @@ export default function NewsView() {
 
       <button
         onClick={cancelEditingFeed}
-        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
       >
         Cancel
       </button>
@@ -422,7 +422,7 @@ export default function NewsView() {
     <>
       <button
         onClick={() => startEditingFeed(feed, index)}
-        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+        className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
       >
         Edit
       </button>
@@ -459,7 +459,7 @@ export default function NewsView() {
               return (
                 <article
                   key={`${story.link}-${index}`}
-                  className="group border border-slate-200/80 rounded-xl p-4 bg-slate-50/80 hover:bg-white hover:border-slate-300 hover:shadow-sm transition"
+                  className="group border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white hover:border-slate-300 hover:shadow-sm transition dark:border-slate-700 dark:bg-slate-800/70 dark:hover:bg-slate-800 dark:hover:border-slate-600"
                 >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div>
@@ -484,7 +484,7 @@ export default function NewsView() {
                         className={`text-xs px-2 py-1 rounded-lg border transition ${
                           saved
                             ? "bg-amber-200 border-amber-300 text-amber-950"
-                            : "bg-white/90 border-slate-200 text-slate-600 hover:bg-slate-100"
+                            : "bg-white/90 border-slate-200 text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700"
                         }`}
                       >
                         {saved ? "Saved" : "Save"}
@@ -498,7 +498,7 @@ export default function NewsView() {
                     rel="noreferrer"
                     className="block"
                   >
-                    <div className="font-semibold text-slate-950 leading-snug group-hover:underline">
+                    <div className="font-semibold text-slate-900 leading-snug group-hover:underline">
                       {story.title}
                     </div>
                   </a>
@@ -511,3 +511,4 @@ export default function NewsView() {
     </div>
   );
 }
+
