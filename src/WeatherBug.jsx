@@ -54,7 +54,7 @@ export default function WeatherBug() {
   }, []);
 
   return (
-    <div className="bg-white border rounded p-4 mb-4">
+    <div className="dashboard-panel p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="text-lg font-bold">60565 Weather</h2>
