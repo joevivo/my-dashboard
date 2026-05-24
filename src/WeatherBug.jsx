@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 
 const NAPERVILLE_60565 = {
   lat: 41.7476,
@@ -16,6 +16,27 @@ function weatherEmoji(forecast = "") {
   if (text.includes("fog")) return "🌫️";
 
   return "🌤️";
+}
+
+function getPrecipChance(day) {
+  const value = day?.probabilityOfPrecipitation?.value;
+
+  if (value === null || value === undefined) {
+    return "—";
+  }
+
+  return `${value}%`;
+}
+
+function getWindSummary(day) {
+  const speed = day?.windSpeed || "";
+  const direction = day?.windDirection || "";
+
+  if (!speed && !direction) {
+    return "—";
+  }
+
+  return `${speed} ${direction}`.trim();
 }
 
 export default function WeatherBug() {
@@ -60,6 +81,7 @@ export default function WeatherBug() {
           <h2 className="text-lg font-bold">60565 Weather</h2>
           <p className="text-xs text-slate-500">Naperville · 3-day forecast</p>
         </div>
+
         <div className="text-2xl">🌦️</div>
       </div>
 
@@ -72,13 +94,44 @@ export default function WeatherBug() {
           {days.map((day) => (
             <div key={day.number} className="rounded border bg-slate-50 p-3">
               <div className="text-sm font-semibold">{day.name}</div>
-              <div className="text-3xl my-2">{weatherEmoji(day.shortForecast)}</div>
+
+              <div className="text-3xl my-2">
+                {weatherEmoji(day.shortForecast)}
+              </div>
+
               <div className="text-xl font-bold">
                 {day.temperature}°{day.temperatureUnit}
               </div>
+
               <div className="text-xs text-slate-600 mt-1">
                 {day.shortForecast}
               </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div className="rounded border border-slate-200 bg-white/60 p-2">
+                  <div className="uppercase tracking-wide text-slate-400 font-bold">
+                    Precip
+                  </div>
+                  <div className="font-semibold text-slate-700">
+                    {getPrecipChance(day)}
+                  </div>
+                </div>
+
+                <div className="rounded border border-slate-200 bg-white/60 p-2">
+                  <div className="uppercase tracking-wide text-slate-400 font-bold">
+                    Wind
+                  </div>
+                  <div className="font-semibold text-slate-700">
+                    {getWindSummary(day)}
+                  </div>
+                </div>
+              </div>
+
+              {day.detailedForecast && (
+                <div className="mt-3 border-t border-slate-200 pt-3 text-xs text-slate-500 leading-relaxed">
+                  {day.detailedForecast}
+                </div>
+              )}
             </div>
           ))}
         </div>
