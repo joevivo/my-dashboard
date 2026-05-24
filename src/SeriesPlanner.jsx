@@ -452,7 +452,7 @@ G3 Jon Matlack L`}
             .filter(Boolean)
             .map((section, index) => (
               <div key={index} className="dashboard-panel p-5">
-                <div className="whitespace-pre-wrap text-sm text-slate-800 leading-relaxed">
+                <div className="whitespace-pre-wrap text-sm text-slate-700 leading-relaxed">
                   {section}
                 </div>
               </div>
