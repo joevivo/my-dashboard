@@ -558,151 +558,105 @@ const cancelEraEdit = () => {
   return (
     <div className="space-y-6">
       <div className="dashboard-panel p-6">
-        <h1 className="text-2xl font-bold mb-2">Music Library</h1>
-
-        <p className="text-sm text-slate-500">
-          Favorite artists, albums, playlists, shows attended, and future
-          listening notes.
-        </p>
-      </div>
-
-      <div className="dashboard-panel p-6 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
           <div>
-            <h2 className="text-xl font-bold">Library Frame</h2>
-            <p className="text-sm text-slate-500">
-              Search across your music notes and click an artist to create a
-              connected spotlight view.
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300">
+              <Headphones className="h-3.5 w-3.5" />
+              Music command center
+            </div>
+
+            <h1 className="mt-4 text-3xl font-bold tracking-tight">
+              Music Library
+            </h1>
+
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+              Favorite artists, albums, playlists, shows attended, listening eras,
+              and future exploration notes.
             </p>
+
+            <div className="mt-5 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full bg-slate-900 px-3 py-1 font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+                {musicData.albums.length} albums
+              </span>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {musicData.artists.length} artists
+              </span>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {musicData.shows.length} shows
+              </span>
+            </div>
           </div>
 
-          <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search music library..."
-            className="w-full md:w-80 border border-slate-200 bg-white rounded-lg p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
-          />
-        </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+            <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Search Library
+            </label>
 
+            <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search artists, albums, tags, notes..."
+              className="mt-2 w-full border border-slate-200 bg-white rounded-lg p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+            />
 
-        <div className="flex flex-wrap gap-2 pt-2">
-          <button
-            onClick={exportMusicLibrary}
-            className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg text-sm"
-          >
-            Export Music Library
-          </button>
+            <div className="mt-4 grid grid-cols-1 gap-2">
+              <button
+                onClick={exportMusicLibrary}
+                className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg text-sm"
+              >
+                Export Music Library
+              </button>
 
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            Import Music Library
-          </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                  Import JSON
+                </button>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/json,.json"
-            onChange={importMusicLibrary}
-            className="hidden"
-          />
+                <button
+                  onClick={() => albumCsvInputRef.current?.click()}
+                  className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                  Import CSV
+                </button>
+              </div>
 
-          <button
-            onClick={() => albumCsvInputRef.current?.click()}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            Bulk Import Albums CSV
-          </button>
+              <button
+                onClick={downloadAlbumCsvTemplate}
+                className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              >
+                Download Album CSV Template
+              </button>
+            </div>
 
-          <button
-            onClick={downloadAlbumCsvTemplate}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            Download Album CSV Template
-          </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              onChange={importMusicLibrary}
+              className="hidden"
+            />
 
-          <input
-            ref={albumCsvInputRef}
-            type="file"
-            accept=".csv,text/csv"
-            onChange={importAlbumCsv}
-            className="hidden"
-          />
-        </div>
+            <input
+              ref={albumCsvInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              onChange={importAlbumCsv}
+              className="hidden"
+            />
 
-        {importMessage && (
-          <div className="text-sm text-slate-500">
-            {importMessage}
+            {importMessage && (
+              <div className="mt-3 text-sm text-slate-500">
+                {importMessage}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
-   
-      <DashboardSection title="Imported Music Library" Icon={Headphones} color="slate">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
-          <StatCard
-            icon={Disc3}
-            label="Tracks"
-            value={importedMusicStats.tracks.toLocaleString()}
-          />
 
-          <StatCard
-            icon={UserRoundSearch}
-            label="Artists"
-            value={importedMusicStats.artists.toLocaleString()}
-          />
-
-          <StatCard
-            icon={Headphones}
-            label="Albums"
-            value={importedMusicStats.albums.toLocaleString()}
-          />
-
-          <StatCard
-            icon={ListMusic}
-            label="Playlists"
-            value={importedMusicStats.playlists.toLocaleString()}
-          />
-
-          <StatCard
-            icon={Tags}
-            label="Playlist Links"
-            value={importedMusicStats.playlistTrackLinks.toLocaleString()}
-          />
-
-          <StatCard
-            icon={Clock3}
-            label="Imports"
-            value={importedMusicStats.imports.toLocaleString()}
-          />
-        </div>
-
-        {importedMusicStatus === "loading" && (
-          <p className="text-sm text-slate-500">
-            Checking for imported music data...
-          </p>
-        )}
-
-        {importedMusicStatus === "error" && (
-          <p className="text-sm text-red-600">{importedMusicError}</p>
-        )}
-
-        {importedMusicStatus === "loaded" && !importedMusicLibrary && (
-          <p className="text-sm text-slate-500">
-            No imported music library loaded yet. This panel is ready for Apple
-            Music export data once we have the file format.
-          </p>
-        )}
-
-        {latestImportedMusicImport && (
-          <p className="text-sm text-slate-500">
-            Last import: {latestImportedMusicImport.source} {" - "}
-            {new Date(latestImportedMusicImport.importedAt).toLocaleString()}
-          </p>
-        )}
-      </DashboardSection>
-
-      <DashboardSection title="Music Stats" Icon={BarChart3} color="sky">
+      <DashboardSection title="Music Dashboard" Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
             icon={Star}
@@ -758,6 +712,85 @@ const cancelEraEdit = () => {
         </div>
       </DashboardSection>
 
+      {importedMusicStatus === "loaded" && !importedMusicLibrary ? (
+        <div className="dashboard-panel p-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="dashboard-section-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/70 border border-white/80 shadow-sm">
+                <Headphones className="dashboard-section-icon-svg h-5 w-5 text-slate-500" />
+              </span>
+
+              <div>
+                <h2 className="text-base font-bold">Imported Music Library</h2>
+                <p className="text-sm text-slate-500">
+                  Apple Music export staging area. No imported library is loaded yet.
+                </p>
+              </div>
+            </div>
+
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Ready for future Apple data
+            </div>
+          </div>
+        </div>
+      ) : (
+        <DashboardSection title="Imported Music Library" Icon={Headphones} color="slate">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+            <StatCard
+              icon={Disc3}
+              label="Tracks"
+              value={importedMusicStats.tracks.toLocaleString()}
+            />
+
+            <StatCard
+              icon={UserRoundSearch}
+              label="Artists"
+              value={importedMusicStats.artists.toLocaleString()}
+            />
+
+            <StatCard
+              icon={Headphones}
+              label="Albums"
+              value={importedMusicStats.albums.toLocaleString()}
+            />
+
+            <StatCard
+              icon={ListMusic}
+              label="Playlists"
+              value={importedMusicStats.playlists.toLocaleString()}
+            />
+
+            <StatCard
+              icon={Tags}
+              label="Playlist Links"
+              value={importedMusicStats.playlistTrackLinks.toLocaleString()}
+            />
+
+            <StatCard
+              icon={Clock3}
+              label="Imports"
+              value={importedMusicStats.imports.toLocaleString()}
+            />
+          </div>
+
+          {importedMusicStatus === "loading" && (
+            <p className="text-sm text-slate-500">
+              Checking for imported music data...
+            </p>
+          )}
+
+          {importedMusicStatus === "error" && (
+            <p className="text-sm text-red-600">{importedMusicError}</p>
+          )}
+
+          {latestImportedMusicImport && (
+            <p className="text-sm text-slate-500">
+              Last import: {latestImportedMusicImport.source} {" - "}
+              {new Date(latestImportedMusicImport.importedAt).toLocaleString()}
+            </p>
+          )}
+        </DashboardSection>
+      )}
 <DashboardSection
   title="Listening Eras"
   Icon={Clock3}
