@@ -392,6 +392,29 @@ const cancelEraEdit = () => {
     reader.readAsText(file);
   };
 
+  const downloadAlbumCsvTemplate = () => {
+    const csv = [
+      "artist,title,year,rating,favoriteTracks,tags,essential,coverUrl,appleMusicUrl,notes",
+      "Big Star,Radio City,1974,10,\"September Gurls, Back of a Car\",\"power pop, 70s\",true,,,Sample row - replace or delete.",
+      "The Replacements,Let It Be,1984,9.5,\"I Will Dare, Unsatisfied\",\"college rock, 80s\",yes,,,Sample row - replace or delete.",
+    ].join("\n");
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "album-import-template.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
   const importAlbumCsv = (event) => {
     const file = event.target.files?.[0];
 
@@ -590,6 +613,13 @@ const cancelEraEdit = () => {
             className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
           >
             Bulk Import Albums CSV
+          </button>
+
+          <button
+            onClick={downloadAlbumCsvTemplate}
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+          >
+            Download Album CSV Template
           </button>
 
           <input
