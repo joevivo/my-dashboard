@@ -566,7 +566,7 @@ const cancelEraEdit = () => {
         </p>
       </div>
 
-      <div className="p-6 border rounded-2xl shadow-sm bg-white border-slate-200 space-y-4">
+      <div className="dashboard-panel p-6 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold">Library Frame</h2>
@@ -580,7 +580,7 @@ const cancelEraEdit = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search music library..."
-            className="w-full md:w-80 border border-slate-200 bg-white rounded-lg p-2.5 text-sm"
+            className="w-full md:w-80 border border-slate-200 bg-white rounded-lg p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </div>
 
@@ -595,7 +595,7 @@ const cancelEraEdit = () => {
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Import Music Library
           </button>
@@ -610,14 +610,14 @@ const cancelEraEdit = () => {
 
           <button
             onClick={() => albumCsvInputRef.current?.click()}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Bulk Import Albums CSV
           </button>
 
           <button
             onClick={downloadAlbumCsvTemplate}
-            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+            className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Download Album CSV Template
           </button>
@@ -832,7 +832,7 @@ const cancelEraEdit = () => {
   {editingEraIndex !== null && (
     <button
       onClick={cancelEraEdit}
-      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg"
+      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
     >
       Cancel
     </button>
@@ -848,7 +848,7 @@ const cancelEraEdit = () => {
       {musicData.eras.map((item, index) => (
         <div
           key={`${item.title}-${index}`}
-          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm"
+          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm dark:border-purple-900/40 dark:bg-slate-800/80"
         >
           <div className="flex justify-between gap-4">
             <div>
@@ -1145,7 +1145,7 @@ const cancelEraEdit = () => {
           {editingAlbumIndex !== null && (
             <button
               onClick={cancelAlbumEdit}
-              className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg"
+              className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Cancel
             </button>
@@ -1356,7 +1356,7 @@ function TagBrowser({ tags, selectedTag, setSelectedTag }) {
               className={
                 active
                   ? "text-xs bg-slate-900 text-white px-3 py-1 rounded-full border border-slate-900"
-                  : "text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-50"
+                  : "text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               }
             >
               {tag} ({count})
@@ -1407,7 +1407,7 @@ function ArtistSpotlight({ artistName, artist, related, clearArtist }) {
 
         <button
           onClick={clearArtist}
-          className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm"
+          className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
         >
           Clear Spotlight
         </button>
@@ -1440,7 +1440,7 @@ function SpotlightMiniSection({ title, items, primaryKey, secondaryKey }) {
           {items.map((item, index) => (
             <div
               key={`${title}-${index}`}
-              className="border border-slate-200 rounded-xl p-4 bg-white"
+              className="border border-slate-200 rounded-xl p-4 bg-white dark:border-slate-700 dark:bg-slate-800/80"
             >
               <div className="font-bold text-slate-900">
                 {item[primaryKey] || "Untitled"}
@@ -1471,7 +1471,7 @@ function Input({ label, value, onChange }) {
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm"
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
       />
     </div>
   );
@@ -1530,7 +1530,7 @@ function AlbumGallery({
         return (
           <div
             key={`${item.title}-${item.artist}-${index}`}
-            className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition"
+            className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition dark:border-slate-700 dark:bg-slate-800/80"
           >
             <div className="aspect-square bg-slate-100 overflow-hidden">
               {item.coverUrl ? (
@@ -1752,7 +1752,7 @@ function TagPills({ value }) {
       {tags.map((tag) => (
         <span
           key={tag}
-          className="text-xs bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-full"
+          className="text-xs bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-full dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
         >
           {tag}
         </span>
@@ -1807,7 +1807,7 @@ function TopTagsCard({ albums }) {
           topTags.map(([tag, count]) => (
             <span
               key={tag}
-              className="text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full"
+              className="text-xs bg-white border border-slate-200 text-slate-700 px-3 py-1 rounded-full dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             >
               {tag} ({count})
             </span>
@@ -1870,6 +1870,7 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
 
 
 
