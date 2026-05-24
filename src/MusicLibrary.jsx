@@ -612,14 +612,14 @@ const cancelEraEdit = () => {
                   onClick={() => fileInputRef.current?.click()}
                   className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
-                  Import JSON
+                  Restore JSON
                 </button>
 
                 <button
                   onClick={() => albumCsvInputRef.current?.click()}
                   className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
-                  Import CSV
+                  Add Albums CSV
                 </button>
               </div>
 
@@ -627,7 +627,7 @@ const cancelEraEdit = () => {
                 onClick={downloadAlbumCsvTemplate}
                 className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-3 py-2 rounded-lg text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
-                Download Album CSV Template
+                Download Album Template
               </button>
             </div>
 
