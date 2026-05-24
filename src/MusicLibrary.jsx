@@ -656,6 +656,45 @@ const cancelEraEdit = () => {
         </div>
       </div>
 
+      <div className="dashboard-panel p-4">
+        <div className="grid gap-3 md:grid-cols-4">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Curated Library
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Your manually maintained artists, albums, shows, playlists, eras, and notes.
+            </p>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              JSON Backup
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Full backup and restore for the curated library.
+            </p>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Album CSV
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Bulk-add curated albums only. It appends; it does not replace the library.
+            </p>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Apple Export
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Future imported listening data, kept separate from curated notes.
+            </p>
+          </div>
+        </div>
+      </div>
       <DashboardSection title="Music Dashboard" Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <StatCard
