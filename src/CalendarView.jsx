@@ -37,14 +37,7 @@ export default function CalendarView() {
 
   return (
     <div className="space-y-5">
-      <div className="dashboard-panel p-5">
-        <h1 className="text-2xl font-bold mb-1">Calendar</h1>
-        <p className="text-sm text-slate-500">
-          Google Calendar events from your backend.
-        </p>
-      </div>
-
-      <div className="dashboard-panel p-5">
+<div className="dashboard-panel p-5">
         <div className="text-xs uppercase text-blue-600 font-bold mb-1">
           Next Event
         </div>
@@ -113,3 +106,4 @@ export default function CalendarView() {
     </div>
   );
 }
+
