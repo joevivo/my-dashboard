@@ -834,6 +834,7 @@ const cancelEraEdit = () => {
   title="Listening Eras"
   Icon={Clock3}
   color="purple"
+  summary="Map listening periods to artists, albums, moods, places, and notes."
   isOpen={openSections.eras}
   onToggle={() => toggleSection("eras")}
 >
@@ -1074,6 +1075,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Essential Albums" Icon={Sparkles}
   color="amber"
+  summary="A focused view of albums marked essential in your curated library."
   isOpen={openSections.essentialAlbums}
   onToggle={() => toggleSection("essentialAlbums")}
 >
@@ -1089,6 +1091,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Favorite Artists" Icon={UserRoundSearch}
   color="purple"
+  summary="Core artists, genre tags, favorite eras, and spotlight links."
   isOpen={openSections.favoriteArtists}
   onToggle={() => toggleSection("favoriteArtists")}
 >
@@ -1134,6 +1137,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Favorite Albums" Icon={Disc3}
   color="amber"
+  summary="Curated albums with ratings, favorite tracks, tags, covers, and notes."
   isOpen={openSections.favoriteAlbums}
   onToggle={() => toggleSection("favoriteAlbums")}
 >
@@ -1237,6 +1241,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Playlists" Icon={ListMusic}
   color="sky"
+  summary="Playlist ideas, themes, platforms, links, and notes."
   isOpen={openSections.playlists}
   onToggle={() => toggleSection("playlists")}
 >
@@ -1294,6 +1299,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Shows Attended" Icon={Ticket}
   color="rose"
+  summary="Concert history, venues, dates, ratings, and related artist notes."
   isOpen={openSections.shows}
   onToggle={() => toggleSection("shows")}
 >
@@ -1349,6 +1355,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Want to Explore" Icon={Compass}
   color="green"
+  summary="Artists, genres, records, and ideas to investigate later."
   isOpen={openSections.explore}
   onToggle={() => toggleSection("explore")}
 >
