@@ -696,7 +696,7 @@ const cancelEraEdit = () => {
 
         {latestImportedMusicImport && (
           <p className="text-sm text-slate-500">
-            Last import: {latestImportedMusicImport.source} �{" "}
+            Last import: {latestImportedMusicImport.source} {" - "}
             {new Date(latestImportedMusicImport.importedAt).toLocaleString()}
           </p>
         )}
@@ -1574,7 +1574,7 @@ function AlbumGallery({
 
               {item.rating && (
                 <div className="text-sm font-medium text-amber-600">
-                  ★ {item.rating}
+                  Rating: {item.rating}
                 </div>
               )}
 
