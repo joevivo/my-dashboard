@@ -720,11 +720,11 @@ export default function CardImporter() {
             {cards.map((card) => (
               <div
                 key={card.id || card.name}
-                className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/80"
+                className="border border-slate-200 rounded-xl p-4 bg-slate-50"
               >
                 <div className="flex justify-between gap-4">
                   <div>
-                    <div className="font-bold text-slate-950">{card.name}</div>
+                    <div className="font-bold text-slate-900">{card.name}</div>
 
                     <div className="text-sm text-slate-500">
                       {card.position} · {card.salary} · BAL {card.balance}
