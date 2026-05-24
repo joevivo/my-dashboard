@@ -360,14 +360,14 @@ export default function CardImporter() {
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
           rows={14}
-          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
           placeholder="Paste full card text here..."
         />
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={parsePreview}
-            className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg"
+            className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
           >
             Preview Parse
           </button>
@@ -861,7 +861,7 @@ function CardMatchupTester({ cards }) {
         <select
           value={selectedHitterName}
           onChange={(event) => setSelectedHitterName(event.target.value)}
-          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
           <option value="">Select hitter</option>
           {hitters.map((card) => (
@@ -874,7 +874,7 @@ function CardMatchupTester({ cards }) {
         <select
           value={selectedPitcherName}
           onChange={(event) => setSelectedPitcherName(event.target.value)}
-          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
           <option value="">Select pitcher</option>
           {pitchers.map((card) => (
@@ -887,7 +887,7 @@ function CardMatchupTester({ cards }) {
         <select
           value={selectedBallpark}
           onChange={(event) => setSelectedBallpark(event.target.value)}
-          className="border border-slate-200 bg-white/80 rounded-lg p-2.5"
+          className="border border-slate-200 bg-white/80 rounded-lg p-2.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
           <option value="">Select ballpark</option>
           {parkOptions.map((park) => (
@@ -1129,7 +1129,7 @@ function CoverageReport({ cards, selectedLeagueId, setSelectedLeagueId }) {
       <select
         value={selectedLeagueId}
         onChange={(e) => setSelectedLeagueId(e.target.value)}
-        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 mb-4"
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 mb-4 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
       >
         <option value="">Select league/team</option>
 
@@ -1206,6 +1206,10 @@ function StatCard({ label, value }) {
     </div>
   );
 }
+
+
+
+
 
 
 

@@ -123,14 +123,14 @@ export default function LeagueManager() {
           value={leagueName}
           onChange={(e) => setLeagueName(e.target.value)}
           placeholder="League Name"
-          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
         />
 
         <input
           value={ballpark}
           onChange={(e) => setBallpark(e.target.value)}
           placeholder="Home Ballpark"
-          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
         />
 
         <TextBox
@@ -172,7 +172,7 @@ export default function LeagueManager() {
           {editingId && (
             <button
               onClick={clearForm}
-              className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg"
+              className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
             >
               Cancel Edit
             </button>
@@ -256,9 +256,12 @@ function TextBox({ label, value, onChange, placeholder }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={8}
-        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-300"
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-slate-600"
         placeholder={placeholder}
       />
     </div>
   );
 }
+
+
+

@@ -241,7 +241,7 @@ export default function OpponentManager() {
             setName(e.target.value)
           }
           placeholder="Opponent Name"
-          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
 
         <input
@@ -250,7 +250,7 @@ export default function OpponentManager() {
             setBallpark(e.target.value)
           }
           placeholder="Home Ballpark"
-          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5"
+          className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
 
         <TextBox
@@ -316,7 +316,7 @@ G3 Jon Matlack L`}
           {editingId && (
             <button
               onClick={clearForm}
-              className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg"
+              className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
             >
               Cancel Edit
             </button>
@@ -423,9 +423,12 @@ function TextBox({
           onChange(e.target.value)
         }
         rows={6}
-        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono"
+        className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm font-mono dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
         placeholder={placeholder}
       />
     </div>
   );
 }
+
+
+

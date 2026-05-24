@@ -316,7 +316,7 @@ export default function MatchupAnalyzer() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={newOpponent}
-            className="bg-slate-200 text-slate-800 px-4 py-2 rounded"
+            className="bg-slate-200 text-slate-800 px-4 py-2 rounded dark:bg-slate-700 dark:text-slate-100"
           >
             New Opponent
           </button>
@@ -497,5 +497,6 @@ function PitcherSection({ title, pitchers }) {
     </div>
   );
 }
+
 
 

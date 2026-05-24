@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const NAPERVILLE_60565 = {
   lat: 41.7476,
@@ -8,14 +8,14 @@ const NAPERVILLE_60565 = {
 function weatherEmoji(forecast = "") {
   const text = forecast.toLowerCase();
 
-  if (text.includes("thunder")) return "⛈️";
-  if (text.includes("rain") || text.includes("showers")) return "🌧️";
-  if (text.includes("snow")) return "❄️";
-  if (text.includes("cloud")) return "☁️";
-  if (text.includes("sun") || text.includes("clear")) return "☀️";
-  if (text.includes("fog")) return "🌫️";
+  if (text.includes("thunder")) return "??";
+  if (text.includes("rain") || text.includes("showers")) return "???";
+  if (text.includes("snow")) return "??";
+  if (text.includes("cloud")) return "??";
+  if (text.includes("sun") || text.includes("clear")) return "??";
+  if (text.includes("fog")) return "???";
 
-  return "🌤️";
+  return "???";
 }
 
 function getPrecipChance(day) {
@@ -82,7 +82,7 @@ export default function WeatherBug() {
           <p className="text-xs text-slate-500">Naperville · 3-day forecast</p>
         </div>
 
-        <div className="text-2xl">🌦️</div>
+        <div className="text-2xl">???</div>
       </div>
 
       {error ? (
@@ -108,7 +108,7 @@ export default function WeatherBug() {
               </div>
 
               <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
-                <div className="rounded border border-slate-200 bg-white/60 p-2">
+                <div className="rounded border border-slate-200 bg-white/60 p-2 dark:border-slate-700 dark:bg-slate-800/70">
                   <div className="uppercase tracking-wide text-slate-400 font-bold">
                     Precip
                   </div>
@@ -117,7 +117,7 @@ export default function WeatherBug() {
                   </div>
                 </div>
 
-                <div className="rounded border border-slate-200 bg-white/60 p-2">
+                <div className="rounded border border-slate-200 bg-white/60 p-2 dark:border-slate-700 dark:bg-slate-800/70">
                   <div className="uppercase tracking-wide text-slate-400 font-bold">
                     Wind
                   </div>
@@ -139,3 +139,4 @@ export default function WeatherBug() {
     </div>
   );
 }
+

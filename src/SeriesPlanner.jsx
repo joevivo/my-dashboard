@@ -371,7 +371,7 @@ ${injuryNotes || "None"}
           <select
             value={myLeagueId}
             onChange={(e) => setMyLeagueId(e.target.value)}
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">Select my team</option>
             {savedLeagues.map((league) => (
@@ -387,7 +387,7 @@ ${injuryNotes || "None"}
           <select
             value={opponentId}
             onChange={(e) => handleOpponentChange(e.target.value)}
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">Select opponent</option>
             {savedOpponents.map((opponent) => (
@@ -403,7 +403,7 @@ ${injuryNotes || "None"}
           <select
             value={ballpark}
             onChange={(e) => setBallpark(e.target.value)}
-            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full"
+            className="border border-slate-200 bg-white/80 rounded-lg p-2.5 w-full dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             {parks1980.map((park) => (
               <option key={park.id} value={park.name}>
@@ -419,7 +419,7 @@ ${injuryNotes || "None"}
             value={gameStarters}
             onChange={(e) => setGameStarters(e.target.value)}
             rows={5}
-            className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 font-mono text-sm"
+            className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 font-mono text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             placeholder={`G1 Dick Ruthven R
 G2 Rick Reuschel R
 G3 Jon Matlack L`}
@@ -432,7 +432,7 @@ G3 Jon Matlack L`}
             value={injuryNotes}
             onChange={(e) => setInjuryNotes(e.target.value)}
             rows={4}
-            className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm"
+            className="w-full border border-slate-200 bg-white/80 rounded-lg p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             placeholder="Example: My closer unavailable Game 1. Opponent catcher weak arm. Key bench bat injured."
           />
         </div>
@@ -462,4 +462,7 @@ G3 Jon Matlack L`}
     </div>
   );
 }
+
+
+
 

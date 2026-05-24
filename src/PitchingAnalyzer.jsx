@@ -232,7 +232,7 @@ export default function PitchingAnalyzer() {
 
           <button
             onClick={clearPitchers}
-            className="bg-slate-200 text-slate-800 px-4 py-2 rounded"
+            className="bg-slate-200 text-slate-800 px-4 py-2 rounded dark:bg-slate-700 dark:text-slate-100"
           >
             Clear Pitchers
           </button>
@@ -257,7 +257,7 @@ export default function PitchingAnalyzer() {
               className={`px-4 py-2 rounded ${
                 analysisView === "SP"
                   ? "bg-blue-600 text-white"
-                  : "bg-slate-200"
+                  : "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-100"
               }`}
             >
               Starters
@@ -268,7 +268,7 @@ export default function PitchingAnalyzer() {
               className={`px-4 py-2 rounded ${
                 analysisView === "RP"
                   ? "bg-blue-600 text-white"
-                  : "bg-slate-200"
+                  : "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-100"
               }`}
             >
               Relievers
@@ -364,3 +364,4 @@ export default function PitchingAnalyzer() {
     </div>
   );
 }
+
