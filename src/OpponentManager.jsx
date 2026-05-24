@@ -338,7 +338,7 @@ G3 Jon Matlack L`}
             {opponents.map((opponent) => (
               <div
                 key={opponent.id}
-                className="border border-slate-200 rounded-xl p-4 bg-slate-50/80"
+                className="border border-slate-200 rounded-xl p-4 bg-slate-50"
               >
                 <div className="flex justify-between gap-4">
                   <div>
