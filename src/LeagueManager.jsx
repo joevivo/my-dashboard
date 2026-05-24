@@ -193,11 +193,11 @@ export default function LeagueManager() {
               return (
                 <div
                   key={normalized.id}
-                  className="border border-slate-200/80 rounded-xl p-4 bg-slate-50/80 hover:bg-white hover:border-slate-300 transition"
+                  className="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-slate-50 hover:border-slate-300 transition"
                 >
                   <div className="flex justify-between gap-3">
                     <div>
-                      <div className="font-bold text-slate-950">
+                      <div className="font-bold text-slate-900">
                         {normalized.name}
                       </div>
 
