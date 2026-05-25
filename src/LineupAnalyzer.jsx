@@ -434,8 +434,8 @@ export default function LineupAnalyzer() {
               Ballpark: {analysis.park.name}
             </p>
             <p className="text-sm text-slate-300">
-              SI L/R: {analysis.park.siL}/{analysis.park.siR} · HR L/R:{" "}
-              {analysis.park.hrL}/{analysis.park.hrR}
+              SI L/R: {analysis.park.siL ?? analysis.park.singlesLeft ?? analysis.park.singlesL}/{analysis.park.siR ?? analysis.park.singlesRight ?? analysis.park.singlesR}{" - "}HR L/R:{" "}
+              {analysis.park.hrL ?? analysis.park.homeRunsLeft ?? analysis.park.homersL}/{analysis.park.hrR ?? analysis.park.homeRunsRight ?? analysis.park.homersR}
             </p>
           </div>
 
