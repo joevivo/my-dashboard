@@ -26,10 +26,25 @@ function formatRuns(value) {
   return Number(value || 0).toFixed(2);
 }
 
+function inferPitcherHand(pitchersText) {
+  const firstLine = String(pitchersText || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)[0];
+
+  if (!firstLine) return null;
+
+  const tokens = firstLine.split(/\s+/);
+  const hand = tokens[tokens.length - 1]?.toUpperCase();
+
+  return hand === "L" ? "L" : "R";
+}
+
 export default function GameSimulator() {
   const defaultPark = parks1980.find((park) => park.name?.includes("Tiger"))?.name || parks1980[0]?.name || "";
   const [hittersText, setHittersText] = useState("");
-  const [pitcherHand, setPitcherHand] = useState("R");
+    const [pitcherHand, setPitcherHand] = useState("R");
+  const [pitcherHandSource, setPitcherHandSource] = useState("Manual default");
   const [lineupMode, setLineupMode] = useState("optimized");
   const [parkName, setParkName] = useState(defaultPark);
   const [sims, setSims] = useState(1000);
@@ -68,7 +83,7 @@ export default function GameSimulator() {
     setComparison(null);
   };
 
-  const loadSavedOpponent = (opponentId) => {
+    const loadSavedOpponent = (opponentId) => {
     setSelectedOpponentId(opponentId);
 
     const opponent = savedOpponents.find(
@@ -77,6 +92,13 @@ export default function GameSimulator() {
     if (!opponent) return;
 
     if (opponent.ballpark) setParkName(opponent.ballpark);
+
+    const inferredHand = inferPitcherHand(opponent.pitchersText);
+    if (inferredHand) {
+      setPitcherHand(inferredHand);
+      setPitcherHandSource(`Auto-detected from ${opponent.name}`);
+    }
+
     setResult(null);
     setComparison(null);
   };
@@ -244,12 +266,19 @@ export default function GameSimulator() {
 
               <select
                 value={pitcherHand}
-                onChange={(event) => setPitcherHand(event.target.value)}
+                onChange={(event) => {
+                  setPitcherHand(event.target.value);
+                  setPitcherHandSource("Manual override");
+                }}
                 className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               >
                 <option value="R">Right-handed pitcher</option>
                 <option value="L">Left-handed pitcher</option>
               </select>
+
+              <p className="mt-1 text-xs text-slate-400">
+                {pitcherHandSource}
+              </p>
             </div>
 
             <div>
