@@ -100,7 +100,7 @@ export default function GameSimulator() {
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
               Estimate a lineup run environment using the current card-aware lineup engine,
               1980 ballpark data, pitcher hand, and a lightweight run-distribution model.
-              This is an MVP simulation layer, not a full dice/card rules engine yet. Use optimized mode to let the engine choose an order, or manual mode to simulate the first nine pasted rows exactly. Current mode optimizes lineup order from the roster input.
+              This is an MVP simulation layer, not a full dice/card rules engine yet. Use optimized mode to let the engine choose an order, or manual mode to simulate the first nine pasted rows exactly.
             </p>
           </div>
 
@@ -413,14 +413,49 @@ function ComparisonMetric({ label, optimized, manual, delta, type = "runs" }) {
   );
 }
 
+function formatAbsoluteRuns(value) {
+  return Math.abs(Number(value || 0)).toFixed(2);
+}
+
+function getComparisonVerdict(runDelta) {
+  const delta = Number(runDelta || 0);
+  const absoluteDelta = Math.abs(delta);
+  const leader = delta >= 0 ? "Optimized lineup" : "Manual lineup";
+
+  if (absoluteDelta < 0.1) {
+    return {
+      label: "Essentially even",
+      tone: "text-slate-500",
+      message:
+        "These lineups are within normal simulation noise. Use matchup preference, fatigue, defense, or managerial rules as the tiebreaker.",
+    };
+  }
+
+  if (absoluteDelta < 0.25) {
+    return {
+      label: "Slight edge",
+      tone: delta >= 0 ? "text-emerald-600" : "text-sky-600",
+      message: `${leader} has a slight edge of ${formatAbsoluteRuns(delta)} expected runs. Worth considering, but not decisive.`,
+    };
+  }
+
+  if (absoluteDelta < 0.5) {
+    return {
+      label: "Meaningful edge",
+      tone: delta >= 0 ? "text-emerald-700" : "text-sky-700",
+      message: `${leader} projects ${formatAbsoluteRuns(delta)} expected runs better. This is large enough to test seriously.`,
+    };
+  }
+
+  return {
+    label: "Strong edge",
+    tone: delta >= 0 ? "text-emerald-800" : "text-sky-800",
+    message: `${leader} projects ${formatAbsoluteRuns(delta)} expected runs better. This is a strong signal in the current model.`,
+  };
+}
 function ComparisonPanel({ comparison }) {
   const { optimized, manual, runDelta, simRunDelta, winDelta } = comparison;
-  const bestLabel =
-    runDelta > 0.05
-      ? "Optimized lineup projects better."
-      : runDelta < -0.05
-        ? "Manual lineup projects better."
-        : "Lineups project nearly even.";
+  const verdict = getComparisonVerdict(runDelta);
 
   const maxRows = Math.max(
     optimized.lineup?.length || 0,
@@ -432,9 +467,14 @@ function ComparisonPanel({ comparison }) {
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="text-xl font-bold">Optimized vs Manual</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            {bestLabel} Manual mode uses the first nine pasted rows exactly.
-          </p>
+                    <div className="mt-1 space-y-1">
+            <div className={`text-sm font-semibold ${verdict.tone}`}>
+              {verdict.label}
+            </div>
+            <p className="text-sm text-slate-500">
+              {verdict.message} Manual mode uses the first nine pasted rows exactly.
+            </p>
+          </div>
         </div>
 
         <div className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
