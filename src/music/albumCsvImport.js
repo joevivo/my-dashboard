@@ -62,7 +62,7 @@ export function parseAlbumCsv(csvText) {
   const rows = parseCsvRows(csvText);
 
   if (rows.length < 2) {
-    return { albums: [], skipped: 0 };
+    return { albums: [], skipped: 0, skippedRows: [] };
   }
 
   const headers = rows[0].map(normalizeCsvHeader);
@@ -85,12 +85,14 @@ export function parseAlbumCsv(csvText) {
   };
 
   const albums = [];
-  let skipped = 0;
+  const skippedRows = [];
 
-  dataRows.forEach((row) => {
+  dataRows.forEach((row, index) => {
+    const rowNumber = index + 2;
+
     const album = {
       artist: getValue(row, "artist", "artistName"),
-      title: getValue(row, "title", "album", "albumTitle"),
+      title: getValue(row, "album", "title", "albumTitle"),
       year: getValue(row, "year", "releaseYear"),
       rating: getValue(row, "rating", "score"),
       favoriteTracks: getValue(row, "favoriteTracks", "favorite tracks", "tracks"),
@@ -101,13 +103,25 @@ export function parseAlbumCsv(csvText) {
       notes: getValue(row, "notes", "comments"),
     };
 
-    if (!album.artist || !album.title) {
-      skipped += 1;
+    const missingFields = [];
+
+    if (!album.artist) missingFields.push("artist");
+    if (!album.title) missingFields.push("album");
+
+    if (missingFields.length) {
+      skippedRows.push({
+        rowNumber,
+        reason: `missing ${missingFields.join(" and ")}`,
+      });
       return;
     }
 
     albums.push(album);
   });
 
-  return { albums, skipped };
+  return {
+    albums,
+    skipped: skippedRows.length,
+    skippedRows,
+  };
 }
