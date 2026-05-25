@@ -35,6 +35,7 @@ export default function GameSimulator() {
   const [sims, setSims] = useState(1000);
   const [opponentRuns, setOpponentRuns] = useState(4.5);
   const [result, setResult] = useState(null);
+  const [comparison, setComparison] = useState(null);
 
   const hasRoster = hittersText.trim().length > 0;
 
@@ -53,6 +54,36 @@ export default function GameSimulator() {
     });
 
     setResult(nextResult);
+  };
+
+  const compareLineups = () => {
+    const optimized = estimateLineupRunEnvironment({
+      hittersText,
+      pitcherHand,
+      parkName,
+      sims,
+      opponentRuns,
+      lineupMode: "optimized",
+    });
+
+    const manual = estimateLineupRunEnvironment({
+      hittersText,
+      pitcherHand,
+      parkName,
+      sims,
+      opponentRuns,
+      lineupMode: "manual",
+    });
+
+    setComparison({
+      optimized,
+      manual,
+      runDelta: optimized.avgRuns - manual.avgRuns,
+      simRunDelta: optimized.simulatedAvgRuns - manual.simulatedAvgRuns,
+      winDelta: optimized.winProbability - manual.winProbability,
+    });
+
+    setResult(optimized);
   };
 
   return (
@@ -188,17 +219,30 @@ export default function GameSimulator() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={runSimulation}
-            disabled={!hasRoster}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Run Simulation
-          </button>
+                    <div className="grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={runSimulation}
+              disabled={!hasRoster}
+              className="w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Run Simulation
+            </button>
+
+            <button
+              type="button"
+              onClick={compareLineups}
+              disabled={!hasRoster}
+              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+              Compare Optimized vs Manual
+            </button>
+          </div>
         </div>
 
         <div className="space-y-6">
+          {comparison && <ComparisonPanel comparison={comparison} />}
+
           {!result ? (
             <div className="dashboard-panel p-6">
               <h2 className="text-xl font-bold">Simulation Results</h2>
@@ -319,6 +363,143 @@ function ResultStat({ label, value }) {
         {label}
       </div>
       <div className="mt-2 text-2xl font-bold">{value}</div>
+    </div>
+  );
+}
+function formatSignedRuns(value) {
+  const number = Number(value || 0);
+  const sign = number > 0 ? "+" : "";
+
+  return `${sign}${formatRuns(number)}`;
+}
+
+function formatSignedPercent(value) {
+  const number = Number(value || 0);
+  const sign = number > 0 ? "+" : "";
+
+  return `${sign}${formatPercent(number)}`;
+}
+
+function ComparisonMetric({ label, optimized, manual, delta, type = "runs" }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+      <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+        {label}
+      </div>
+
+      <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
+        <div>
+          <div className="text-xs text-slate-400">Optimized</div>
+          <div className="font-bold">
+            {type === "percent" ? formatPercent(optimized) : formatRuns(optimized)}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs text-slate-400">Manual</div>
+          <div className="font-bold">
+            {type === "percent" ? formatPercent(manual) : formatRuns(manual)}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs text-slate-400">Delta</div>
+          <div className={`font-bold ${delta >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+            {type === "percent" ? formatSignedPercent(delta) : formatSignedRuns(delta)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ComparisonPanel({ comparison }) {
+  const { optimized, manual, runDelta, simRunDelta, winDelta } = comparison;
+  const bestLabel =
+    runDelta > 0.05
+      ? "Optimized lineup projects better."
+      : runDelta < -0.05
+        ? "Manual lineup projects better."
+        : "Lineups project nearly even.";
+
+  const maxRows = Math.max(
+    optimized.lineup?.length || 0,
+    manual.lineup?.length || 0
+  );
+
+  return (
+    <div className="dashboard-panel p-6">
+      <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h2 className="text-xl font-bold">Optimized vs Manual</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            {bestLabel} Manual mode uses the first nine pasted rows exactly.
+          </p>
+        </div>
+
+        <div className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+          {optimized.inputs.sims.toLocaleString()} games each
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-3">
+        <ComparisonMetric
+          label="Expected Runs"
+          optimized={optimized.avgRuns}
+          manual={manual.avgRuns}
+          delta={runDelta}
+        />
+
+        <ComparisonMetric
+          label="Sim Avg Runs"
+          optimized={optimized.simulatedAvgRuns}
+          manual={manual.simulatedAvgRuns}
+          delta={simRunDelta}
+        />
+
+        <ComparisonMetric
+          label="Win Estimate"
+          optimized={optimized.winProbability}
+          manual={manual.winProbability}
+          delta={winDelta}
+          type="percent"
+        />
+      </div>
+
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="text-xs uppercase tracking-wide text-slate-400">
+            <tr>
+              <th className="py-2 pr-3">Slot</th>
+              <th className="py-2 pr-3">Optimized</th>
+              <th className="py-2 pr-3">Manual</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+            {Array.from({ length: maxRows }).map((_, index) => {
+              const optimizedPlayer = optimized.lineup?.[index];
+              const manualPlayer = manual.lineup?.[index];
+
+              return (
+                <tr key={`comparison-${index}`}>
+                  <td className="py-2 pr-3 font-semibold">{index + 1}</td>
+                  <td className="py-2 pr-3">
+                    {optimizedPlayer
+                      ? `${optimizedPlayer.name} (${optimizedPlayer.fieldPos})`
+                      : "-"}
+                  </td>
+                  <td className="py-2 pr-3">
+                    {manualPlayer
+                      ? `${manualPlayer.name} (${manualPlayer.fieldPos})`
+                      : "-"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
