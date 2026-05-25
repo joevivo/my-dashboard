@@ -30,6 +30,7 @@ export default function GameSimulator() {
   const defaultPark = parks1980.find((park) => park.name?.includes("Tiger"))?.name || parks1980[0]?.name || "";
   const [hittersText, setHittersText] = useState("");
   const [pitcherHand, setPitcherHand] = useState("R");
+  const [lineupMode, setLineupMode] = useState("optimized");
   const [parkName, setParkName] = useState(defaultPark);
   const [sims, setSims] = useState(1000);
   const [opponentRuns, setOpponentRuns] = useState(4.5);
@@ -48,6 +49,7 @@ export default function GameSimulator() {
       parkName,
       sims,
       opponentRuns,
+      lineupMode,
     });
 
     setResult(nextResult);
@@ -67,7 +69,7 @@ export default function GameSimulator() {
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
               Estimate a lineup run environment using the current card-aware lineup engine,
               1980 ballpark data, pitcher hand, and a lightweight run-distribution model.
-              This is an MVP simulation layer, not a full dice/card rules engine yet. Current mode optimizes lineup order from the roster input.
+              This is an MVP simulation layer, not a full dice/card rules engine yet. Use optimized mode to let the engine choose an order, or manual mode to simulate the first nine pasted rows exactly. Current mode optimizes lineup order from the roster input.
             </p>
           </div>
 
@@ -105,6 +107,21 @@ export default function GameSimulator() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Lineup mode
+              </label>
+
+              <select
+                value={lineupMode}
+                onChange={(event) => setLineupMode(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="optimized">Optimize lineup from roster</option>
+                <option value="manual">Use pasted order exactly</option>
+              </select>
+            </div>
+
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
                 Opposing pitcher hand

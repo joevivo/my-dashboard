@@ -122,6 +122,57 @@ function getLineupRunAdjustment(lineup = []) {
   return clamp(averageAdjustment + topOrderAdjustment + depthAdjustment, -1.2, 2.2);
 }
 
+function getObpForPitcherHand(player, pitcherHand) {
+  const hand = String(pitcherHand || "R").toUpperCase();
+
+  if (hand === "L" || hand === "LHP" || hand === "LEFT") {
+    return player.obpVsL;
+  }
+
+  return player.obpVsR;
+}
+
+function parseManualLineup(hittersText = "", pitcherHand = "R") {
+  return hittersText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split(/\s+/);
+
+      if (parts.length < 8) return null;
+
+      const fieldPos = parts[0];
+      const bats = parts[1];
+      const defense = toNumber(parts[2], null);
+      const speed = toNumber(parts[parts.length - 1], 0);
+      const power = toNumber(parts[parts.length - 2], 0);
+      const obpVsL = normalizeRate(parts[parts.length - 3]);
+      const obpVsR = normalizeRate(parts[parts.length - 4]);
+      const name = parts.slice(3, -4).join(" ");
+
+      const player = {
+        name,
+        fieldPos,
+        position: fieldPos,
+        positions: String(fieldPos).split("/"),
+        bats,
+        defense,
+        obpVsR,
+        obpVsL,
+        obp: getObpForPitcherHand({ obpVsR, obpVsL }, pitcherHand),
+        power,
+        speed,
+      };
+
+      return {
+        ...player,
+        score: Number(getPlayerScore(player).toFixed(2)),
+      };
+    })
+    .filter(Boolean)
+    .slice(0, 9);
+}
 function buildRunDistribution(results = []) {
   const buckets = {
     0: 0,
@@ -198,14 +249,18 @@ export function estimateLineupRunEnvironment({
   parkName = "",
   sims = DEFAULT_SIMS,
   opponentRuns = 4.5,
+  lineupMode = "optimized",
 } = {}) {
   const safeSims = clamp(Math.round(toNumber(sims, DEFAULT_SIMS)), 100, 5000);
   const park = getParkData(parkName);
-  const lineup = buildCardAwareLineup({
-    hittersText,
-    pitcherHand,
-    park,
-  });
+  const lineup =
+    lineupMode === "manual"
+      ? parseManualLineup(hittersText, pitcherHand)
+      : buildCardAwareLineup({
+          hittersText,
+          pitcherHand,
+          park,
+        });
 
   const lineupAdjustment = getLineupRunAdjustment(lineup);
   const parkAdjustment = getParkRunAdjustment(park);
@@ -241,6 +296,7 @@ export function estimateLineupRunEnvironment({
       parkName,
       sims: safeSims,
       opponentRuns,
+      lineupMode,
     },
     park: {
       name: park?.name || parkName || "Unknown",
