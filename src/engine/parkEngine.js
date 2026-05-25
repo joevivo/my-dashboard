@@ -1,19 +1,19 @@
 import { parks1980 } from "../parks1980";
 
 function getSinglesLeft(park) {
-  return park.singlesLeft ?? park.siLeft ?? park.singleLeft ?? park.SIL ?? 0;
+  return park.singlesLeft ?? park.singlesL ?? park.siLeft ?? park.singleLeft ?? park.SIL ?? 0;
 }
 
 function getSinglesRight(park) {
-  return park.singlesRight ?? park.siRight ?? park.singleRight ?? park.SIR ?? 0;
+  return park.singlesRight ?? park.singlesR ?? park.siRight ?? park.singleRight ?? park.SIR ?? 0;
 }
 
 function getHomeRunsLeft(park) {
-  return park.homeRunsLeft ?? park.hrLeft ?? park.homeRunLeft ?? park.HRL ?? 0;
+  return park.homeRunsLeft ?? park.homersL ?? park.hrLeft ?? park.homeRunLeft ?? park.HRL ?? 0;
 }
 
 function getHomeRunsRight(park) {
-  return park.homeRunsRight ?? park.hrRight ?? park.homeRunRight ?? park.HRR ?? 0;
+  return park.homeRunsRight ?? park.homersR ?? park.hrRight ?? park.homeRunRight ?? park.HRR ?? 0;
 }
 
 export function findParkByName(name) {
