@@ -188,12 +188,17 @@ export default function LineupAnalyzer() {
   const getObp = (p, hand) => (hand === "RHP" ? p.obpVsR : p.obpVsL);
 
   const getParkValues = (p, park) => {
-    if (p.bats === "L") return { si: park.siL, hr: park.hrL };
-    if (p.bats === "R") return { si: park.siR, hr: park.hrR };
+    const siL = park.siL ?? park.singlesLeft ?? park.singlesL ?? 10;
+    const siR = park.siR ?? park.singlesRight ?? park.singlesR ?? 10;
+    const hrL = park.hrL ?? park.homeRunsLeft ?? park.homersL ?? 10;
+    const hrR = park.hrR ?? park.homeRunsRight ?? park.homersR ?? 10;
+
+    if (p.bats === "L") return { si: siL, hr: hrL };
+    if (p.bats === "R") return { si: siR, hr: hrR };
 
     return {
-      si: (park.siL + park.siR) / 2,
-      hr: (park.hrL + park.hrR) / 2,
+      si: (siL + siR) / 2,
+      hr: (hrL + hrR) / 2,
     };
   };
 
