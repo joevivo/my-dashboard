@@ -5,6 +5,7 @@ import PitchingAnalyzer from "./PitchingAnalyzer";
 import MatchupAnalyzer from "./MatchupAnalyzer";
 import FinanceView from "./FinanceView";
 import SeriesPlanner from "./SeriesPlanner";
+import GameSimulator from "./GameSimulator";
 import LeagueManager from "./LeagueManager";
 import OpponentManager from "./OpponentManager";
 import WeatherBug from "./WeatherBug";
@@ -85,6 +86,7 @@ export default function App() {
   {navButton("Pitching", "Pitching Analyzer")}
   {navButton("Matchup", "Matchup Analyzer")}
   {navButton("Series", "Series Planner")}
+  {navButton("GameSim", "Game Simulator")}
   {navButton("LeagueManager", "League Manager")}
   {navButton("Opponents", "Opponent Manager")}
   {navButton("Cards", "Card Importer")}
