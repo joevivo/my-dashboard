@@ -26,18 +26,37 @@ function formatRuns(value) {
   return Number(value || 0).toFixed(2);
 }
 
-function inferPitcherHand(pitchersText) {
-  const firstLine = String(pitchersText || "")
+function parseOpponentStarters(pitchersText) {
+  return String(pitchersText || "")
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter(Boolean)[0];
+    .filter(Boolean)
+    .map((line, index) => {
+      const tokens = line.split(/\s+/);
 
-  if (!firstLine) return null;
+      if (tokens.length < 2) return null;
 
-  const tokens = firstLine.split(/\s+/);
-  const hand = tokens[tokens.length - 1]?.toUpperCase();
+      const handToken = tokens[tokens.length - 1]?.toUpperCase();
+      const hand = handToken === "L" ? "L" : "R";
 
-  return hand === "L" ? "L" : "R";
+      const starterTokens = tokens.slice(0, -1);
+
+      return {
+        id: `${starterTokens.join("-")}-${index}`,
+        name: starterTokens.join(" "),
+        hand,
+        raw: line,
+      };
+    })
+    .filter(Boolean);
+}
+
+function inferPitcherHand(pitchersText) {
+  const starters = parseOpponentStarters(pitchersText);
+
+  if (!starters.length) return null;
+
+  return starters[0].hand;
 }
 
 export default function GameSimulator() {
@@ -70,6 +89,8 @@ export default function GameSimulator() {
 
   const [selectedTeamId, setSelectedTeamId] = useState("");
   const [selectedOpponentId, setSelectedOpponentId] = useState("");
+  const [opponentStarters, setOpponentStarters] = useState([]);
+  const [selectedOpponentStarterId, setSelectedOpponentStarterId] = useState("");
 
   const loadSavedTeam = (teamId) => {
     setSelectedTeamId(teamId);
@@ -93,12 +114,30 @@ export default function GameSimulator() {
 
     if (opponent.ballpark) setParkName(opponent.ballpark);
 
-    const inferredHand = inferPitcherHand(opponent.pitchersText);
-    if (inferredHand) {
-      setPitcherHand(inferredHand);
-      setPitcherHandSource(`Auto-detected from ${opponent.name}`);
+    const starters = parseOpponentStarters(opponent.pitchersText);
+    setOpponentStarters(starters);
+
+    if (starters.length) {
+      setSelectedOpponentStarterId(starters[0].id);
+      setPitcherHand(starters[0].hand);
+      setPitcherHandSource(`Auto-detected from ${starters[0].name}`);
+    } else {
+      setSelectedOpponentStarterId("");
+      setOpponentStarters([]);
     }
 
+    setResult(null);
+    setComparison(null);
+  };
+
+  const selectOpponentStarter = (starterId) => {
+    setSelectedOpponentStarterId(starterId);
+
+    const starter = opponentStarters.find((item) => item.id === starterId);
+    if (!starter) return;
+
+    setPitcherHand(starter.hand);
+    setPitcherHandSource(`Selected starter: ${starter.name}`);
     setResult(null);
     setComparison(null);
   };
@@ -256,6 +295,28 @@ export default function GameSimulator() {
               >
                 <option value="optimized">Optimize lineup from roster</option>
                 <option value="manual">Use pasted order exactly</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Opposing starter
+              </label>
+
+              <select
+                value={selectedOpponentStarterId}
+                onChange={(event) => selectOpponentStarter(event.target.value)}
+                disabled={!opponentStarters.length}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="">
+                  {opponentStarters.length ? "Select starter" : "No saved starter parsed"}
+                </option>
+                {opponentStarters.map((starter) => (
+                  <option key={starter.id} value={starter.id}>
+                    {starter.name} ({starter.hand})
+                  </option>
+                ))}
               </select>
             </div>
 
