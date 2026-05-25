@@ -37,6 +37,50 @@ export default function GameSimulator() {
   const [result, setResult] = useState(null);
   const [comparison, setComparison] = useState(null);
 
+  const [savedTeams] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("stratLeagues") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const [savedOpponents] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("stratOpponents") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const [selectedTeamId, setSelectedTeamId] = useState("");
+  const [selectedOpponentId, setSelectedOpponentId] = useState("");
+
+  const loadSavedTeam = (teamId) => {
+    setSelectedTeamId(teamId);
+
+    const team = savedTeams.find((item) => String(item.id) === String(teamId));
+    if (!team) return;
+
+    setHittersText(team.hittersText || "");
+    if (team.ballpark) setParkName(team.ballpark);
+    setResult(null);
+    setComparison(null);
+  };
+
+  const loadSavedOpponent = (opponentId) => {
+    setSelectedOpponentId(opponentId);
+
+    const opponent = savedOpponents.find(
+      (item) => String(item.id) === String(opponentId)
+    );
+    if (!opponent) return;
+
+    if (opponent.ballpark) setParkName(opponent.ballpark);
+    setResult(null);
+    setComparison(null);
+  };
+
   const hasRoster = hittersText.trim().length > 0;
 
   const distributionRows = useMemo(() => {
@@ -121,6 +165,46 @@ export default function GameSimulator() {
             <p className="mt-1 text-sm text-slate-500">
               Paste hitter roster text, choose the opposing starter hand, and select the game park.
             </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Saved team
+              </label>
+
+              <select
+                value={selectedTeamId}
+                onChange={(event) => loadSavedTeam(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="">Manual / pasted roster</option>
+                {savedTeams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name || "Unnamed Team"}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Saved opponent
+              </label>
+
+              <select
+                value={selectedOpponentId}
+                onChange={(event) => loadSavedOpponent(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="">No saved opponent selected</option>
+                {savedOpponents.map((opponent) => (
+                  <option key={opponent.id} value={opponent.id}>
+                    {opponent.name || "Unnamed Opponent"}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>
