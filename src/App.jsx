@@ -120,6 +120,8 @@ export default function App() {
               <MatchupAnalyzer />
             ) : activeView === "Series" ? (
               <SeriesPlanner />
+            ) : activeView === "GameSim" ? (
+              <GameSimulator />
             ) : activeView === "LeagueManager" ? (
   <LeagueManager />
 ) : activeView === "Opponents" ? (
