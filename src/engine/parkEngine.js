@@ -22,6 +22,7 @@ export function findParkByName(name) {
 
 export function getParkRunEnvironment(park) {
   if (!park) return "Unknown";
+  if (park.runEnvironment) return park.runEnvironment;
 
   const avgSingles = (getSinglesLeft(park) + getSinglesRight(park)) / 2;
   const avgHomeRuns = (getHomeRunsLeft(park) + getHomeRunsRight(park)) / 2;
