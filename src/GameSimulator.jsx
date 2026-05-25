@@ -2,15 +2,21 @@ import { useMemo, useState } from "react";
 import { estimateLineupRunEnvironment } from "./engine/gameSimEngine";
 import { parks1980 } from "./parks1980";
 
-const sampleRoster = `Rickey Henderson LF L .420 7 10
-Chet Lemon CF R .360 6 7
-Reggie Smith RF S .390 8 4
-Bill Madlock 3B R .375 5 5
-Brian Downing C R .365 6 3
-Dave Collins CF S .370 3 9
-Dave Concepcion SS R .330 3 6
-Ken Macha 1B R .340 4 2
-Lenny Randle 2B S .335 3 8`;
+const sampleRoster = `CF R 2 Rickey Henderson 0.430 0.390 5 10
+RF S 3 Reggie Smith 0.380 0.400 8 6
+DH R 5 Jose Morales 0.320 0.380 8 1
+1B L 4 Richie Hebner 0.390 0.340 6 3
+C R 2 Brian Downing 0.430 0.390 5 3
+3B R 3 Bill Madlock 0.360 0.410 6 4
+LF S 1 Dave Collins 0.360 0.300 4 9
+SS R 2 Dave Concepcion 0.310 0.350 3 7
+2B R 3 Steve Papi 0.220 0.260 2 4
+C L 4 Ron Hodges 0.300 0.360 2 2
+C R 4 Dan Whitmer 0.240 0.230 2 2
+2B R 4 Alan Bannister 0.300 0.340 3 6
+3B S 4 Lenny Randle 0.390 0.420 3 8
+RF L 2 Dave Parker 0.300 0.340 7 5
+RF R 2 Juan Beniquez 0.240 0.220 3 6`;
 
 function formatPercent(value) {
   return `${((Number(value) || 0) * 100).toFixed(1)}%`;
@@ -61,7 +67,7 @@ export default function GameSimulator() {
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
               Estimate a lineup run environment using the current card-aware lineup engine,
               1980 ballpark data, pitcher hand, and a lightweight run-distribution model.
-              This is an MVP simulation layer, not a full dice/card rules engine yet.
+              This is an MVP simulation layer, not a full dice/card rules engine yet. Current mode optimizes lineup order from the roster input.
             </p>
           </div>
 
@@ -93,7 +99,7 @@ export default function GameSimulator() {
               value={hittersText}
               onChange={(event) => setHittersText(event.target.value)}
               rows={14}
-              placeholder="Paste hitters here. Use the same roster text format you use in Lineup Analyzer."
+              placeholder="Format: POS BATS DEF NAME OBPvsR OBPvsL PWR SPD"
               className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-3 font-mono text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
