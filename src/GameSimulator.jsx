@@ -144,6 +144,10 @@ export default function GameSimulator() {
 
   const hasRoster = hittersText.trim().length > 0;
 
+  const selectedTeam = savedTeams.find((item) => String(item.id) === String(selectedTeamId));
+  const selectedOpponent = savedOpponents.find((item) => String(item.id) === String(selectedOpponentId));
+  const selectedStarter = opponentStarters.find((item) => item.id === selectedOpponentStarterId);
+
   const distributionRows = useMemo(() => {
     return result?.runDistribution || [];
   }, [result]);
@@ -415,6 +419,16 @@ export default function GameSimulator() {
         </div>
 
         <div className="space-y-6">
+          <SimulationContextPanel
+            teamName={selectedTeam?.name || "Manual / pasted roster"}
+            opponentName={selectedOpponent?.name || "No saved opponent selected"}
+            starterName={selectedStarter?.name || "No starter selected"}
+            pitcherHand={pitcherHand}
+            parkName={parkName}
+            lineupMode={lineupMode}
+            opponentRuns={opponentRuns}
+          />
+
           {comparison && <ComparisonPanel comparison={comparison} />}
 
           {!result ? (
@@ -525,6 +539,49 @@ export default function GameSimulator() {
             </>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SimulationContextPanel({
+  teamName,
+  opponentName,
+  starterName,
+  pitcherHand,
+  parkName,
+  lineupMode,
+  opponentRuns,
+}) {
+  const rows = [
+    ["Team", teamName],
+    ["Opponent", opponentName],
+    ["Starter", starterName],
+    ["Pitcher Hand", pitcherHand === "L" ? "Left" : "Right"],
+    ["Park", parkName],
+    ["Lineup Mode", lineupMode === "manual" ? "Manual pasted order" : "Optimized"],
+    ["Opponent Runs Baseline", formatRuns(opponentRuns)],
+  ];
+
+  return (
+    <div className="dashboard-panel p-6">
+      <h2 className="text-lg font-bold">Simulation Context</h2>
+      <p className="mt-1 text-sm text-slate-500">
+        Current matchup settings used by the simulation engine.
+      </p>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {rows.map(([label, value]) => (
+          <div
+            key={label}
+            className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/70"
+          >
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              {label}
+            </div>
+            <div className="mt-1 text-sm font-semibold">{value}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
