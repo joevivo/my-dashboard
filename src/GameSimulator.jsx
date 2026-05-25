@@ -232,6 +232,11 @@ export default function GameSimulator() {
             </p>
           </div>
 
+          <InputSectionTitle
+            title="Matchup"
+            description="Choose your team, opponent, starter, and park before running sims."
+          />
+
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
@@ -272,6 +277,11 @@ export default function GameSimulator() {
             </div>
           </div>
 
+          <InputSectionTitle
+            title="Lineup Source"
+            description="Use saved team data or paste/edit hitter rows directly."
+          />
+
           <div>
             <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
               Hitter roster text
@@ -285,6 +295,11 @@ export default function GameSimulator() {
               className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-3 font-mono text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
+
+          <InputSectionTitle
+            title="Simulation Settings"
+            description="Control lineup mode, starter hand, park, game count, and opponent baseline."
+          />
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
@@ -540,6 +555,17 @@ export default function GameSimulator() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function InputSectionTitle({ title, description }) {
+  return (
+    <div className="border-t border-slate-200 pt-4 dark:border-slate-700">
+      <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">
+        {title}
+      </h3>
+      <p className="mt-1 text-sm text-slate-500">{description}</p>
     </div>
   );
 }
