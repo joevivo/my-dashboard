@@ -173,6 +173,59 @@ function parseManualLineup(hittersText = "", pitcherHand = "R") {
     .filter(Boolean)
     .slice(0, 9);
 }
+const REQUIRED_POSITIONS = ["C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"];
+
+function getLineupPositions(lineup = []) {
+  return lineup.map((player) => player.fieldPos || player.position || "").filter(Boolean);
+}
+
+function getDuplicatePositions(positions = []) {
+  return positions.filter((position, index) => positions.indexOf(position) !== index);
+}
+
+function getUniqueValues(values = []) {
+  return [...new Set(values)];
+}
+
+function validateLineup({ lineup = [], lineupMode = "optimized" }) {
+  const positions = getLineupPositions(lineup);
+  const missingPositions = REQUIRED_POSITIONS.filter(
+    (position) => !positions.includes(position)
+  );
+  const duplicatePositions = getUniqueValues(getDuplicatePositions(positions));
+  const warnings = [];
+
+  if (lineup.length < 9) {
+    warnings.push(
+      `Lineup has ${lineup.length} player${lineup.length === 1 ? "" : "s"}; expected 9.`
+    );
+  }
+
+  if (missingPositions.length) {
+    warnings.push(`Missing required positions: ${missingPositions.join(", ")}.`);
+  }
+
+  if (duplicatePositions.length) {
+    warnings.push(`Duplicate positions detected: ${duplicatePositions.join(", ")}.`);
+  }
+
+  if (lineupMode === "manual" && warnings.length) {
+    warnings.push("Manual mode uses the first nine pasted rows exactly; adjust row order or positions to make the lineup legal.");
+  }
+
+  if (lineupMode === "optimized" && warnings.length) {
+    warnings.push("Optimized mode could not build a complete legal lineup from the supplied roster.");
+  }
+
+  return {
+    isValid: warnings.length === 0,
+    warnings,
+    missingPositions,
+    duplicatePositions,
+    playerCount: lineup.length,
+  };
+}
+
 function buildRunDistribution(results = []) {
   const buckets = {
     0: 0,
@@ -210,12 +263,16 @@ function estimateWinProbability(avgRuns, opponentRuns = 4.5) {
   return clamp(probability, 0.08, 0.92);
 }
 
-function buildNotes({ lineup, park, avgRuns, opponentRuns }) {
+function buildNotes({ lineup, park, avgRuns, opponentRuns, validation }) {
   const notes = [];
 
   if (!lineup.length) {
     notes.push("No lineup could be built from the supplied hitter text.");
     return notes;
+  }
+
+  if (validation?.warnings?.length) {
+    notes.push("Lineup validation warnings are present; review roster coverage before trusting this projection.");
   }
 
   if (park?.environment) {
@@ -262,6 +319,11 @@ export function estimateLineupRunEnvironment({
           park,
         });
 
+  const validation = validateLineup({
+    lineup,
+    lineupMode,
+  });
+
   const lineupAdjustment = getLineupRunAdjustment(lineup);
   const parkAdjustment = getParkRunAdjustment(park);
 
@@ -307,6 +369,7 @@ export function estimateLineupRunEnvironment({
       homeRunsLeft: park?.homeRunsLeft ?? null,
       homeRunsRight: park?.homeRunsRight ?? null,
     },
+    validation,
     lineup: lineup.map((player, index) => ({
       slot: index + 1,
       name: player.name || player.player || "Unknown",
@@ -328,6 +391,7 @@ export function estimateLineupRunEnvironment({
       park,
       avgRuns,
       opponentRuns,
+      validation,
     }),
   };
 }

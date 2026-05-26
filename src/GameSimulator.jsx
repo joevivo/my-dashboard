@@ -488,6 +488,20 @@ export default function GameSimulator() {
             </div>
           ) : (
             <>
+              {result?.validation?.warnings?.length > 0 && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-900 dark:border-amber-700/70 dark:bg-amber-950/40 dark:text-amber-100">
+                  <h2 className="text-lg font-bold">Lineup Validation</h2>
+                  <p className="mt-1 text-sm">
+                    Review these warnings before trusting the simulation result.
+                  </p>
+
+                  <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
+                    {result.validation.warnings.map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="dashboard-panel p-6">
                 <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                   <div>
