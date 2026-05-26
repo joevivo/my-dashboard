@@ -540,6 +540,7 @@ export default function GameSimulator() {
                         <th className="py-2 pr-3">Pwr</th>
                         <th className="py-2 pr-3">Spd</th>
                         <th className="py-2 pr-3">Score</th>
+                        <th className="py-2 pr-3">Why</th>
                       </tr>
                     </thead>
 
@@ -554,6 +555,9 @@ export default function GameSimulator() {
                           <td className="py-2 pr-3">{player.power ?? "-"}</td>
                           <td className="py-2 pr-3">{player.speed ?? "-"}</td>
                           <td className="py-2 pr-3">{player.score}</td>
+                          <td className="py-2 pr-3 text-slate-500">
+                            {player.reason || "-"}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

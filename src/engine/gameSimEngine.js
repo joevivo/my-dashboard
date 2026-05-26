@@ -263,6 +263,56 @@ function estimateWinProbability(avgRuns, opponentRuns = 4.5) {
   return clamp(probability, 0.08, 0.92);
 }
 
+function buildPlayerReason(player = {}, park, pitcherHand) {
+  const reasons = [];
+  const position = player.fieldPos || player.position || "";
+  const obp = normalizeRate(player.obp);
+  const power = toNumber(player.power ?? player.pwr, 0);
+  const speed = toNumber(player.speed ?? player.spd, 0);
+  const defense = toNumber(player.defense, null);
+  const bats = String(player.bats || "").toUpperCase();
+  const hand = String(pitcherHand || "R").toUpperCase();
+
+  if (obp >= 0.390) reasons.push("elite OBP");
+  else if (obp >= 0.350) reasons.push("strong OBP");
+
+  if (power >= 7) reasons.push("middle-order power");
+  else if (power >= 5) reasons.push("useful power");
+
+  if (speed >= 8) reasons.push("impact speed");
+  else if (speed >= 6) reasons.push("speed value");
+
+  if (hand === "R" && (bats === "L" || bats === "S")) {
+    reasons.push("platoon fit vs RHP");
+  }
+
+  if (hand === "L" && (bats === "R" || bats === "S")) {
+    reasons.push("platoon fit vs LHP");
+  }
+
+  if (park?.environment?.includes("Low")) {
+    if (speed >= 6) reasons.push("speed plays in low-HR park");
+    if (power >= 7) reasons.push("power muted by park");
+    if (["C", "SS", "CF", "2B"].includes(position)) {
+      reasons.push("premium defensive slot");
+    }
+  }
+
+  if (defense != null && defense <= 2 && ["C", "SS", "CF", "2B"].includes(position)) {
+    reasons.push("strong defender at key position");
+  }
+
+  if (defense != null && defense >= 5 && position === "DH") {
+    reasons.push("bat protected at DH");
+  }
+
+  if (!reasons.length) {
+    reasons.push("best available roster fit");
+  }
+
+  return reasons.slice(0, 3).join("; ");
+}
+
 function buildNotes({ lineup, park, avgRuns, opponentRuns, validation }) {
   const notes = [];
 
@@ -379,6 +429,7 @@ export function estimateLineupRunEnvironment({
       power: player.power ?? player.pwr ?? null,
       speed: player.speed ?? player.spd ?? null,
       score: Number(getPlayerScore(player, index).toFixed(2)),
+      reason: buildPlayerReason(player, park, pitcherHand),
     })),
     avgRuns: Number(avgRuns.toFixed(2)),
     simulatedAvgRuns: Number(simulatedAvgRuns.toFixed(2)),
