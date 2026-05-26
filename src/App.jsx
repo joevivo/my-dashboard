@@ -29,6 +29,55 @@ export default function App() {
   const toggleTheme = () => {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
   };
+  const navSections = [
+    {
+      title: "Strat HQ",
+      groups: [
+        {
+          title: "Preparation",
+          items: [
+            ["Series", "Series Planner"],
+            ["Matchup", "Matchup Analyzer"],
+            ["Opponents", "Opponent Manager"],
+          ],
+        },
+        {
+          title: "Simulation",
+          items: [
+            ["Lineup", "Lineup Analyzer"],
+            ["GameSim", "Game Simulator"],
+            ["Pitching", "Pitching Analyzer"],
+          ],
+        },
+        {
+          title: "Administration",
+          items: [
+            ["LeagueManager", "League Manager"],
+            ["Cards", "Card Importer"],
+          ],
+        },
+      ],
+    },
+    {
+      title: "Life",
+      groups: [
+        {
+          title: "Intelligence",
+          items: [
+            ["News", "News"],
+            ["Finance", "Finance"],
+          ],
+        },
+        {
+          title: "Personal Archive",
+          items: [
+            ["Music", "Music"],
+            ["Calendar", "Calendar"],
+          ],
+        },
+      ],
+    },
+  ];
 
   const navButton = (view, label) => (
     <button
@@ -60,7 +109,7 @@ export default function App() {
 
           <div className="flex items-center gap-4">
             <div className="text-xs text-slate-400">
-              Strat � Finance � News � Calendar
+              Strat â€¢ Finance â€¢ News â€¢ Calendar
             </div>
 
             <button
