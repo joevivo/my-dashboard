@@ -28,3 +28,4 @@ dist-ssr
 *.sw?
 server/token.json
 server/credentials.json
+album-import-template (1).csv
