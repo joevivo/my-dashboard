@@ -109,7 +109,7 @@ export default function App() {
 
           <div className="flex items-center gap-4">
             <div className="text-xs text-slate-400">
-              Strat â€¢ Finance â€¢ News â€¢ Calendar
+              Strat / Finance / News / Calendar
             </div>
 
             <button
@@ -125,35 +125,38 @@ export default function App() {
 
       <div className="flex">
         <aside className={`w-64 backdrop-blur border-r p-4 space-y-6 min-h-screen shadow-sm transition-colors duration-200 ${isDark ? "bg-slate-950/80 border-slate-800" : "bg-white/80 border-slate-200"}`}>
-          <div>
-            <div className="text-xs font-bold uppercase text-slate-400 mb-2 tracking-widest">
-              Stratomatic
-            </div>
+          {navSections.map((section) => (
+            <div key={section.title} className="space-y-4">
+              <div className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-700/40 pb-1">
+                {section.title}
+              </div>
 
-            <div className="space-y-1">
-  {navButton("Lineup", "Lineup Analyzer")}
-  {navButton("Pitching", "Pitching Analyzer")}
-  {navButton("Matchup", "Matchup Analyzer")}
-  {navButton("Series", "Series Planner")}
-  {navButton("GameSim", "Game Simulator")}
-  {navButton("LeagueManager", "League Manager")}
-  {navButton("Opponents", "Opponent Manager")}
-  {navButton("Cards", "Card Importer")}
-</div>
-          </div>
+              {section.groups.map((group) => (
+                <details
+                  key={group.title}
+                  open={group.title !== "Administration"}
+                  className="group"
+                >
+                  <summary className="mb-2 cursor-pointer list-none text-[11px] font-semibold uppercase tracking-wider text-slate-400/80 hover:text-slate-200">
+                    <div className="flex items-center justify-between">
+                      <span>{group.title}</span>
+                      <span className="text-[10px] transition-transform group-open:rotate-90">
+                        &gt;
+                      </span>
+                    </div>
+                  </summary>
 
-          <div>
-            <div className="text-xs font-bold uppercase text-slate-400 mb-2 tracking-widest">
-              Life
+                  <div className="space-y-1 pl-1">
+                    {group.items.map(([view, label]) => (
+                      <React.Fragment key={view}>
+                        {navButton(view, label)}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </details>
+              ))}
             </div>
-
-            <div className="space-y-1">
-              {navButton("Calendar", "Calendar")}
-              {navButton("News", "News")}
-              {navButton("Finance", "Finance")}
-              {navButton("Music", "Music")}
-            </div>
-          </div>
+          ))}
         </aside>
 
         <main className="flex-1 p-6">
