@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { estimateLineupRunEnvironment } from "./engine/gameSimEngine";
 import { parks1980 } from "./parks1980";
+import StratContextStrip from "./components/StratContextStrip";
 
 const sampleRoster = `CF R 2 Rickey Henderson 0.430 0.390 5 10
 RF S 3 Reggie Smith 0.380 0.400 8 6
@@ -224,6 +225,35 @@ export default function GameSimulator() {
           </button>
         </div>
       </div>
+
+      <StratContextStrip
+        items={[
+          {
+            label: "Team",
+            value: selectedTeam?.leagueName || selectedTeam?.name,
+          },
+          {
+            label: "Opponent",
+            value: selectedOpponent?.name,
+          },
+          {
+            label: "Ballpark",
+            value: parkName,
+          },
+          {
+            label: "Starter",
+            value: selectedStarter?.name,
+          },
+          {
+            label: "Mode",
+            value: lineupMode === "manual" ? "Manual" : "Optimized",
+          },
+          {
+            label: "Pitcher Hand",
+            value: pitcherHand,
+          },
+        ]}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <div className="dashboard-panel p-6 space-y-4">
