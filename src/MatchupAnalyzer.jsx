@@ -263,7 +263,7 @@ export default function MatchupAnalyzer() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="dashboard-page">
       <div className="dashboard-panel p-6">
         <h1 className="text-2xl font-bold mb-2">Matchup Analyzer</h1>
         <p className="text-sm text-slate-500">
@@ -458,7 +458,7 @@ function ThreatSection({ title, players }) {
               </div>
 
               <div className="text-sm text-slate-600">
-                Bats: {p.bats} · OBP {p.obp.toFixed(3)} · PWR {p.power} · SPD {p.speed}
+                Bats: {p.bats} Ã‚• OBP {p.obp.toFixed(3)} Ã‚• PWR {p.power} Ã‚• SPD {p.speed}
               </div>
             </div>
           ))}
@@ -484,7 +484,7 @@ function PitcherSection({ title, pitchers }) {
               </div>
 
               <div className="text-sm text-slate-600">
-                {p.hand} · {p.profile} · Hold {p.hold} · Talent {p.talent}
+                {p.hand} Ã‚• {p.profile} Ã‚• Hold {p.hold} Ã‚• Talent {p.talent}
               </div>
 
               <div className="mt-2 text-blue-700 font-semibold">
