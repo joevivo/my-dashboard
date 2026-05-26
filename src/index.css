@@ -161,3 +161,54 @@ body {
   color: rgb(148, 163, 184);
 }
 
+
+/* Dashboard page layout primitives */
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.dashboard-page-title {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-page-subtitle {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgb(100 116 139);
+  max-width: 70ch;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.dashboard-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-section-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dark .dashboard-page-subtitle {
+  color: rgb(148 163 184);
+}
+

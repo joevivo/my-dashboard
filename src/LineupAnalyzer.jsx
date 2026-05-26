@@ -82,7 +82,7 @@ function DefenseGrid({ assigned }) {
             <div className="font-bold">{player ? player.name : "OPEN"}</div>
             {player && (
               <div className="text-sm text-slate-600">
-                DEF {player.defense} · {player.bats}
+                DEF {player.defense} • {player.bats}
               </div>
             )}
           </div>
@@ -106,8 +106,8 @@ function BenchList({ bench, hand, getObp }) {
         >
           <div className="font-bold">{player.name}</div>
           <div className="text-sm text-slate-600">
-            {player.positions.join("/")} · Bats {player.bats} · DEF{" "}
-            {player.defense} · OBP {getObp(player, hand).toFixed(3)}
+            {player.positions.join("/")} • Bats {player.bats} • DEF{" "}
+            {player.defense} • OBP {getObp(player, hand).toFixed(3)}
           </div>
         </div>
       ))}
@@ -370,7 +370,7 @@ export default function LineupAnalyzer() {
 
   return (
     <div
-      className="space-y-5 min-h-screen bg-cover bg-center bg-fixed"
+      className="dashboard-page min-h-screen bg-cover bg-center bg-fixed"
       style={{
         backgroundImage: "url('/hitter-bg.svg')",
       }}
