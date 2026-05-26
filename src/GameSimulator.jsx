@@ -196,20 +196,22 @@ export default function GameSimulator() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="dashboard-page">
       <div className="dashboard-panel p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
-              Stratomatic Sim Lab
+          <div className="dashboard-page-header">
+            <div className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">
+              Strat HQ
             </div>
 
-            <h1 className="mt-2 text-2xl font-bold">Game Simulator</h1>
+            <h1 className="dashboard-page-title">
+              Simulation Center
+            </h1>
 
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-              Estimate a lineup run environment using the current card-aware lineup engine,
-              1980 ballpark data, pitcher hand, and a lightweight run-distribution model.
-              This is an MVP simulation layer, not a full dice/card rules engine yet. Use optimized mode to let the engine choose an order, or manual mode to simulate the first nine pasted rows exactly.
+            <p className="dashboard-page-subtitle max-w-3xl">
+              Run matchup simulations using saved teams, opposing starters,
+              park environments, and lineup strategies powered by the
+              card-aware simulation engine.
             </p>
           </div>
 
@@ -433,7 +435,7 @@ export default function GameSimulator() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="dashboard-page">
           <SimulationContextPanel
             teamName={selectedTeam?.name || "Manual / pasted roster"}
             opponentName={selectedOpponent?.name || "No saved opponent selected"}
