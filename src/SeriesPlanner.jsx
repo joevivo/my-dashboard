@@ -356,12 +356,20 @@ ${injuryNotes || "None"}
   };
 
   return (
-    <div className="space-y-5">
-      <div className="dashboard-panel p-6">
-        <h1 className="text-2xl font-bold mb-2">Series Planner</h1>
-        <p className="text-sm text-slate-500">
-          Plan 3-game Strat series using opponent starters, ballpark context,
-          saved scouting records, and card-aware lineup recommendations.
+    <div className="dashboard-page">
+      <div className="dashboard-page-header">
+        <div className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">
+          Strat HQ
+        </div>
+
+        <h1 className="dashboard-page-title">
+          Series Operations
+        </h1>
+
+        <p className="dashboard-page-subtitle">
+          Prepare multi-game strategic plans using opponent scouting,
+          starter sequencing, ballpark environments, and card-aware lineup
+          recommendations.
         </p>
       </div>
 
