@@ -5,19 +5,21 @@ const NAPERVILLE_60565 = {
   lon: -88.1658,
 };
 
-function weatherEmoji(forecast = "") {
+function weatherBadge(forecast = "") {
   const text = forecast.toLowerCase();
 
-  if (text.includes("thunder")) return "??";
-  if (text.includes("rain") || text.includes("showers")) return "???";
-  if (text.includes("snow")) return "??";
-  if (text.includes("cloud")) return "??";
-  if (text.includes("sun") || text.includes("clear")) return "??";
-  if (text.includes("fog")) return "???";
+  if (text.includes("thunder")) return "Thunderstorms";
+  if (text.includes("rain") || text.includes("showers")) return "Rain";
+  if (text.includes("snow")) return "Snow";
+  if (text.includes("fog")) return "Fog";
+  if (text.includes("mostly sunny")) return "Mostly Sunny";
+  if (text.includes("partly sunny")) return "Partly Sunny";
+  if (text.includes("sunny")) return "Sunny";
+  if (text.includes("clear")) return "Clear";
+  if (text.includes("cloud")) return "Cloudy";
 
-  return "???";
+  return forecast || "Weather";
 }
-
 function getPrecipChance(day) {
   const value = day?.probabilityOfPrecipitation?.value;
 
@@ -82,7 +84,7 @@ export default function WeatherBug() {
           <p className="text-xs text-slate-500">Naperville · 3-day forecast</p>
         </div>
 
-        <div className="text-2xl">???</div>
+        <div className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Weather</div>
       </div>
 
       {error ? (
@@ -95,8 +97,8 @@ export default function WeatherBug() {
             <div key={day.number} className="rounded border bg-slate-50 p-3">
               <div className="text-sm font-semibold">{day.name}</div>
 
-              <div className="text-3xl my-2">
-                {weatherEmoji(day.shortForecast)}
+              <div className="my-2 inline-flex rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {weatherBadge(day.shortForecast)}
               </div>
 
               <div className="text-xl font-bold">
