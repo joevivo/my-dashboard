@@ -3,6 +3,7 @@ import { parks1980 } from "./parks1980";
 import { getParkData, getParkStrategySummary } from "./engine/parkEngine";
 import { buildCardAwareLineup } from "./engine/lineupEngine";
 import { getPitcherCard } from "./engine/cardStore";
+import StratContextStrip from "./components/StratContextStrip";
 
 function getTeamHittersText(team) {
   return team?.hittersText || team?.hitters || team?.hitterRoster || "";
@@ -372,6 +373,38 @@ ${injuryNotes || "None"}
           recommendations.
         </p>
       </div>
+
+      <StratContextStrip
+        items={[
+          {
+            label: "Team",
+            value:
+              savedLeagues.find((l) => String(l.id) === String(myLeagueId))
+                ?.name ||
+              savedLeagues.find((l) => String(l.id) === String(myLeagueId))
+                ?.leagueName,
+          },
+          {
+            label: "Opponent",
+            value:
+              savedOpponents.find((o) => String(o.id) === String(opponentId))
+                ?.name,
+          },
+          {
+            label: "Ballpark",
+            value: ballpark,
+          },
+          {
+            label: "Games",
+            value: String(
+              gameStarters
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean).length
+            ),
+          },
+        ]}
+      />
 
       <div className="dashboard-panel p-6 space-y-4">
         <div>
