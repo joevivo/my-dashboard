@@ -593,11 +593,18 @@ export default function GameSimulator() {
 
 function InputSectionTitle({ title, description }) {
   return (
-    <div className="border-t border-slate-200 pt-4 dark:border-slate-700">
-      <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+      <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+        Operational Section
+      </div>
+
+      <h3 className="mt-2 text-base font-bold text-slate-800 dark:text-slate-100">
         {title}
       </h3>
-      <p className="mt-1 text-sm text-slate-500">{description}</p>
+
+      <p className="mt-1 text-sm leading-6 text-slate-500">
+        {description}
+      </p>
     </div>
   );
 }
