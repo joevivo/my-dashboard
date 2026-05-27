@@ -43,6 +43,24 @@ function createQuoteId(bookId, index) {
   return `quote-${bookId.replace(/^book-/, "")}-${index + 1}`;
 }
 
+function createCanonicalBookKey(book) {
+  return slugify(`${book?.title || ""}-${book?.author || ""}`);
+}
+
+function createCanonicalQuoteKey(quote) {
+  return slugify(`${quote?.bookId || ""}-${quote?.quote || ""}`);
+}
+
+function findExistingBookIdByKey(books, importedBook) {
+  const importedKey = createCanonicalBookKey(importedBook);
+
+  if (!importedKey) return "";
+
+  return Object.values(books || {}).find(
+    (existingBook) => createCanonicalBookKey(existingBook) === importedKey
+  )?.id || "";
+}
+
 export function normalizeImportedBooks(parsedBooks, { fileName = "" } = {}) {
   const now = new Date().toISOString();
 
@@ -136,20 +154,66 @@ export function normalizeImportedBooks(parsedBooks, { fileName = "" } = {}) {
 }
 
 export function mergeBooksLibrary(baseLibrary, importedLibrary) {
+  const mergedBooks = { ...(baseLibrary?.books || {}) };
+  const mergedAuthors = {
+    ...(baseLibrary?.authors || {}),
+    ...(importedLibrary?.authors || {}),
+  };
+  const mergedQuotes = { ...(baseLibrary?.quotes || {}) };
+  const quoteBookIdMap = {};
+
+  Object.values(importedLibrary?.books || {}).forEach((importedBook) => {
+    const existingBookId = findExistingBookIdByKey(mergedBooks, importedBook);
+
+    if (existingBookId) {
+      quoteBookIdMap[importedBook.id] = existingBookId;
+
+      mergedBooks[existingBookId] = {
+        ...importedBook,
+        ...mergedBooks[existingBookId],
+        tags: Array.from(
+          new Set([
+            ...(mergedBooks[existingBookId].tags || []),
+            ...(importedBook.tags || []),
+          ])
+        ),
+        quotesCount:
+          Number(mergedBooks[existingBookId].quotesCount || 0) +
+          Number(importedBook.quotesCount || 0),
+        notesCount:
+          Number(mergedBooks[existingBookId].notesCount || 0) +
+          Number(importedBook.notesCount || 0),
+        updatedAt: new Date().toISOString(),
+      };
+
+      return;
+    }
+
+    quoteBookIdMap[importedBook.id] = importedBook.id;
+    mergedBooks[importedBook.id] = importedBook;
+  });
+
+  Object.values(importedLibrary?.quotes || {}).forEach((importedQuote) => {
+    const quote = {
+      ...importedQuote,
+      bookId: quoteBookIdMap[importedQuote.bookId] || importedQuote.bookId,
+    };
+
+    const quoteKey = createCanonicalQuoteKey(quote);
+    const duplicateQuoteExists = Object.values(mergedQuotes).some(
+      (existingQuote) => createCanonicalQuoteKey(existingQuote) === quoteKey
+    );
+
+    if (!duplicateQuoteExists) {
+      mergedQuotes[quote.id] = quote;
+    }
+  });
+
   return {
     ...baseLibrary,
-    books: {
-      ...(baseLibrary?.books || {}),
-      ...(importedLibrary?.books || {}),
-    },
-    authors: {
-      ...(baseLibrary?.authors || {}),
-      ...(importedLibrary?.authors || {}),
-    },
-    quotes: {
-      ...(baseLibrary?.quotes || {}),
-      ...(importedLibrary?.quotes || {}),
-    },
+    books: mergedBooks,
+    authors: mergedAuthors,
+    quotes: mergedQuotes,
     notes: {
       ...(baseLibrary?.notes || {}),
       ...(importedLibrary?.notes || {}),
