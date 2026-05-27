@@ -48,7 +48,9 @@ function createCanonicalBookKey(book) {
 }
 
 function createCanonicalQuoteKey(quote) {
-  return slugify(`${quote?.bookId || ""}-${quote?.quote || ""}`);
+  return slugify(
+    `${quote?.author || ""}-${quote?.quote || ""}`
+  );
 }
 
 function findExistingBookIdByKey(books, importedBook) {
