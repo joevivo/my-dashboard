@@ -13,6 +13,7 @@ import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
 import BooksView from "./BooksView";
+import NotesView from "./NotesView";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("Lineup");
@@ -65,6 +66,7 @@ export default function App() {
           title: "Library",
           items: [
             ["Books", "Books"],
+            ["Notes", "Notes"],
           ],
         },
       ],
@@ -216,6 +218,8 @@ export default function App() {
               <MusicLibrary />
             ) : activeView === "Books" ? (
               <BooksView />
+            ) : activeView === "Notes" ? (
+              <NotesView />
             ) : (
               <LineupAnalyzer />
             )}
