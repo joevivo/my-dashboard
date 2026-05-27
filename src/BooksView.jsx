@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Quote, Library, Bookmark } from "lucide-react";
+import { BookOpen, Quote, Library, Bookmark, Upload } from "lucide-react";
 import { seedBooksLibrary } from "./books/seedBooks";
 import { loadBooksLibrary, saveBooksLibrary } from "./books/booksStore";
+import { parseBookCsv } from "./books/bookCsvImport";
+import { mergeBooksLibrary, normalizeImportedBooks } from "./books/bookImportAdapter";
 import {
   getBooksArray,
   getCurrentlyReadingBooks,
@@ -32,6 +34,7 @@ function StatCard({ icon: Icon, label, value }) {
 export default function BooksView() {
   const [library, setLibrary] = useState(seedBooksLibrary);
   const [loadStatus, setLoadStatus] = useState("Loading books library...");
+  const [importStatus, setImportStatus] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -73,6 +76,63 @@ export default function BooksView() {
   const recentQuotes = getRecentQuotes(library);
   const stats = getReadingStats(library);
 
+  const importBookCsv = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const input = event.target;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const parsed = parseBookCsv(String(reader.result || ""));
+
+        if (!parsed.books.length) {
+          setImportStatus(
+            parsed.skipped
+              ? `No books imported. Skipped ${parsed.skipped} incomplete row${parsed.skipped === 1 ? "" : "s"}.`
+              : "No books imported. Make sure the CSV includes title and author columns."
+          );
+
+          input.value = "";
+          return;
+        }
+
+        const importedLibrary = normalizeImportedBooks(parsed.books, {
+          fileName: file.name,
+        });
+
+        const mergedLibrary = mergeBooksLibrary(library, importedLibrary);
+
+        saveBooksLibrary(mergedLibrary)
+          .then(() => {
+            setLibrary(mergedLibrary);
+            setImportStatus(
+              `Imported ${parsed.books.length} book${parsed.books.length === 1 ? "" : "s"} from ${file.name}.` +
+                (parsed.skipped
+                  ? ` Skipped ${parsed.skipped} incomplete row${parsed.skipped === 1 ? "" : "s"}.`
+                  : "")
+            );
+          })
+          .catch((error) => {
+            setImportStatus(`Import parsed, but storage save failed: ${error.message}`);
+          });
+      } catch (error) {
+        setImportStatus(`Import failed: ${error.message}`);
+      } finally {
+        input.value = "";
+      }
+    };
+
+    reader.onerror = () => {
+      setImportStatus("Import failed: unable to read selected file.");
+      input.value = "";
+    };
+
+    reader.readAsText(file);
+  };
+
   return (
     <div className="space-y-6 text-zinc-100">
       <div>
@@ -84,9 +144,34 @@ export default function BooksView() {
           Reading operations, notes, quotes, and intellectual tracking.
         </p>
 
-        <p className="mt-2 text-xs text-zinc-500">
-          {loadStatus}
-        </p>
+        <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-zinc-500">
+              Books Data Pipeline
+            </p>
+
+            <p className="mt-1 text-sm text-zinc-400">
+              {loadStatus}
+            </p>
+
+            {importStatus ? (
+              <p className="mt-1 text-sm text-zinc-300">
+                {importStatus}
+              </p>
+            ) : null}
+          </div>
+
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
+            <Upload className="h-4 w-4" />
+            Import Books CSV
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={importBookCsv}
+            />
+          </label>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -197,11 +282,11 @@ export default function BooksView() {
                     </td>
 
                     <td className="px-3 py-3 text-zinc-300">
-                      {book.rating || "â€”"}
+                      {book.rating || "Ã¢â‚¬â€"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
-                      {book.format || "â€”"}
+                      {book.format || "Ã¢â‚¬â€"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
