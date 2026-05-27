@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Quote, Library, Bookmark, Upload } from "lucide-react";
+import { BookOpen, Quote, Library, Bookmark, Upload, Download } from "lucide-react";
 import { seedBooksLibrary } from "./books/seedBooks";
 import { loadBooksLibrary, saveBooksLibrary } from "./books/booksStore";
 import { parseBookCsv } from "./books/bookCsvImport";
 import { mergeBooksLibrary, normalizeImportedBooks } from "./books/bookImportAdapter";
+import { downloadBooksBackup, importBooksBackupFile } from "./books/booksBackup";
 import {
   getBooksArray,
   getCurrentlyReadingBooks,
@@ -75,6 +76,35 @@ export default function BooksView() {
   const currentlyReading = getCurrentlyReadingBooks(library);
   const recentQuotes = getRecentQuotes(library);
   const stats = getReadingStats(library);
+
+  const exportKnowledgeBackup = () => {
+    downloadBooksBackup(library);
+    setImportStatus("Knowledge backup exported.");
+  };
+
+  const importKnowledgeBackup = async (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const input = event.target;
+
+    try {
+      const restoredLibrary = await importBooksBackupFile(file);
+
+      await saveBooksLibrary(restoredLibrary);
+
+      setLibrary(restoredLibrary);
+
+      setImportStatus(
+        `Knowledge backup restored from ${file.name}.`
+      );
+    } catch (error) {
+      setImportStatus(`Backup restore failed: ${error.message}`);
+    } finally {
+      input.value = "";
+    }
+  };
 
   const importBookCsv = (event) => {
     const file = event.target.files?.[0];
@@ -161,16 +191,38 @@ export default function BooksView() {
             ) : null}
           </div>
 
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
-            <Upload className="h-4 w-4" />
-            Import Books CSV
-            <input
-              type="file"
-              accept=".csv,text/csv"
-              className="hidden"
-              onChange={importBookCsv}
-            />
-          </label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={exportKnowledgeBackup}
+              className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
+            >
+              <Download className="h-4 w-4" />
+              Export Backup
+            </button>
+
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
+              <Upload className="h-4 w-4" />
+              Restore Backup
+              <input
+                type="file"
+                accept=".json,application/json"
+                className="hidden"
+                onChange={importKnowledgeBackup}
+              />
+            </label>
+
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
+              <Upload className="h-4 w-4" />
+              Import Books CSV
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={importBookCsv}
+              />
+            </label>
+          </div>
         </div>
       </div>
 
@@ -282,11 +334,11 @@ export default function BooksView() {
                     </td>
 
                     <td className="px-3 py-3 text-zinc-300">
-                      {book.rating || "Ã¢â‚¬â€"}
+                      {book.rating || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
-                      {book.format || "Ã¢â‚¬â€"}
+                      {book.format || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
