@@ -6,6 +6,32 @@ function parseRoster(hittersText = "") {
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
+      const isCsv = line.includes(",");
+
+      if (isCsv) {
+        const parts = line.split(",").map((part) => part.trim());
+
+        const name = parts[0] || "Unknown";
+        const bats = parts[1] || "R";
+        const position = parts[2] || "DH";
+        const obp = Number(parts[3]) || 0.300;
+        const power = Number(parts[4]) || 0;
+        const speed = Number(parts[5]) || 0;
+        const defense = Number(parts[6]) || 5;
+
+        return {
+          raw: line,
+          positions: position.split("/").map((p) => p.trim().toUpperCase()),
+          bats,
+          defense,
+          name,
+          obpVsR: obp,
+          obpVsL: obp,
+          power,
+          speed,
+        };
+      }
+
       const parts = line.split(/\s+/);
 
       return {
@@ -102,6 +128,43 @@ function getOutcomeProfileBonus(card, park) {
   return bonus;
 }
 
+function getStrategyModifiers(strategyProfile = "balanced") {
+  const profiles = {
+    balanced: {
+      obp: 1,
+      power: 1,
+      speed: 1,
+      defense: 1,
+    },
+    smallBall: {
+      obp: 1.28,
+      power: 0.72,
+      speed: 1.75,
+      defense: 1.3,
+    },
+    powerFocus: {
+      obp: 0.9,
+      power: 1.8,
+      speed: 0.65,
+      defense: 0.72,
+    },
+    defenseFirst: {
+      obp: 0.88,
+      power: 0.7,
+      speed: 1.1,
+      defense: 1.9,
+    },
+    maxObp: {
+      obp: 1.3,
+      power: 0.85,
+      speed: 1,
+      defense: 1,
+    },
+  };
+
+  return profiles[strategyProfile] || profiles.balanced;
+}
+
 function getImpactBonus(player, pitcherHand, park) {
   const obp = getObp(player, pitcherHand);
   let bonus = 0;
@@ -156,16 +219,17 @@ function isBottomOnlyBat(player, pitcherHand) {
   return getObp(player, pitcherHand) < 0.315 && player.power <= 2;
 }
 
-function scoreBat(player, pitcherHand, park) {
+function scoreBat(player, pitcherHand, park, strategyProfile = "balanced") {
   const cardMap = getCardMap();
   const card = cardMap[normalizeCardName(player.name)];
 
   const obp = getObp(player, pitcherHand);
+  const strategy = getStrategyModifiers(strategyProfile);
 
   let score =
-    obp * 100 +
-    player.power * 4 +
-    player.speed * 1.15 +
+    obp * 100 * strategy.obp +
+    player.power * 4 * strategy.power +
+    player.speed * 1.15 * strategy.speed +
     getImpactBonus(player, pitcherHand, park);
 
   if (pitcherHand === "L") {
@@ -238,12 +302,12 @@ function getLowRunEnvironmentDefenseAdjustment(player, position, park, defenseRa
   return penalty;
 }
 
-function scorePositionFit(player, position, pitcherHand, park) {
+function scorePositionFit(player, position, pitcherHand, park, strategyProfile = "balanced") {
   const cardMap = getCardMap();
   const card = cardMap[normalizeCardName(player.name)];
   const defenseRating = getCardDefenseRating(player, position, card);
 
-  const batScore = scoreBat(player, pitcherHand, park);
+  const batScore = scoreBat(player, pitcherHand, park, strategyProfile);
   const defenseScore = 6 - defenseRating;
 
   if (position === "DH") {
@@ -254,7 +318,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
       getObp(player, pitcherHand) * 135 +
       player.power * 10 +
       getImpactBonus(player, pitcherHand, park) +
-      scoreBat(player, pitcherHand, park) * 0.1 +
+      scoreBat(player, pitcherHand, park, strategyProfile) * 0.1 +
       hideBadDefenseBonus
     );
   }
@@ -305,7 +369,7 @@ function scorePositionFit(player, position, pitcherHand, park) {
     return score;
 }
 
-function pickBestForPosition({ roster, usedNames, position, pitcherHand, park }) {
+function pickBestForPosition({ roster, usedNames, position, pitcherHand, park, strategyProfile = "balanced" }) {
   const candidates = roster
     .filter((player) => !usedNames.has(player.name))
     .filter((player) => {
@@ -314,14 +378,14 @@ function pickBestForPosition({ roster, usedNames, position, pitcherHand, park })
     })
     .map((player) => ({
       player,
-      score: scorePositionFit(player, position, pitcherHand, park),
+      score: scorePositionFit(player, position, pitcherHand, park, strategyProfile),
     }))
     .sort((a, b) => b.score - a.score);
 
   return candidates[0]?.player || null;
 }
 
-function improveLowRunDefense(lineup, roster, pitcherHand, park) {
+function improveLowRunDefense(lineup, roster, pitcherHand, park, strategyProfile = "balanced") {
   if (!park?.environment?.includes("Low")) return lineup;
 
   const usedNames = new Set(lineup.map((player) => player.name));
@@ -353,7 +417,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
       .filter((player) => !usedNames.has(player.name) || player.name === current.name)
       .map((player) => {
                 const offensiveGap =
-          scoreBat(current, pitcherHand, park) - scoreBat(player, pitcherHand, park);
+          scoreBat(current, pitcherHand, park, strategyProfile) - scoreBat(player, pitcherHand, park, strategyProfile);
 
         const playerCard = cardMap[normalizeCardName(player.name)];
         const playerDefenseRating = getCardDefenseRating(player, position, playerCard);
@@ -398,7 +462,7 @@ function improveLowRunDefense(lineup, roster, pitcherHand, park) {
   return adjusted;
 }
 
-function optimizeBattingOrder(lineup, pitcherHand, park) {
+function optimizeBattingOrder(lineup, pitcherHand, park, strategyProfile = "balanced") {
   const remaining = [...lineup];
 
   const removePick = (pick) => {
@@ -459,43 +523,43 @@ function optimizeBattingOrder(lineup, pitcherHand, park) {
     leadoff: (p) =>
       getObp(p, pitcherHand) * 125 +
       p.speed * 2.4 +
-      scoreBat(p, pitcherHand, park) * 0.08,
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.08,
 
     twoHole: (p) =>
       getObp(p, pitcherHand) * 160 +
       p.speed * 0.8 +
       tableSetterBoost(p) +
-      scoreBat(p, pitcherHand, park) * 0.08,
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.08,
 
     bestBat: (p) =>
       getObp(p, pitcherHand) * 125 +
       p.power * 7 +
       impactBatBoost(p) +
       middleOrderPenalty(p) +
-      scoreBat(p, pitcherHand, park) * 0.18,
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.18,
 
     cleanup: (p) =>
       getObp(p, pitcherHand) * 75 +
       p.power * 13 +
       impactBatBoost(p) +
       middleOrderPenalty(p) +
-      scoreBat(p, pitcherHand, park) * 0.16,
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.16,
 
     fifth: (p) =>
       getObp(p, pitcherHand) * 85 +
       p.power * 9 +
       impactBatBoost(p) +
       middleOrderPenalty(p) +
-      scoreBat(p, pitcherHand, park) * 0.14,
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.14,
 
     sixth: (p) =>
       getObp(p, pitcherHand) * 80 +
       p.power * 5 +
-      scoreBat(p, pitcherHand, park) * 0.12 +
+      scoreBat(p, pitcherHand, park, strategyProfile) * 0.12 +
       (isWeakBat(p, pitcherHand) ? -25 : 0),
 
     bottom: (p) =>
-      scoreBat(p, pitcherHand, park) +
+      scoreBat(p, pitcherHand, park, strategyProfile) +
       (isWeakBat(p, pitcherHand) ? -25 : 0) +
       (isBottomOnlyBat(p, pitcherHand) ? -20 : 0),
   };
@@ -552,7 +616,7 @@ function optimizeBattingOrder(lineup, pitcherHand, park) {
   }));
 }
 
-export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
+export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park, strategyProfile = "balanced" }) {
   const roster = parseRoster(hittersText);
   const usedNames = new Set();
   const lineup = [];
@@ -566,6 +630,7 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
       position,
       pitcherHand,
       park,
+      strategyProfile,
     });
 
     if (pick) {
@@ -582,10 +647,11 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park }) {
     lineup,
     roster,
     pitcherHand,
-    park
+    park,
+    strategyProfile
   );
 
-  return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park);
+  return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park, strategyProfile);
 }
 
 

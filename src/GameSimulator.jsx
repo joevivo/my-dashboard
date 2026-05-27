@@ -60,6 +60,20 @@ function inferPitcherHand(pitchersText) {
   return starters[0].hand;
 }
 
+function normalizeParkName(parkName = "") {
+  if (!parkName) return "";
+
+  const exact = parks1980.find((park) => park.name === parkName);
+  if (exact) return exact.name;
+
+  const lower = parkName.toLowerCase();
+  const partial = parks1980.find((park) =>
+    park.name.toLowerCase().startsWith(lower)
+  );
+
+  return partial?.name || parkName;
+}
+
 export default function GameSimulator() {
   const defaultPark = parks1980.find((park) => park.name?.includes("Tiger"))?.name || parks1980[0]?.name || "";
   const [hittersText, setHittersText] = useState("");
@@ -69,6 +83,7 @@ export default function GameSimulator() {
   const [parkName, setParkName] = useState(defaultPark);
   const [sims, setSims] = useState(1000);
   const [opponentRuns, setOpponentRuns] = useState(4.5);
+  const [strategyProfile, setStrategyProfile] = useState("balanced");
   const [result, setResult] = useState(null);
   const [comparison, setComparison] = useState(null);
 
@@ -100,7 +115,7 @@ export default function GameSimulator() {
     if (!team) return;
 
     setHittersText(team.hittersText || "");
-    if (team.ballpark) setParkName(team.ballpark);
+    if (team.ballpark) setParkName(normalizeParkName(team.ballpark));
     setResult(null);
     setComparison(null);
   };
@@ -113,7 +128,7 @@ export default function GameSimulator() {
     );
     if (!opponent) return;
 
-    if (opponent.ballpark) setParkName(opponent.ballpark);
+    if (opponent.ballpark) setParkName(normalizeParkName(opponent.ballpark));
 
     const starters = parseOpponentStarters(opponent.pitchersText);
     setOpponentStarters(starters);
@@ -161,6 +176,7 @@ export default function GameSimulator() {
       sims,
       opponentRuns,
       lineupMode,
+      strategyProfile,
     });
 
     setResult(nextResult);
@@ -174,6 +190,7 @@ export default function GameSimulator() {
       sims,
       opponentRuns,
       lineupMode: "optimized",
+      strategyProfile,
     });
 
     const manual = estimateLineupRunEnvironment({
@@ -183,6 +200,7 @@ export default function GameSimulator() {
       sims,
       opponentRuns,
       lineupMode: "manual",
+      strategyProfile,
     });
 
     setComparison({
@@ -408,6 +426,24 @@ export default function GameSimulator() {
                     {park.name}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Lineup Strategy
+              </label>
+
+              <select
+                value={strategyProfile}
+                onChange={(event) => setStrategyProfile(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="balanced">Balanced</option>
+                <option value="smallBall">Small Ball</option>
+                <option value="powerFocus">Power Focus</option>
+                <option value="defenseFirst">Defense First</option>
+                <option value="maxObp">Max OBP</option>
               </select>
             </div>
 

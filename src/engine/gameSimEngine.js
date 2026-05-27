@@ -263,6 +263,44 @@ function estimateWinProbability(avgRuns, opponentRuns = 4.5) {
   return clamp(probability, 0.08, 0.92);
 }
 
+function buildLineupSummary({ lineup = [], park, lineupMode = "optimized", validation }) {
+  const summary = [];
+
+  if (lineupMode === "manual") {
+    summary.push("Manual mode used the first nine pasted rows exactly.");
+  } else {
+    summary.push("Optimized mode built a position-valid lineup before ordering hitters.");
+  }
+
+  if (park?.environment) {
+    summary.push(`Built for ${park.name || "the selected park"}: ${park.environment}.`);
+  }
+
+  if (park?.environment?.includes("Low")) {
+    summary.push("Prioritized OBP, speed, defense, and avoiding dead innings over pure home-run power.");
+  }
+
+  const dhPlayer = lineup.find((player) => (player.fieldPos || player.position) === "DH");
+  if (dhPlayer) {
+    summary.push(`Used ${dhPlayer.name} at DH to maximize bat value while limiting defensive exposure.`);
+  }
+
+  const premiumPositions = ["C", "SS", "CF", "2B"];
+  const coveredPremium = premiumPositions.filter((position) =>
+    lineup.some((player) => (player.fieldPos || player.position) === position)
+  );
+
+  if (coveredPremium.length) {
+    summary.push(`Protected key defensive slots: ${coveredPremium.join(", ")}.`);
+  }
+
+  if (validation?.warnings?.length) {
+    summary.push("Validation warnings are present, so treat the projection as provisional.");
+  }
+
+  return summary.slice(0, 5);
+}
+
 function buildPlayerReason(player = {}, park, pitcherHand) {
   const reasons = [];
   const position = player.fieldPos || player.position || "";
@@ -357,6 +395,7 @@ export function estimateLineupRunEnvironment({
   sims = DEFAULT_SIMS,
   opponentRuns = 4.5,
   lineupMode = "optimized",
+  strategyProfile = "balanced",
 } = {}) {
   const safeSims = clamp(Math.round(toNumber(sims, DEFAULT_SIMS)), 100, 5000);
   const park = getParkData(parkName);
@@ -367,6 +406,7 @@ export function estimateLineupRunEnvironment({
           hittersText,
           pitcherHand,
           park,
+          strategyProfile,
         });
 
   const validation = validateLineup({
@@ -420,6 +460,12 @@ export function estimateLineupRunEnvironment({
       homeRunsRight: park?.homeRunsRight ?? null,
     },
     validation,
+    lineupSummary: buildLineupSummary({
+      lineup,
+      park,
+      lineupMode,
+      validation,
+    }),
     lineup: lineup.map((player, index) => ({
       slot: index + 1,
       name: player.name || player.player || "Unknown",
