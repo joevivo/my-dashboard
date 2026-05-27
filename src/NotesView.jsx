@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { NotebookPen, StickyNote, Tags, Clock } from "lucide-react";
+import { NotebookPen, StickyNote, Tags, Clock, Save } from "lucide-react";
 import { seedBooksLibrary } from "./books/seedBooks";
-import { loadBooksLibrary } from "./books/booksStore";
+import { loadBooksLibrary, saveBooksLibrary } from "./books/booksStore";
 import {
   getNotesArray,
   getRecentNotes,
@@ -13,15 +13,9 @@ function StatCard({ icon: Icon, label, value }) {
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-zinc-500">
-            {label}
-          </p>
-
-          <p className="mt-2 text-3xl font-semibold text-zinc-100">
-            {value}
-          </p>
+          <p className="text-xs uppercase tracking-wide text-zinc-500">{label}</p>
+          <p className="mt-2 text-3xl font-semibold text-zinc-100">{value}</p>
         </div>
-
         <Icon className="h-6 w-6 text-zinc-500" />
       </div>
     </div>
@@ -30,11 +24,8 @@ function StatCard({ icon: Icon, label, value }) {
 
 function formatDate(value) {
   if (!value) return "Undated";
-
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) return "Undated";
-
   return date.toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
@@ -42,9 +33,26 @@ function formatDate(value) {
   });
 }
 
+function normalizeTags(value) {
+  return String(value || "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function createNoteId() {
+  return `note-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 export default function NotesView() {
   const [library, setLibrary] = useState(seedBooksLibrary);
   const [loadStatus, setLoadStatus] = useState("Loading knowledge notes...");
+  const [saveStatus, setSaveStatus] = useState("");
+  const [noteForm, setNoteForm] = useState({
+    title: "",
+    body: "",
+    tags: "",
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -86,6 +94,53 @@ export default function NotesView() {
     )
   );
 
+  const updateNoteField = (field, value) => {
+    setNoteForm((previousForm) => ({
+      ...previousForm,
+      [field]: value,
+    }));
+  };
+
+  const saveNote = async (event) => {
+    event.preventDefault();
+
+    const title = noteForm.title.trim();
+    const body = noteForm.body.trim();
+    const tags = normalizeTags(noteForm.tags);
+
+    if (!title && !body) {
+      setSaveStatus("Add a title or body before saving a note.");
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const note = {
+      id: createNoteId(),
+      title: title || "Untitled note",
+      body,
+      tags,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const nextLibrary = {
+      ...library,
+      notes: {
+        ...(library.notes || {}),
+        [note.id]: note,
+      },
+    };
+
+    try {
+      await saveBooksLibrary(nextLibrary);
+      setLibrary(nextLibrary);
+      setNoteForm({ title: "", body: "", tags: "" });
+      setSaveStatus("Note saved to shared knowledge store.");
+    } catch (error) {
+      setSaveStatus(`Note created, but storage save failed: ${error.message}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6 shadow-sm">
@@ -95,9 +150,7 @@ export default function NotesView() {
               Knowledge
             </p>
 
-            <h2 className="mt-2 text-3xl font-semibold text-zinc-100">
-              Notes
-            </h2>
+            <h2 className="mt-2 text-3xl font-semibold text-zinc-100">Notes</h2>
 
             <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
               A lightweight operational surface for reading notes, thought fragments,
@@ -119,11 +172,58 @@ export default function NotesView() {
       </section>
 
       <section className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6 shadow-sm">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-zinc-100">Create Note</h3>
+          <p className="mt-1 text-sm text-zinc-500">
+            Capture lightweight notes into the shared books knowledge store.
+          </p>
+        </div>
+
+        <form className="space-y-4" onSubmit={saveNote}>
+          <input
+            type="text"
+            value={noteForm.title}
+            onChange={(event) => updateNoteField("title", event.target.value)}
+            placeholder="Note title"
+            className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-600"
+          />
+
+          <textarea
+            value={noteForm.body}
+            onChange={(event) => updateNoteField("body", event.target.value)}
+            placeholder="Note body"
+            rows={5}
+            className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm leading-6 text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-600"
+          />
+
+          <input
+            type="text"
+            value={noteForm.tags}
+            onChange={(event) => updateNoteField("tags", event.target.value)}
+            placeholder="Tags, comma-separated"
+            className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-600"
+          />
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-white"
+            >
+              <Save className="h-4 w-4" />
+              Save Note
+            </button>
+
+            {saveStatus ? (
+              <p className="text-sm text-zinc-400">{saveStatus}</p>
+            ) : null}
+          </div>
+        </form>
+      </section>
+
+      <section className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-zinc-100">
-              Recent Notes
-            </h3>
+            <h3 className="text-lg font-semibold text-zinc-100">Recent Notes</h3>
             <p className="mt-1 text-sm text-zinc-500">
               Latest notes from the shared books knowledge store.
             </p>
