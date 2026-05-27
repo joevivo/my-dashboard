@@ -12,6 +12,7 @@ import WeatherBug from "./WeatherBug";
 import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
+import BooksView from "./BooksView";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("Lineup");
@@ -72,6 +73,7 @@ export default function App() {
           title: "Personal Archive",
           items: [
             ["Music", "Music"],
+            ["Books", "Books"],
             ["Calendar", "Calendar"],
           ],
         },
@@ -187,6 +189,8 @@ export default function App() {
               
             ) : activeView === "Music" ? (
               <MusicLibrary />
+            ) : activeView === "Books" ? (
+              <BooksView />
             ) : (
               <LineupAnalyzer />
             )}
