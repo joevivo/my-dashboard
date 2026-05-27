@@ -1,49 +1,11 @@
 import { BookOpen, Quote, Library, Bookmark } from "lucide-react";
-
-const sampleBooks = [
-  {
-    id: "book-1",
-    title: "Meditations",
-    author: "Marcus Aurelius",
-    status: "reading",
-    rating: "10",
-    format: "paperback",
-    tags: ["stoicism", "philosophy"],
-  },
-  {
-    id: "book-2",
-    title: "The Republic",
-    author: "Plato",
-    status: "completed",
-    rating: "9",
-    format: "hardcover",
-    tags: ["philosophy", "politics"],
-  },
-  {
-    id: "book-3",
-    title: "The Myth of Sisyphus",
-    author: "Albert Camus",
-    status: "completed",
-    rating: "10",
-    format: "ebook",
-    tags: ["existentialism", "philosophy"],
-  },
-];
-
-const sampleQuotes = [
-  {
-    id: "quote-1",
-    quote:
-      "The happiness of your life depends upon the quality of your thoughts.",
-    author: "Marcus Aurelius",
-  },
-  {
-    id: "quote-2",
-    quote:
-      "One must imagine Sisyphus happy.",
-    author: "Albert Camus",
-  },
-];
+import { seedBooksLibrary } from "./books/seedBooks";
+import {
+  getBooksArray,
+  getCurrentlyReadingBooks,
+  getRecentQuotes,
+  getReadingStats,
+} from "./books/bookSelectors";
 
 function StatCard({ icon: Icon, label, value }) {
   return (
@@ -66,9 +28,11 @@ function StatCard({ icon: Icon, label, value }) {
 }
 
 export default function BooksView() {
-  const currentlyReading = sampleBooks.filter(
-    (book) => book.status === "reading"
-  );
+  const library = seedBooksLibrary;
+  const books = getBooksArray(library);
+  const currentlyReading = getCurrentlyReadingBooks(library);
+  const recentQuotes = getRecentQuotes(library);
+  const stats = getReadingStats(library);
 
   return (
     <div className="space-y-6 text-zinc-100">
@@ -83,32 +47,64 @@ export default function BooksView() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={Library}
-          label="Total Books"
-          value={sampleBooks.length}
-        />
+        <StatCard icon={Library} label="Total Books" value={stats.totalBooks} />
 
         <StatCard
           icon={BookOpen}
           label="Currently Reading"
-          value={currentlyReading.length}
+          value={stats.currentlyReading}
         />
 
         <StatCard
           icon={Bookmark}
           label="Completed"
-          value={
-            sampleBooks.filter((book) => book.status === "completed").length
-          }
+          value={stats.completed}
         />
 
         <StatCard
           icon={Quote}
           label="Quotes Captured"
-          value={sampleQuotes.length}
+          value={stats.quotes}
         />
       </div>
+
+      {currentlyReading.length ? (
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-zinc-100">
+              Currently Reading
+            </h2>
+
+            <p className="text-sm text-zinc-500">
+              Active reading queue and current intellectual focus.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {currentlyReading.map((book) => (
+              <div
+                key={book.id}
+                className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4"
+              >
+                <p className="font-semibold text-zinc-100">{book.title}</p>
+
+                <p className="mt-1 text-sm text-zinc-400">{book.author}</p>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {book.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-zinc-700 px-2 py-1 text-xs text-zinc-400"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 xl:col-span-2">
@@ -138,7 +134,7 @@ export default function BooksView() {
               </thead>
 
               <tbody>
-                {sampleBooks.map((book) => (
+                {books.map((book) => (
                   <tr
                     key={book.id}
                     className="border-b border-zinc-800/60"
@@ -158,11 +154,11 @@ export default function BooksView() {
                     </td>
 
                     <td className="px-3 py-3 text-zinc-300">
-                      {book.rating}
+                      {book.rating || "—"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
-                      {book.format}
+                      {book.format || "—"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
@@ -187,7 +183,7 @@ export default function BooksView() {
           </div>
 
           <div className="space-y-4">
-            {sampleQuotes.map((item) => (
+            {recentQuotes.map((item) => (
               <div
                 key={item.id}
                 className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4"
