@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { BookOpen, Quote, Library, Bookmark } from "lucide-react";
 import { seedBooksLibrary } from "./books/seedBooks";
+import { loadBooksLibrary, saveBooksLibrary } from "./books/booksStore";
 import {
   getBooksArray,
   getCurrentlyReadingBooks,
@@ -28,7 +30,44 @@ function StatCard({ icon: Icon, label, value }) {
 }
 
 export default function BooksView() {
-  const library = seedBooksLibrary;
+  const [library, setLibrary] = useState(seedBooksLibrary);
+  const [loadStatus, setLoadStatus] = useState("Loading books library...");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    loadBooksLibrary()
+      .then((storedLibrary) => {
+        if (!isMounted) return;
+
+        if (storedLibrary) {
+          setLibrary(storedLibrary);
+          setLoadStatus("Loaded from local browser storage.");
+          return;
+        }
+
+        saveBooksLibrary(seedBooksLibrary)
+          .then(() => {
+            if (isMounted) {
+              setLoadStatus("Seed library initialized in local browser storage.");
+            }
+          })
+          .catch((error) => {
+            if (isMounted) {
+              setLoadStatus(`Seed library active. Storage save failed: ${error.message}`);
+            }
+          });
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setLoadStatus(`Seed library active. Storage unavailable: ${error.message}`);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const books = getBooksArray(library);
   const currentlyReading = getCurrentlyReadingBooks(library);
   const recentQuotes = getRecentQuotes(library);
@@ -43,6 +82,10 @@ export default function BooksView() {
 
         <p className="mt-1 text-sm text-zinc-400">
           Reading operations, notes, quotes, and intellectual tracking.
+        </p>
+
+        <p className="mt-2 text-xs text-zinc-500">
+          {loadStatus}
         </p>
       </div>
 
@@ -154,11 +197,11 @@ export default function BooksView() {
                     </td>
 
                     <td className="px-3 py-3 text-zinc-300">
-                      {book.rating || "—"}
+                      {book.rating || "â€”"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
-                      {book.format || "—"}
+                      {book.format || "â€”"}
                     </td>
 
                     <td className="px-3 py-3 text-zinc-400">
