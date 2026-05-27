@@ -48,6 +48,7 @@ export default function NotesView() {
   const [library, setLibrary] = useState(seedBooksLibrary);
   const [loadStatus, setLoadStatus] = useState("Loading knowledge notes...");
   const [saveStatus, setSaveStatus] = useState("");
+  const [activeTag, setActiveTag] = useState("all");
   const [noteForm, setNoteForm] = useState({
     title: "",
     body: "",
@@ -81,8 +82,18 @@ export default function NotesView() {
   }, []);
 
   const notes = getNotesArray(library);
-  const recentNotes = getRecentNotes(library, 8);
+  const recentNotes = getRecentNotes(library, 50);
   const stats = getReadingStats(library);
+
+  const filteredNotes = activeTag === "all"
+    ? recentNotes
+    : recentNotes.filter((note) =>
+        Array.isArray(note.tags)
+          ? note.tags.some(
+              (tag) => String(tag || "").trim().toLowerCase() === activeTag
+            )
+          : false
+      );
 
   const uniqueTags = Array.from(
     new Set(
@@ -221,7 +232,7 @@ export default function NotesView() {
       </section>
 
       <section className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h3 className="text-lg font-semibold text-zinc-100">Recent Notes</h3>
             <p className="mt-1 text-sm text-zinc-500">
@@ -230,9 +241,42 @@ export default function NotesView() {
           </div>
         </div>
 
-        {recentNotes.length ? (
+        <div className="mb-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveTag("all")}
+            className={`rounded-full border px-3 py-1 text-xs transition ${
+              activeTag === "all"
+                ? "border-zinc-500 bg-zinc-800 text-zinc-100"
+                : "border-zinc-800 bg-zinc-950 text-zinc-500 hover:border-zinc-700"
+            }`}
+          >
+            All
+          </button>
+
+          {uniqueTags.map((tag) => {
+            const normalizedTag = tag.toLowerCase();
+
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setActiveTag(normalizedTag)}
+                className={`rounded-full border px-3 py-1 text-xs transition ${
+                  activeTag === normalizedTag
+                    ? "border-zinc-500 bg-zinc-800 text-zinc-100"
+                    : "border-zinc-800 bg-zinc-950 text-zinc-500 hover:border-zinc-700"
+                }`}
+              >
+                {tag}
+              </button>
+            );
+          })}
+        </div>
+
+        {filteredNotes.length ? (
           <div className="space-y-3">
-            {recentNotes.map((note) => (
+            {filteredNotes.map((note) => (
               <article
                 key={note.id}
                 className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4"
