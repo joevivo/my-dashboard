@@ -32,16 +32,8 @@ export default function App() {
   };
   const navSections = [
     {
-      title: "Strat HQ",
+      title: "StratOperations",
       groups: [
-        {
-          title: "Preparation",
-          items: [
-            ["Series", "Series Planner"],
-            ["Matchup", "Matchup Analyzer"],
-            ["Opponents", "Opponent Manager"],
-          ],
-        },
         {
           title: "Simulation",
           items: [
@@ -51,30 +43,63 @@ export default function App() {
           ],
         },
         {
+          title: "Preparation",
+          items: [
+            ["Series", "Series Planner"],
+            ["Matchup", "Matchup Analyzer"],
+            ["Opponents", "Opponent Manager"],
+          ],
+        },
+        {
           title: "Administration",
           items: [
             ["LeagueManager", "League Manager"],
-            ["Cards", "Card Importer"],
           ],
         },
       ],
     },
     {
-      title: "Life",
+      title: "Knowledge",
       groups: [
         {
-          title: "Intelligence",
+          title: "Library",
+          items: [
+            ["Books", "Books"],
+          ],
+        },
+      ],
+    },
+    {
+      title: "Intelligence",
+      groups: [
+        {
+          title: "Signals",
           items: [
             ["News", "News"],
             ["Finance", "Finance"],
           ],
         },
+      ],
+    },
+    {
+      title: "Archive",
+      groups: [
         {
-          title: "Personal Archive",
+          title: "Collections",
           items: [
             ["Music", "Music"],
-            ["Books", "Books"],
+          ],
+        },
+      ],
+    },
+    {
+      title: "Utilities",
+      groups: [
+        {
+          title: "Tools",
+          items: [
             ["Calendar", "Calendar"],
+            ["Cards", "Card Importer"],
           ],
         },
       ],
