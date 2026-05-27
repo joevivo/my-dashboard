@@ -151,10 +151,10 @@ export default function App() {
       </header>
 
       <div className="flex">
-        <aside className={`w-64 backdrop-blur border-r p-4 space-y-6 min-h-screen shadow-sm transition-colors duration-200 ${isDark ? "bg-slate-950/80 border-slate-800" : "bg-white/80 border-slate-200"}`}>
+        <aside className={`w-64 backdrop-blur border-r p-4 space-y-8 min-h-screen shadow-sm transition-colors duration-200 ${isDark ? "bg-slate-950/85 border-slate-800" : "bg-white/85 border-slate-200"}`}>
           {navSections.map((section) => (
-            <div key={section.title} className="space-y-4">
-              <div className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-700/40 pb-1">
+            <div key={section.title} className="space-y-3">
+              <div className={`text-[11px] font-black uppercase tracking-[0.18em] border-b pb-2 ${isDark ? "text-slate-300 border-slate-700/60" : "text-slate-500 border-slate-300/70"}`}>
                 {section.title}
               </div>
 
@@ -162,9 +162,9 @@ export default function App() {
                 <details
                   key={group.title}
                   open={group.title !== "Administration"}
-                  className="group"
+                  className={`group rounded-xl px-2 py-2 transition-colors ${isDark ? "hover:bg-slate-900/70" : "hover:bg-slate-50/90"}`}
                 >
-                  <summary className="mb-2 cursor-pointer list-none text-[11px] font-semibold uppercase tracking-wider text-slate-400/80 hover:text-slate-200">
+                  <summary className={`mb-2 cursor-pointer list-none text-[10px] font-bold uppercase tracking-[0.16em] transition-colors ${isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"}`}>
                     <div className="flex items-center justify-between">
                       <span>{group.title}</span>
                       <span className="text-[10px] transition-transform group-open:rotate-90">
