@@ -49,8 +49,25 @@ function detectOutcomeType(result = "") {
   return "UNKNOWN";
 }
 
+function detectEventClass(outcomeType = "") {
+  if (
+    ["SINGLE", "DOUBLE", "TRIPLE", "HOME_RUN", "WALK", "HBP", "STRIKEOUT", "LINEOUT", "POPOUT", "FOULOUT"].includes(outcomeType)
+  ) {
+    return "RESOLVED";
+  }
+
+  if (["GROUNDBALL", "FLYBALL", "GBX", "FBX", "X_CHANCE"].includes(outcomeType)) {
+    return "DEFENSE_CHECK";
+  }
+
+  if (outcomeType === "INJURY") {
+    return "INJURY_CHECK";
+  }
+
+  return "UNKNOWN";
+}
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-–—]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-Ã¢â‚¬â€œÃ¢â‚¬â€]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +88,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-–—]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-Ã¢â‚¬â€œÃ¢â‚¬â€]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -121,6 +138,7 @@ function buildEvent({
     roll: parsed.roll,
     result: baseResult,
     outcomeType,
+    eventClass: detectEventClass(outcomeType),
     rawLine: line,
     splitOutcomes: splitResult ? [splitResult] : [],
     isXChance:
