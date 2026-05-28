@@ -1340,15 +1340,11 @@ const cancelEraEdit = () => {
         />
 
         <AddButton onClick={() => addItem("shows", show, setShow, emptyShow)} />
-
-        <StandardCardList
+        <ShowsTimelineView
           items={filteredData.shows}
-          section="shows"
-          removeItem={removeItem}
-          titleKey="artist"
           sourceItems={musicData.shows}
+          removeItem={removeItem}
           onTitleClick={(item) => setSelectedArtist(item.artist)}
-          actionLabel="Spotlight"
         />
       </DashboardSection>
 
@@ -1728,6 +1724,93 @@ function AlbumGallery({
   );
 }
 
+function ShowsTimelineView({
+  items,
+  sourceItems,
+  removeItem,
+  onTitleClick,
+}) {
+  if (!items.length) {
+    return <p className="text-sm text-slate-500">No shows match the current filters.</p>;
+  }
+
+  const getSourceIndex = (item, fallbackIndex) => {
+    const index = sourceItems.findIndex((sourceItem) => sourceItem === item);
+    return index === -1 ? fallbackIndex : index;
+  };
+
+  const sortedItems = [...items].sort((a, b) =>
+    String(b.date || "").localeCompare(String(a.date || ""))
+  );
+
+  return (
+    <div className="rounded-xl border border-rose-100 bg-white/70 overflow-hidden">
+      <div className="border-b border-rose-100 bg-rose-50 px-4 py-3">
+        <div className="text-sm font-bold text-slate-900">
+          Timeline View
+        </div>
+        <div className="text-xs text-slate-500">
+          {items.length} show{items.length === 1 ? "" : "s"} shown. Compact scan mode for larger concert history.
+        </div>
+      </div>
+
+      <div className="divide-y divide-slate-100">
+        {sortedItems.map((item, index) => {
+          const sourceIndex = getSourceIndex(item, index);
+
+          return (
+            <div
+              key={`${item.artist || "show"}-${item.date || index}-${index}`}
+              className="grid grid-cols-1 gap-2 px-4 py-3 md:grid-cols-[120px_1fr_auto] md:items-start"
+            >
+              <div className="text-xs font-semibold text-slate-500">
+                {item.date || "No date"}
+              </div>
+
+              <div>
+                <button
+                  onClick={() => onTitleClick?.(item)}
+                  className="text-left font-bold text-purple-700 hover:underline"
+                >
+                  {item.artist || "Untitled Show"}
+                </button>
+
+                <div className="text-sm text-slate-600">
+                  {item.venue || "Venue unknown"}
+                  {item.rating ? ` - Rating ${item.rating}` : ""}
+                </div>
+
+                {item.tags && <TagPills value={item.tags} />}
+
+                {item.notes && (
+                  <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                    {item.notes}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex gap-3 text-xs md:justify-end">
+                <button
+                  onClick={() => onTitleClick?.(item)}
+                  className="text-purple-700 hover:underline"
+                >
+                  Spotlight
+                </button>
+
+                <button
+                  onClick={() => removeItem("shows", sourceIndex)}
+                  className="text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function StandardCardList({
   items,
   section,
