@@ -50,7 +50,7 @@ function detectOutcomeType(result = "") {
 }
 
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-–—]\s*(.*)$/);
 
   if (!match) {
     return {
@@ -71,7 +71,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-–—]\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -86,7 +86,6 @@ function parseSplitResult(result = "") {
     rangeEnd: Number(match[3]),
   };
 }
-
 function isColumnHeader(line = "") {
   return /^\s*1\s+2\s+3\s+1\s+2\s+3\s*$/.test(line);
 }
