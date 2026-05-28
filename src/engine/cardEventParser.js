@@ -66,8 +66,22 @@ function detectEventClass(outcomeType = "") {
 
   return "UNKNOWN";
 }
+function parseDefenseMeta(result = "") {
+  const match = result.match(/\b(gb|fb|fly)\(([^)]+)\)\s*([a-z])?([+?]*)/i);
+
+  if (!match) return null;
+
+  const rawType = match[1].toUpperCase();
+
+  return {
+    defenseType: rawType === "FLY" ? "FB" : rawType,
+    position: match[2].toUpperCase(),
+    resultClass: match[3] ? match[3].toUpperCase() : null,
+    modifiers: match[4] || "",
+  };
+}
 function parseRollPrefix(line = "") {
-  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*[-Ã¢â‚¬â€œÃ¢â‚¬â€]\s*(.*)$/);
+  const match = line.match(/^\s*[#$>]*\s*(\d{1,2})\s*-\s*(.*)$/);
 
   if (!match) {
     return {
@@ -88,7 +102,7 @@ function parseRollPrefix(line = "") {
 }
 
 function parseSplitResult(result = "") {
-  const match = result.match(/^(.*?)\s+(\d{1,2})\s*[-Ã¢â‚¬â€œÃ¢â‚¬â€]\s*(\d{1,2})$/);
+  const match = result.match(/^(.*?)\s+(\d{1,2})\s*-\s*(\d{1,2})$/);
 
   if (!match) {
     return null;
@@ -128,6 +142,7 @@ function buildEvent({
   const splitResult = parseSplitResult(parsed.result);
   const baseResult = splitResult ? splitResult.result : parsed.result;
   const outcomeType = detectOutcomeType(baseResult);
+  const defenseMeta = parseDefenseMeta(baseResult);
 
   if (!baseResult || outcomeType === "UNKNOWN") return null;
 
@@ -139,6 +154,7 @@ function buildEvent({
     result: baseResult,
     outcomeType,
     eventClass: detectEventClass(outcomeType),
+    defenseMeta,
     rawLine: line,
     splitOutcomes: splitResult ? [splitResult] : [],
     isXChance:
