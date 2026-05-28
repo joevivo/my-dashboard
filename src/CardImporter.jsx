@@ -20,6 +20,7 @@ import {
   combineCardMetrics,
   scoreCombinedMatchup,
 } from "./engine/cardMatchupEngine";
+import { runCardSimulationTest } from "./engine/cardSimTest";
 import { parks1980 } from "./parks1980";
 import { getParkData } from "./engine/parkEngine";
 import { getParkPreviewSummary } from "./engine/parkPreviewEngine";
@@ -727,21 +728,21 @@ export default function CardImporter() {
                     <div className="font-bold text-slate-900">{card.name}</div>
 
                     <div className="text-sm text-slate-500">
-                      {card.position} · {card.salary} · BAL {card.balance}
+                      {card.position} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| {card.salary} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| BAL {card.balance}
                     </div>
 
                     {card.cardType === "pitcher" ? (
                       <div className="text-xs text-slate-400 mt-1">
-                        Throws {card.throws || "?"} · HOLD {card.hold || "?"} ·
-                        S{card.starterEndurance || "?"} · R
+                        Throws {card.throws || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| HOLD {card.hold || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚|
+                        S{card.starterEndurance || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| R
                         {card.reliefEndurance || "?"}/
-                        {card.reliefAvailability || "?"} · P-
+                        {card.reliefAvailability || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| P-
                         {card.pitcherDefense || "?"}e{card.pitcherError || "?"}
                       </div>
                     ) : (
                       <div className="text-xs text-slate-400 mt-1">
-                        DEF {card.defense || "?"} · RUN {card.running || "?"} ·
-                        STL {card.stealing || "?"} · H&R{" "}
+                        DEF {card.defense || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| RUN {card.running || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚|
+                        STL {card.stealing || "?"} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚| H&R{" "}
                         {card.hitAndRun || "?"}
                       </div>
                     )}
@@ -831,6 +832,15 @@ function CardMatchupTester({ cards }) {
   };
 
   const matchupScore = matchup ? scoreCombinedMatchup(matchup) : null;
+  const simulationResult =
+  selectedHitter && selectedPitcher
+    ? runCardSimulationTest({
+        hitterText: selectedHitter.rawText,
+        pitcherText: selectedPitcher.rawText,
+        pitcherHand: selectedPitcher.throws,
+        plateAppearances: 10000,
+      })
+    : null;
 
   const parkPreviewSummary =
     matchup && matchupScore !== null
@@ -1032,6 +1042,18 @@ function CardMatchupTester({ cards }) {
             value={getMatchupRead(matchupScore)}
           />
         
+          {simulationResult ? (
+            <Field
+              label="10K PA Outcome Sample"
+              value={Object.entries(simulationResult.results)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8)
+                .map(([result, count]) => `${result}: ${count}`)
+                .join(" | ")}
+              className="md:col-span-3"
+            />
+          ) : null}
+
           <SectionDivider label="Experimental Preview" />
 
           <Field
@@ -1206,7 +1228,6 @@ function StatCard({ label, value }) {
     </div>
   );
 }
-
 
 
 
