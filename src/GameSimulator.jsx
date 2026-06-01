@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { estimateLineupRunEnvironment } from "./engine/gameSimEngine";
+import { simulateSavedGameScenario } from "./engine/savedGameScenarioEngine";
+import { getAllCards } from "./engine/cardStore";
 import { parks1980 } from "./parks1980";
 import StratContextStrip from "./components/StratContextStrip";
 
@@ -86,6 +88,7 @@ export default function GameSimulator() {
   const [strategyProfile, setStrategyProfile] = useState("balanced");
   const [result, setResult] = useState(null);
   const [comparison, setComparison] = useState(null);
+  const [savedGameResult, setSavedGameResult] = useState(null);
 
   const [savedTeams] = useState(() => {
     try {
@@ -167,6 +170,29 @@ export default function GameSimulator() {
   const distributionRows = useMemo(() => {
     return result?.runDistribution || [];
   }, [result]);
+
+  const runSavedGameSimulation = () => {
+    const teamStarter = parseOpponentStarters(
+      selectedTeam?.pitchersText ||
+        selectedTeam?.pitchers ||
+        selectedTeam?.pitcherRoster ||
+        ""
+    )[0];
+
+    const nextSavedGameResult = simulateSavedGameScenario({
+      team: selectedTeam,
+      opponent: selectedOpponent,
+      cards: getAllCards(),
+      awayStarter: teamStarter,
+      homeStarter: selectedStarter,
+      awayPitcherHand: teamStarter?.hand || "R",
+      homePitcherHand: selectedStarter?.hand || pitcherHand,
+      innings: 9,
+      strategyProfile,
+    });
+
+    setSavedGameResult(nextSavedGameResult);
+  };
 
   const runSimulation = () => {
     const nextResult = estimateLineupRunEnvironment({
@@ -480,7 +506,7 @@ export default function GameSimulator() {
             </div>
           </div>
 
-                    <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             <button
               type="button"
               onClick={runSimulation}
@@ -498,6 +524,15 @@ export default function GameSimulator() {
             >
               Compare Optimized vs Manual
             </button>
+
+            <button
+              type="button"
+              onClick={runSavedGameSimulation}
+              disabled={!selectedTeam || !selectedOpponent || !selectedStarter}
+              className="w-full rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Run Saved Card Game
+            </button>
           </div>
         </div>
 
@@ -513,6 +548,43 @@ export default function GameSimulator() {
           />
 
           {comparison && <ComparisonPanel comparison={comparison} />}
+
+          {savedGameResult && (
+            <div className="dashboard-panel p-6">
+              <h2 className="text-xl font-bold">Saved Card Game Result</h2>
+
+              {savedGameResult.isPlayable ? (
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <ResultStat label="Away Runs" value={savedGameResult.game.finalScore.away} />
+                  <ResultStat label="Home Runs" value={savedGameResult.game.finalScore.home} />
+                  <ResultStat label="Plate Appearances" value={savedGameResult.game.plateAppearanceCount} />
+                  <ResultStat label="Half Innings" value={savedGameResult.game.halfInnings.length} />
+                </div>
+              ) : (
+                <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                  <div className="font-bold">Saved card game is not playable yet.</div>
+                  <div className="mt-2">
+                    Away lineup cards: {savedGameResult.awayLineup.length}
+                  </div>
+                  <div>
+                    Home lineup cards: {savedGameResult.homeLineup.length}
+                  </div>
+                  <div className="mt-2">
+                    Missing away hitters: {savedGameResult.missing.awayHitters.join(", ") || "none"}
+                  </div>
+                  <div>
+                    Missing home hitters: {savedGameResult.missing.homeHitters.join(", ") || "none"}
+                  </div>
+                  <div>
+                    Missing away starter: {savedGameResult.missing.awayStarter.join(", ") || "none"}
+                  </div>
+                  <div>
+                    Missing home starter: {savedGameResult.missing.homeStarter.join(", ") || "none"}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {!result ? (
             <div className="dashboard-panel p-6">

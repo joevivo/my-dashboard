@@ -3,11 +3,35 @@ import { buildSavedLineupForGame } from "./savedLineupGameAdapter.js";
 import { getPitcherCard } from "./cardStore.js";
 
 function getPitcherNameFromStarter(starter = {}) {
-  if (!starter) return "";
+  const rawName =
+    typeof starter === "string"
+      ? starter
+      : starter.name || starter.pitcherName || starter.playerName || starter.raw || "";
 
-  if (typeof starter === "string") return starter;
+  const tokens = String(rawName || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
-  return starter.name || starter.pitcherName || starter.playerName || "";
+  if (!tokens.length) return "";
+
+  const cleanedTokens = tokens.filter((token, index) => {
+    const upper = token.toUpperCase();
+
+    if (index === 0 && ["SP", "RP", "P"].includes(upper)) return false;
+    if (["L", "R"].includes(upper)) return false;
+    if (/^G\d+$/i.test(token)) return false;
+    if (/^S\d+$/i.test(token)) return false;
+    if (/^R\d+$/i.test(token)) return false;
+    if (/^E$/i.test(token)) return false;
+    if (/^-?\d+$/i.test(token)) return false;
+    if (/^\d+[LR]$/i.test(token)) return false;
+    if (/^\d+(\.\d+)?$/.test(token)) return false;
+
+    return true;
+  });
+
+  return cleanedTokens.join(" ");
 }
 
 export function simulateSavedGameScenario({
