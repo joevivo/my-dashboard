@@ -93,6 +93,20 @@ export function runDeterministicCardSimulationTests() {
         isBallparkSingle: false,
         isBallparkHomeRun: false,
       },
+      {
+        side: "vsLHP",
+        roll: "7",
+        result: "STRIKEOUT",
+        outcomeType: "STRIKEOUT",
+        eventClass: "OUT",
+        defenseMeta: null,
+        rawLine: "7 STRIKEOUT",
+        splitOutcomes: [],
+        isXChance: false,
+        isInjury: false,
+        isBallparkSingle: false,
+        isBallparkHomeRun: false,
+      },
     ],
   };
 
@@ -117,6 +131,17 @@ export function runDeterministicCardSimulationTests() {
     ]),
   });
 
+  const leftBatterPitcherOutcome = resolvePlateAppearance({
+    hitterCard,
+    pitcherCard,
+    pitcherHand: "R",
+    batterHand: "L",
+    random: createFixedRandom([
+      0.9, // pitcher card
+      0.5, // weighted roll 7
+    ]),
+  });
+
   const assertions = [
     assertEqual(defenseOutcome.cardSide, "hitter", "selects hitter card"),
     assertEqual(defenseOutcome.roll, "7", "uses deterministic weighted roll"),
@@ -131,6 +156,10 @@ export function runDeterministicCardSimulationTests() {
     assertEqual(splitOutcome.result, "SINGLE", "resolves split result"),
     assertEqual(splitOutcome.outcomeType, "SINGLE", "resolves split outcome type"),
     assertEqual(splitOutcome.eventClass, "ON_BASE", "preserves split event class"),
+
+    assertEqual(leftBatterPitcherOutcome.cardSide, "pitcher", "selects pitcher card for batter-side test"),
+    assertEqual(leftBatterPitcherOutcome.side, "vsLHP", "uses batter hand for pitcher card side"),
+    assertEqual(leftBatterPitcherOutcome.result, "STRIKEOUT", "resolves pitcher card against left-handed batter"),
   ];
 
   const failed = assertions.filter((assertion) => !assertion.passed);
@@ -147,6 +176,7 @@ export function runCardSimulationTest({
   hitterText,
   pitcherText,
   pitcherHand = "L",
+  batterHand = "R",
   plateAppearances = 10000,
 }) {
   const hitterCard = buildTestCard(hitterText);
@@ -159,6 +189,7 @@ export function runCardSimulationTest({
       hitterCard,
       pitcherCard,
       pitcherHand,
+      batterHand,
     });
 
     const key = outcome.result || outcome.outcomeType || "UNKNOWN";

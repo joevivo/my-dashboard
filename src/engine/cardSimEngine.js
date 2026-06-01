@@ -23,6 +23,10 @@ function getHitterSideForPitcherHand(pitcherHand) {
   return normalizeHand(pitcherHand) === "L" ? "vsLHP" : "vsRHP";
 }
 
+function getPitcherSideForBatterHand(batterHand) {
+  return normalizeHand(batterHand) === "L" ? "vsLHP" : "vsRHP";
+}
+
 function getWeightedRandomRoll(random = Math.random) {
   const totalWeight = Object.values(STRAT_ROLL_WEIGHTS).reduce(
     (sum, weight) => sum + weight,
@@ -79,15 +83,17 @@ export function resolvePlateAppearance({
   hitterCard,
   pitcherCard,
   pitcherHand = "R",
+  batterHand = "R",
   random = Math.random,
 } = {}) {
   const cardSide = pickCardSide(random);
   const roll = getWeightedRandomRoll(random);
 
   const hitterSide = getHitterSideForPitcherHand(pitcherHand);
+  const pitcherSide = getPitcherSideForBatterHand(batterHand);
 
   const selectedCard = cardSide === "hitter" ? hitterCard : pitcherCard;
-  const selectedSide = cardSide === "hitter" ? hitterSide : hitterSide;
+  const selectedSide = cardSide === "hitter" ? hitterSide : pitcherSide;
 
   const matchingEvents = getEventsForSide(selectedCard, selectedSide, roll);
   const event = matchingEvents[0];
