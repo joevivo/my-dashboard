@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { runParserRegressionSuite } from "./engine/validation/parserRegressionRunner";
 import { runDeterministicCardSimulationTests } from "./engine/cardSimTest";
+import { runDeterministicGameStateTests } from "./engine/gameStateTest";
+import { runDeterministicPlateAppearanceGameTests } from "./engine/plateAppearanceGameTest";
+import { runDeterministicInningSimTests } from "./engine/inningSimTest";
+import { runDeterministicFullGameSimTests } from "./engine/fullGameSimTest";
 import {
   getAllCards,
   saveAllCards,
@@ -262,6 +266,11 @@ function normalizeCard(card) {
 export default function CardImporter() {
   const parserRegressionSummary = runParserRegressionSuite();
   const simulationValidationSummary = runDeterministicCardSimulationTests();
+  const gameStateValidationSummary = runDeterministicGameStateTests();
+  const plateAppearanceGameValidationSummary =
+    runDeterministicPlateAppearanceGameTests();
+  const inningSimValidationSummary = runDeterministicInningSimTests();
+  const fullGameSimValidationSummary = runDeterministicFullGameSimTests();
 
 
   const [rawText, setRawText] = useState("");
@@ -414,30 +423,25 @@ export default function CardImporter() {
       <div className="dashboard-panel p-6">
         <h2 className="text-xl font-bold mb-4">Engine Validation</h2>
 
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
-            <div className="font-semibold text-slate-900">
-              Parser Regression Tests
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {[
+            ["Parser Regression Tests", parserRegressionSummary],
+            ["Card Simulation Tests", simulationValidationSummary],
+            ["Game State Tests", gameStateValidationSummary],
+            ["Plate Appearance Bridge Tests", plateAppearanceGameValidationSummary],
+            ["Half-Inning Simulation Tests", inningSimValidationSummary],
+            ["Full-Game Simulation Tests", fullGameSimValidationSummary],
+          ].map(([label, summary]) => (
+            <div key={label} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
+              <div className="font-semibold text-slate-900">{label}</div>
+              <div className="text-slate-600">
+                Passed: {summary.passed} / {summary.total}
+              </div>
+              <div className={summary.failed > 0 ? "text-red-600" : "text-slate-600"}>
+                Failed: {summary.failed}
+              </div>
             </div>
-            <div className="text-slate-600">
-              Passed: {parserRegressionSummary.passed} / {parserRegressionSummary.total}
-            </div>
-            <div className={parserRegressionSummary.failed > 0 ? "text-red-600" : "text-slate-600"}>
-              Failed: {parserRegressionSummary.failed}
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
-            <div className="font-semibold text-slate-900">
-              Simulation Validation Tests
-            </div>
-            <div className="text-slate-600">
-              Passed: {simulationValidationSummary.passed} / {simulationValidationSummary.total}
-            </div>
-            <div className={simulationValidationSummary.failed > 0 ? "text-red-600" : "text-slate-600"}>
-              Failed: {simulationValidationSummary.failed}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       {preview && (
