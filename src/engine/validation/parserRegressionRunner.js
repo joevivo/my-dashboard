@@ -1,6 +1,6 @@
-import { parserRegressionCases } from "../tests/parserRegressionCases";
-import { parseCardEvents } from "../cardEventParser";
-import { resolveDefenseEvent } from "../defenseResolution";
+import { parserRegressionCases } from "../tests/parserRegressionCases.js";
+import { parseCardEvents } from "../cardEventParser.js";
+import { resolveDefenseEvent } from "../defenseResolution.js";
 
 function compareExpected(actual, expected) {
   const mismatches = [];

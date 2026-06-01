@@ -1,4 +1,4 @@
-﻿export function resolveDefenseEvent(event = {}) {
+export function resolveDefenseEvent(event = {}) {
   const meta = event.defenseMeta;
 
   if (!meta) {
@@ -17,6 +17,7 @@
     return {
       resolutionType: "GROUND_BALL_BASE",
       handled: true,
+      defenseType,
       position: meta.position,
       resultClass,
       modifiers,
@@ -29,6 +30,7 @@
     return {
       resolutionType: "FLY_BALL_BASE",
       handled: true,
+      defenseType,
       position: meta.position,
       resultClass,
       modifiers,

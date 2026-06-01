@@ -24,6 +24,14 @@ function detectHandednessHeader(line = "") {
 
 function detectOutcomeType(result = "") {
   const text = result.toLowerCase();
+  const trimmed = result.trim();
+
+  if (/^1b$/i.test(trimmed)) return "SINGLE";
+  if (/^2b$/i.test(trimmed)) return "DOUBLE";
+  if (/^3b$/i.test(trimmed)) return "TRIPLE";
+  if (/^hr$/i.test(trimmed)) return "HOME_RUN";
+  if (/^bb$/i.test(trimmed)) return "WALK";
+  if (/^k$/i.test(trimmed)) return "STRIKEOUT";
 
   if (/\bgbx\b/.test(text) || /\bgb\(.*\)x\b/.test(text)) return "GBX";
   if (/\bfbx\b/.test(text) || /\bfb\(.*\)x\b/.test(text)) return "FBX";
