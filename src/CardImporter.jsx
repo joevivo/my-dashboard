@@ -262,6 +262,9 @@ function normalizeCard(card) {
 export default function CardImporter() {
   const parserRegressionSummary = runParserRegressionSuite();
   const simulationValidationSummary = runDeterministicCardSimulationTests();
+
+  console.log("SIM VALIDATION", simulationValidationSummary);
+
   const [rawText, setRawText] = useState("");
 
   const [cards, setCards] = useState(() => {
