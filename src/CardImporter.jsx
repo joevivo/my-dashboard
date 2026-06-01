@@ -6,6 +6,7 @@ import { runDeterministicPlateAppearanceGameTests } from "./engine/plateAppearan
 import { runDeterministicInningSimTests } from "./engine/inningSimTest";
 import { runDeterministicFullGameSimTests } from "./engine/fullGameSimTest";
 import { runSavedLineupGameAdapterTests } from "./engine/savedLineupGameAdapterTest";
+import { runSavedGameScenarioTests } from "./engine/savedGameScenarioTest";
 import {
   getAllCards,
   saveAllCards,
@@ -274,6 +275,7 @@ export default function CardImporter() {
   const fullGameSimValidationSummary = runDeterministicFullGameSimTests();
   const savedLineupAdapterValidationSummary =
     runSavedLineupGameAdapterTests();
+  const savedGameScenarioValidationSummary = runSavedGameScenarioTests();
 
 
   const [rawText, setRawText] = useState("");
@@ -435,6 +437,7 @@ export default function CardImporter() {
             ["Half-Inning Simulation Tests", inningSimValidationSummary],
             ["Full-Game Simulation Tests", fullGameSimValidationSummary],
             ["Saved Lineup Adapter Tests", savedLineupAdapterValidationSummary],
+            ["Saved Game Scenario Tests", savedGameScenarioValidationSummary],
           ].map(([label, summary]) => (
             <div key={label} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
               <div className="font-semibold text-slate-900">{label}</div>
