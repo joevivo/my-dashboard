@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { runParserRegressionSuite } from "./engine/validation/parserRegressionRunner";
+import { runDeterministicCardSimulationTests } from "./engine/cardSimTest";
 import {
   getAllCards,
   saveAllCards,
@@ -260,6 +261,7 @@ function normalizeCard(card) {
 
 export default function CardImporter() {
   const parserRegressionSummary = runParserRegressionSuite();
+  const simulationValidationSummary = runDeterministicCardSimulationTests();
   const [rawText, setRawText] = useState("");
 
   const [cards, setCards] = useState(() => {
@@ -702,15 +704,29 @@ export default function CardImporter() {
 
             {preview.cardEvents?.length > 0 && (
             <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div className="mb-4 rounded-lg border border-slate-200 bg-white p-3 text-sm">
-                <div className="font-semibold text-slate-900">
-                  Parser Regression Tests
+              <div className="mb-4 grid gap-3 md:grid-cols-2">
+                <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
+                  <div className="font-semibold text-slate-900">
+                    Parser Regression Tests
+                  </div>
+                  <div className="text-slate-600">
+                    Passed: {parserRegressionSummary.passed} / {parserRegressionSummary.total}
+                  </div>
+                  <div className={parserRegressionSummary.failed > 0 ? "text-red-600" : "text-slate-600"}>
+                    Failed: {parserRegressionSummary.failed}
+                  </div>
                 </div>
-                <div className="text-slate-600">
-                  Passed: {parserRegressionSummary.passed} / {parserRegressionSummary.total}
-                </div>
-                <div className={parserRegressionSummary.failed > 0 ? "text-red-600" : "text-slate-600"}>
-                  Failed: {parserRegressionSummary.failed}
+
+                <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
+                  <div className="font-semibold text-slate-900">
+                    Simulation Validation Tests
+                  </div>
+                  <div className="text-slate-600">
+                    Passed: {simulationValidationSummary.passed} / {simulationValidationSummary.total}
+                  </div>
+                  <div className={simulationValidationSummary.failed > 0 ? "text-red-600" : "text-slate-600"}>
+                    Failed: {simulationValidationSummary.failed}
+                  </div>
                 </div>
               </div>
 

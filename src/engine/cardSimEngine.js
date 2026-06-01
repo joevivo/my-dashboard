@@ -109,6 +109,17 @@ export function resolvePlateAppearance({
     cardSide,
     roll,
     side: selectedSide,
-    ...resolved,
+
+    result: resolved.result,
+    outcomeType: resolved.outcomeType,
+    rawLine: resolved.rawLine,
+    d20: resolved.d20 ?? null,
+
+    eventClass: event.eventClass,
+    defenseMeta: event.defenseMeta,
+    isXChance: event.isXChance,
+    isInjury: event.isInjury,
+    isBallparkSingle: event.isBallparkSingle,
+    isBallparkHomeRun: event.isBallparkHomeRun,
   };
 }
