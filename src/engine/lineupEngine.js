@@ -1,4 +1,4 @@
-import { getCardMap, normalizeCardName } from "./cardStore";
+import { getCardMap, normalizeCardName } from "./cardStore.js";
 
 function parseRoster(hittersText = "") {
   return hittersText
@@ -653,5 +653,3 @@ export function buildCardAwareLineup({ hittersText, pitcherHand = "R", park, str
 
   return optimizeBattingOrder(defenseAwareLineup, pitcherHand, park, strategyProfile);
 }
-
-

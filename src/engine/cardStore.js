@@ -5,6 +5,8 @@ export function normalizeCardName(name = "") {
 }
 
 export function getAllCards() {
+  if (typeof localStorage === "undefined") return [];
+
   const saved = localStorage.getItem("stratPlayerCards1980");
 
   try {
@@ -44,7 +46,10 @@ export function getCardsByType(cardType, cards = getAllCards()) {
 }
 
 export function saveAllCards(cards = []) {
-  localStorage.setItem("stratPlayerCards1980", JSON.stringify(cards));
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("stratPlayerCards1980", JSON.stringify(cards));
+  }
+
   return cards;
 }
 
