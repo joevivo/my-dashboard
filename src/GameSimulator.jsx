@@ -173,6 +173,7 @@ export default function GameSimulator() {
   const [result, setResult] = useState(null);
   const [comparison, setComparison] = useState(null);
   const [savedGameResult, setSavedGameResult] = useState(null);
+  const [savedGameCount, setSavedGameCount] = useState(1);
 
   const [savedTeams] = useState(() => {
     try {
@@ -260,8 +261,12 @@ export default function GameSimulator() {
     const opponentHittersText = getSavedHittersText(selectedOpponent);
     const teamPitchersText = getSavedPitchersText(selectedTeam);
     const teamStarter = parseOpponentStarters(teamPitchersText)[0];
+    const safeSavedGameCount = Math.max(
+      1,
+      Math.min(1000, Number(savedGameCount) || 1)
+    );
 
-    const nextSavedGameResult = simulateSavedGameScenario({
+    const scenarioArgs = {
       team: selectedTeam,
       opponent: selectedOpponent,
       cards: getAllCards(),
@@ -271,7 +276,9 @@ export default function GameSimulator() {
       homePitcherHand: selectedStarter?.hand || pitcherHand,
       innings: 9,
       strategyProfile,
-    });
+    };
+
+    const firstSavedGameResult = simulateSavedGameScenario(scenarioArgs);
 
     const readiness = {
       yourLineupSource: getSavedHittersSourceLabel(selectedTeam, "saved team lineup"),
@@ -281,19 +288,79 @@ export default function GameSimulator() {
       ),
       yourRowsParsed: countNonEmptyRows(teamHittersText),
       opponentRowsParsed: countNonEmptyRows(opponentHittersText),
-      yourCardBackedSlots: `${nextSavedGameResult.awayLineup.length} / 9`,
-      opponentCardBackedSlots: `${nextSavedGameResult.homeLineup.length} / 9`,
-      yourStarterCard: nextSavedGameResult.missing.awayStarter.length
-        ? `Missing: ${nextSavedGameResult.missing.awayStarter.join(", ")}`
+      yourCardBackedSlots: `${firstSavedGameResult.awayLineup.length} / 9`,
+      opponentCardBackedSlots: `${firstSavedGameResult.homeLineup.length} / 9`,
+      yourStarterCard: firstSavedGameResult.missing.awayStarter.length
+        ? `Missing: ${firstSavedGameResult.missing.awayStarter.join(", ")}`
         : `${cleanSavedPitcherDisplayName(teamStarter) || "No starter selected"} / found`,
-      opponentStarterCard: nextSavedGameResult.missing.homeStarter.length
-        ? `Missing: ${nextSavedGameResult.missing.homeStarter.join(", ")}`
+      opponentStarterCard: firstSavedGameResult.missing.homeStarter.length
+        ? `Missing: ${firstSavedGameResult.missing.homeStarter.join(", ")}`
         : `${selectedStarter?.name || "No starter selected"} / found`,
     };
 
+    if (!firstSavedGameResult.isPlayable) {
+      setSavedGameResult({
+        ...firstSavedGameResult,
+        readiness,
+        batchSummary: null,
+      });
+      return;
+    }
+
+    const savedGameResults = [
+      firstSavedGameResult,
+      ...Array.from({ length: safeSavedGameCount - 1 }, () =>
+        simulateSavedGameScenario(scenarioArgs)
+      ),
+    ];
+
+    const playableGames = savedGameResults
+      .filter((item) => item.isPlayable && item.game)
+      .map((item) => item.game);
+
+    const batchSummary = playableGames.reduce(
+      (summary, game) => {
+        const awayRuns = game.finalScore.away;
+        const homeRuns = game.finalScore.home;
+
+        summary.gamesCompleted += 1;
+        summary.yourRuns += awayRuns;
+        summary.opponentRuns += homeRuns;
+
+        if (awayRuns > homeRuns) {
+          summary.yourWins += 1;
+        } else if (homeRuns > awayRuns) {
+          summary.opponentWins += 1;
+        } else {
+          summary.needsExtras += 1;
+        }
+
+        return summary;
+      },
+      {
+        gamesRequested: safeSavedGameCount,
+        gamesCompleted: 0,
+        yourWins: 0,
+        opponentWins: 0,
+        needsExtras: 0,
+        yourRuns: 0,
+        opponentRuns: 0,
+      }
+    );
+
+    batchSummary.yourAvgRuns = batchSummary.gamesCompleted
+      ? batchSummary.yourRuns / batchSummary.gamesCompleted
+      : 0;
+    batchSummary.opponentAvgRuns = batchSummary.gamesCompleted
+      ? batchSummary.opponentRuns / batchSummary.gamesCompleted
+      : 0;
+    batchSummary.avgRunDifferential =
+      batchSummary.yourAvgRuns - batchSummary.opponentAvgRuns;
+
     setSavedGameResult({
-      ...nextSavedGameResult,
+      ...firstSavedGameResult,
       readiness,
+      batchSummary,
     });
   };
   const runSimulation = () => {
@@ -627,6 +694,23 @@ export default function GameSimulator() {
               Compare Optimized vs Manual
             </button>
 
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Saved-card games
+              </label>
+
+              <select
+                value={savedGameCount}
+                onChange={(event) => setSavedGameCount(Number(event.target.value))}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value={1}>1 game</option>
+                <option value={10}>10 games</option>
+                <option value={100}>100 games</option>
+                <option value={1000}>1,000 games</option>
+              </select>
+            </div>
+
             <button
               type="button"
               onClick={runSavedGameSimulation}
@@ -704,6 +788,14 @@ export default function GameSimulator() {
                     opponentName={selectedOpponent?.name || "Opponent"}
                     game={savedGameResult.game}
                   />
+
+                  {savedGameResult.batchSummary?.gamesRequested > 1 && (
+                    <SavedGameBatchSummary
+                      teamName={selectedTeam?.name || "Your Team"}
+                      opponentName={selectedOpponent?.name || "Opponent"}
+                      summary={savedGameResult.batchSummary}
+                    />
+                  )}
 
                   <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
                     <ResultStat label="Your Team Runs" value={savedGameResult.game.finalScore.away} />
@@ -887,13 +979,41 @@ function InputSectionTitle({ title, description }) {
   );
 }
 
+function SavedGameBatchSummary({ teamName, opponentName, summary }) {
+  const formatNumber = (value) => Number(value || 0).toFixed(2);
+  const differential = Number(summary?.avgRunDifferential || 0);
+  const differentialText = differential > 0 ? `+${formatNumber(differential)}` : formatNumber(differential);
+
+  return (
+    <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-950 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-100">
+      <div className="text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+        Saved Game Batch Summary
+      </div>
+
+      <div className="mt-2 text-sm text-blue-900 dark:text-blue-100">
+        {summary.gamesCompleted} saved-card games completed. Games tied after 9 are marked as needing extras until extra-innings and bullpen logic is added.
+      </div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <ReadinessRow label={`${teamName} wins`} value={summary.yourWins} />
+        <ReadinessRow label={`${opponentName} wins`} value={summary.opponentWins} />
+        <ReadinessRow label="Needs extras" value={summary.needsExtras} />
+        <ReadinessRow label="Avg run differential" value={differentialText} />
+        <ReadinessRow label={`${teamName} avg runs`} value={formatNumber(summary.yourAvgRuns)} />
+        <ReadinessRow label={`${opponentName} avg runs`} value={formatNumber(summary.opponentAvgRuns)} />
+        <ReadinessRow label="Games requested" value={summary.gamesRequested} />
+        <ReadinessRow label="Games completed" value={summary.gamesCompleted} />
+      </div>
+    </div>
+  );
+}
 function SavedGameSummary({ teamName, opponentName, game }) {
   const awayRuns = game?.finalScore?.away ?? 0;
   const homeRuns = game?.finalScore?.home ?? 0;
   const runDifferential = awayRuns - homeRuns;
   const scoreLine = `${teamName} ${awayRuns}, ${opponentName} ${homeRuns}`;
   const winner =
-    awayRuns === homeRuns ? "Tie after regulation" : awayRuns > homeRuns ? teamName : opponentName;
+    awayRuns === homeRuns ? "Needs extra innings" : awayRuns > homeRuns ? teamName : opponentName;
   const inningsText =
     game?.inningsCompleted && game?.inningsScheduled
       ? `${game.inningsCompleted} of ${game.inningsScheduled}`
@@ -928,7 +1048,7 @@ function ReadinessRow({ label, value }) {
         {label}
       </div>
       <div className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100">
-        {value || "n/a"}
+        {value === null || value === undefined || value === "" ? "n/a" : value}
       </div>
     </div>
   );
