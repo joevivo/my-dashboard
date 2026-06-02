@@ -73,6 +73,79 @@ function inferPitcherHand(pitchersText) {
   return starters[0].hand;
 }
 
+function cleanSavedPitcherDisplayName(starter = {}) {
+  const rawName = starter.name || starter.pitcherName || starter.playerName || starter.raw || "";
+  const tokens = String(rawName || "").split(/\s+/).filter(Boolean);
+
+  if (!tokens.length) return "";
+
+  const roleTokens = new Set(["P", "SP", "RP", "CL", "STARTER", "RELIEVER"]);
+  const cleanAlpha = (value) =>
+    String(value || "")
+      .replace(/[^A-Za-z]/g, "")
+      .toUpperCase();
+
+  const cleanAlphaNum = (value) =>
+    String(value || "")
+      .replace(/[^A-Za-z0-9]/g, "")
+      .toUpperCase();
+
+  if (
+    tokens.length >= 3 &&
+    roleTokens.has(cleanAlpha(tokens[0])) &&
+    (cleanAlpha(tokens[1]) === "L" || cleanAlpha(tokens[1]) === "R")
+  ) {
+    const nameTokens = [];
+
+    for (let index = 2; index < tokens.length; index += 1) {
+      const token = cleanAlphaNum(tokens[index]);
+
+      if (/^[SR]\d+\*?$/.test(token) || /^\d+(\.\d+)?$/.test(token)) {
+        break;
+      }
+
+      nameTokens.push(tokens[index]);
+    }
+
+    return nameTokens.join(" ").trim() || rawName;
+  }
+
+  return starter.name || rawName;
+}
+function countNonEmptyRows(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean).length;
+}
+
+function getSavedHittersText(source = {}) {
+  return (
+    source.hittersText ||
+    source.hitters ||
+    source.hitterRoster ||
+    source.rosterText ||
+    ""
+  );
+}
+
+function getSavedHittersSourceLabel(source = {}, fallback = "No saved lineup source") {
+  if (source.hittersText) return "saved hittersText";
+  if (source.hitters) return "saved hitters";
+  if (source.hitterRoster) return "saved hitterRoster";
+  if (source.rosterText) return "saved rosterText";
+  return fallback;
+}
+
+function getSavedPitchersText(source = {}) {
+  return (
+    source.pitchersText ||
+    source.pitchers ||
+    source.pitcherRoster ||
+    source.startersText ||
+    ""
+  );
+}
 function normalizeParkName(parkName = "") {
   if (!parkName) return "";
 
@@ -183,12 +256,10 @@ export default function GameSimulator() {
   }, [result]);
 
   const runSavedGameSimulation = () => {
-    const teamStarter = parseOpponentStarters(
-      selectedTeam?.pitchersText ||
-        selectedTeam?.pitchers ||
-        selectedTeam?.pitcherRoster ||
-        ""
-    )[0];
+    const teamHittersText = getSavedHittersText(selectedTeam);
+    const opponentHittersText = getSavedHittersText(selectedOpponent);
+    const teamPitchersText = getSavedPitchersText(selectedTeam);
+    const teamStarter = parseOpponentStarters(teamPitchersText)[0];
 
     const nextSavedGameResult = simulateSavedGameScenario({
       team: selectedTeam,
@@ -202,9 +273,29 @@ export default function GameSimulator() {
       strategyProfile,
     });
 
-    setSavedGameResult(nextSavedGameResult);
-  };
+    const readiness = {
+      yourLineupSource: getSavedHittersSourceLabel(selectedTeam, "saved team lineup"),
+      opponentLineupSource: getSavedHittersSourceLabel(
+        selectedOpponent,
+        "saved opponent lineup"
+      ),
+      yourRowsParsed: countNonEmptyRows(teamHittersText),
+      opponentRowsParsed: countNonEmptyRows(opponentHittersText),
+      yourCardBackedSlots: `${nextSavedGameResult.awayLineup.length} / 9`,
+      opponentCardBackedSlots: `${nextSavedGameResult.homeLineup.length} / 9`,
+      yourStarterCard: nextSavedGameResult.missing.awayStarter.length
+        ? `Missing: ${nextSavedGameResult.missing.awayStarter.join(", ")}`
+        : `${cleanSavedPitcherDisplayName(teamStarter) || "No starter selected"} / found`,
+      opponentStarterCard: nextSavedGameResult.missing.homeStarter.length
+        ? `Missing: ${nextSavedGameResult.missing.homeStarter.join(", ")}`
+        : `${selectedStarter?.name || "No starter selected"} / found`,
+    };
 
+    setSavedGameResult({
+      ...nextSavedGameResult,
+      readiness,
+    });
+  };
   const runSimulation = () => {
     const nextResult = estimateLineupRunEnvironment({
       hittersText,
@@ -564,6 +655,48 @@ export default function GameSimulator() {
             <div className="dashboard-panel p-6">
               <h2 className="text-xl font-bold">Saved Card Game Result</h2>
 
+              {savedGameResult.readiness && (
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    Saved Game Readiness
+                  </h3>
+
+                  <div className="mt-3 grid gap-3 md:grid-cols-2">
+                    <ReadinessRow
+                      label="Your lineup source"
+                      value={savedGameResult.readiness.yourLineupSource}
+                    />
+                    <ReadinessRow
+                      label="Opponent lineup source"
+                      value={savedGameResult.readiness.opponentLineupSource}
+                    />
+                    <ReadinessRow
+                      label="Your hitter rows parsed"
+                      value={savedGameResult.readiness.yourRowsParsed}
+                    />
+                    <ReadinessRow
+                      label="Opponent hitter rows parsed"
+                      value={savedGameResult.readiness.opponentRowsParsed}
+                    />
+                    <ReadinessRow
+                      label="Your card-backed lineup slots"
+                      value={savedGameResult.readiness.yourCardBackedSlots}
+                    />
+                    <ReadinessRow
+                      label="Opponent card-backed lineup slots"
+                      value={savedGameResult.readiness.opponentCardBackedSlots}
+                    />
+                    <ReadinessRow
+                      label="Your starter card"
+                      value={savedGameResult.readiness.yourStarterCard}
+                    />
+                    <ReadinessRow
+                      label="Opponent starter card"
+                      value={savedGameResult.readiness.opponentStarterCard}
+                    />
+                  </div>
+                </div>
+              )}
               {savedGameResult.isPlayable ? (
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <ResultStat label="Your Team Runs" value={savedGameResult.game.finalScore.away} />
@@ -746,6 +879,18 @@ function InputSectionTitle({ title, description }) {
   );
 }
 
+function ReadinessRow({ label, value }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+      <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+        {label}
+      </div>
+      <div className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-100">
+        {value || "n/a"}
+      </div>
+    </div>
+  );
+}
 function SimulationContextPanel({
   teamName,
   opponentName,
