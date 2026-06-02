@@ -34,6 +34,14 @@ import { getParkData } from "./engine/parkEngine";
 import { getParkPreviewSummary } from "./engine/parkPreviewEngine";
 import { resolveDefenseEvent } from "./engine/defenseResolution";
 
+function formatProbabilityPercent(value) {
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue)) return "0.0%";
+
+  return `${(numberValue * 100).toFixed(1)}%`;
+}
+
 function getSavedLeagues() {
   const saved = localStorage.getItem("stratLeagues");
   return saved ? JSON.parse(saved) : [];
@@ -265,18 +273,24 @@ function normalizeCard(card) {
   return parseCard(card.rawText, card);
 }
 
-export default function CardImporter() {
-  const parserRegressionSummary = runParserRegressionSuite();
-  const simulationValidationSummary = runDeterministicCardSimulationTests();
-  const gameStateValidationSummary = runDeterministicGameStateTests();
-  const plateAppearanceGameValidationSummary =
-    runDeterministicPlateAppearanceGameTests();
-  const inningSimValidationSummary = runDeterministicInningSimTests();
-  const fullGameSimValidationSummary = runDeterministicFullGameSimTests();
-  const savedLineupAdapterValidationSummary =
-    runSavedLineupGameAdapterTests();
-  const savedGameScenarioValidationSummary = runSavedGameScenarioTests();
 
+export default function CardImporter() {
+  const [validationSummaries, setValidationSummaries] = useState(null);
+
+  const runEngineValidations = () => {
+    setValidationSummaries({
+      parserRegressionSummary: runParserRegressionSuite(),
+      simulationValidationSummary: runDeterministicCardSimulationTests(),
+      gameStateValidationSummary: runDeterministicGameStateTests(),
+      plateAppearanceGameValidationSummary:
+        runDeterministicPlateAppearanceGameTests(),
+      inningSimValidationSummary: runDeterministicInningSimTests(),
+      fullGameSimValidationSummary: runDeterministicFullGameSimTests(),
+      savedLineupAdapterValidationSummary:
+        runSavedLineupGameAdapterTests(),
+      savedGameScenarioValidationSummary: runSavedGameScenarioTests(),
+    });
+  };
 
   const [rawText, setRawText] = useState("");
 
@@ -287,6 +301,7 @@ export default function CardImporter() {
 
   const [preview, setPreview] = useState(null);
   const [selectedLeagueId, setSelectedLeagueId] = useState("");
+  const [showSavedCards, setShowSavedCards] = useState(false);
 
   useEffect(() => {
     saveAllCards(cards);
@@ -426,31 +441,62 @@ export default function CardImporter() {
       />
 
       <div className="dashboard-panel p-6">
-        <h2 className="text-xl font-bold mb-4">Engine Validation</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-xl font-bold">Engine Validation</h2>
+            <p className="text-sm text-slate-500">
+              Validation suites are run on demand so the Card Importer stays responsive during card entry.
+            </p>
+          </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            ["Parser Regression Tests", parserRegressionSummary],
-            ["Card Simulation Tests", simulationValidationSummary],
-            ["Game State Tests", gameStateValidationSummary],
-            ["Plate Appearance Bridge Tests", plateAppearanceGameValidationSummary],
-            ["Half-Inning Simulation Tests", inningSimValidationSummary],
-            ["Full-Game Simulation Tests", fullGameSimValidationSummary],
-            ["Saved Lineup Adapter Tests", savedLineupAdapterValidationSummary],
-            ["Saved Game Scenario Tests", savedGameScenarioValidationSummary],
-          ].map(([label, summary]) => (
-            <div key={label} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
-              <div className="font-semibold text-slate-900">{label}</div>
-              <div className="text-slate-600">
-                Passed: {summary.passed} / {summary.total}
-              </div>
-              <div className={summary.failed > 0 ? "text-red-600" : "text-slate-600"}>
-                Failed: {summary.failed}
-              </div>
-            </div>
-          ))}
+          <button
+            type="button"
+            onClick={runEngineValidations}
+            className="bg-slate-900 hover:bg-slate-800 transition text-white px-4 py-2 rounded-lg"
+          >
+            Run Validation Checks
+          </button>
         </div>
+
+        {validationSummaries ? (
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Parser Regression Tests", validationSummaries.parserRegressionSummary],
+              ["Card Simulation Tests", validationSummaries.simulationValidationSummary],
+              ["Game State Tests", validationSummaries.gameStateValidationSummary],
+              [
+                "Plate Appearance Bridge Tests",
+                validationSummaries.plateAppearanceGameValidationSummary,
+              ],
+              ["Half-Inning Simulation Tests", validationSummaries.inningSimValidationSummary],
+              ["Full-Game Simulation Tests", validationSummaries.fullGameSimValidationSummary],
+              [
+                "Saved Lineup Adapter Tests",
+                validationSummaries.savedLineupAdapterValidationSummary,
+              ],
+              [
+                "Saved Game Scenario Tests",
+                validationSummaries.savedGameScenarioValidationSummary,
+              ],
+            ].map(([label, summary]) => (
+              <div key={label} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
+                <div className="font-semibold text-slate-900">{label}</div>
+                <div className="text-slate-600">
+                  Passed: {summary.passed} / {summary.total}
+                </div>
+                <div className={summary.failed > 0 ? "text-red-600" : "text-slate-600"}>
+                  Failed: {summary.failed}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Validation checks have not been run in this session.
+          </p>
+        )}
       </div>
+
       {preview && (
         <div className="dashboard-panel p-6">
           <h2 className="text-xl font-bold mb-4">Parsed Preview</h2>
@@ -716,34 +762,6 @@ export default function CardImporter() {
                   : ""
               }
             />
-          <Field
-            label="Hitter Card Input"
-            value={
-              "OB " +
-              formatPct(matchup.hitterMetrics?.onBase) +
-              " | XBH " +
-              formatPct(matchup.hitterMetrics?.extraBase) +
-              " | HR " +
-              formatPct(matchup.hitterMetrics?.homeRuns) +
-              " | K " +
-              formatPct(matchup.hitterMetrics?.strikeouts)
-            }
-          />
-
-          <Field
-            label="Pitcher Card Allowed"
-            value={
-              "OB " +
-              formatPct(matchup.pitcherMetrics?.onBase) +
-              " | XBH " +
-              formatPct(matchup.pitcherMetrics?.extraBase) +
-              " | HR " +
-              formatPct(matchup.pitcherMetrics?.homeRuns) +
-              " | K " +
-              formatPct(matchup.pitcherMetrics?.strikeouts)
-            }
-          />
-
             {preview.cardEvents?.length > 0 && (
             <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
               <h3 className="font-semibold mb-3">Parsed Event Samples</h3>
@@ -791,18 +809,33 @@ export default function CardImporter() {
       )}
 
       <div className="dashboard-panel p-6">
-        <h2 className="text-xl font-bold mb-4">Saved Cards</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-xl font-bold">Saved Cards</h2>
+            <p className="text-sm text-slate-500">
+              {cards.length} saved card{cards.length === 1 ? "" : "s"}. The full list is collapsed to keep this page responsive.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowSavedCards((current) => !current)}
+            className="bg-slate-200 hover:bg-slate-300 transition text-slate-800 px-4 py-2 rounded-lg dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+          >
+            {showSavedCards ? "Hide Saved Cards" : "Show Saved Cards"}
+          </button>
+        </div>
 
         {cards.length === 0 ? (
           <p className="text-sm text-slate-500">No cards saved yet.</p>
-        ) : (
+        ) : showSavedCards ? (
           <div className="space-y-3">
             {cards.map((card) => (
               <div
                 key={card.id || card.name}
                 className="border border-slate-200 rounded-xl p-4 bg-slate-50"
               >
-                            <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <div>
                     <div className="font-bold text-slate-900">{card.name}</div>
 
@@ -822,8 +855,10 @@ export default function CardImporter() {
                       <div className="text-xs text-slate-400 mt-1">
                         DEF {card.defense || "?"} | RUN {card.running || "?"} |
                         STL {card.stealing || "?"} | H&R{" "}
+                        {card.hitAndRun || "?"}
                       </div>
                     )}
+
                     {card.outcomeDescription && (
                       <div className="text-xs text-slate-500 mt-1">
                         Profile: {card.outcomeDescription}
@@ -842,12 +877,15 @@ export default function CardImporter() {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Saved card rows are hidden. Use “Show Saved Cards” only when you need to inspect or delete an existing card.
+          </p>
         )}
       </div>
     </div>
   );
 }
-
 
 function CardMatchupTester({ cards }) {
   const hitters = cards.filter((card) => card.cardType !== "pitcher");
@@ -1080,13 +1118,13 @@ function CardMatchupTester({ cards }) {
             label="Hitter Card Input"
             value={
               "OB " +
-              formatPct(matchup.hitterMetrics?.onBase) +
+              formatProbabilityPercent(matchup.hitterMetrics?.onBase) +
               " | XBH " +
-              formatPct(matchup.hitterMetrics?.extraBase) +
+              formatProbabilityPercent(matchup.hitterMetrics?.extraBase) +
               " | HR " +
-              formatPct(matchup.hitterMetrics?.homeRuns) +
+              formatProbabilityPercent(matchup.hitterMetrics?.homeRuns) +
               " | K " +
-              formatPct(matchup.hitterMetrics?.strikeouts)
+              formatProbabilityPercent(matchup.hitterMetrics?.strikeouts)
             }
           />
 
@@ -1094,20 +1132,20 @@ function CardMatchupTester({ cards }) {
             label="Pitcher Card Allowed"
             value={
               "OB " +
-              formatPct(matchup.pitcherMetrics?.onBase) +
+              formatProbabilityPercent(matchup.pitcherMetrics?.onBase) +
               " | XBH " +
-              formatPct(matchup.pitcherMetrics?.extraBase) +
+              formatProbabilityPercent(matchup.pitcherMetrics?.extraBase) +
               " | HR " +
-              formatPct(matchup.pitcherMetrics?.homeRuns) +
+              formatProbabilityPercent(matchup.pitcherMetrics?.homeRuns) +
               " | K " +
-              formatPct(matchup.pitcherMetrics?.strikeouts)
+              formatProbabilityPercent(matchup.pitcherMetrics?.strikeouts)
             }
           />
 
-          <Field label="Combined OB" value={formatPct(matchup.onBase)} />
-          <Field label="Combined XBH" value={formatPct(matchup.extraBase)} />
-          <Field label="Combined HR" value={formatPct(matchup.homeRuns)} />
-          <Field label="Combined K" value={formatPct(matchup.strikeouts)} />
+          <Field label="Combined OB" value={formatProbabilityPercent(matchup.onBase)} />
+          <Field label="Combined XBH" value={formatProbabilityPercent(matchup.extraBase)} />
+          <Field label="Combined HR" value={formatProbabilityPercent(matchup.homeRuns)} />
+          <Field label="Combined K" value={formatProbabilityPercent(matchup.strikeouts)} />
 
           <Field
             label="Matchup Score"
