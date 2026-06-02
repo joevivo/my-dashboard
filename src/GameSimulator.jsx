@@ -698,12 +698,20 @@ export default function GameSimulator() {
                 </div>
               )}
               {savedGameResult.isPlayable ? (
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <ResultStat label="Your Team Runs" value={savedGameResult.game.finalScore.away} />
-                  <ResultStat label="Opponent Runs" value={savedGameResult.game.finalScore.home} />
-                  <ResultStat label="Plate Appearances" value={savedGameResult.game.plateAppearanceCount} />
-                  <ResultStat label="Half Innings" value={savedGameResult.game.halfInnings.length} />
-                </div>
+                <>
+                  <SavedGameSummary
+                    teamName={selectedTeam?.name || "Your Team"}
+                    opponentName={selectedOpponent?.name || "Opponent"}
+                    game={savedGameResult.game}
+                  />
+
+                  <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                    <ResultStat label="Your Team Runs" value={savedGameResult.game.finalScore.away} />
+                    <ResultStat label="Opponent Runs" value={savedGameResult.game.finalScore.home} />
+                    <ResultStat label="Plate Appearances" value={savedGameResult.game.plateAppearanceCount} />
+                    <ResultStat label="Half Innings" value={savedGameResult.game.halfInnings.length} />
+                  </div>
+                </>
               ) : (
                 <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                   <div className="font-bold">Saved card game is not playable yet.</div>
@@ -879,6 +887,40 @@ function InputSectionTitle({ title, description }) {
   );
 }
 
+function SavedGameSummary({ teamName, opponentName, game }) {
+  const awayRuns = game?.finalScore?.away ?? 0;
+  const homeRuns = game?.finalScore?.home ?? 0;
+  const runDifferential = awayRuns - homeRuns;
+  const scoreLine = `${teamName} ${awayRuns}, ${opponentName} ${homeRuns}`;
+  const winner =
+    awayRuns === homeRuns ? "Tie after regulation" : awayRuns > homeRuns ? teamName : opponentName;
+  const inningsText =
+    game?.inningsCompleted && game?.inningsScheduled
+      ? `${game.inningsCompleted} of ${game.inningsScheduled}`
+      : game?.inningsCompleted || game?.inningsScheduled || "n/a";
+  const differentialText =
+    runDifferential > 0 ? `+${runDifferential}` : String(runDifferential);
+
+  return (
+    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
+      <div className="text-xs font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+        Game Summary
+      </div>
+
+      <div className="mt-2 text-xl font-bold">{scoreLine}</div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <ReadinessRow label="Winner" value={winner} />
+        <ReadinessRow label="Run differential" value={differentialText} />
+        <ReadinessRow label="Innings completed" value={inningsText} />
+        <ReadinessRow
+          label="Safety cap"
+          value={game?.hitSafetyCap ? "Hit safety cap" : "No"}
+        />
+      </div>
+    </div>
+  );
+}
 function ReadinessRow({ label, value }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
