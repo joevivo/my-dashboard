@@ -101,6 +101,34 @@ function applyOut(nextState, summary, outsRecorded = 1) {
   return advanceHalfInningIfNeeded(nextState);
 }
 
+function isGroundballA(plateAppearance = {}) {
+  const meta = plateAppearance.defenseMeta || {};
+
+  return meta.defenseType === "GB" && meta.resultClass === "A";
+}
+
+function applyGroundball(nextState, summary, plateAppearance = {}) {
+  const runnerOnFirst = nextState.runners.first;
+
+  if (isGroundballA(plateAppearance) && runnerOnFirst) {
+    nextState.runners.first = null;
+
+    summary.advancements.push({
+      runner: runnerOnFirst,
+      from: "first",
+      to: "out",
+      out: true,
+    });
+
+    summary.notes.push("GB(A) double-play framework applied.");
+
+    const outsRecorded = nextState.outs >= 2 ? 1 : 2;
+    return applyOut(nextState, summary, outsRecorded);
+  }
+
+  return applyOut(nextState, summary, 1);
+}
+
 function applyWalk(nextState, batterRunner, summary) {
   const { first, second, third } = nextState.runners;
   const teamKey = getBattingTeamKey(nextState);
@@ -210,7 +238,14 @@ export function applyPlateAppearanceToGameState(
     notes: [],
   };
 
-  if (["OUT", "STRIKEOUT", "LINEOUT", "POPOUT", "FOULOUT", "GROUNDBALL", "FLYBALL", "GBX", "FBX", "X_CHANCE"].includes(outcomeType)) {
+  if (outcomeType === "GROUNDBALL") {
+    return {
+      state: applyGroundball(nextState, summary, plateAppearance),
+      summary,
+    };
+  }
+
+  if (["OUT", "STRIKEOUT", "LINEOUT", "POPOUT", "FOULOUT", "FLYBALL", "GBX", "FBX", "X_CHANCE"].includes(outcomeType)) {
     return {
       state: applyOut(nextState, summary, 1),
       summary,

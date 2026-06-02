@@ -104,6 +104,41 @@ export function runDeterministicGameStateTests() {
     outcomeType: "X_CHANCE",
   });
 
+  const groundballAResult = applyPlateAppearanceToGameState(
+    createInitialGameState({
+      runners: {
+        first: runner("R1"),
+      },
+    }),
+    {
+      outcomeType: "GROUNDBALL",
+      defenseMeta: {
+        defenseType: "GB",
+        position: "SS",
+        resultClass: "A",
+      },
+      batterId: "B6",
+    }
+  );
+
+  const groundballATwoOutResult = applyPlateAppearanceToGameState(
+    createInitialGameState({
+      outs: 2,
+      runners: {
+        first: runner("R1"),
+      },
+    }),
+    {
+      outcomeType: "GROUNDBALL",
+      defenseMeta: {
+        defenseType: "GB",
+        position: "SS",
+        resultClass: "A",
+      },
+      batterId: "B7",
+    }
+  );
+
   const assertions = [
     assertEqual(initial.inning, 1, "initial inning is 1"),
     assertEqual(initial.half, "top", "initial half is top"),
@@ -120,6 +155,13 @@ export function runDeterministicGameStateTests() {
     assertEqual(fbxResult.summary.outsRecorded, 1, "FBX summary records one out"),
     assertEqual(xChanceResult.state.outs, 1, "X_CHANCE records one out before defensive resolution exists"),
     assertEqual(xChanceResult.summary.outsRecorded, 1, "X_CHANCE summary records one out"),
+
+    assertEqual(groundballAResult.state.outs, 2, "GB(A) with runner on first records two outs"),
+    assertEqual(groundballAResult.summary.outsRecorded, 2, "GB(A) summary records two outs"),
+    assertEqual(groundballAResult.state.runners.first, null, "GB(A) clears runner from first"),
+    assertEqual(groundballAResult.state.score.away, 0, "GB(A) scores no run in first-base-only case"),
+    assertEqual(groundballATwoOutResult.state.outs, 0, "GB(A) with two outs ends half inning"),
+    assertEqual(groundballATwoOutResult.summary.outsRecorded, 1, "GB(A) with two outs records only the third out"),
 
     assertEqual(inningAdvanceResult.state.outs, 0, "third out resets outs"),
     assertEqual(inningAdvanceResult.state.half, "bottom", "third out advances to bottom half"),
