@@ -1,5 +1,5 @@
-import { parseCardEvents } from "./cardEventParser";
-import { resolvePlateAppearance } from "./cardSimEngine";
+import { parseCardEvents } from "./cardEventParser.js";
+import { resolvePlateAppearance } from "./cardSimEngine.js";
 
 function buildTestCard(rawText = "") {
   const firstLine =
@@ -142,6 +142,19 @@ export function runDeterministicCardSimulationTests() {
     ]),
   });
 
+  const missingEventOutcome = resolvePlateAppearance({
+    hitterCard: {
+      name: "Empty Hitter",
+      cardEvents: [],
+    },
+    pitcherCard,
+    pitcherHand: "R",
+    random: createFixedRandom([
+      0.1, // hitter card
+      0.5, // weighted roll 7
+    ]),
+  });
+
   const assertions = [
     assertEqual(defenseOutcome.cardSide, "hitter", "selects hitter card"),
     assertEqual(defenseOutcome.roll, "7", "uses deterministic weighted roll"),
@@ -160,6 +173,10 @@ export function runDeterministicCardSimulationTests() {
     assertEqual(leftBatterPitcherOutcome.cardSide, "pitcher", "selects pitcher card for batter-side test"),
     assertEqual(leftBatterPitcherOutcome.side, "vsLHP", "uses batter hand for pitcher card side"),
     assertEqual(leftBatterPitcherOutcome.result, "STRIKEOUT", "resolves pitcher card against left-handed batter"),
+
+    assertEqual(missingEventOutcome.result, "OUT", "missing parsed event falls back to out result"),
+    assertEqual(missingEventOutcome.outcomeType, "OUT", "missing parsed event records out outcome type"),
+    assertEqual(missingEventOutcome.eventClass, "OUT", "missing parsed event records out event class"),
   ];
 
   const failed = assertions.filter((assertion) => !assertion.passed);

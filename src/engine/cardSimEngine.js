@@ -104,8 +104,15 @@ export function resolvePlateAppearance({
       roll,
       side: selectedSide,
       result: "OUT",
-      outcomeType: "UNKNOWN",
-      note: "No matching parsed card event found.",
+      outcomeType: "OUT",
+      eventClass: "OUT",
+      rawLine: "",
+      defenseMeta: null,
+      isXChance: false,
+      isInjury: false,
+      isBallparkSingle: false,
+      isBallparkHomeRun: false,
+      note: "No matching parsed card event found; treated as an out.",
     };
   }
 
