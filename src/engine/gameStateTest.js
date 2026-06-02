@@ -92,6 +92,18 @@ export function runDeterministicGameStateTests() {
     }
   );
 
+  const gbxResult = applyPlateAppearanceToGameState(initial, {
+    outcomeType: "GBX",
+  });
+
+  const fbxResult = applyPlateAppearanceToGameState(initial, {
+    outcomeType: "FBX",
+  });
+
+  const xChanceResult = applyPlateAppearanceToGameState(initial, {
+    outcomeType: "X_CHANCE",
+  });
+
   const assertions = [
     assertEqual(initial.inning, 1, "initial inning is 1"),
     assertEqual(initial.half, "top", "initial half is top"),
@@ -101,6 +113,13 @@ export function runDeterministicGameStateTests() {
 
     assertEqual(outResult.state.outs, 1, "out records one out"),
     assertEqual(outResult.summary.outsRecorded, 1, "out summary records one out"),
+
+    assertEqual(gbxResult.state.outs, 1, "GBX records one out before defensive resolution exists"),
+    assertEqual(gbxResult.summary.outsRecorded, 1, "GBX summary records one out"),
+    assertEqual(fbxResult.state.outs, 1, "FBX records one out before defensive resolution exists"),
+    assertEqual(fbxResult.summary.outsRecorded, 1, "FBX summary records one out"),
+    assertEqual(xChanceResult.state.outs, 1, "X_CHANCE records one out before defensive resolution exists"),
+    assertEqual(xChanceResult.summary.outsRecorded, 1, "X_CHANCE summary records one out"),
 
     assertEqual(inningAdvanceResult.state.outs, 0, "third out resets outs"),
     assertEqual(inningAdvanceResult.state.half, "bottom", "third out advances to bottom half"),

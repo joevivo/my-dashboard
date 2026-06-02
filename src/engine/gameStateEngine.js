@@ -210,7 +210,7 @@ export function applyPlateAppearanceToGameState(
     notes: [],
   };
 
-  if (["OUT", "STRIKEOUT", "LINEOUT", "POPOUT", "FOULOUT", "GROUNDBALL", "FLYBALL"].includes(outcomeType)) {
+  if (["OUT", "STRIKEOUT", "LINEOUT", "POPOUT", "FOULOUT", "GROUNDBALL", "FLYBALL", "GBX", "FBX", "X_CHANCE"].includes(outcomeType)) {
     return {
       state: applyOut(nextState, summary, 1),
       summary,
