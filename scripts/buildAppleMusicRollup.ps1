@@ -8,7 +8,8 @@ $ErrorActionPreference = "Stop"
 # Privacy posture:
 # - Reads sanitized Apple Music exports only.
 # - Produces aggregate-only rollup.
-# - Does not emit track names, artist names, album names, playlist names, favorite item descriptions, recently played descriptions, or top content names.
+# - Does not emit track names, artist names, album names, playlist names, favorite item descriptions,
+#   recently played descriptions, top content names, or station descriptions.
 # - Generated rollup is personal data and should remain outside Git.
 
 $dailyPath = Join-Path $InputRoot "apple-music-daily-track-summary.csv"
@@ -74,20 +75,45 @@ function Sum-Property {
   return ($Rows | Measure-Object -Property $Property -Sum).Sum
 }
 
+$maxReasonableMinutesPerPlay = 30
+$maxReasonableDailyRowHours = 24
+
 $daily = Import-Csv -Path $dailyPath
 
 $datedDaily = foreach ($row in $daily) {
   $date = Convert-CompactAppleDate $row.'Date Played'
 
   if ($null -ne $date) {
+    $plays = Convert-ToNumber $row.'Play Count'
+    $skips = Convert-ToNumber $row.'Skip Count'
+    $durationMs = Convert-ToNumber $row.'Play Duration Milliseconds'
+
+    $rowHoursRaw = [math]::Round(($durationMs / 1000 / 60 / 60), 2)
+    $averageMinutesPerPlayRaw = if ($plays -gt 0) {
+      [math]::Round(($durationMs / $plays / 1000 / 60), 2)
+    } else {
+      0
+    }
+
+    $cappedByAverageMs = if ($plays -gt 0) {
+      [math]::Min($durationMs, ($plays * $maxReasonableMinutesPerPlay * 60 * 1000))
+    } else {
+      $durationMs
+    }
+
+    $cappedDurationMs = [math]::Min($cappedByAverageMs, ($maxReasonableDailyRowHours * 60 * 60 * 1000))
+
     [pscustomobject]@{
       Date = $date.Date
       Year = $date.ToString("yyyy")
       Month = $date.ToString("yyyy-MM")
-      Plays = Convert-ToNumber $row.'Play Count'
-      Skips = Convert-ToNumber $row.'Skip Count'
-      DurationMs = Convert-ToNumber $row.'Play Duration Milliseconds'
+      Plays = $plays
+      Skips = $skips
+      DurationMsRaw = $durationMs
+      DurationMsCapped = $cappedDurationMs
       SourceType = $row.'Source Type'
+      IsSuspiciousAverageDuration = $averageMinutesPerPlayRaw -gt $maxReasonableMinutesPerPlay
+      IsSuspiciousDailyDuration = $rowHoursRaw -gt $maxReasonableDailyRowHours
     }
   }
 }
@@ -98,8 +124,20 @@ if (@($datedDaily).Count -eq 0) {
 
 $totalPlays = Sum-Property -Rows $datedDaily -Property "Plays"
 $totalSkips = Sum-Property -Rows $datedDaily -Property "Skips"
-$totalDurationMs = Sum-Property -Rows $datedDaily -Property "DurationMs"
-$totalHours = [math]::Round(($totalDurationMs / 1000 / 60 / 60), 2)
+$totalDurationMsRaw = Sum-Property -Rows $datedDaily -Property "DurationMsRaw"
+$totalDurationMsCapped = Sum-Property -Rows $datedDaily -Property "DurationMsCapped"
+
+$totalHoursRaw = [math]::Round(($totalDurationMsRaw / 1000 / 60 / 60), 2)
+$totalHoursCapped = [math]::Round(($totalDurationMsCapped / 1000 / 60 / 60), 2)
+
+$suspiciousAverageDurationRows = @($datedDaily | Where-Object { $_.IsSuspiciousAverageDuration }).Count
+$suspiciousDailyDurationRows = @($datedDaily | Where-Object { $_.IsSuspiciousDailyDuration }).Count
+
+$durationQuality = if ($suspiciousAverageDurationRows -gt 0 -or $suspiciousDailyDurationRows -gt 0) {
+  "needs-review"
+} else {
+  "clean"
+}
 
 $firstDate = ($datedDaily | Sort-Object Date | Select-Object -First 1).Date
 $lastDate = ($datedDaily | Sort-Object Date -Descending | Select-Object -First 1).Date
@@ -108,19 +146,17 @@ $activeListeningDays = @($datedDaily | Group-Object Date).Count
 $totalCalendarDays = (($lastDate - $firstDate).Days + 1)
 $activeDayRate = if ($totalCalendarDays -gt 0) { [math]::Round(($activeListeningDays / $totalCalendarDays), 4) } else { 0 }
 $skipRate = if ($totalPlays -gt 0) { [math]::Round(($totalSkips / $totalPlays), 4) } else { 0 }
-$averageMinutesPerPlay = if ($totalPlays -gt 0) { [math]::Round(($totalDurationMs / $totalPlays / 1000 / 60), 2) } else { 0 }
 
 $playsByYear = $datedDaily |
   Group-Object Year |
   Sort-Object Name |
   ForEach-Object {
-    $groupDurationMs = Sum-Property -Rows $_.Group -Property "DurationMs"
-
     [pscustomobject]@{
       year = $_.Name
       plays = [int](Sum-Property -Rows $_.Group -Property "Plays")
       skips = [int](Sum-Property -Rows $_.Group -Property "Skips")
-      durationHours = [math]::Round(($groupDurationMs / 1000 / 60 / 60), 2)
+      durationHoursRaw = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsRaw") / 1000 / 60 / 60), 2)
+      durationHoursCapped = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsCapped") / 1000 / 60 / 60), 2)
       activeDays = @($_.Group | Group-Object Date).Count
     }
   }
@@ -129,13 +165,12 @@ $playsByMonth = $datedDaily |
   Group-Object Month |
   Sort-Object Name |
   ForEach-Object {
-    $groupDurationMs = Sum-Property -Rows $_.Group -Property "DurationMs"
-
     [pscustomobject]@{
       month = $_.Name
       plays = [int](Sum-Property -Rows $_.Group -Property "Plays")
       skips = [int](Sum-Property -Rows $_.Group -Property "Skips")
-      durationHours = [math]::Round(($groupDurationMs / 1000 / 60 / 60), 2)
+      durationHoursRaw = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsRaw") / 1000 / 60 / 60), 2)
+      durationHoursCapped = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsCapped") / 1000 / 60 / 60), 2)
       activeDays = @($_.Group | Group-Object Date).Count
     }
   }
@@ -149,7 +184,8 @@ $sourceTypeSummary = $datedDaily |
       rows = $_.Count
       plays = [int](Sum-Property -Rows $_.Group -Property "Plays")
       skips = [int](Sum-Property -Rows $_.Group -Property "Skips")
-      durationHours = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMs") / 1000 / 60 / 60), 2)
+      durationHoursRaw = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsRaw") / 1000 / 60 / 60), 2)
+      durationHoursCapped = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsCapped") / 1000 / 60 / 60), 2)
     }
   }
 
@@ -177,9 +213,11 @@ $mostRecentYearSummary = $playsByYear | Where-Object { $_.year -eq [string]$most
 $priorYearSummary = $playsByYear | Where-Object { $_.year -eq [string]$priorCompleteYear } | Select-Object -First 1
 
 $highestPlayYear = $playsByYear | Sort-Object plays -Descending | Select-Object -First 1
-$highestHourYear = $playsByYear | Sort-Object durationHours -Descending | Select-Object -First 1
+$highestRawHourYear = $playsByYear | Sort-Object durationHoursRaw -Descending | Select-Object -First 1
+$highestCappedHourYear = $playsByYear | Sort-Object durationHoursCapped -Descending | Select-Object -First 1
 $highestPlayMonth = $playsByMonth | Sort-Object plays -Descending | Select-Object -First 1
-$highestHourMonth = $playsByMonth | Sort-Object durationHours -Descending | Select-Object -First 1
+$highestRawHourMonth = $playsByMonth | Sort-Object durationHoursRaw -Descending | Select-Object -First 1
+$highestCappedHourMonth = $playsByMonth | Sort-Object durationHoursCapped -Descending | Select-Object -First 1
 
 $rollup = [pscustomobject]@{
   generatedAt = (Get-Date).ToString("s")
@@ -206,12 +244,23 @@ $rollup = [pscustomobject]@{
     datedDailyRows = @($datedDaily).Count
     totalPlays = [int]$totalPlays
     totalSkips = [int]$totalSkips
-    totalDurationHours = $totalHours
+    totalDurationHoursRaw = $totalHoursRaw
+    totalDurationHoursCapped = $totalHoursCapped
     firstDatePlayed = $firstDate.ToString("yyyy-MM-dd")
     lastDatePlayed = $lastDate.ToString("yyyy-MM-dd")
     favoriteRows = @($favorites).Count
     recentlyPlayedRows = @($recent).Count
     topContentRows = @($topContent).Count
+  }
+  durationSanity = [pscustomobject]@{
+    quality = $durationQuality
+    maxReasonableMinutesPerPlay = $maxReasonableMinutesPerPlay
+    maxReasonableDailyRowHours = $maxReasonableDailyRowHours
+    suspiciousAverageDurationRows = $suspiciousAverageDurationRows
+    suspiciousDailyDurationRows = $suspiciousDailyDurationRows
+    rawDurationHours = $totalHoursRaw
+    cappedDurationHours = $totalHoursCapped
+    rawMinusCappedHours = [math]::Round(($totalHoursRaw - $totalHoursCapped), 2)
   }
   activity = [pscustomobject]@{
     activeListeningDays = $activeListeningDays
@@ -219,30 +268,38 @@ $rollup = [pscustomobject]@{
     activeDayRate = $activeDayRate
     averagePlaysPerActiveDay = [math]::Round(($totalPlays / $activeListeningDays), 2)
     averageSkipsPerActiveDay = [math]::Round(($totalSkips / $activeListeningDays), 2)
-    averageHoursPerActiveDay = [math]::Round(($totalHours / $activeListeningDays), 2)
+    averageHoursPerActiveDayRaw = [math]::Round(($totalHoursRaw / $activeListeningDays), 2)
+    averageHoursPerActiveDayCapped = [math]::Round(($totalHoursCapped / $activeListeningDays), 2)
     skipRate = $skipRate
-    averageMinutesPerPlay = $averageMinutesPerPlay
+    averageMinutesPerPlayRaw = if ($totalPlays -gt 0) { [math]::Round(($totalDurationMsRaw / $totalPlays / 1000 / 60), 2) } else { 0 }
+    averageMinutesPerPlayCapped = if ($totalPlays -gt 0) { [math]::Round(($totalDurationMsCapped / $totalPlays / 1000 / 60), 2) } else { 0 }
   }
   peaks = [pscustomobject]@{
     highestPlayYear = $highestPlayYear
-    highestHourYear = $highestHourYear
+    highestRawHourYear = $highestRawHourYear
+    highestCappedHourYear = $highestCappedHourYear
     highestPlayMonth = $highestPlayMonth
-    highestHourMonth = $highestHourMonth
+    highestRawHourMonth = $highestRawHourMonth
+    highestCappedHourMonth = $highestCappedHourMonth
   }
   recent = [pscustomobject]@{
     last12MonthStart = $last12MonthStart.ToString("yyyy-MM-dd")
     last12MonthEnd = $lastDate.ToString("yyyy-MM-dd")
     last12MonthsPlays = [int](Sum-Property -Rows $last12Months -Property "Plays")
     last12MonthsSkips = [int](Sum-Property -Rows $last12Months -Property "Skips")
-    last12MonthsHours = [math]::Round(((Sum-Property -Rows $last12Months -Property "DurationMs") / 1000 / 60 / 60), 2)
+    last12MonthsHoursRaw = [math]::Round(((Sum-Property -Rows $last12Months -Property "DurationMsRaw") / 1000 / 60 / 60), 2)
+    last12MonthsHoursCapped = [math]::Round(((Sum-Property -Rows $last12Months -Property "DurationMsCapped") / 1000 / 60 / 60), 2)
     mostRecentCompleteYear = $mostRecentCompleteYear
     priorCompleteYear = $priorCompleteYear
     mostRecentCompleteYearPlays = if ($mostRecentYearSummary) { $mostRecentYearSummary.plays } else { $null }
     priorCompleteYearPlays = if ($priorYearSummary) { $priorYearSummary.plays } else { $null }
     yearOverYearPlayDelta = if ($mostRecentYearSummary -and $priorYearSummary) { [int]($mostRecentYearSummary.plays - $priorYearSummary.plays) } else { $null }
-    mostRecentCompleteYearHours = if ($mostRecentYearSummary) { $mostRecentYearSummary.durationHours } else { $null }
-    priorCompleteYearHours = if ($priorYearSummary) { $priorYearSummary.durationHours } else { $null }
-    yearOverYearHourDelta = if ($mostRecentYearSummary -and $priorYearSummary) { [math]::Round(($mostRecentYearSummary.durationHours - $priorYearSummary.durationHours), 2) } else { $null }
+    mostRecentCompleteYearHoursRaw = if ($mostRecentYearSummary) { $mostRecentYearSummary.durationHoursRaw } else { $null }
+    priorCompleteYearHoursRaw = if ($priorYearSummary) { $priorYearSummary.durationHoursRaw } else { $null }
+    yearOverYearHourDeltaRaw = if ($mostRecentYearSummary -and $priorYearSummary) { [math]::Round(($mostRecentYearSummary.durationHoursRaw - $priorYearSummary.durationHoursRaw), 2) } else { $null }
+    mostRecentCompleteYearHoursCapped = if ($mostRecentYearSummary) { $mostRecentYearSummary.durationHoursCapped } else { $null }
+    priorCompleteYearHoursCapped = if ($priorYearSummary) { $priorYearSummary.durationHoursCapped } else { $null }
+    yearOverYearHourDeltaCapped = if ($mostRecentYearSummary -and $priorYearSummary) { [math]::Round(($mostRecentYearSummary.durationHoursCapped - $priorYearSummary.durationHoursCapped), 2) } else { $null }
   }
   sourceTypeSummary = $sourceTypeSummary
   favoritesByType = $favoritesByType
@@ -258,7 +315,11 @@ Write-Host "Daily rows: $($rollup.totals.dailyRows)"
 Write-Host "Dated rows: $($rollup.totals.datedDailyRows)"
 Write-Host "Total plays: $($rollup.totals.totalPlays)"
 Write-Host "Total skips: $($rollup.totals.totalSkips)"
-Write-Host "Total hours: $($rollup.totals.totalDurationHours)"
+Write-Host "Total hours raw: $($rollup.totals.totalDurationHoursRaw)"
+Write-Host "Total hours capped: $($rollup.totals.totalDurationHoursCapped)"
+Write-Host "Duration quality: $($rollup.durationSanity.quality)"
+Write-Host "Suspicious avg-duration rows: $($rollup.durationSanity.suspiciousAverageDurationRows)"
+Write-Host "Suspicious daily-duration rows: $($rollup.durationSanity.suspiciousDailyDurationRows)"
 Write-Host "Date range: $($rollup.totals.firstDatePlayed) to $($rollup.totals.lastDatePlayed)"
 Write-Host "Active listening days: $($rollup.activity.activeListeningDays)"
 Write-Host "Active day rate: $($rollup.activity.activeDayRate)"
