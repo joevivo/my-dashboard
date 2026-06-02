@@ -644,7 +644,7 @@ export default function GameSimulator() {
 
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                Simulated games
+                Projected-run simulations
               </label>
 
               <input
@@ -682,7 +682,7 @@ export default function GameSimulator() {
               disabled={!hasRoster}
               className="w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Run Simulation
+              Run Projection Simulation
             </button>
 
             <button
@@ -691,7 +691,7 @@ export default function GameSimulator() {
               disabled={!hasRoster}
               className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
-              Compare Optimized vs Manual
+              Compare Projected Lineups
             </button>
 
             <div>
@@ -807,10 +807,10 @@ export default function GameSimulator() {
                 <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                   <div className="font-bold">Saved card game is not playable yet.</div>
                   <div className="mt-2">
-                    Away lineup cards: {savedGameResult.awayLineup.length}
+                    Your lineup cards: {savedGameResult.awayLineup.length}
                   </div>
                   <div>
-                    Home lineup cards: {savedGameResult.homeLineup.length}
+                    Opponent lineup cards: {savedGameResult.homeLineup.length}
                   </div>
                   <div className="mt-2">
                     Missing your hitters: {savedGameResult.missing.awayHitters.join(", ") || "none"}
@@ -831,9 +831,9 @@ export default function GameSimulator() {
 
           {!result ? (
             <div className="dashboard-panel p-6">
-              <h2 className="text-xl font-bold">Simulation Results</h2>
+              <h2 className="text-xl font-bold">Projection Simulation Results</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Add a roster and run the simulation to see projected runs, win estimate,
+                Add a roster and run the projection simulation to see projected runs, win estimate,
                 lineup order, run distribution, and park notes.
               </p>
             </div>
@@ -856,7 +856,7 @@ export default function GameSimulator() {
               <div className="dashboard-panel p-6">
                 <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <h2 className="text-xl font-bold">Simulation Results</h2>
+                    <h2 className="text-xl font-bold">Projection Simulation Results</h2>
                     <p className="mt-1 text-sm text-slate-500">
                       {result.park.name} - {result.park.environment}
                     </p>
