@@ -35,25 +35,36 @@ function parseOpponentStarters(pitchersText) {
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line, index) => {
-      const tokens = line.split(/\s+/);
+      const tokens = line.split(/\s+/).filter(Boolean);
 
-      if (tokens.length < 2) return null;
+      let handIndex = -1;
 
-      const handToken = tokens[tokens.length - 1]?.toUpperCase();
-      const hand = handToken === "L" ? "L" : "R";
+      for (let tokenIndex = tokens.length - 1; tokenIndex >= 0; tokenIndex -= 1) {
+        const cleanToken = tokens[tokenIndex].replace(/[^A-Za-z]/g, "").toUpperCase();
 
-      const starterTokens = tokens.slice(0, -1);
+        if (cleanToken === "L" || cleanToken === "R") {
+          handIndex = tokenIndex;
+          break;
+        }
+      }
+
+      const hand =
+        handIndex >= 0 &&
+        tokens[handIndex].replace(/[^A-Za-z]/g, "").toUpperCase() === "L"
+          ? "L"
+          : "R";
+
+      const starterTokens = handIndex >= 0 ? tokens.slice(0, handIndex) : tokens;
+      const name = starterTokens.join(" ").trim() || line;
 
       return {
-        id: `${starterTokens.join("-")}-${index}`,
-        name: starterTokens.join(" "),
+        id: `${name.replace(/\s+/g, "-")}-${hand}-${index}`,
+        name,
         hand,
         raw: line,
       };
-    })
-    .filter(Boolean);
+    });
 }
-
 function inferPitcherHand(pitchersText) {
   const starters = parseOpponentStarters(pitchersText);
 
@@ -285,7 +296,7 @@ export default function GameSimulator() {
             value: parkName,
           },
           {
-            label: "Starter",
+            label: "Opponent starter card",
             value: selectedStarter?.name,
           },
           {
@@ -293,7 +304,7 @@ export default function GameSimulator() {
             value: lineupMode === "manual" ? "Manual" : "Optimized",
           },
           {
-            label: "Pitcher Hand",
+            label: "Opponent pitcher hand",
             value: pitcherHand,
           },
         ]}
@@ -304,13 +315,13 @@ export default function GameSimulator() {
           <div>
             <h2 className="text-xl font-bold">Simulation Inputs</h2>
             <p className="mt-1 text-sm text-slate-500">
-              Paste hitter roster text, choose the opposing starter hand, and select the game park.
+              Paste hitter roster text, choose the opponent starter card, and select the game park.
             </p>
           </div>
 
           <InputSectionTitle
             title="Matchup"
-            description="Choose your team, opponent, starter, and park before running sims."
+            description="Choose your team, opponent, opponent starter card, and park before running sims."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -374,7 +385,7 @@ export default function GameSimulator() {
 
           <InputSectionTitle
             title="Simulation Settings"
-            description="Control lineup mode, starter hand, park, game count, and opponent baseline."
+            description="Control lineup mode, opponent starter card, park, game count, and opponent baseline."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -395,7 +406,7 @@ export default function GameSimulator() {
 
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                Opposing starter
+                Opponent starter card
               </label>
 
               <select
@@ -417,7 +428,7 @@ export default function GameSimulator() {
 
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                Opposing pitcher hand
+                Opponent pitcher hand
               </label>
 
               <select
@@ -540,7 +551,7 @@ export default function GameSimulator() {
           <SimulationContextPanel
             teamName={selectedTeam?.name || "Manual / pasted roster"}
             opponentName={selectedOpponent?.name || "No saved opponent selected"}
-            starterName={selectedStarter?.name || "No starter selected"}
+            starterName={selectedStarter?.name || "No opponent starter selected"}
             pitcherHand={pitcherHand}
             parkName={parkName}
             lineupMode={lineupMode}
@@ -555,8 +566,8 @@ export default function GameSimulator() {
 
               {savedGameResult.isPlayable ? (
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  <ResultStat label="Away Runs" value={savedGameResult.game.finalScore.away} />
-                  <ResultStat label="Home Runs" value={savedGameResult.game.finalScore.home} />
+                  <ResultStat label="Your Team Runs" value={savedGameResult.game.finalScore.away} />
+                  <ResultStat label="Opponent Runs" value={savedGameResult.game.finalScore.home} />
                   <ResultStat label="Plate Appearances" value={savedGameResult.game.plateAppearanceCount} />
                   <ResultStat label="Half Innings" value={savedGameResult.game.halfInnings.length} />
                 </div>
@@ -570,16 +581,16 @@ export default function GameSimulator() {
                     Home lineup cards: {savedGameResult.homeLineup.length}
                   </div>
                   <div className="mt-2">
-                    Missing away hitters: {savedGameResult.missing.awayHitters.join(", ") || "none"}
+                    Missing your hitters: {savedGameResult.missing.awayHitters.join(", ") || "none"}
                   </div>
                   <div>
-                    Missing home hitters: {savedGameResult.missing.homeHitters.join(", ") || "none"}
+                    Missing opponent hitters: {savedGameResult.missing.homeHitters.join(", ") || "none"}
                   </div>
                   <div>
-                    Missing away starter: {savedGameResult.missing.awayStarter.join(", ") || "none"}
+                    Missing your starter card: {savedGameResult.missing.awayStarter.join(", ") || "none"}
                   </div>
                   <div>
-                    Missing home starter: {savedGameResult.missing.homeStarter.join(", ") || "none"}
+                    Missing opponent starter card: {savedGameResult.missing.homeStarter.join(", ") || "none"}
                   </div>
                 </div>
               )}
@@ -745,10 +756,10 @@ function SimulationContextPanel({
   opponentRuns,
 }) {
   const rows = [
-    ["Team", teamName],
+    ["Your Team", teamName],
     ["Opponent", opponentName],
-    ["Starter", starterName],
-    ["Pitcher Hand", pitcherHand === "L" ? "Left" : "Right"],
+    ["Opponent Starter Card", starterName],
+    ["Opponent Pitcher Hand", pitcherHand === "L" ? "Left" : "Right"],
     ["Park", parkName],
     ["Lineup Mode", lineupMode === "manual" ? "Manual pasted order" : "Optimized"],
     ["Opponent Runs Baseline", formatRuns(opponentRuns)],
