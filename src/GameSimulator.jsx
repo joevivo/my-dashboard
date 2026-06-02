@@ -263,7 +263,7 @@ export default function GameSimulator() {
     const teamStarter = parseOpponentStarters(teamPitchersText)[0];
     const safeSavedGameCount = Math.max(
       1,
-      Math.min(1000, Number(savedGameCount) || 1)
+      Math.min(10, Number(savedGameCount) || 1)
     );
 
     const scenarioArgs = {
@@ -706,8 +706,6 @@ export default function GameSimulator() {
               >
                 <option value={1}>1 game</option>
                 <option value={10}>10 games</option>
-                <option value={100}>100 games</option>
-                <option value={1000}>1,000 games</option>
               </select>
             </div>
 
