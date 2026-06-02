@@ -175,20 +175,6 @@ $playsByMonth = $datedDaily |
     }
   }
 
-$sourceTypeSummary = $datedDaily |
-  Group-Object SourceType |
-  Sort-Object Count -Descending |
-  ForEach-Object {
-    [pscustomobject]@{
-      sourceType = if ([string]::IsNullOrWhiteSpace($_.Name)) { "Unspecified" } else { $_.Name }
-      rows = $_.Count
-      plays = [int](Sum-Property -Rows $_.Group -Property "Plays")
-      skips = [int](Sum-Property -Rows $_.Group -Property "Skips")
-      durationHoursRaw = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsRaw") / 1000 / 60 / 60), 2)
-      durationHoursCapped = [math]::Round(((Sum-Property -Rows $_.Group -Property "DurationMsCapped") / 1000 / 60 / 60), 2)
-    }
-  }
-
 $favorites = if (Test-Path $favoritesPath) { Import-Csv -Path $favoritesPath } else { @() }
 $recent = if (Test-Path $recentPath) { Import-Csv -Path $recentPath } else { @() }
 $topContent = if (Test-Path $topContentPath) { Import-Csv -Path $topContentPath } else { @() }
@@ -301,7 +287,6 @@ $rollup = [pscustomobject]@{
     priorCompleteYearHoursCapped = if ($priorYearSummary) { $priorYearSummary.durationHoursCapped } else { $null }
     yearOverYearHourDeltaCapped = if ($mostRecentYearSummary -and $priorYearSummary) { [math]::Round(($mostRecentYearSummary.durationHoursCapped - $priorYearSummary.durationHoursCapped), 2) } else { $null }
   }
-  sourceTypeSummary = $sourceTypeSummary
   favoritesByType = $favoritesByType
   playsByYear = $playsByYear
   playsByMonth = $playsByMonth
@@ -324,7 +309,6 @@ Write-Host "Date range: $($rollup.totals.firstDatePlayed) to $($rollup.totals.la
 Write-Host "Active listening days: $($rollup.activity.activeListeningDays)"
 Write-Host "Active day rate: $($rollup.activity.activeDayRate)"
 Write-Host "Skip rate: $($rollup.activity.skipRate)"
-Write-Host "Source type buckets: $(@($rollup.sourceTypeSummary).Count)"
 Write-Host "Favorite type buckets: $(@($rollup.favoritesByType).Count)"
 Write-Host "Year buckets: $(@($rollup.playsByYear).Count)"
 Write-Host "Month buckets: $(@($rollup.playsByMonth).Count)"
