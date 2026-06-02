@@ -787,6 +787,7 @@ export default function GameSimulator() {
                     teamName={selectedTeam?.name || "Your Team"}
                     opponentName={selectedOpponent?.name || "Opponent"}
                     game={savedGameResult.game}
+                    isBatch={savedGameResult.batchSummary?.gamesRequested > 1}
                   />
 
                   {savedGameResult.batchSummary?.gamesRequested > 1 && (
@@ -1007,7 +1008,7 @@ function SavedGameBatchSummary({ teamName, opponentName, summary }) {
     </div>
   );
 }
-function SavedGameSummary({ teamName, opponentName, game }) {
+function SavedGameSummary({ teamName, opponentName, game, isBatch = false }) {
   const awayRuns = game?.finalScore?.away ?? 0;
   const homeRuns = game?.finalScore?.home ?? 0;
   const runDifferential = awayRuns - homeRuns;
@@ -1024,7 +1025,7 @@ function SavedGameSummary({ teamName, opponentName, game }) {
   return (
     <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
       <div className="text-xs font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
-        Game Summary
+        {isBatch ? "Sample Game Summary" : "Game Summary"}
       </div>
 
       <div className="mt-2 text-xl font-bold">{scoreLine}</div>
