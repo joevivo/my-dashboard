@@ -21,12 +21,14 @@ function parseShorthandLineup(hittersText = "") {
     .map((line) => {
       const parts = line.split(/\s+/);
 
-      if (parts.length < 3) return null;
+      if (parts.length < 2) return null;
 
       const fieldPos = String(parts[parts.length - 1] || "").toUpperCase();
-      const batsToken = String(parts[parts.length - 2] || "").toUpperCase();
-      const bats = normalizeShorthandBats(batsToken);
-      const name = parts.slice(0, -2).join(" ");
+      const possibleBatsToken = String(parts[parts.length - 2] || "").toUpperCase();
+      const hasBatsToken = ["R", "L", "S", "D"].includes(possibleBatsToken);
+      const batsToken = hasBatsToken ? possibleBatsToken : "";
+      const bats = hasBatsToken ? normalizeShorthandBats(batsToken) : "R";
+      const name = parts.slice(0, hasBatsToken ? -2 : -1).join(" ");
 
       const validPositions = new Set([
         "C",
@@ -42,7 +44,7 @@ function parseShorthandLineup(hittersText = "") {
       ]);
 
       if (!name || !validPositions.has(fieldPos)) return null;
-      if (!["R", "L", "S", "D"].includes(batsToken)) return null;
+      if (batsToken && !["R", "L", "S", "D"].includes(batsToken)) return null;
 
       return {
         name,
@@ -136,3 +138,4 @@ export function buildSavedLineupForGame({
     isPlayable: false,
   };
 }
+
