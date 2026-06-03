@@ -42,7 +42,7 @@ export default function NewsView() {
       const data = await response.json();
       setStories(data);
     } catch (err) {
-      setError(err.message);
+      setError("News is unavailable because the local backend is not reachable. Start the backend with: cd C:\\Users\\joevi\\my-dashboard\\server and then run node .\\index.js");
     }
   }
 

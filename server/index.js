@@ -475,6 +475,14 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "defending-sisyphus-api",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
