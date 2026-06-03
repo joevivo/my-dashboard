@@ -298,6 +298,32 @@ function Assert-AppleMusicRollupContract {
 
   $json = $Rollup | ConvertTo-Json -Depth 12
 
+  $propertyNames = @()
+
+  function Add-PropertyNames {
+    param($Object)
+
+    if ($null -eq $Object) {
+      return
+    }
+
+    if ($Object -is [System.Array]) {
+      foreach ($item in $Object) {
+        Add-PropertyNames -Object $item
+      }
+      return
+    }
+
+    if ($Object -is [pscustomobject]) {
+      foreach ($prop in $Object.PSObject.Properties) {
+        $script:propertyNames += $prop.Name
+        Add-PropertyNames -Object $prop.Value
+      }
+    }
+  }
+
+  Add-PropertyNames -Object $Rollup
+
   $forbiddenPatterns = @(
     "trackName",
     "artistName",
@@ -323,8 +349,31 @@ function Assert-AppleMusicRollupContract {
 
   $violations = @()
 
+  $requiredSections = @(
+    "totals",
+    "durationSanity",
+    "activity",
+    "peaks",
+    "recent",
+    "favoritesByType",
+    "playsByYear",
+    "playsByMonth"
+  )
+
+  $missingSections = @()
+
+  foreach ($section in $requiredSections) {
+    if ($null -eq $Rollup.$section) {
+      $missingSections += $section
+    }
+  }
+
+  if ($missingSections.Count -gt 0) {
+    throw "Apple Music dashboard rollup contract failed. Missing required sections: $($missingSections -join ', ')"
+  }
+
   foreach ($pattern in $forbiddenPatterns) {
-    if ($json -match [regex]::Escape($pattern)) {
+    if ($propertyNames -contains $pattern) {
       $violations += $pattern
     }
   }
