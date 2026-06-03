@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AppleMusicAnalytics from "./AppleMusicAnalytics";
 import CalendarView from "./CalendarView";
 import LineupAnalyzer from "./LineupAnalyzer";
 import PitchingAnalyzer from "./PitchingAnalyzer";
@@ -90,6 +91,7 @@ export default function App() {
           title: "Collections",
           items: [
             ["Music", "Music"],
+            ["MusicAnalytics", "Listening Analytics"],
           ],
         },
       ],
@@ -216,6 +218,8 @@ export default function App() {
               
             ) : activeView === "Music" ? (
               <MusicLibrary />
+            ) : activeView === "MusicAnalytics" ? (
+              <AppleMusicAnalytics />
             ) : activeView === "Books" ? (
               <BooksView />
             ) : activeView === "Notes" ? (
