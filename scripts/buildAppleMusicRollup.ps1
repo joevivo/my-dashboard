@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$InputRoot = "$env:USERPROFILE\apple-music-sanitized",
   [string]$OutputName = "apple-music-dashboard-rollup.json"
 )
@@ -291,6 +291,54 @@ $rollup = [pscustomobject]@{
   playsByYear = $playsByYear
   playsByMonth = $playsByMonth
 }
+
+
+function Assert-AppleMusicRollupContract {
+  param($Rollup)
+
+  $json = $Rollup | ConvertTo-Json -Depth 12
+
+  $forbiddenPatterns = @(
+    "trackName",
+    "artistName",
+    "albumName",
+    "playlistName",
+    "stationName",
+    "Track Description",
+    "Track Name",
+    "Item Description",
+    "Container Description",
+    "Station Description",
+    "Content",
+    "SourceType",
+    "Source Type",
+    "Device",
+    "Platform",
+    "Apple ID",
+    "IP",
+    "Latitude",
+    "Longitude",
+    "Location"
+  )
+
+  $violations = @()
+
+  foreach ($pattern in $forbiddenPatterns) {
+    if ($json -match [regex]::Escape($pattern)) {
+      $violations += $pattern
+    }
+  }
+
+  if ($violations.Count -gt 0) {
+    throw "Apple Music dashboard rollup contract failed. Forbidden fields/content detected: $($violations -join ', ')"
+  }
+
+  if ($Rollup.privacyLevel -ne "aggregate-only") {
+    throw "Apple Music dashboard rollup contract failed. privacyLevel must be aggregate-only."
+  }
+}
+
+Assert-AppleMusicRollupContract -Rollup $rollup
 
 $rollup | ConvertTo-Json -Depth 8 | Set-Content -Path $rollupPath -Encoding UTF8
 
