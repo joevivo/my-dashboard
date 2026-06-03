@@ -1,385 +1,173 @@
-import { useEffect, useState } from "react";
-import { BookOpen, Quote, Library, Bookmark, Upload, Download } from "lucide-react";
-import { seedBooksLibrary } from "./books/seedBooks";
-import { loadBooksLibrary, saveBooksLibrary } from "./books/booksStore";
-import { parseBookCsv } from "./books/bookCsvImport";
-import { mergeBooksLibrary, normalizeImportedBooks } from "./books/bookImportAdapter";
-import { downloadBooksBackup, importBooksBackupFile } from "./books/booksBackup";
-import {
-  getBooksArray,
-  getCurrentlyReadingBooks,
-  getRecentQuotes,
-  getReadingStats,
-} from "./books/bookSelectors";
+import { booksMockData } from "./data/booksMockData";
 
-function StatCard({ icon: Icon, label, value }) {
-  return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-zinc-500">
-            {label}
-          </p>
-
-          <p className="mt-2 text-3xl font-semibold text-zinc-100">
-            {value}
-          </p>
-        </div>
-
-        <Icon className="h-6 w-6 text-zinc-500" />
-      </div>
-    </div>
-  );
+function countBy(items, selector) {
+  return items.reduce((counts, item) => {
+    const key = selector(item) || "Unknown";
+    counts[key] = (counts[key] || 0) + 1;
+    return counts;
+  }, {});
 }
 
-export default function BooksView() {
-  const [library, setLibrary] = useState(seedBooksLibrary);
-  const [loadStatus, setLoadStatus] = useState("Loading books library...");
-  const [importStatus, setImportStatus] = useState("");
+function flattenThemes(books) {
+  return books.flatMap((book) => book.themes || []);
+}
 
-  useEffect(() => {
-    let isMounted = true;
+function sortEntriesDescending(entries) {
+  return [...entries].sort((a, b) => b[1] - a[1]);
+}
 
-    loadBooksLibrary()
-      .then((storedLibrary) => {
-        if (!isMounted) return;
+export default function BooksLibrary() {
+  const books = booksMockData;
 
-        if (storedLibrary) {
-          setLibrary(storedLibrary);
-          setLoadStatus("Loaded from local browser storage.");
-          return;
-        }
+  const totalBooks = books.length;
+  const rereadCount = books.filter((book) => Number(book.timesRead || 0) > 1).length;
+  const transformativeCount = books.filter(
+    (book) => book.impact === "Transformative"
+  ).length;
 
-        saveBooksLibrary(seedBooksLibrary)
-          .then(() => {
-            if (isMounted) {
-              setLoadStatus("Seed library initialized in local browser storage.");
-            }
-          })
-          .catch((error) => {
-            if (isMounted) {
-              setLoadStatus(`Seed library active. Storage save failed: ${error.message}`);
-            }
-          });
-      })
-      .catch((error) => {
-        if (isMounted) {
-          setLoadStatus(`Seed library active. Storage unavailable: ${error.message}`);
-        }
-      });
+  const impactCounts = sortEntriesDescending(
+    Object.entries(countBy(books, (book) => book.impact))
+  );
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-  const books = getBooksArray(library);
-  const currentlyReading = getCurrentlyReadingBooks(library);
-  const recentQuotes = getRecentQuotes(library);
-  const stats = getReadingStats(library);
-
-  const exportKnowledgeBackup = () => {
-    downloadBooksBackup(library);
-    setImportStatus("Knowledge backup exported.");
-  };
-
-  const importKnowledgeBackup = async (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    const input = event.target;
-
-    try {
-      const restoredLibrary = await importBooksBackupFile(file);
-
-      await saveBooksLibrary(restoredLibrary);
-
-      setLibrary(restoredLibrary);
-
-      setImportStatus(
-        `Knowledge backup restored from ${file.name}.`
-      );
-    } catch (error) {
-      setImportStatus(`Backup restore failed: ${error.message}`);
-    } finally {
-      input.value = "";
-    }
-  };
-
-  const importBookCsv = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    const input = event.target;
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      try {
-        const parsed = parseBookCsv(String(reader.result || ""));
-
-        if (!parsed.books.length) {
-          setImportStatus(
-            parsed.skipped
-              ? `No books imported. Skipped ${parsed.skipped} incomplete row${parsed.skipped === 1 ? "" : "s"}.`
-              : "No books imported. Make sure the CSV includes title and author columns."
-          );
-
-          input.value = "";
-          return;
-        }
-
-        const importedLibrary = normalizeImportedBooks(parsed.books, {
-          fileName: file.name,
-        });
-
-        const mergedLibrary = mergeBooksLibrary(library, importedLibrary);
-
-        saveBooksLibrary(mergedLibrary)
-          .then(() => {
-            setLibrary(mergedLibrary);
-            setImportStatus(
-              `Imported ${parsed.books.length} book${parsed.books.length === 1 ? "" : "s"} from ${file.name}.` +
-                (parsed.skipped
-                  ? ` Skipped ${parsed.skipped} incomplete row${parsed.skipped === 1 ? "" : "s"}.`
-                  : "")
-            );
-          })
-          .catch((error) => {
-            setImportStatus(`Import parsed, but storage save failed: ${error.message}`);
-          });
-      } catch (error) {
-        setImportStatus(`Import failed: ${error.message}`);
-      } finally {
-        input.value = "";
-      }
-    };
-
-    reader.onerror = () => {
-      setImportStatus("Import failed: unable to read selected file.");
-      input.value = "";
-    };
-
-    reader.readAsText(file);
-  };
+  const themeCounts = sortEntriesDescending(
+    Object.entries(countBy(flattenThemes(books), (theme) => theme))
+  );
 
   return (
-    <div className="space-y-6 text-zinc-100">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Books Intelligence
-        </h1>
-
-        <p className="mt-1 text-sm text-zinc-400">
-          Reading operations, notes, quotes, and intellectual tracking.
+    <main className="space-y-6">
+      <section>
+        <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
+          Library
         </p>
+        <h1 className="text-3xl font-semibold text-slate-100">Books</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+          Reading identity, intellectual themes, notes, quotes, and the books
+          that left a mark.
+        </p>
+      </section>
 
-        <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-zinc-500">
-              Books Data Pipeline
-            </p>
+      <section className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <p className="text-sm text-slate-400">Books Tracked</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-100">
+            {totalBooks}
+          </p>
+        </div>
 
-            <p className="mt-1 text-sm text-zinc-400">
-              {loadStatus}
-            </p>
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <p className="text-sm text-slate-400">Reread Signals</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-100">
+            {rereadCount}
+          </p>
+        </div>
 
-            {importStatus ? (
-              <p className="mt-1 text-sm text-zinc-300">
-                {importStatus}
-              </p>
-            ) : null}
-          </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <p className="text-sm text-slate-400">Transformative</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-100">
+            {transformativeCount}
+          </p>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={exportKnowledgeBackup}
-              className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800"
-            >
-              <Download className="h-4 w-4" />
-              Export Backup
-            </button>
-
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
-              <Upload className="h-4 w-4" />
-              Restore Backup
-              <input
-                type="file"
-                accept=".json,application/json"
-                className="hidden"
-                onChange={importKnowledgeBackup}
-              />
-            </label>
-
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-800">
-              <Upload className="h-4 w-4" />
-              Import Books CSV
-              <input
-                type="file"
-                accept=".csv,text/csv"
-                className="hidden"
-                onChange={importBookCsv}
-              />
-            </label>
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <h2 className="text-lg font-semibold text-slate-100">
+            Impact Distribution
+          </h2>
+          <div className="mt-4 space-y-3">
+            {impactCounts.map(([impact, count]) => (
+              <div
+                key={impact}
+                className="flex items-center justify-between rounded-xl bg-slate-900/70 px-4 py-3"
+              >
+                <span className="text-sm text-slate-300">{impact}</span>
+                <span className="text-sm font-semibold text-slate-100">
+                  {count}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={Library} label="Total Books" value={stats.totalBooks} />
-
-        <StatCard
-          icon={BookOpen}
-          label="Currently Reading"
-          value={stats.currentlyReading}
-        />
-
-        <StatCard
-          icon={Bookmark}
-          label="Completed"
-          value={stats.completed}
-        />
-
-        <StatCard
-          icon={Quote}
-          label="Quotes Captured"
-          value={stats.quotes}
-        />
-      </div>
-
-      {currentlyReading.length ? (
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-zinc-100">
-              Currently Reading
-            </h2>
-
-            <p className="text-sm text-zinc-500">
-              Active reading queue and current intellectual focus.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {currentlyReading.map((book) => (
-              <div
-                key={book.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4"
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+          <h2 className="text-lg font-semibold text-slate-100">
+            Theme Signals
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {themeCounts.map(([theme, count]) => (
+              <span
+                key={theme}
+                className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
               >
-                <p className="font-semibold text-zinc-100">{book.title}</p>
+                {theme} · {count}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                <p className="mt-1 text-sm text-zinc-400">{book.author}</p>
+      <section className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
+        <h2 className="text-lg font-semibold text-slate-100">Book Shelf</h2>
 
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {book.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-zinc-700 px-2 py-1 text-xs text-zinc-400"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          {books.map((book) => (
+            <article
+              key={book.id}
+              className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-100">
+                    {book.title}
+                  </h3>
+                  <p className="text-sm text-slate-400">{book.author}</p>
                 </div>
+
+                <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">
+                  {book.impact}
+                </span>
               </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 xl:col-span-2">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-zinc-100">
-                Library
-              </h2>
+              <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <dt className="text-slate-500">Published</dt>
+                  <dd className="text-slate-300">
+                    {book.publicationYear || "Unknown"}
+                  </dd>
+                </div>
 
-              <p className="text-sm text-zinc-500">
-                Operational reading inventory
-              </p>
-            </div>
-          </div>
+                <div>
+                  <dt className="text-slate-500">Read Year</dt>
+                  <dd className="text-slate-300">
+                    {book.readYear || "Unknown"}
+                  </dd>
+                </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="border-b border-zinc-800 text-zinc-500">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium">Title</th>
-                  <th className="px-3 py-2 text-left font-medium">Author</th>
-                  <th className="px-3 py-2 text-left font-medium">Status</th>
-                  <th className="px-3 py-2 text-left font-medium">Rating</th>
-                  <th className="px-3 py-2 text-left font-medium">Format</th>
-                  <th className="px-3 py-2 text-left font-medium">Tags</th>
-                </tr>
-              </thead>
+                <div>
+                  <dt className="text-slate-500">Format</dt>
+                  <dd className="text-slate-300">{book.format}</dd>
+                </div>
 
-              <tbody>
-                {books.map((book) => (
-                  <tr
-                    key={book.id}
-                    className="border-b border-zinc-800/60"
+                <div>
+                  <dt className="text-slate-500">Times Read</dt>
+                  <dd className="text-slate-300">{book.timesRead}</dd>
+                </div>
+              </dl>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {(book.themes || []).map((theme) => (
+                  <span
+                    key={theme}
+                    className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300"
                   >
-                    <td className="px-3 py-3 font-medium text-zinc-200">
-                      {book.title}
-                    </td>
-
-                    <td className="px-3 py-3 text-zinc-400">
-                      {book.author}
-                    </td>
-
-                    <td className="px-3 py-3">
-                      <span className="rounded-full border border-zinc-700 px-2 py-1 text-xs uppercase tracking-wide text-zinc-300">
-                        {book.status}
-                      </span>
-                    </td>
-
-                    <td className="px-3 py-3 text-zinc-300">
-                      {book.rating || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â"}
-                    </td>
-
-                    <td className="px-3 py-3 text-zinc-400">
-                      {book.format || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â"}
-                    </td>
-
-                    <td className="px-3 py-3 text-zinc-400">
-                      {book.tags.join(", ")}
-                    </td>
-                  </tr>
+                    {theme}
+                  </span>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-zinc-100">
-              Quote Surface
-            </h2>
-
-            <p className="text-sm text-zinc-500">
-              Recently captured philosophical fragments
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {recentQuotes.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4"
-              >
-                <p className="text-sm leading-relaxed text-zinc-300">
-                  "{item.quote}"
-                </p>
-
-                <p className="mt-3 text-xs uppercase tracking-wide text-zinc-500">
-                  {item.author}
-                </p>
               </div>
-            ))}
-          </div>
-        </section>
-      </div>
-    </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
