@@ -1,4 +1,4 @@
-import { booksMockData } from "./data/booksMockData";
+﻿import { booksMockData } from "./data/booksMockData";
 
 function countBy(items, selector) {
   return items.reduce((counts, item) => {
@@ -16,14 +16,23 @@ function sortEntriesDescending(entries) {
   return [...entries].sort((a, b) => b[1] - a[1]);
 }
 
-export default function BooksLibrary() {
+export default function BooksView() {
   const books = booksMockData;
 
-  const totalBooks = books.length;
-  const rereadCount = books.filter((book) => Number(book.timesRead || 0) > 1).length;
-  const transformativeCount = books.filter(
-    (book) => book.impact === "Transformative"
-  ).length;
+  const currentlyReading = books.filter((book) => book.status === "Current");
+
+  const recentlyFinished = books
+    .filter((book) => book.status === "Finished")
+    .sort((a, b) => (b.readYear || 0) - (a.readYear || 0))
+    .slice(0, 3);
+
+  const timelineYears = [
+    ...new Set(
+      books
+        .filter((book) => book.readYear)
+        .map((book) => book.readYear)
+    ),
+  ].sort((a, b) => b - a);
 
   const impactCounts = sortEntriesDescending(
     Object.entries(countBy(books, (book) => book.impact))
@@ -41,31 +50,65 @@ export default function BooksLibrary() {
         </p>
         <h1 className="text-3xl font-semibold text-slate-100">Books</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-400">
-          Reading identity, intellectual themes, notes, quotes, and the books
-          that left a mark.
+          What you are reading now, what you have read, and the ideas that keep
+          returning.
         </p>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
-          <p className="text-sm text-slate-400">Books Tracked</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-100">
-            {totalBooks}
-          </p>
+          <h2 className="text-lg font-semibold text-slate-100">
+            Currently Reading
+          </h2>
+
+          {currentlyReading.length ? (
+            <div className="mt-4 space-y-3">
+              {currentlyReading.map((book) => (
+                <div key={book.id}>
+                  <div className="font-medium text-slate-100">
+                    {book.title}
+                  </div>
+                  <div className="text-sm text-slate-400">{book.author}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-slate-400">No active books.</p>
+          )}
         </div>
 
         <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
-          <p className="text-sm text-slate-400">Reread Signals</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-100">
-            {rereadCount}
-          </p>
+          <h2 className="text-lg font-semibold text-slate-100">
+            Recently Finished
+          </h2>
+
+          <div className="mt-4 space-y-3">
+            {recentlyFinished.map((book) => (
+              <div key={book.id}>
+                <div className="font-medium text-slate-100">
+                  {book.title}
+                </div>
+                <div className="text-sm text-slate-400">{book.readYear}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
-          <p className="text-sm text-slate-400">Transformative</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-100">
-            {transformativeCount}
-          </p>
+          <h2 className="text-lg font-semibold text-slate-100">
+            Reading Timeline
+          </h2>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {timelineYears.map((year) => (
+              <span
+                key={year}
+                className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
+              >
+                {year}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -107,7 +150,7 @@ export default function BooksLibrary() {
       </section>
 
       <section className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
-        <h2 className="text-lg font-semibold text-slate-100">Book Shelf</h2>
+        <h2 className="text-lg font-semibold text-slate-100">Library Shelf</h2>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           {books.map((book) => (
