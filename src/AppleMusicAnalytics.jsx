@@ -10,6 +10,18 @@ function formatSignedNumber(value) {
   return `${sign}${number.toLocaleString()}`;
 }
 
+function getListeningSpanYears(data) {
+  return (
+    (new Date(data.totals.lastDatePlayed) -
+      new Date(data.totals.firstDatePlayed)) /
+    (1000 * 60 * 60 * 24 * 365.25)
+  );
+}
+
+function getMostActiveYear(data) {
+  return [...data.playsByYear].sort((a, b) => b.plays - a.plays)[0];
+}
+
 function MetricCard({ title, value, subtitle }) {
   return (
     <div className="rounded-xl border border-slate-700 bg-slate-800 p-4">
@@ -41,6 +53,8 @@ function MetricSection({ title, description, children }) {
 
 export default function AppleMusicAnalytics() {
   const data = appleMusicMockRollup;
+  const listeningSpanYears = getListeningSpanYears(data);
+  const mostActiveYear = getMostActiveYear(data);
 
   return (
     <div className="space-y-8">
@@ -96,11 +110,45 @@ export default function AppleMusicAnalytics() {
         <MetricCard
           title="Music Companion Rate"
           value={formatPercent(data.activity.activeDayRate)}
-          subtitle={`${data.activity.activeListeningDays.toLocaleString()} active days across ${(
-            (new Date(data.totals.lastDatePlayed) -
-              new Date(data.totals.firstDatePlayed)) /
-            (1000 * 60 * 60 * 24 * 365.25)
-          ).toFixed(1)} years`}
+          subtitle={`${data.activity.activeListeningDays.toLocaleString()} active days across ${listeningSpanYears.toFixed(1)} years`}
+        />
+      </MetricSection>
+
+      <MetricSection
+        title="Listening Identity"
+        description="Long-view signals that describe how music has accompanied daily life."
+      >
+        <MetricCard
+          title="Listening Span"
+          value={`${listeningSpanYears.toFixed(1)} years`}
+          subtitle={`${data.totals.firstDatePlayed} → ${data.totals.lastDatePlayed}`}
+        />
+        <MetricCard
+          title="Most Active Year"
+          value={mostActiveYear.year}
+          subtitle={`${mostActiveYear.plays.toLocaleString()} plays`}
+        />
+        <MetricCard
+          title="Most Active Year Hours"
+          value={mostActiveYear.durationHoursCapped.toLocaleString()}
+          subtitle="Capped duration"
+        />
+        <MetricCard
+          title="Favorite Type Buckets"
+          value={data.favoritesByType.length.toLocaleString()}
+        />
+        <MetricCard
+          title="Avg Minutes / Play"
+          value={data.activity.averageMinutesPerPlayCapped.toLocaleString()}
+          subtitle="Capped duration"
+        />
+        <MetricCard
+          title="Duration Flags"
+          value={(
+            data.durationSanity.suspiciousAverageDurationRows +
+            data.durationSanity.suspiciousDailyDurationRows
+          ).toLocaleString()}
+          subtitle="Rows needing review"
         />
       </MetricSection>
     </div>
