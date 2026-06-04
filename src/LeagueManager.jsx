@@ -30,6 +30,7 @@ export default function LeagueManager() {
   const [pitchers, setPitchers] = useState("");
   const [matchupPitchers, setMatchupPitchers] = useState("");
   const [defense, setDefense] = useState("");
+  const [importTeamId, setImportTeamId] = useState("");
 
   useEffect(() => {
     localStorage.setItem("stratLeagues", JSON.stringify(leagues));
@@ -43,6 +44,7 @@ export default function LeagueManager() {
     setPitchers("");
     setMatchupPitchers("");
     setDefense("");
+    setImportTeamId("");
   };
 
   const saveLeague = () => {
@@ -262,6 +264,4 @@ function TextBox({ label, value, onChange, placeholder }) {
     </div>
   );
 }
-
-
 
