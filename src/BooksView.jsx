@@ -16,30 +16,37 @@ function sortEntriesDescending(entries) {
   return [...entries].sort((a, b) => b[1] - a[1]);
 }
 
+function hasValue(value) {
+  return value !== undefined && value !== null && value !== "";
+}
+
+function displayValue(value, fallback = "Not captured yet") {
+  return hasValue(value) ? value : fallback;
+}
+
 export default function BooksView() {
   const books = booksMockData;
 
   const currentlyReading = books.filter((book) => book.status === "Current");
 
   const recentlyFinished = books
-    .filter((book) => book.status === "Finished")
+    .filter((book) => book.status === "Finished" || book.readYear)
     .sort((a, b) => (b.readYear || 0) - (a.readYear || 0))
     .slice(0, 3);
 
   const timelineYears = [
-    ...new Set(
-      books
-        .filter((book) => book.readYear)
-        .map((book) => book.readYear)
-    ),
+    ...new Set(books.filter((book) => book.readYear).map((book) => book.readYear)),
   ].sort((a, b) => b - a);
 
+  const booksWithImpact = books.filter((book) => book.impact);
+  const booksWithThemes = books.filter((book) => (book.themes || []).length);
+
   const impactCounts = sortEntriesDescending(
-    Object.entries(countBy(books, (book) => book.impact))
+    Object.entries(countBy(booksWithImpact, (book) => book.impact))
   );
 
   const themeCounts = sortEntriesDescending(
-    Object.entries(countBy(flattenThemes(books), (theme) => theme))
+    Object.entries(countBy(flattenThemes(booksWithThemes), (theme) => theme))
   );
 
   return (
@@ -82,16 +89,24 @@ export default function BooksView() {
             Recently Finished
           </h2>
 
-          <div className="mt-4 space-y-3">
-            {recentlyFinished.map((book) => (
-              <div key={book.id}>
-                <div className="font-medium text-slate-100">
-                  {book.title}
+          {recentlyFinished.length ? (
+            <div className="mt-4 space-y-3">
+              {recentlyFinished.map((book) => (
+                <div key={book.id}>
+                  <div className="font-medium text-slate-100">
+                    {book.title}
+                  </div>
+                  <div className="text-sm text-slate-400">
+                    {book.readYear || "Read year not captured"}
+                  </div>
                 </div>
-                <div className="text-sm text-slate-400">{book.readYear}</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-slate-400">
+              Add read years to surface recently finished books.
+            </p>
+          )}
         </div>
 
         <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
@@ -99,16 +114,22 @@ export default function BooksView() {
             Reading Timeline
           </h2>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {timelineYears.map((year) => (
-              <span
-                key={year}
-                className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
-              >
-                {year}
-              </span>
-            ))}
-          </div>
+          {timelineYears.length ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {timelineYears.map((year) => (
+                <span
+                  key={year}
+                  className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
+                >
+                  {year}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-slate-400">
+              Add read years or eras to build a reading timeline.
+            </p>
+          )}
         </div>
       </section>
 
@@ -117,35 +138,49 @@ export default function BooksView() {
           <h2 className="text-lg font-semibold text-slate-100">
             Impact Distribution
           </h2>
-          <div className="mt-4 space-y-3">
-            {impactCounts.map(([impact, count]) => (
-              <div
-                key={impact}
-                className="flex items-center justify-between rounded-xl bg-slate-900/70 px-4 py-3"
-              >
-                <span className="text-sm text-slate-300">{impact}</span>
-                <span className="text-sm font-semibold text-slate-100">
-                  {count}
-                </span>
-              </div>
-            ))}
-          </div>
+
+          {impactCounts.length ? (
+            <div className="mt-4 space-y-3">
+              {impactCounts.map(([impact, count]) => (
+                <div
+                  key={impact}
+                  className="flex items-center justify-between rounded-xl bg-slate-900/70 px-4 py-3"
+                >
+                  <span className="text-sm text-slate-300">{impact}</span>
+                  <span className="text-sm font-semibold text-slate-100">
+                    {count}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-slate-400">
+              Impact has not been captured for this inventory yet.
+            </p>
+          )}
         </div>
 
         <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5">
           <h2 className="text-lg font-semibold text-slate-100">
             Theme Signals
           </h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {themeCounts.map(([theme, count]) => (
-              <span
-                key={theme}
-                className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
-              >
-                {theme} · {count}
-              </span>
-            ))}
-          </div>
+
+          {themeCounts.length ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {themeCounts.map(([theme, count]) => (
+                <span
+                  key={theme}
+                  className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-300"
+                >
+                  {theme} · {count}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-slate-400">
+              Add themes to surface recurring ideas.
+            </p>
+          )}
         </div>
       </section>
 
@@ -163,50 +198,64 @@ export default function BooksView() {
                   <h3 className="text-lg font-semibold text-slate-100">
                     {book.title}
                   </h3>
-                  <p className="text-sm text-slate-400">{book.author}</p>
+                  <p className="text-sm text-slate-400">
+                    {displayValue(book.author, "Author not captured")}
+                  </p>
                 </div>
 
-                <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">
-                  {book.impact}
-                </span>
+                {book.impact ? (
+                  <span className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">
+                    {book.impact}
+                  </span>
+                ) : null}
               </div>
 
               <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <dt className="text-slate-500">Published</dt>
                   <dd className="text-slate-300">
-                    {book.publicationYear || "Unknown"}
+                    {displayValue(book.publicationYear)}
                   </dd>
                 </div>
 
                 <div>
                   <dt className="text-slate-500">Read Year</dt>
                   <dd className="text-slate-300">
-                    {book.readYear || "Unknown"}
+                    {displayValue(book.readYear)}
                   </dd>
                 </div>
 
                 <div>
                   <dt className="text-slate-500">Format</dt>
-                  <dd className="text-slate-300">{book.format}</dd>
+                  <dd className="text-slate-300">
+                    {displayValue(book.format)}
+                  </dd>
                 </div>
 
                 <div>
                   <dt className="text-slate-500">Times Read</dt>
-                  <dd className="text-slate-300">{book.timesRead}</dd>
+                  <dd className="text-slate-300">
+                    {displayValue(book.timesRead)}
+                  </dd>
                 </div>
               </dl>
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                {(book.themes || []).map((theme) => (
-                  <span
-                    key={theme}
-                    className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300"
-                  >
-                    {theme}
-                  </span>
-                ))}
-              </div>
+              {(book.themes || []).length ? (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {book.themes.map((theme) => (
+                    <span
+                      key={theme}
+                      className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300"
+                    >
+                      {theme}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-xs text-slate-500">
+                  Themes not captured yet.
+                </p>
+              )}
             </article>
           ))}
         </div>
