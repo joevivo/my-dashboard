@@ -495,10 +495,13 @@ function parseRosterRows(html) {
       const row = rowMatch[1];
       const fields = {};
 
-      for (const cellMatch of row.matchAll(/<td[^>]*name="([^"]+)"[^>]*>([\s\S]*?)<\/td>/g)) {
-        const [, name, cellHtml] = cellMatch;
-        const titleMatch = cellHtml.match(/title="([^"]+)"/);
+      for (const cellMatch of row.matchAll(/<td([^>]*)name="([^"]+)"([^>]*)>([\s\S]*?)<\/td>/g)) {
+        const [, beforeAttrs, name, afterAttrs, cellHtml] = cellMatch;
+        const attrs = `${beforeAttrs} ${afterAttrs}`;
+        const titleMatch = attrs.match(/title="([^"]+)"/);
+
         fields[name] = cleanText(cellHtml);
+
         if (titleMatch) {
           fields[`${name}Detail`] = cleanText(titleMatch[1]);
         }
@@ -506,8 +509,29 @@ function parseRosterRows(html) {
 
       if (!fields.name) return null;
 
-      return {
+      const isHitter = Boolean(fields.bats || fields.pos || fields.def || fields.ba || fields.obp || fields.slg);
+
+      const common = {
         name: fields.name,
+        balance: fields.bal || "",
+        price: fields.price || "",
+      };
+
+      if (!isHitter) {
+        return {
+          type: "pitcher",
+          ...common,
+          innings: fields.h || "",
+          hitsAllowed: fields.h || "",
+          hrAllowed: fields.hr || "",
+          walksAllowed: fields.bb || "",
+          strikeouts: fields.so || "",
+        };
+      }
+
+      return {
+        type: "hitter",
+        ...common,
         bats: fields.bats || "",
         position: fields.pos || "",
         defense: fields.def || "",
@@ -531,8 +555,6 @@ function parseRosterRows(html) {
         obp: fields.obp || "",
         slg: fields.slg || "",
         injury: fields.inj || "",
-        balance: fields.bal || "",
-        price: fields.price || "",
       };
     })
     .filter(Boolean);
@@ -555,6 +577,8 @@ app.get("/api/strat/team/:teamId", async (req, res) => {
 
     const html = await response.text();
     const roster = parseRosterRows(html);
+    const pitchers = roster.filter((player) => player.type === "pitcher");
+    const hitters = roster.filter((player) => player.type === "hitter");
 
     res.json({
       source: url,
@@ -568,6 +592,10 @@ app.get("/api/strat/team/:teamId", async (req, res) => {
       totalCurrentValue: extractField(html, "Total Current Value"),
       rosterValue: extractField(html, "Roster Value"),
       cashAvailable: extractField(html, "Cash Available"),
+      pitcherCount: pitchers.length,
+      hitterCount: hitters.length,
+      pitchers,
+      hitters,
       roster,
     });
   } catch (error) {
@@ -591,4 +619,5 @@ app.get("/api/health", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
