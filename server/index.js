@@ -604,6 +604,223 @@ app.get("/api/strat/team/:teamId", async (req, res) => {
   }
 });
 
+
+function parseDefensePositions(defenseDetail = "") {
+  return defenseDetail
+    .split("/")
+    .map((part) => part.trim())
+    .map((part) => {
+      const match = part.match(/^([a-z0-9]+)-(\d)/i);
+      if (!match) return null;
+
+      return {
+        position: match[1].toUpperCase(),
+        rating: Number(match[2]),
+        raw: part,
+      };
+    })
+    .filter(Boolean);
+}
+
+function parsePriceMillions(price = "") {
+  const cleaned = String(price).replace("$", "").replace("M", "").trim();
+  const number = Number(cleaned);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function parseRunning(running = "") {
+  const match = String(running).match(/1-(\d+)/);
+  return match ? Number(match[1]) : 0;
+}
+
+function analyzeStratTeam(team) {
+  const hitters = team.hitters || [];
+  const pitchers = team.pitchers || [];
+
+  const positionCoverage = {};
+  const positionQuality = {};
+  const playerCoverage = hitters.map((player) => {
+    const positions = parseDefensePositions(player.defenseDetail);
+
+    positions.forEach((pos) => {
+      positionCoverage[pos.position] = (positionCoverage[pos.position] || 0) + 1;
+
+      if (!positionQuality[pos.position]) {
+        positionQuality[pos.position] = [];
+      }
+
+      positionQuality[pos.position].push({
+        name: player.name,
+        rating: pos.rating,
+        raw: pos.raw,
+      });
+    });
+
+    return {
+      name: player.name,
+      primaryPosition: player.position,
+      defenseDetail: player.defenseDetail,
+      positions,
+    };
+  });
+
+  const defensiveFlags = [];
+
+  const requireQuality = [
+    { position: "C", maxRating: 2, label: "Catcher lacks a strong defensive anchor if Boone is not starting." },
+    { position: "SS", maxRating: 2, label: "Shortstop coverage is acceptable only if Burleson remains healthy." },
+    { position: "CF", maxRating: 2, label: "Center field has elite top-end defense but limited true backup quality." },
+    { position: "2B", maxRating: 2, label: "Second base has at least one usable defensive option." },
+  ];
+
+  requireQuality.forEach((rule) => {
+    const options = positionQuality[rule.position] || [];
+    const hasQuality = options.some((option) => option.rating <= rule.maxRating);
+
+    if (!hasQuality) {
+      defensiveFlags.push(rule.label);
+    }
+  });
+
+  const positionDepth = Object.fromEntries(
+    Object.entries(positionQuality).map(([position, options]) => [
+      position,
+      options
+        .sort((a, b) => a.rating - b.rating)
+        .map((option) => `${option.name} ${option.raw}`),
+    ])
+  );
+
+  const benchPower = hitters
+    .filter((player) => Number(player.hr) >= 10 || Number(player.slg) >= 0.45)
+    .sort((a, b) => Number(b.hr) - Number(a.hr))
+    .map((player) => ({
+      name: player.name,
+      hr: Number(player.hr) || 0,
+      slg: player.slg,
+      price: player.price,
+      balance: player.balance,
+    }));
+
+  const speedOptions = hitters
+    .filter((player) => parseRunning(player.running) >= 15 || ["A", "AA", "AAA"].includes(player.stealing))
+    .map((player) => ({
+      name: player.name,
+      running: player.running,
+      stealing: player.stealing,
+      stealingDetail: player.stealingDetail,
+    }));
+
+  const lowCostPlayers = hitters
+    .filter((player) => parsePriceMillions(player.price) <= 1.1)
+    .map((player) => ({
+      name: player.name,
+      position: player.position,
+      defenseDetail: player.defenseDetail,
+      price: player.price,
+      obp: player.obp,
+      slg: player.slg,
+      hr: player.hr,
+      running: player.running,
+      stealing: player.stealing,
+    }));
+
+  const redundancies = Object.entries(positionCoverage)
+    .filter(([position, count]) => count >= 4 && !["1B", "OF"].includes(position))
+    .map(([position, count]) => ({
+      position,
+      count,
+      note: `${position} has ${count} rostered coverage options.`,
+    }));
+
+  const oneBaseOptions = positionQuality["1B"] || [];
+  const centerFieldOptions = positionQuality["CF"] || [];
+  const shortstopOptions = positionQuality["SS"] || [];
+
+  const recommendations = [];
+
+  if (oneBaseOptions.length < 2) {
+    recommendations.push("Add a credible backup first baseman.");
+  } else {
+    const bestBackup1b = oneBaseOptions
+      .filter((option) => !option.name.includes("Money"))
+      .sort((a, b) => a.rating - b.rating)[0];
+
+    if (!bestBackup1b || bestBackup1b.rating >= 4) {
+      recommendations.push("Backup first base coverage exists but is weak; a 1B-2 or 1B-3 bench bat would help.");
+    }
+  }
+
+  if (centerFieldOptions.filter((option) => option.rating <= 3).length < 2) {
+    recommendations.push("Preserve at least one backup CF option; Murphy is the only elite CF.");
+  }
+
+  if (shortstopOptions.filter((option) => option.rating <= 3).length < 2) {
+    recommendations.push("Shortstop depth behind Burleson is thin defensively.");
+  }
+
+  if (benchPower.length < 4) {
+    recommendations.push("Bench power is light for Tiger Stadium; prioritize cheap HR card shape when possible.");
+  }
+
+  if (lowCostPlayers.length) {
+    recommendations.push("Review low-cost bench players first for upgrades rather than cutting core defensive coverage.");
+  }
+
+  return {
+    teamId: team.teamId,
+    homeBallpark: team.homeBallpark,
+    rosterValue: team.rosterValue,
+    cashAvailable: team.cashAvailable,
+    pitcherCount: pitchers.length,
+    hitterCount: hitters.length,
+    positionCoverage,
+    positionDepth,
+    defensiveFlags,
+    benchPower,
+    speedOptions,
+    lowCostPlayers,
+    redundancies,
+    recommendations,
+  };
+}
+
+app.get("/api/strat/team-analysis/:teamId", async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    if (!/^\d+$/.test(teamId)) {
+      return res.status(400).json({ error: "Invalid team ID" });
+    }
+
+    const url = `https://365.strat-o-matic.com/team/${teamId}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Strat fetch failed: ${response.status}`);
+    }
+
+    const html = await response.text();
+    const roster = parseRosterRows(html);
+    const pitchers = roster.filter((player) => player.type === "pitcher");
+    const hitters = roster.filter((player) => player.type === "hitter");
+
+    const team = {
+      teamId,
+      homeBallpark: extractField(html, "Home Ballpark"),
+      rosterValue: extractField(html, "Roster Value"),
+      cashAvailable: extractField(html, "Cash Available"),
+      pitchers,
+      hitters,
+    };
+
+    res.json(analyzeStratTeam(team));
+  } catch (error) {
+    console.error("Strat team analysis error:", error);
+    res.status(500).json({ error: "Failed to analyze Strat team" });
+  }
+});
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });
@@ -619,5 +836,6 @@ app.get("/api/health", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
