@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+﻿import fetch from "node-fetch";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -471,6 +471,111 @@ app.get("/api/weather/forecast", async (req, res) => {
   }
 });
 
+
+function cleanText(value = "") {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractField(html, label) {
+  const regex = new RegExp(`<b>${label}:<\\/b>\\s*([^<]+|<a[^>]*>[^<]+<\\/a>)`, "i");
+  const match = html.match(regex);
+  return match ? cleanText(match[1]) : "";
+}
+
+function parseRosterRows(html) {
+  const rows = [...html.matchAll(/<tr class="(?:odd|even)">([\s\S]*?)<\/tr>/g)];
+
+  return rows
+    .map((rowMatch) => {
+      const row = rowMatch[1];
+      const fields = {};
+
+      for (const cellMatch of row.matchAll(/<td[^>]*name="([^"]+)"[^>]*>([\s\S]*?)<\/td>/g)) {
+        const [, name, cellHtml] = cellMatch;
+        const titleMatch = cellHtml.match(/title="([^"]+)"/);
+        fields[name] = cleanText(cellHtml);
+        if (titleMatch) {
+          fields[`${name}Detail`] = cleanText(titleMatch[1]);
+        }
+      }
+
+      if (!fields.name) return null;
+
+      return {
+        name: fields.name,
+        bats: fields.bats || "",
+        position: fields.pos || "",
+        defense: fields.def || "",
+        defenseDetail: fields.posDetail || fields.defDetail || "",
+        ab: fields.ab || "",
+        r: fields.r || "",
+        h: fields.h || "",
+        doubles: fields["2b"] || "",
+        triples: fields["3b"] || "",
+        hr: fields.hr || "",
+        rbi: fields.rbi || "",
+        bb: fields.bb || "",
+        so: fields.so || "",
+        hbp: fields.hbp || "",
+        sb: fields.sb || "",
+        cs: fields.cs || "",
+        stealing: fields.steal || "",
+        stealingDetail: fields.stealDetail || "",
+        running: fields.run || "",
+        ba: fields.ba || "",
+        obp: fields.obp || "",
+        slg: fields.slg || "",
+        injury: fields.inj || "",
+        balance: fields.bal || "",
+        price: fields.price || "",
+      };
+    })
+    .filter(Boolean);
+}
+
+app.get("/api/strat/team/:teamId", async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    if (!/^\d+$/.test(teamId)) {
+      return res.status(400).json({ error: "Invalid team ID" });
+    }
+
+    const url = `https://365.strat-o-matic.com/team/${teamId}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Strat fetch failed: ${response.status}`);
+    }
+
+    const html = await response.text();
+    const roster = parseRosterRows(html);
+
+    res.json({
+      source: url,
+      importedAt: new Date().toISOString(),
+      teamId,
+      owner: extractField(html, "Owner"),
+      manager: extractField(html, "Manager"),
+      record: extractField(html, "Record"),
+      homeBallpark: extractField(html, "Home Ballpark"),
+      initialSalaryCap: extractField(html, "Initial Salary Cap"),
+      totalCurrentValue: extractField(html, "Total Current Value"),
+      rosterValue: extractField(html, "Roster Value"),
+      cashAvailable: extractField(html, "Cash Available"),
+      roster,
+    });
+  } catch (error) {
+    console.error("Strat team import error:", error);
+    res.status(500).json({ error: "Failed to import Strat team" });
+  }
+});
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });
@@ -486,3 +591,4 @@ app.get("/api/health", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
