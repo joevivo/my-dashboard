@@ -1023,7 +1023,45 @@ const cancelEraEdit = () => {
   )}
 </DashboardSection>
 
-      <DashboardSection title="Tag Browser" Icon={Tags} color="green">
+      
+<DashboardSection
+title="Music Intelligence"
+Icon={BarChart3}
+color="sky"
+
+>
+
+  <div className="grid gap-4 md:grid-cols-3">
+    <div className="rounded-xl border border-slate-200 p-4 bg-slate-50">
+      <h3 className="font-semibold">Constants</h3>
+      <p className="mt-2 text-sm text-slate-500">
+        What never leaves?
+      </p>
+    </div>
+
+```
+<div className="rounded-xl border border-slate-200 p-4 bg-slate-50">
+  <h3 className="font-semibold">Changes</h3>
+  <p className="mt-2 text-sm text-slate-500">
+    What changed?
+  </p>
+</div>
+
+<div className="rounded-xl border border-slate-200 p-4 bg-slate-50">
+  <h3 className="font-semibold">Constellations</h3>
+  <p className="mt-2 text-sm text-slate-500">
+    What belongs together?
+  </p>
+</div>
+```
+
+  </div>
+
+  <p className="mt-4 text-xs text-slate-400">
+    Powered by Apple Music listening history.
+  </p>
+</DashboardSection>
+<DashboardSection title="Tag Browser" Icon={Tags} color="green">
         <TagBrowser
           tags={allTags}
           selectedTag={selectedTag}
@@ -2032,6 +2070,7 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
 
 
 
