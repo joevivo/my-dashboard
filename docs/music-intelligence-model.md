@@ -85,6 +85,8 @@ Examples:
 * Play count
 * Listen date
 * Listening period
+* Added to playlist
+* Songs favorited
 
 Listening History is evidence.
 
@@ -156,6 +158,8 @@ Constellations are thematic relationships that may appear repeatedly across many
 
 A constellation may span decades.
 
+A Constellation is a user-defined collection of related music objects and ideas. Constellations may include artists, albums, songs, playlists, shows, and notes. Constellations are primarily personal constructs rather than industry-defined genres.
+
 ---
 
 # Explicit Non-Goals
@@ -200,7 +204,7 @@ The Music system must never expose or display the following fields:
 * Device details
 * Subscription identifiers
 
-Only sanitized and aggregated listening information belongs within Defending Sisyphus.
+Only sanitized and aggregated listening information belongs within Defending Sisyphus. As new items are introduced, we need to take care to review their impact on the privacy requirements.
 
 ---
 
@@ -227,3 +231,52 @@ The following questions should guide future development:
 * Which collections define my listening identity?
 
 Every future Music feature should make at least one of these questions easier to answer.
+# Pattern Definitions
+
+## Constant
+
+A Constant is an artist, album, or work that persists across time.
+
+Constants are measured primarily through recurrence and longevity rather than listening volume.
+
+Persistence is more important than popularity.
+
+A Constant may never be the most-played artist in a given year.
+
+A Constant repeatedly returns over many years of listening.
+
+A Constant does not require continuous presence.
+
+Repeated return over long periods of time is a stronger signal than uninterrupted listening.
+
+### Constant Scores
+
+Constant Scores are intended to measure how closely an artist, album, or work resembles an ideal Constant.
+
+The score should not be a ranking against other artists in the library.
+
+Instead, the score should represent proximity to the characteristics of a true Constant.
+
+Potential characteristics include:
+
+- Persistence
+- Recurrence
+- Longevity
+- Engagement
+- Recency
+
+The goal is to create a meaningful measurement rather than a relative ranking.
+
+A higher Constant Score indicates a stronger long-term listening relationship.
+
+Historical Constant Scores and Active Constant Scores may be calculated separately.
+
+Historical scores measure the long-term strength of a listening relationship.
+
+Active scores measure the current strength of a listening relationship and may decay when an artist stops returning.
+
+Example:
+
+Artist A appears in listening history every year for a decade.
+
+This is a stronger Constant than an artist that dominates a single year and disappears.
