@@ -60,7 +60,7 @@
     { year: "2025", plays: 10950, skips: 5600, durationHoursCapped: 652, activeDays: 318 },
     { year: "2026", plays: 4565, skips: 2455, durationHoursCapped: 124.97, activeDays: 94 }
   ],
-  playsByMonth: [
+    playsByMonth: [
     { month: "2025-06", plays: 960, skips: 480, durationHoursCapped: 54, activeDays: 26 },
     { month: "2025-07", plays: 1040, skips: 520, durationHoursCapped: 61, activeDays: 28 },
     { month: "2025-08", plays: 990, skips: 510, durationHoursCapped: 57, activeDays: 27 },
@@ -73,5 +73,21 @@
     { month: "2026-03", plays: 1065, skips: 540, durationHoursCapped: 62, activeDays: 28 },
     { month: "2026-04", plays: 1115, skips: 570, durationHoursCapped: 66, activeDays: 29 },
     { month: "2026-05", plays: 465, skips: 225, durationHoursCapped: 22.5, activeDays: 14 }
+  ],
+  artistYearStats: [
+    { artist: "The dB's", year: 2016, plays: 42 },
+    { artist: "The dB's", year: 2017, plays: 88 },
+    { artist: "The dB's", year: 2018, plays: 61 },
+    { artist: "The dB's", year: 2025, plays: 180 },
+    { artist: "Big Star", year: 2016, plays: 120 },
+    { artist: "Big Star", year: 2017, plays: 85 },
+    { artist: "Big Star", year: 2024, plays: 95 },
+    { artist: "Big Star", year: 2025, plays: 140 },
+    { artist: "R.E.M.", year: 2019, plays: 210 },
+    { artist: "R.E.M.", year: 2020, plays: 175 },
+    { artist: "R.E.M.", year: 2021, plays: 130 },
+    { artist: "Matthew Sweet", year: 2023, plays: 60 },
+    { artist: "Matthew Sweet", year: 2024, plays: 125 },
+    { artist: "Matthew Sweet", year: 2025, plays: 160 }
   ]
 };
