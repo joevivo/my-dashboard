@@ -660,7 +660,7 @@ const cancelEraEdit = () => {
         <div className="grid gap-3 md:grid-cols-4">
           <div>
             <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
-              Curated Library
+              Music Administration
             </div>
             <p className="mt-1 text-sm text-slate-500">
               Your manually maintained artists, albums, shows, playlists, eras, and notes.
@@ -697,22 +697,7 @@ const cancelEraEdit = () => {
       </div>
       <DashboardSection title="Music Dashboard" Icon={BarChart3} color="sky">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
-          <StatCard
-            icon={Star}
-            label="Avg Rating"
-            value={
-              musicData.albums.length
-                ? (
-                    musicData.albums.reduce(
-                      (sum, album) => sum + Number(album.rating || 0),
-                      0
-                    ) / musicData.albums.length
-                  ).toFixed(1)
-                : "0"
-            }
-          />
-
-          <StatCard
+<StatCard
             icon={Sparkles}
             label="Essential"
             value={
@@ -830,198 +815,7 @@ const cancelEraEdit = () => {
           )}
         </DashboardSection>
       )}
-<DashboardSection
-  title="Listening Eras"
-  Icon={Clock3}
-  color="purple"
-  summary="Map listening periods to artists, albums, moods, places, and notes."
-  isOpen={openSections.eras}
-  onToggle={() => toggleSection("eras")}
->
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Input
-      label="Title"
-      value={era.title}
-      onChange={(v) => setEra({ ...era, title: v })}
-    />
 
-    <Input
-      label="Timeframe"
-      value={era.timeframe}
-      onChange={(v) => setEra({ ...era, timeframe: v })}
-    />
-
-    <Input
-      label="Emotional State"
-      value={era.emotionalState}
-      onChange={(v) => setEra({ ...era, emotionalState: v })}
-    />
-
-    <Input
-      label="Season"
-      value={era.season}
-      onChange={(v) => setEra({ ...era, season: v })}
-    />
-
-    <Input
-      label="Key Artists"
-      value={era.keyArtists}
-      onChange={(v) => setEra({ ...era, keyArtists: v })}
-    />
-
-    <Input
-      label="Key Albums"
-      value={era.keyAlbums}
-      onChange={(v) => setEra({ ...era, keyAlbums: v })}
-    />
-
-    <Input
-      label="Playlists"
-      value={era.playlists}
-      onChange={(v) => setEra({ ...era, playlists: v })}
-    />
-
-    <Input
-      label="Locations"
-      value={era.locations}
-      onChange={(v) => setEra({ ...era, locations: v })}
-    />
-
-    <div className="md:col-span-2">
-      <Input
-        label="Notes"
-        value={era.notes}
-        onChange={(v) => setEra({ ...era, notes: v })}
-      />
-    </div>
-  </div>
-
-  <div className="flex gap-2">
-  <AddButton
-    label={editingEraIndex !== null ? "Save Changes" : "Add Era"}
-    onClick={saveEra}
-  />
-
-  {editingEraIndex !== null && (
-    <button
-      onClick={cancelEraEdit}
-      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-    >
-      Cancel
-    </button>
-  )}
-</div>
-
-  {musicData.eras.length === 0 ? (
-    <p className="text-sm text-slate-500">
-      No listening eras yet. Add one to begin mapping music to emotional seasons.
-    </p>
-  ) : (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {musicData.eras.map((item, index) => (
-        <div
-          key={`${item.title}-${index}`}
-          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm dark:border-purple-900/40 dark:bg-slate-800/80"
-        >
-          <div className="flex justify-between gap-4">
-            <div>
-              <div className="text-xs uppercase text-purple-400 font-bold">
-                {item.timeframe || "Untimed Era"}
-              </div>
-
-              <h3 className="text-xl font-bold text-slate-900 mt-1">
-                {item.title || "Untitled Era"}
-              </h3>
-
-              {item.emotionalState && (
-                <div className="text-sm text-purple-700 font-medium mt-1">
-                  {item.emotionalState}
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3">
-  <button
-    onClick={() => {
-      setEra({
-        title: item.title || "",
-        timeframe: item.timeframe || "",
-        emotionalState: item.emotionalState || "",
-        keyArtists: item.keyArtists || "",
-        keyAlbums: item.keyAlbums || "",
-        playlists: item.playlists || "",
-        locations: item.locations || "",
-        season: item.season || "",
-        notes: item.notes || "",
-      });
-
-      setEditingEraIndex(index);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }}
-    className="text-xs text-purple-700 hover:underline"
-  >
-    Edit
-  </button>
-
-  <button
-    onClick={() => removeItem("eras", index)}
-    className="text-xs text-slate-400 hover:text-red-500"
-  >
-    Delete
-  </button>
-</div>
-          </div>
-
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
-            {item.season && (
-              <div>
-                <span className="font-semibold">Season:</span> {item.season}
-              </div>
-            )}
-
-            {item.keyArtists && (
-              <div>
-                <span className="font-semibold">Key artists:</span>{" "}
-                {item.keyArtists}
-              </div>
-            )}
-
-            {item.keyAlbums && (
-              <div>
-                <span className="font-semibold">Key albums:</span>{" "}
-                {item.keyAlbums}
-              </div>
-            )}
-
-            {item.playlists && (
-              <div>
-                <span className="font-semibold">Playlists:</span>{" "}
-                {item.playlists}
-              </div>
-            )}
-
-            {item.locations && (
-              <div>
-                <span className="font-semibold">Locations:</span>{" "}
-                {item.locations}
-              </div>
-            )}
-
-            {item.notes && (
-              <p className="pt-2 text-slate-700 leading-relaxed">
-                {item.notes}
-              </p>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  )}
-</DashboardSection>
 
       
 <DashboardSection
@@ -1437,6 +1231,199 @@ const cancelEraEdit = () => {
           sourceItems={musicData.explore}
         />
       </DashboardSection>
+
+<DashboardSection
+  title="Listening Eras"
+  Icon={Clock3}
+  color="purple"
+  summary="Experimental workspace for future listening-period notes. Kept low on the page until the model matures."
+  isOpen={openSections.eras}
+  onToggle={() => toggleSection("eras")}
+>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Input
+      label="Title"
+      value={era.title}
+      onChange={(v) => setEra({ ...era, title: v })}
+    />
+
+    <Input
+      label="Timeframe"
+      value={era.timeframe}
+      onChange={(v) => setEra({ ...era, timeframe: v })}
+    />
+
+    <Input
+      label="Emotional State"
+      value={era.emotionalState}
+      onChange={(v) => setEra({ ...era, emotionalState: v })}
+    />
+
+    <Input
+      label="Season"
+      value={era.season}
+      onChange={(v) => setEra({ ...era, season: v })}
+    />
+
+    <Input
+      label="Key Artists"
+      value={era.keyArtists}
+      onChange={(v) => setEra({ ...era, keyArtists: v })}
+    />
+
+    <Input
+      label="Key Albums"
+      value={era.keyAlbums}
+      onChange={(v) => setEra({ ...era, keyAlbums: v })}
+    />
+
+    <Input
+      label="Playlists"
+      value={era.playlists}
+      onChange={(v) => setEra({ ...era, playlists: v })}
+    />
+
+    <Input
+      label="Locations"
+      value={era.locations}
+      onChange={(v) => setEra({ ...era, locations: v })}
+    />
+
+    <div className="md:col-span-2">
+      <Input
+        label="Notes"
+        value={era.notes}
+        onChange={(v) => setEra({ ...era, notes: v })}
+      />
+    </div>
+  </div>
+
+  <div className="flex gap-2">
+  <AddButton
+    label={editingEraIndex !== null ? "Save Changes" : "Add Era"}
+    onClick={saveEra}
+  />
+
+  {editingEraIndex !== null && (
+    <button
+      onClick={cancelEraEdit}
+      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+    >
+      Cancel
+    </button>
+  )}
+</div>
+
+  {musicData.eras.length === 0 ? (
+    <p className="text-sm text-slate-500">
+      No listening eras yet. Add one to begin mapping music to emotional seasons.
+    </p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {musicData.eras.map((item, index) => (
+        <div
+          key={`${item.title}-${index}`}
+          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm dark:border-purple-900/40 dark:bg-slate-800/80"
+        >
+          <div className="flex justify-between gap-4">
+            <div>
+              <div className="text-xs uppercase text-purple-400 font-bold">
+                {item.timeframe || "Untimed Era"}
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-900 mt-1">
+                {item.title || "Untitled Era"}
+              </h3>
+
+              {item.emotionalState && (
+                <div className="text-sm text-purple-700 font-medium mt-1">
+                  {item.emotionalState}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+  <button
+    onClick={() => {
+      setEra({
+        title: item.title || "",
+        timeframe: item.timeframe || "",
+        emotionalState: item.emotionalState || "",
+        keyArtists: item.keyArtists || "",
+        keyAlbums: item.keyAlbums || "",
+        playlists: item.playlists || "",
+        locations: item.locations || "",
+        season: item.season || "",
+        notes: item.notes || "",
+      });
+
+      setEditingEraIndex(index);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }}
+    className="text-xs text-purple-700 hover:underline"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => removeItem("eras", index)}
+    className="text-xs text-slate-400 hover:text-red-500"
+  >
+    Delete
+  </button>
+</div>
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm text-slate-600">
+            {item.season && (
+              <div>
+                <span className="font-semibold">Season:</span> {item.season}
+              </div>
+            )}
+
+            {item.keyArtists && (
+              <div>
+                <span className="font-semibold">Key artists:</span>{" "}
+                {item.keyArtists}
+              </div>
+            )}
+
+            {item.keyAlbums && (
+              <div>
+                <span className="font-semibold">Key albums:</span>{" "}
+                {item.keyAlbums}
+              </div>
+            )}
+
+            {item.playlists && (
+              <div>
+                <span className="font-semibold">Playlists:</span>{" "}
+                {item.playlists}
+              </div>
+            )}
+
+            {item.locations && (
+              <div>
+                <span className="font-semibold">Locations:</span>{" "}
+                {item.locations}
+              </div>
+            )}
+
+            {item.notes && (
+              <p className="pt-2 text-slate-700 leading-relaxed">
+                {item.notes}
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</DashboardSection>
     </div>
   );
 }
