@@ -37,13 +37,14 @@ const emptyArtist = {
 const emptyAlbum = {
   artist: "",
   title: "",
-  year: "",
+  releaseDate: "",
   rating: "",
   favoriteTracks: "",
   tags: "",
   essential: false,
   coverUrl: "",
   appleMusicUrl: "",
+  personalHook: "",
   notes: "",
 };
 
@@ -160,6 +161,7 @@ export default function MusicLibrary() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
 
   const [importedMusicLibrary, setImportedMusicLibrary] = useState(null);
   const [importedMusicStatus, setImportedMusicStatus] = useState("idle");
@@ -851,6 +853,13 @@ const cancelEraEdit = () => {
     Prototype intelligence signals from Apple Music listening patterns.
   </p>
 </DashboardSection>
+
+      {selectedAlbum && (
+        <AlbumDossierModal
+          album={selectedAlbum}
+          onClose={() => setSelectedAlbum(null)}
+        />
+      )}
 <DashboardSection title="Tag Browser" Icon={Tags} color="green">
         <TagBrowser
           tags={allTags}
@@ -913,6 +922,7 @@ const cancelEraEdit = () => {
           setAlbum={setAlbum}
           setEditingAlbumIndex={setEditingAlbumIndex}
           sourceItems={musicData.albums}
+                  onOpenAlbum={setSelectedAlbum}
         />
       </DashboardSection>
 
@@ -990,9 +1000,9 @@ const cancelEraEdit = () => {
           />
 
           <Input
-            label="Year"
-            value={album.year}
-            onChange={(v) => setAlbum({ ...album, year: v })}
+            label="Release Date"
+            value={album.releaseDate}
+            onChange={(v) => setAlbum({ ...album, releaseDate: v })}
           />
 
           <Input
@@ -1033,7 +1043,13 @@ const cancelEraEdit = () => {
             onChange={(v) => setAlbum({ ...album, appleMusicUrl: v })}
           />
 
+          
+
           <Input
+            label="Personal Hook"
+            value={album.personalHook}
+            onChange={(v) => setAlbum({ ...album, personalHook: v })}
+          /><Input
             label="Notes"
             value={album.notes}
             onChange={(v) => setAlbum({ ...album, notes: v })}
@@ -1063,6 +1079,7 @@ const cancelEraEdit = () => {
           setEditingAlbumIndex={setEditingAlbumIndex}
           sourceItems={musicData.albums}
           onArtistClick={setSelectedArtist}
+                  onOpenAlbum={setSelectedAlbum}
         />
       </DashboardSection>
 
@@ -1423,11 +1440,92 @@ const cancelEraEdit = () => {
       ))}
     </div>
   )}
+
 </DashboardSection>
     </div>
   );
 }
 
+
+function AlbumDossierModal({ album, onClose }) {
+  const releaseDate = album.releaseDate || album.year || "";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+      <div className="w-full max-w-3xl rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
+        <div className="flex justify-between gap-4">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Album Dossier
+            </div>
+            <h2 className="mt-1 text-3xl font-bold text-slate-900 dark:text-slate-100">
+              {album.title || "Untitled Album"}
+            </h2>
+            <p className="text-lg text-slate-500">
+              {album.artist || "Unknown Artist"}
+            </p>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+          >
+            Close
+          </button>
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr]">
+          <div className="aspect-square overflow-hidden rounded-2xl bg-slate-100">
+            {album.coverUrl ? (
+              <img
+                src={album.coverUrl}
+                alt={album.title || "Album cover"}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
+                No Cover
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            {releaseDate && (
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Released
+                </div>
+                <div className="text-sm text-slate-700 dark:text-slate-200">
+                  {releaseDate}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Personal Hook
+              </div>
+              <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-200">
+                {album.personalHook || "No personal hook added yet."}
+              </p>
+            </div>
+
+            {album.appleMusicUrl && (
+              <a
+                href={album.appleMusicUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+              >
+                Open in Apple Music
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function TagBrowser({ tags, selectedTag, setSelectedTag }) {
   if (!tags.length) {
@@ -1604,6 +1702,7 @@ function AlbumGallery({
   setEditingAlbumIndex,
   sourceItems,
   onArtistClick,
+  onOpenAlbum,
 }) {
   if (!items.length) {
     return (
@@ -1662,9 +1761,9 @@ function AlbumGallery({
                 )}
               </div>
 
-              {item.year && (
+              {(item.releaseDate || item.year) && (
                 <div className="text-xs text-slate-400">
-                  {item.year}
+                  {item.releaseDate || item.year}
                 </div>
               )}
 
@@ -1690,6 +1789,15 @@ function AlbumGallery({
 
               <div className="flex justify-between items-center pt-2">
                 <div className="flex gap-3">
+                  {onOpenAlbum && (
+                    <button
+                      onClick={() => onOpenAlbum(item)}
+                      className="text-xs text-purple-700 hover:underline"
+                    >
+                      Dossier
+                    </button>
+                  )}
+
                   {item.appleMusicUrl && (
                     <a
                       href={item.appleMusicUrl}
@@ -1707,13 +1815,14 @@ function AlbumGallery({
                       setAlbum({
                         artist: item.artist || "",
                         title: item.title || "",
-                        year: item.year || "",
+                        releaseDate: item.releaseDate || item.year || "",
                         rating: item.rating || "",
                         favoriteTracks: item.favoriteTracks || "",
                         tags: item.tags || "",
                         essential: Boolean(item.essential),
                         coverUrl: item.coverUrl || "",
                         appleMusicUrl: item.appleMusicUrl || "",
+                        personalHook: item.personalHook || "",
                         notes: item.notes || "",
                       });
 
@@ -2053,6 +2162,16 @@ function formatLabel(key) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
