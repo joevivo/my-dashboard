@@ -15,7 +15,7 @@ export default function MusicTimeMachine() {
   const [selectedMonthKey, setSelectedMonthKey] = useState("2020-03");
   const [startDate, setStartDate] = useState("2020-03-01");
   const [endDate, setEndDate] = useState("2020-04-30");
- const [rangeRead, setRangeRead] = useState(null);
+  const [rangeRead, setRangeRead] = useState(null);
   const [rangeLoading, setRangeLoading] = useState(false);
   const [rangeError, setRangeError] = useState("");
 
@@ -50,7 +50,7 @@ export default function MusicTimeMachine() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
-            Time Machine
+            Curated Time Machine
           </p>
           <h3 className="mt-1 text-xl font-semibold text-white">
             {month.label}
@@ -81,10 +81,34 @@ export default function MusicTimeMachine() {
         <Metric label="Confidence" value="Directional" />
       </div>
 
-      <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-        <h4 className="font-semibold text-white">Custom Date Range</h4>
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <ListCard title="Top Artists" items={month.topArtists} />
+        <ListCard title="Top Albums" items={month.topAlbums} />
+      </div>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+      <div className="mt-5">
+        <ListCard title="Behavior Read" items={month.behaviorRead} />
+      </div>
+
+      <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+        <h4 className="font-semibold text-white">Memory Anchors</h4>
+        <p className="mt-2 text-sm text-slate-300">{month.memoryPrompt}</p>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-sky-500/40 bg-slate-900/80 p-5">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
+            Live Time Machine Query
+          </p>
+          <h4 className="mt-1 text-lg font-semibold text-white">
+            Explore any date range
+          </h4>
+          <p className="mt-1 text-sm text-slate-400">
+            Query the live Apple Music rollup without reading raw JSON.
+          </p>
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
           <label className="text-sm text-slate-300">
             Start Date
             <input
@@ -136,30 +160,27 @@ export default function MusicTimeMachine() {
         )}
 
         {rangeRead && (
-  <div className="mt-4 rounded-xl border border-sky-500/30 bg-slate-950 p-4">
-    <h4 className="mb-3 font-semibold text-sky-300">
-      Live Time Machine Read
-    </h4>
+          <div className="mt-5 space-y-4">
+            <div className="grid gap-3 md:grid-cols-3">
+              <Metric
+                label="Date Range"
+                value={`${rangeRead.startDate} → ${rangeRead.endDate}`}
+              />
+              <Metric
+                label="Tracks Matched"
+                value={`${rangeRead.tracksMatched ?? 0} tracks`}
+              />
+              <Metric label="Source" value="Live Query" />
+            </div>
 
-    <pre className="max-h-96 overflow-auto whitespace-pre-wrap text-xs text-slate-300">
-      {JSON.stringify(rangeRead, null, 2)}
-    </pre>
-  </div>
-)}
-      </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <LiveJsonList title="Top Albums" items={rangeRead.topAlbums} />
+              <LiveJsonList title="Top Artists" items={rangeRead.topArtists} />
+            </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <ListCard title="Top Artists" items={month.topArtists} />
-        <ListCard title="Top Albums" items={month.topAlbums} />
-      </div>
-
-      <div className="mt-5">
-        <ListCard title="Behavior Read" items={month.behaviorRead} />
-      </div>
-
-      <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-        <h4 className="font-semibold text-white">Memory Anchors</h4>
-        <p className="mt-2 text-sm text-slate-300">{month.memoryPrompt}</p>
+            <LiveTextCard title="Memory Read" items={rangeRead.memoryRead} />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -186,38 +207,54 @@ function ListCard({ title, items }) {
     </div>
   );
 }
-function LiveJsonList({ title, items = [], nameKey }) {
+
+function LiveJsonList({ title, items = [] }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-      <h5 className="font-semibold text-white">{title}</h5>
-      <ol className="mt-3 space-y-2 text-sm text-slate-300">
-        {items.map((item) => (
-          <li
-            key={`${item[nameKey]}-${item.count}`}
-            className="flex items-start justify-between gap-3"
-          >
-            <span>{item[nameKey]}</span>
-            <span className="shrink-0 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
-              {item.count}
-            </span>
-          </li>
-        ))}
-      </ol>
+    <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
+      <h4 className="font-semibold text-white">{title}</h4>
+
+      {items.length === 0 ? (
+        <p className="mt-3 text-sm text-slate-500">No results found.</p>
+      ) : (
+        <ol className="mt-3 space-y-2 text-sm text-slate-300">
+          {items.map((item, index) => {
+            const label = item.album || item.artist || item.name || "Unknown";
+            const count = item.count ?? item.plays ?? item.total ?? null;
+
+            return (
+              <li
+                key={`${label}-${index}`}
+                className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2"
+              >
+                <span>{label}</span>
+                {count !== null && (
+                  <span className="text-xs font-semibold text-sky-300">
+                    {count}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      )}
     </div>
   );
 }
 
-function LiveTextCard({ title, lines = [] }) {
+function LiveTextCard({ title, items = [] }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-      <h5 className="font-semibold text-white">{title}</h5>
-      <div className="mt-3 space-y-2 text-sm text-slate-300">
-        {lines.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
+    <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
+      <h4 className="font-semibold text-white">{title}</h4>
+
+      {items.length === 0 ? (
+        <p className="mt-3 text-sm text-slate-500">No memory read available.</p>
+      ) : (
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
+          {items.map((item, index) => (
+            <li key={`${item}-${index}`}>{item}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
-
-
