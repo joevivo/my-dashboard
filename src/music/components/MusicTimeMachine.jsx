@@ -11,6 +11,38 @@ const quickRanges = [
   ["2016", "2016-01-01", "2016-12-31"],
 ];
 
+function parseDate(dateString) {
+  return new Date(`${dateString}T00:00:00`);
+}
+
+function formatDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function getRangeLengthDays(startDate, endDate) {
+  const start = parseDate(startDate);
+  const end = parseDate(endDate);
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+  return Math.round((end - start) / millisecondsPerDay) + 1;
+}
+
+function shiftDateRange(startDate, endDate, direction) {
+  const rangeLengthDays = getRangeLengthDays(startDate, endDate);
+  const shiftDays = rangeLengthDays * direction;
+
+  const nextStart = parseDate(startDate);
+  const nextEnd = parseDate(endDate);
+
+  nextStart.setDate(nextStart.getDate() + shiftDays);
+  nextEnd.setDate(nextEnd.getDate() + shiftDays);
+
+  return {
+    startDate: formatDate(nextStart),
+    endDate: formatDate(nextEnd),
+  };
+}
+
 export default function MusicTimeMachine() {
   const [selectedMonthKey, setSelectedMonthKey] = useState("2020-03");
   const [startDate, setStartDate] = useState("2020-03-01");
@@ -20,6 +52,18 @@ export default function MusicTimeMachine() {
   const [rangeError, setRangeError] = useState("");
 
   const month = getMusicTimeMachineMonth(selectedMonthKey);
+
+  function updateDateRange(nextStartDate, nextEndDate) {
+    setStartDate(nextStartDate);
+    setEndDate(nextEndDate);
+    setRangeRead(null);
+    setRangeError("");
+  }
+
+  function movePeriod(direction) {
+    const nextRange = shiftDateRange(startDate, endDate, direction);
+    updateDateRange(nextRange.startDate, nextRange.endDate);
+  }
 
   async function generateRangeRead() {
     setRangeLoading(true);
@@ -115,7 +159,9 @@ export default function MusicTimeMachine() {
               type="date"
               className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
               value={startDate}
-              onChange={(event) => setStartDate(event.target.value)}
+              onChange={(event) =>
+                updateDateRange(event.target.value, endDate)
+              }
             />
           </label>
 
@@ -125,7 +171,9 @@ export default function MusicTimeMachine() {
               type="date"
               className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
               value={endDate}
-              onChange={(event) => setEndDate(event.target.value)}
+              onChange={(event) =>
+                updateDateRange(startDate, event.target.value)
+              }
             />
           </label>
 
@@ -145,14 +193,29 @@ export default function MusicTimeMachine() {
               key={label}
               type="button"
               className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-sky-400 hover:text-sky-200"
-              onClick={() => {
-                setStartDate(start);
-                setEndDate(end);
-              }}
+              onClick={() => updateDateRange(start, end)}
             >
               {label}
             </button>
           ))}
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
+            onClick={() => movePeriod(-1)}
+          >
+            ← Previous Period
+          </button>
+
+          <button
+            type="button"
+            className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
+            onClick={() => movePeriod(1)}
+          >
+            Next Period →
+          </button>
         </div>
 
         {rangeError && (
