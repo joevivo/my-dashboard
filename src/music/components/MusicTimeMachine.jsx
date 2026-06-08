@@ -9,6 +9,7 @@ const quickRanges = [
   ["Summer 2021", "2021-06-01", "2021-08-31"],
   ["2015", "2015-01-01", "2015-12-31"],
   ["2016", "2016-01-01", "2016-12-31"],
+  
 ];
 const historicalMoments = [
   ["COVID Lockdown", "2020-03-01", "2020-05-31"],
@@ -52,6 +53,7 @@ function shiftDateRange(startDate, endDate, direction) {
 }
 
 export default function MusicTimeMachine() {
+  const [selectedArtist, setSelectedArtist] = useState(null);
   const [selectedMonthKey, setSelectedMonthKey] = useState("2020-03");
   const [startDate, setStartDate] = useState("2020-03-01");
   const [endDate, setEndDate] = useState("2020-04-30");
@@ -262,11 +264,22 @@ export default function MusicTimeMachine() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <LiveJsonList title="Top Albums" items={rangeRead.topAlbums} />
-              <LiveJsonList title="Top Artists" items={rangeRead.topArtists} />
-            </div>
+  <LiveJsonList
+    title="Top Albums"
+    items={rangeRead.topAlbums}
+  />
+
+  <LiveJsonList
+    title="Top Artists"
+    items={rangeRead.topArtists}
+    onItemClick={setSelectedArtist}
+  />
+</div>
 
             <LiveTextCard title="Memory Read" items={rangeRead.memoryRead} />
+            {selectedArtist && (
+  <ArtistJourneyCard artist={selectedArtist} />
+)}
           </div>
         )}
       </div>
@@ -295,8 +308,37 @@ function ListCard({ title, items }) {
     </div>
   );
 }
+function ArtistJourneyCard({ artist }) {
+  const count = artist?.count ?? 0;
 
-function LiveJsonList({ title, items = [] }) {
+  return (
+    <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
+      <h4 className="font-semibold text-white">Artist Journey</h4>
+
+      <p className="mt-2 text-lg font-semibold text-sky-100">
+        {artist.label}
+      </p>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <Metric label="Status" value="Needs Timeline" />
+        <Metric label="First Seen" value="Pending" />
+        <Metric label="Range Count" value={`${count} plays`} />
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+        <p className="text-xs uppercase tracking-wide text-slate-500">
+          Journey Read
+        </p>
+        <p className="mt-2 text-sm text-slate-300">
+          Timeline data is not wired yet. This confirms the Artist Journey panel
+          is now the destination after clicking an artist.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function LiveJsonList({ title, items = [], onItemClick }) {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
       <h4 className="font-semibold text-white">{title}</h4>
@@ -314,7 +356,13 @@ function LiveJsonList({ title, items = [] }) {
                 key={`${label}-${index}`}
                 className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2"
               >
-                <span>{label}</span>
+                <button
+  type="button"
+  onClick={() => onItemClick?.({ ...item, label, count })}
+  className="text-left font-semibold text-sky-200 underline-offset-4 hover:text-sky-100 hover:underline"
+>
+  {label}
+</button>
                 {count !== null && (
                   <span className="text-xs font-semibold text-sky-300">
                     {count}
@@ -346,3 +394,5 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
+
