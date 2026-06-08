@@ -8,6 +8,7 @@ import Parser from "rss-parser";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { execFile } from "child_process";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -820,7 +821,42 @@ app.get("/api/strat/team-analysis/:teamId", async (req, res) => {
     res.status(500).json({ error: "Failed to analyze Strat team" });
   }
 });
+app.get("/api/music/time-machine", async (req, res) => {
+  const { start, end } = req.query;
 
+  if (!start || !end) {
+    return res.status(400).json({
+      error: "start and end query parameters are required",
+    });
+  }
+
+  const scriptPath =
+    "../data/music/scripts/library_range_summary.py";
+
+  execFile(
+    "python",
+    [scriptPath, start, end],
+    { cwd: __dirname },
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(stderr);
+        return res.status(500).json({
+          error: "Failed to run time machine script",
+        });
+      }
+
+      try {
+  const result = JSON.parse(stdout);
+  res.json(result);
+} catch (parseError) {
+  console.error(parseError);
+
+  res.status(500).json({
+    error: "Failed to parse time machine output",
+  });
+}    }
+  );
+});
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });
