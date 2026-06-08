@@ -233,7 +233,7 @@ export default function MusicTimeMachine() {
             className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
             onClick={() => movePeriod(-1)}
           >
-            ← Previous Period
+            Previous Period
           </button>
 
           <button
@@ -241,7 +241,7 @@ export default function MusicTimeMachine() {
             className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
             onClick={() => movePeriod(1)}
           >
-            Next Period →
+            Next Period
           </button>
         </div>
 
@@ -254,7 +254,7 @@ export default function MusicTimeMachine() {
             <div className="grid gap-3 md:grid-cols-3">
               <Metric
                 label="Date Range"
-                value={`${rangeRead.startDate} → ${rangeRead.endDate}`}
+                value={`${rangeRead.startDate} to ${rangeRead.endDate}`}
               />
               <Metric
                 label="Tracks Matched"
@@ -278,7 +278,10 @@ export default function MusicTimeMachine() {
 
             <LiveTextCard title="Memory Read" items={rangeRead.memoryRead} />
             {selectedArtist && (
-  <ArtistJourneyCard artist={selectedArtist} />
+  <ArtistJourneyCard
+    artist={selectedArtist}
+    journey={rangeRead.artistJourneys?.[selectedArtist.label]}
+  />
 )}
           </div>
         )}
@@ -308,8 +311,18 @@ function ListCard({ title, items }) {
     </div>
   );
 }
-function ArtistJourneyCard({ artist }) {
+function ArtistJourneyCard({ artist, journey }) {
   const count = artist?.count ?? 0;
+  const timeline = journey?.timeline ?? [];
+  const maxTimelineCount = timeline.length
+    ? Math.max(...timeline.map((item) => item.count))
+    : 0;
+
+  function getBar(count) {
+    if (!maxTimelineCount) return "#";
+    const length = Math.max(1, Math.round((count / maxTimelineCount) * 12));
+    return "#".repeat(length);
+  }
 
   return (
     <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
@@ -319,25 +332,43 @@ function ArtistJourneyCard({ artist }) {
         {artist.label}
       </p>
 
-      <div className="mt-3 grid gap-3 md:grid-cols-3">
-        <Metric label="Status" value="Needs Timeline" />
-        <Metric label="First Seen" value="Pending" />
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Status" value={journey?.status ?? "Needs Timeline"} />
+        <Metric label="First Seen" value={journey?.firstSeen ?? "Pending"} />
+        <Metric
+          label="Most Active"
+          value={journey?.mostActivePeriod ?? "Pending"}
+        />
         <Metric label="Range Count" value={`${count} plays`} />
       </div>
 
       <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
         <p className="text-xs uppercase tracking-wide text-slate-500">
-          Journey Read
+          Yearly Activity
         </p>
-        <p className="mt-2 text-sm text-slate-300">
-          Timeline data is not wired yet. This confirms the Artist Journey panel
-          is now the destination after clicking an artist.
-        </p>
+
+        {timeline.length === 0 ? (
+          <p className="mt-2 text-sm text-slate-300">
+            Timeline data is not available for this artist yet.
+          </p>
+        ) : (
+          <div className="mt-3 space-y-1 font-mono text-sm">
+            {timeline.map((item) => (
+              <div
+                key={item.year}
+                className="grid grid-cols-[3rem_1fr_3rem] items-center gap-3 text-slate-300"
+              >
+                <span className="text-slate-500">{item.year}</span>
+                <span className="text-sky-300">{getBar(item.count)}</span>
+                <span className="text-right text-slate-500">{item.count}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
 function LiveJsonList({ title, items = [], onItemClick }) {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
@@ -394,5 +425,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
+
 
 

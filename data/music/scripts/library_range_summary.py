@@ -1,6 +1,6 @@
 from pathlib import Path
 from zipfile import ZipFile
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 import json
 import sys
@@ -28,6 +28,9 @@ with ZipFile(path, "r") as z:
 
 matches = []
 
+artist_year_counts = defaultdict(Counter)
+artist_first_seen = {}
+
 for row in data:
     played = row.get("Last Played Date")
 
@@ -35,12 +38,17 @@ for row in data:
         continue
 
     try:
-        played_date = datetime.strptime(
-            str(played)[:10],
-            "%Y-%m-%d"
-        ).date()
+        played_date = datetime.strptime(str(played)[:10], "%Y-%m-%d").date()
     except Exception:
         continue
+
+    artist = row.get("Artist")
+    if artist:
+        year = str(played_date.year)
+        artist_year_counts[artist][year] += 1
+
+        if artist not in artist_first_seen or played_date < artist_first_seen[artist]:
+            artist_first_seen[artist] = played_date
 
     if start_date <= played_date <= end_date:
         matches.append(row)
@@ -67,6 +75,48 @@ top_artists = [
     {"artist": artist, "count": count}
     for artist, count in artist_counts.most_common(15)
 ]
+
+def classify_artist(year_counts):
+    active_years = [year for year, count in year_counts.items() if count > 0]
+
+    if len(active_years) >= 5:
+        return "Persistence"
+
+    sorted_years = sorted(int(year) for year in active_years)
+    if len(sorted_years) >= 2 and max(sorted_years) - min(sorted_years) >= 3:
+        return "Resurgence"
+
+    return "Emergence"
+
+artist_journeys = {}
+
+for item in top_artists:
+    artist = item["artist"]
+    year_counts = artist_year_counts.get(artist, Counter())
+
+    if not year_counts:
+        continue
+
+    max_count = max(year_counts.values())
+    most_active_years = [
+        year for year, count in year_counts.items()
+        if count == max_count
+    ]
+
+    timeline = [
+        {
+            "year": year,
+            "count": count,
+        }
+        for year, count in sorted(year_counts.items())
+    ]
+
+    artist_journeys[artist] = {
+        "firstSeen": str(artist_first_seen[artist].year),
+        "mostActivePeriod": ", ".join(sorted(most_active_years)),
+        "status": classify_artist(year_counts),
+        "timeline": timeline,
+    }
 
 memory_read = []
 
@@ -97,6 +147,7 @@ result = {
     "tracksMatched": len(matches),
     "topAlbums": top_albums,
     "topArtists": top_artists,
+    "artistJourneys": artist_journeys,
     "memoryRead": memory_read,
     "sourceNote": "Reconstruction from Apple Music Library Tracks Last Played Date.",
 }
