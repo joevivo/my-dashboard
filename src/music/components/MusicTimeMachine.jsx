@@ -10,7 +10,15 @@ const quickRanges = [
   ["2015", "2015-01-01", "2015-12-31"],
   ["2016", "2016-01-01", "2016-12-31"],
 ];
-
+const historicalMoments = [
+  ["COVID Lockdown", "2020-03-01", "2020-05-31"],
+  ["Pandemic Era", "2020-03-01", "2021-05-31"],
+  ["Reopening Era", "2021-06-01", "2021-12-31"],
+  ["2016 H1", "2016-01-01", "2016-06-30"],
+  ["2016 H2", "2016-07-01", "2016-12-31"],
+  ["2020 H1", "2020-01-01", "2020-06-30"],
+  ["2020 H2", "2020-07-01", "2020-12-31"],
+];
 function parseDate(dateString) {
   return new Date(`${dateString}T00:00:00`);
 }
@@ -199,7 +207,24 @@ export default function MusicTimeMachine() {
             </button>
           ))}
         </div>
+<div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+    Historical Moments
+  </p>
 
+  <div className="mt-3 flex flex-wrap gap-2">
+    {historicalMoments.map(([label, start, end]) => (
+      <button
+        key={label}
+        type="button"
+        className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-sky-400 hover:text-sky-200"
+        onClick={() => updateDateRange(start, end)}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+</div>
         <div className="mt-3 flex flex-wrap gap-2">
           <button
             type="button"
