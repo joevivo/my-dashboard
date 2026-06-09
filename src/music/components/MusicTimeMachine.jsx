@@ -318,28 +318,27 @@ function ArtistJourneyCard({ artist, journey }) {
     ? Math.max(...timeline.map((item) => item.count))
     : 0;
 
+  const years = timeline.map((item) => Number(item.year)).filter(Boolean);
+  const yearsActive = years.length || "Pending";
+  const latestYear = years.length ? Math.max(...years) : "Pending";
+  const peakYears = timeline
+    .filter((item) => maxTimelineCount && item.count === maxTimelineCount)
+    .map((item) => item.year);
+  const peakYearLabel = peakYears.length ? peakYears.join(", ") : "Pending";
+
   function getNarrative() {
     if (!journey || timeline.length === 0) {
       return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
     }
 
-    const years = timeline.map((item) => Number(item.year)).filter(Boolean);
-    const yearsActive = years.length;
     const firstSeen = journey.firstSeen ?? years[0] ?? "an earlier period";
+    const peakYear = peakYears[0] ?? journey.mostActivePeriod ?? "one period";
 
-    const peakItem = timeline.reduce(
-      (peak, item) => (item.count > peak.count ? item : peak),
-      timeline[0]
-    );
-
-    const peakYear = peakItem?.year ?? journey.mostActivePeriod ?? "one period";
-    const latestYear = years.length ? Math.max(...years) : null;
-
-    if (latestYear && latestYear !== Number(peakYear)) {
-      return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
+    if (latestYear !== "Pending" && latestYear !== Number(peakYear)) {
+      return `${artist.label} appears across ${years.length} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
     }
 
-    return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
+    return `${artist.label} appears across ${years.length} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
   }
 
   return (
@@ -355,12 +354,9 @@ function ArtistJourneyCard({ artist, journey }) {
       </p>
 
       <div className="mt-3 grid gap-3 md:grid-cols-4">
-        <Metric label="Status" value={journey?.status ?? "Needs Timeline"} />
-        <Metric label="First Seen" value={journey?.firstSeen ?? "Pending"} />
-        <Metric
-          label="Most Active"
-          value={journey?.mostActivePeriod ?? "Pending"}
-        />
+        <Metric label="Years Active" value={yearsActive} />
+        <Metric label="Peak Year" value={peakYearLabel} />
+        <Metric label="Latest Activity" value={latestYear} />
         <Metric label="Range Count" value={`${count} plays`} />
       </div>
 
@@ -477,6 +473,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
 
 
 
