@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   getMusicTimeMachineMonth,
   musicTimeMachineMonthOptions,
@@ -325,17 +325,32 @@ function ArtistJourneyCard({ artist, journey }) {
   }
 
 
-  function getNarrative() {
-    if (!journey || timeline.length === 0) {
-      return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
-    }
-
-    const firstSeen = journey.firstSeen ?? "an earlier period";
-    const mostActive = journey.mostActivePeriod ?? "one period";
-    const status = journey.status ?? "Activity";
-
-    return `${artist.label} shows ${status.toLowerCase()} in your listening history, first appearing in ${firstSeen} and peaking around ${mostActive}.`;
+function getNarrative() {
+  if (!journey || timeline.length === 0) {
+    return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
   }
+
+  const years = timeline.map((item) => Number(item.year)).filter(Boolean);
+  const yearsActive = years.length;
+
+  const firstSeen = journey.firstSeen ?? years[0] ?? "an earlier period";
+
+  const peakItem = timeline.reduce(
+    (peak, item) => (item.count > peak.count ? item : peak),
+    timeline[0]
+  );
+
+  const peakYear =
+    peakItem?.year ?? journey.mostActivePeriod ?? "one period";
+
+  const latestYear = years.length ? Math.max(...years) : null;
+
+  if (latestYear && latestYear !== Number(peakYear)) {
+    return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
+  }
+
+  return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
+}
   return (
     <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
       <h4 className="font-semibold text-white">Artist Journey</h4>
