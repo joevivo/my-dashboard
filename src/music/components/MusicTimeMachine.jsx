@@ -324,12 +324,28 @@ function ArtistJourneyCard({ artist, journey }) {
     return "#".repeat(length);
   }
 
+
+  function getNarrative() {
+    if (!journey || timeline.length === 0) {
+      return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
+    }
+
+    const firstSeen = journey.firstSeen ?? "an earlier period";
+    const mostActive = journey.mostActivePeriod ?? "one period";
+    const status = journey.status ?? "Activity";
+
+    return `${artist.label} shows ${status.toLowerCase()} in your listening history, first appearing in ${firstSeen} and peaking around ${mostActive}.`;
+  }
   return (
     <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
       <h4 className="font-semibold text-white">Artist Journey</h4>
 
       <p className="mt-2 text-lg font-semibold text-sky-100">
         {artist.label}
+      </p>
+
+      <p className="mt-3 rounded-lg border border-sky-500/20 bg-sky-950/30 p-3 text-sm leading-relaxed text-sky-100">
+        {getNarrative()}
       </p>
 
       <div className="mt-3 grid gap-3 md:grid-cols-4">
