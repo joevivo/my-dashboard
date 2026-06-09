@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import {
   getMusicTimeMachineMonth,
   musicTimeMachineMonthOptions,
@@ -318,39 +318,30 @@ function ArtistJourneyCard({ artist, journey }) {
     ? Math.max(...timeline.map((item) => item.count))
     : 0;
 
-  function getBar(count) {
-    if (!maxTimelineCount) return "#";
-    const length = Math.max(1, Math.round((count / maxTimelineCount) * 12));
-    return "#".repeat(length);
+  function getNarrative() {
+    if (!journey || timeline.length === 0) {
+      return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
+    }
+
+    const years = timeline.map((item) => Number(item.year)).filter(Boolean);
+    const yearsActive = years.length;
+    const firstSeen = journey.firstSeen ?? years[0] ?? "an earlier period";
+
+    const peakItem = timeline.reduce(
+      (peak, item) => (item.count > peak.count ? item : peak),
+      timeline[0]
+    );
+
+    const peakYear = peakItem?.year ?? journey.mostActivePeriod ?? "one period";
+    const latestYear = years.length ? Math.max(...years) : null;
+
+    if (latestYear && latestYear !== Number(peakYear)) {
+      return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
+    }
+
+    return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
   }
 
-
-function getNarrative() {
-  if (!journey || timeline.length === 0) {
-    return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
-  }
-
-  const years = timeline.map((item) => Number(item.year)).filter(Boolean);
-  const yearsActive = years.length;
-
-  const firstSeen = journey.firstSeen ?? years[0] ?? "an earlier period";
-
-  const peakItem = timeline.reduce(
-    (peak, item) => (item.count > peak.count ? item : peak),
-    timeline[0]
-  );
-
-  const peakYear =
-    peakItem?.year ?? journey.mostActivePeriod ?? "one period";
-
-  const latestYear = years.length ? Math.max(...years) : null;
-
-  if (latestYear && latestYear !== Number(peakYear)) {
-    return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
-  }
-
-  return `${artist.label} appears across ${yearsActive} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
-}
   return (
     <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
       <h4 className="font-semibold text-white">Artist Journey</h4>
@@ -383,17 +374,47 @@ function getNarrative() {
             Timeline data is not available for this artist yet.
           </p>
         ) : (
-          <div className="mt-3 space-y-1 font-mono text-sm">
-            {timeline.map((item) => (
-              <div
-                key={item.year}
-                className="grid grid-cols-[3rem_1fr_3rem] items-center gap-3 text-slate-300"
-              >
-                <span className="text-slate-500">{item.year}</span>
-                <span className="text-sky-300">{getBar(item.count)}</span>
-                <span className="text-right text-slate-500">{item.count}</span>
-              </div>
-            ))}
+          <div className="mt-3 space-y-2 text-sm">
+            {timeline.map((item) => {
+              const percent = maxTimelineCount
+                ? Math.max(
+                    4,
+                    Math.round((item.count / maxTimelineCount) * 100)
+                  )
+                : 4;
+              const isPeak =
+                maxTimelineCount && item.count === maxTimelineCount;
+
+              return (
+                <div
+                  key={item.year}
+                  className="grid grid-cols-[3rem_1fr_4rem] items-center gap-3 text-slate-300"
+                >
+                  <span className="text-xs font-semibold text-slate-500">
+                    {item.year}
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 flex-1 rounded-full bg-slate-800">
+                      <div
+                        className="h-2 rounded-full bg-sky-400"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+
+                    {isPeak && (
+                      <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+                        Peak
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-right text-xs font-semibold text-slate-400">
+                    {item.count}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -456,6 +477,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
 
 
 
