@@ -45,7 +45,12 @@ export default function ArtistDossierModal({ dossier, onClose }) {
   const activityInRange = artist.count ?? 0;
   const totalPlays = journey.totalPlays ?? artist.totalPlays ?? activityInRange;
 
-  const topAlbums = normalizeList(journey.topAlbums ?? artist.topAlbums);
+  const topAlbums = Array.isArray(journey.topAlbums ?? artist.topAlbums)
+  ? journey.topAlbums ?? artist.topAlbums
+  : [];
+  const topTracks = Array.isArray(journey.topTracks ?? artist.topTracks)
+    ? journey.topTracks ?? artist.topTracks
+    : [];
   const playlistAppearances = normalizeList(
     journey.playlistAppearances ?? artist.playlistAppearances ?? artist.playlists
   );
@@ -77,29 +82,36 @@ export default function ArtistDossierModal({ dossier, onClose }) {
           </button>
         </div>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-4">
-          <Metric label="First Seen" value={firstSeen} />
-          <Metric label="Peak Year" value={peakYear} />
-          <Metric label="Latest Activity" value={latestActivity} />
-          <Metric label="Years Active" value={yearsActive} />
-        </div>
+        <section className="mt-5 rounded-2xl border border-sky-500/30 bg-sky-950/20 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-sky-300">
+            Selected Range Snapshot
+          </h3>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <Metric
-            label="Activity in Range"
-            value={`${activityInRange} ${activityInRange === 1 ? "play" : "plays"}`}
-          />
-          <Metric label="Total Plays" value={totalPlays} />
-        </div>
+          <div className="mt-3 grid gap-3 md:grid-cols-1">
+            <Metric
+              label="Activity in Range"
+              value={`${activityInRange} ${activityInRange === 1 ? "play" : "plays"}`}
+            />
+          </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
             <h4 className="font-semibold text-slate-100">Top Albums</h4>
             {topAlbums.length ? (
               <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                {topAlbums.map((album) => (
-                  <li key={album}>{album}</li>
-                ))}
+                {topAlbums.map((album) => {
+                  const albumName =
+                    typeof album === "string" ? album : album.album;
+                  const albumCount =
+                    typeof album === "string" ? null : album.count;
+
+                  return (
+                    <li key={albumName}>
+                      {albumName}
+                      {albumCount ? ` (${albumCount})` : ""}
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="mt-3 text-sm text-slate-500">Pending</p>
@@ -107,20 +119,43 @@ export default function ArtistDossierModal({ dossier, onClose }) {
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <h4 className="font-semibold text-slate-100">
-              Playlist Appearances
-            </h4>
-            {playlistAppearances.length ? (
+            <h4 className="font-semibold text-slate-100">Top Tracks</h4>
+            {topTracks.length ? (
               <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                {playlistAppearances.map((playlist) => (
-                  <li key={playlist}>{playlist}</li>
-                ))}
+                {topTracks.map((track) => {
+                  const trackName =
+                    typeof track === "string" ? track : track.track;
+                  const trackCount =
+                    typeof track === "string" ? null : track.count;
+
+                  return (
+                    <li key={trackName}>
+                      {trackName}
+                      {trackCount ? ` (${trackCount})` : ""}
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="mt-3 text-sm text-slate-500">Pending</p>
             )}
           </div>
-        </div>
+          </div>
+        </section>
+
+        <section className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
+            Lifetime Journey
+          </h3>
+
+          <div className="mt-3 grid gap-3 md:grid-cols-5">
+            <Metric label="Journey Type" value={journeyType} />
+            <Metric label="First Seen" value={firstSeen} />
+            <Metric label="Peak Year" value={peakYear} />
+            <Metric label="Latest Activity" value={latestActivity} />
+            <Metric label="Total Plays" value={totalPlays} />
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -56,10 +56,12 @@ for row in data:
 album_counts = Counter()
 artist_counts = Counter()
 artist_album_counts = defaultdict(Counter)
+artist_track_counts = defaultdict(Counter)
 
 for row in matches:
     album = row.get("Album")
     artist = row.get("Artist")
+    track = row.get("Title") or row.get("Name") or row.get("Song Name") or row.get("song_name")
 
     if album:
         album_counts[album] += 1
@@ -69,6 +71,9 @@ for row in matches:
 
     if artist and album:
         artist_album_counts[artist][album] += 1
+
+    if artist and track:
+        artist_track_counts[artist][track] += 1
 
 top_albums = [
     {"album": album, "count": count}
@@ -122,6 +127,10 @@ for item in top_artists:
         "topAlbums": [
             {"album": album, "count": count}
             for album, count in artist_album_counts.get(artist, Counter()).most_common(5)
+        ],
+        "topTracks": [
+            {"track": track, "count": count}
+            for track, count in artist_track_counts.get(artist, Counter()).most_common(5)
         ],
         "timeline": timeline,
     }
