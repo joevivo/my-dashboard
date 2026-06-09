@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import DashboardSection from "./components/DashboardSection";
+import MusicTimeMachine from "./music/components/MusicTimeMachine";
 import { loadImportedMusicLibrary } from "./music/musicStore";
 import { selectImportedMusicStats } from "./music/musicSelectors";
 import { parseAlbumCsv } from "./music/albumCsvImport";
@@ -825,6 +826,8 @@ const cancelEraEdit = () => {
   Icon={BarChart3}
   color="sky"
 >
+  <MusicTimeMachine />
+
   <div className="grid gap-4 md:grid-cols-2">
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
       <h3 className="font-semibold">Rediscoveries</h3>

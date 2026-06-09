@@ -30,11 +30,6 @@
     "category": "Chicago"
   },
   {
-    "name": "Stereogum",
-    "url": "https://www.stereogum.com/feed/",
-    "category": "Music"
-  },
-  {
     "name": "The Quietus",
     "url": "https://thequietus.com/feed/",
     "category": "Music"
