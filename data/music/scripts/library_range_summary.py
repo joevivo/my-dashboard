@@ -55,6 +55,7 @@ for row in data:
 
 album_counts = Counter()
 artist_counts = Counter()
+artist_album_counts = defaultdict(Counter)
 
 for row in matches:
     album = row.get("Album")
@@ -65,6 +66,9 @@ for row in matches:
 
     if artist:
         artist_counts[artist] += 1
+
+    if artist and album:
+        artist_album_counts[artist][album] += 1
 
 top_albums = [
     {"album": album, "count": count}
@@ -115,6 +119,10 @@ for item in top_artists:
         "firstSeen": str(artist_first_seen[artist].year),
         "mostActivePeriod": ", ".join(sorted(most_active_years)),
         "status": classify_artist(year_counts),
+        "topAlbums": [
+            {"album": album, "count": count}
+            for album, count in artist_album_counts.get(artist, Counter()).most_common(5)
+        ],
         "timeline": timeline,
     }
 

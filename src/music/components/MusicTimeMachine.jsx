@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ArtistDossierModal from "./ArtistDossierModal";
 import {
   getMusicTimeMachineMonth,
   musicTimeMachineMonthOptions,
@@ -54,6 +55,7 @@ function shiftDateRange(startDate, endDate, direction) {
 
 export default function MusicTimeMachine() {
   const [selectedArtist, setSelectedArtist] = useState(null);
+  const [selectedDossierArtist, setSelectedDossierArtist] = useState(null);
   const [selectedMonthKey, setSelectedMonthKey] = useState("2020-03");
   const [startDate, setStartDate] = useState("2020-03-01");
   const [endDate, setEndDate] = useState("2020-04-30");
@@ -278,11 +280,36 @@ export default function MusicTimeMachine() {
 
             <LiveTextCard title="Memory Read" items={rangeRead.memoryRead} />
             {selectedArtist && (
-  <ArtistJourneyCard
-    artist={selectedArtist}
-    journey={rangeRead.artistJourneys?.[selectedArtist.label]}
-  />
-)}
+              <ArtistJourneyCard
+                artist={selectedArtist}
+                journey={rangeRead.artistJourneys?.[selectedArtist.label]}
+                onOpenDossier={() =>
+                  {
+                    const journey =
+                      rangeRead.artistJourneys?.[selectedArtist.label];
+
+                    const years = (journey?.timeline ?? [])
+                      .map((item) => Number(item.year))
+                      .filter(Boolean);
+
+                    setSelectedDossierArtist({
+                      artist: selectedArtist,
+                      journey: {
+                        ...journey,
+                        journeyType: getArtistJourneyType(years),
+                      },
+                    });
+                  }
+                }
+              />
+            )}
+
+            {selectedDossierArtist && (
+              <ArtistDossierModal
+                dossier={selectedDossierArtist}
+                onClose={() => setSelectedDossierArtist(null)}
+              />
+            )}
           </div>
         )}
       </div>
@@ -299,6 +326,22 @@ function Metric({ label, value }) {
   );
 }
 
+
+function getArtistJourneyType(years = []) {
+  if (!years.length) return "Needs Timeline";
+
+  const sortedYears = [...years].sort((a, b) => a - b);
+  const latest = sortedYears[sortedYears.length - 1];
+  const previous = sortedYears[sortedYears.length - 2];
+  const gapBeforeLatest = previous ? latest - previous : 0;
+
+  if (latest < 2024) return "Dormant";
+  if (gapBeforeLatest >= 3) return "Returning";
+  if (sortedYears.length >= 6 && latest >= 2024) return "Persistence";
+
+  return "Developing";
+}
+
 function ListCard({ title, items }) {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
@@ -311,7 +354,7 @@ function ListCard({ title, items }) {
     </div>
   );
 }
-function ArtistJourneyCard({ artist, journey }) {
+function ArtistJourneyCard({ artist, journey, onOpenDossier }) {
   const count = artist?.count ?? 0;
   const timeline = journey?.timeline ?? [];
   const maxTimelineCount = timeline.length
@@ -325,6 +368,8 @@ function ArtistJourneyCard({ artist, journey }) {
     .filter((item) => maxTimelineCount && item.count === maxTimelineCount)
     .map((item) => item.year);
   const peakYearLabel = peakYears.length ? peakYears.join(", ") : "Pending";
+
+  const journeyType = getArtistJourneyType(years);
 
   function getNarrative() {
     if (!journey || timeline.length === 0) {
@@ -349,16 +394,18 @@ function ArtistJourneyCard({ artist, journey }) {
         {artist.label}
       </p>
 
+      <div className="mt-2 inline-flex rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200">
+        {journeyType}
+      </div>
+
       <p className="mt-3 rounded-lg border border-sky-500/20 bg-sky-950/30 p-3 text-sm leading-relaxed text-sky-100">
         {getNarrative()}
       </p>
 
-      <div className="mt-3 grid gap-3 md:grid-cols-4">
-        <Metric label="Years Active" value={yearsActive} />
-        <Metric label="Peak Year" value={peakYearLabel} />
-        <Metric label="Latest Activity" value={latestYear} />
-        <Metric label="Range Count" value={`${count} plays`} />
-      </div>
+      <Metric
+  label="Activity in Range"
+  value={`${count} ${count === 1 ? "play" : "plays"}`}
+/>
 
       <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
         <p className="text-xs uppercase tracking-wide text-slate-500">
@@ -414,6 +461,14 @@ function ArtistJourneyCard({ artist, journey }) {
           </div>
         )}
       </div>
+
+      <button
+        type="button"
+        onClick={onOpenDossier}
+        className="mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-500/20"
+      >
+        Open Artist Dossier
+      </button>
     </div>
   );
 }
@@ -473,6 +528,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
 
 
 
