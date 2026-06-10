@@ -1,6 +1,7 @@
 ﻿import argparse
 import csv
 import json
+import re
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -42,6 +43,62 @@ def parse_track_description(value):
     artist, track = value.split(" - ", 1)
     return artist.strip(), track.strip()
 
+
+
+def format_share(value):
+    if value is None:
+        return "[not found]"
+    return f"{value:.1%}"
+
+
+def normalize_track_family(track):
+    if not track:
+        return "", ""
+
+    display = str(track).strip()
+
+    # Remove common version/remaster/live metadata from track titles.
+    display = re.sub(r"\s*[\(\[].*?[\)\]]", "", display).strip()
+    display = re.sub(r"\s+", " ", display).strip()
+
+    if not display:
+        display = str(track).strip()
+
+    key = display.lower()
+    key = re.sub(r"[^a-z0-9]+", " ", key).strip()
+
+    for article in ("the ", "a ", "an "):
+        if key.startswith(article):
+            key = key[len(article):]
+
+    return key, display
+
+
+def classify_companion_type(total_events, distinct_track_families, top_family_share, top_two_family_share):
+    if total_events == 0:
+        return "Not found / source-limited"
+
+    if total_events < 10:
+        if top_family_share >= 0.70:
+            return "Low-volume single-song marker"
+        return "Low-signal / inconclusive"
+
+    if top_family_share >= 0.85:
+        return "Single-song companion"
+
+    if top_family_share >= 0.70:
+        return "Song-family companion"
+
+    if top_two_family_share >= 0.75:
+        return "Narrow-catalog companion"
+
+    if distinct_track_families >= 8 and top_family_share < 0.40:
+        return "Catalog companion"
+
+    if distinct_track_families >= 4:
+        return "Narrow-catalog companion"
+
+    return "Low-signal / inconclusive"
 
 def load_aliases(path):
     path = Path(path)
@@ -129,6 +186,8 @@ def lookup_artist(source, resolved, contains=False, limit=20):
 
     year_counts = Counter()
     track_counts = Counter()
+    track_family_counts = Counter()
+    track_family_display = {}
     date_counts = Counter()
     raw_counts = Counter()
     matched_artist_names = Counter()
@@ -169,11 +228,38 @@ def lookup_artist(source, resolved, contains=False, limit=20):
             if track:
                 track_counts[track] += 1
 
+                family_key, family_display = normalize_track_family(track)
+                if family_key:
+                    track_family_counts[family_key] += 1
+                    track_family_display.setdefault(family_key, family_display)
+
             if first_seen is None or played < first_seen:
                 first_seen = played
 
             if latest_seen is None or played > latest_seen:
                 latest_seen = played
+
+    top_track, top_track_count = (track_counts.most_common(1)[0] if track_counts else (None, 0))
+    top_track_share = (top_track_count / matched_rows) if matched_rows else 0
+
+    top_family_key, top_family_count = (
+        track_family_counts.most_common(1)[0] if track_family_counts else (None, 0)
+    )
+    top_track_family = track_family_display.get(top_family_key) if top_family_key else None
+    top_family_share = (top_family_count / matched_rows) if matched_rows else 0
+
+    top_two_family_count = sum(count for _, count in track_family_counts.most_common(2))
+    top_two_family_share = (top_two_family_count / matched_rows) if matched_rows else 0
+
+    distinct_tracks = len(track_counts)
+    distinct_track_families = len(track_family_counts)
+
+    companion_type = classify_companion_type(
+        total_events=matched_rows,
+        distinct_track_families=distinct_track_families,
+        top_family_share=top_family_share,
+        top_two_family_share=top_two_family_share,
+    )
 
     return {
         "query": resolved["query"],
@@ -191,6 +277,18 @@ def lookup_artist(source, resolved, contains=False, limit=20):
         "shape": classify_shape(year_counts),
         "year_counts": year_counts,
         "track_counts": track_counts,
+        "track_family_counts": track_family_counts,
+        "track_family_display": track_family_display,
+        "top_track": top_track,
+        "top_track_count": top_track_count,
+        "top_track_share": top_track_share,
+        "top_track_family": top_track_family,
+        "top_track_family_count": top_family_count,
+        "top_track_family_share": top_family_share,
+        "top_two_track_family_share": top_two_family_share,
+        "distinct_tracks": distinct_tracks,
+        "distinct_track_families": distinct_track_families,
+        "companion_type": companion_type,
         "date_counts": date_counts,
         "raw_counts": raw_counts,
         "matched_artist_names": matched_artist_names,
@@ -233,6 +331,12 @@ def render_artist(result):
     lines.append(f"- Latest seen: {result['latest_seen'] or '[not found]'}")
     lines.append(f"- Years active: {result['years_active']}")
     lines.append(f"- Provisional shape: {result['shape']}")
+    lines.append(f"- Companion type: {result['companion_type']}")
+    lines.append(f"- Top track: {result['top_track'] or '[not found]'} ({result['top_track_count']} / {result['matching_events']}, {format_share(result['top_track_share'])})")
+    lines.append(f"- Top track family: {result['top_track_family'] or '[not found]'} ({result['top_track_family_count']} / {result['matching_events']}, {format_share(result['top_track_family_share'])})")
+    lines.append(f"- Top two track-family share: {format_share(result['top_two_track_family_share'])}")
+    lines.append(f"- Distinct tracks: {result['distinct_tracks']}")
+    lines.append(f"- Distinct track families: {result['distinct_track_families']}")
 
     lines.append("")
     lines.append("## Matched Artist Names")
@@ -290,6 +394,10 @@ def render_comparison(results):
             "First Seen",
             "Latest Seen",
             "Shape",
+            "Companion Type",
+            "Top Track Family",
+            "Top Share",
+            "Distinct Families",
         ],
         [
             [
@@ -299,6 +407,10 @@ def render_comparison(results):
                 result["first_seen"] or "[not found]",
                 result["latest_seen"] or "[not found]",
                 result["shape"],
+                result["companion_type"],
+                result["top_track_family"] or "[not found]",
+                format_share(result["top_track_family_share"]),
+                result["distinct_track_families"],
             ]
             for result in results
         ],
