@@ -1,11 +1,18 @@
 ﻿import argparse
 import csv
+import json
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 
+def repo_root():
+    return Path(__file__).resolve().parents[3]
+
+
 DEFAULT_SOURCE = Path("C:/Users/joevi/apple-music-sanitized/apple-music-daily-track-summary.csv")
+DEFAULT_ALIASES = repo_root() / "data" / "music" / "artist_aliases.json"
+DEFAULT_MD_OUT = repo_root() / "docs" / "music" / "music-query-workbench-report.md"
 
 
 def parse_date(value):
@@ -36,6 +43,58 @@ def parse_track_description(value):
     return artist.strip(), track.strip()
 
 
+def load_aliases(path):
+    path = Path(path)
+
+    if not path.exists():
+        return {}, {}
+
+    with path.open("r", encoding="utf-8-sig") as f:
+        data = json.load(f)
+
+    alias_to_canonical = {}
+
+    for canonical, info in data.items():
+        alias_to_canonical[canonical.lower()] = canonical
+
+        for alias in info.get("aliases", []):
+            alias_to_canonical[alias.lower()] = canonical
+
+    return data, alias_to_canonical
+
+
+def resolve_artist(query, alias_data, alias_to_canonical):
+    query_key = query.strip().lower()
+    canonical = alias_to_canonical.get(query_key, query.strip())
+
+    info = alias_data.get(canonical, {})
+    aliases = list(info.get("aliases", []))
+
+    if canonical not in aliases:
+        aliases.insert(0, canonical)
+
+    if query.strip() not in aliases:
+        aliases.append(query.strip())
+
+    # Preserve order while removing duplicates.
+    seen = set()
+    deduped_aliases = []
+
+    for alias in aliases:
+        key = alias.lower()
+        if key not in seen:
+            deduped_aliases.append(alias)
+            seen.add(key)
+
+    return {
+        "query": query,
+        "canonical": canonical,
+        "aliases": deduped_aliases,
+        "source_note": info.get("source_note", ""),
+        "used_alias_file": canonical in alias_data,
+    }
+
+
 def classify_shape(year_counts):
     if not year_counts:
         return "Not found / source-limited"
@@ -61,20 +120,8 @@ def classify_shape(year_counts):
     return "Intermittent companion"
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--artist", required=True)
-    parser.add_argument("--source", default=str(DEFAULT_SOURCE))
-    parser.add_argument("--limit", type=int, default=20)
-    parser.add_argument("--contains", action="store_true")
-    args = parser.parse_args()
-
-    source = Path(args.source)
-
-    if not source.exists():
-        raise SystemExit(f"Source not found: {source}")
-
-    query = args.artist.strip().lower()
+def lookup_artist(source, resolved, contains=False, limit=20):
+    alias_lowers = {alias.lower() for alias in resolved["aliases"]}
 
     total_rows = 0
     skipped_rows = 0
@@ -84,6 +131,7 @@ def main():
     track_counts = Counter()
     date_counts = Counter()
     raw_counts = Counter()
+    matched_artist_names = Counter()
 
     first_seen = None
     latest_seen = None
@@ -102,10 +150,10 @@ def main():
                 skipped_rows += 1
                 continue
 
-            if args.contains:
-                matched = query in description.lower()
+            if contains:
+                matched = any(alias in description.lower() for alias in alias_lowers)
             else:
-                matched = bool(artist) and artist.lower() == query
+                matched = bool(artist) and artist.lower() in alias_lowers
 
             if not matched:
                 continue
@@ -113,11 +161,13 @@ def main():
             matched_rows += 1
             year_counts[played.year] += 1
             date_counts[played.isoformat()] += 1
+            raw_counts[description] += 1
+
+            if artist:
+                matched_artist_names[artist] += 1
 
             if track:
                 track_counts[track] += 1
-
-            raw_counts[description] += 1
 
             if first_seen is None or played < first_seen:
                 first_seen = played
@@ -125,47 +175,218 @@ def main():
             if latest_seen is None or played > latest_seen:
                 latest_seen = played
 
-    print("# Music Artist Lookup")
-    print(f"- Artist query: {args.artist}")
-    print(f"- Source: {source}")
-    print(f"- Match mode: {'contains' if args.contains else 'exact parsed artist'}")
-    print(f"- Rows scanned: {total_rows}")
-    print(f"- Rows skipped: {skipped_rows}")
+    return {
+        "query": resolved["query"],
+        "canonical": resolved["canonical"],
+        "aliases": resolved["aliases"],
+        "source_note": resolved["source_note"],
+        "used_alias_file": resolved["used_alias_file"],
+        "match_mode": "contains" if contains else "exact parsed artist / aliases",
+        "rows_scanned": total_rows,
+        "rows_skipped": skipped_rows,
+        "matching_events": matched_rows,
+        "first_seen": first_seen,
+        "latest_seen": latest_seen,
+        "years_active": len(year_counts),
+        "shape": classify_shape(year_counts),
+        "year_counts": year_counts,
+        "track_counts": track_counts,
+        "date_counts": date_counts,
+        "raw_counts": raw_counts,
+        "matched_artist_names": matched_artist_names,
+        "limit": limit,
+    }
 
-    print("\n## Summary")
-    print(f"- Matching events: {matched_rows}")
-    print(f"- First seen: {first_seen or '[not found]'}")
-    print(f"- Latest seen: {latest_seen or '[not found]'}")
-    print(f"- Years active: {len(year_counts)}")
-    print(f"- Provisional shape: {classify_shape(year_counts)}")
 
-    print("\n## Events by Year")
-    if year_counts:
-        for year in sorted(year_counts):
-            print(f"- {year}: {year_counts[year]}")
+def md_table(headers, rows):
+    lines = []
+    lines.append("| " + " | ".join(headers) + " |")
+    lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+
+    for row in rows:
+        lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
+
+    return lines
+
+
+def render_artist(result):
+    limit = result["limit"]
+    lines = []
+
+    lines.append(f"# Music Artist Lookup: {result['canonical']}")
+    lines.append("")
+    lines.append(f"- Artist query: {result['query']}")
+    lines.append(f"- Normalized artist: {result['canonical']}")
+    lines.append(f"- Aliases searched: {', '.join(result['aliases'])}")
+    lines.append(f"- Match mode: {result['match_mode']}")
+    lines.append(f"- Rows scanned: {result['rows_scanned']}")
+    lines.append(f"- Rows skipped: {result['rows_skipped']}")
+
+    if result["source_note"]:
+        lines.append(f"- Source note: {result['source_note']}")
+
+    lines.append("")
+    lines.append("## Summary")
+    lines.append("")
+    lines.append(f"- Matching events: {result['matching_events']}")
+    lines.append(f"- First seen: {result['first_seen'] or '[not found]'}")
+    lines.append(f"- Latest seen: {result['latest_seen'] or '[not found]'}")
+    lines.append(f"- Years active: {result['years_active']}")
+    lines.append(f"- Provisional shape: {result['shape']}")
+
+    lines.append("")
+    lines.append("## Matched Artist Names")
+    lines.append("")
+
+    if result["matched_artist_names"]:
+        for artist, count in result["matched_artist_names"].most_common(limit):
+            lines.append(f"- {artist}: {count}")
     else:
-        print("_No matching years._")
+        lines.append("_No matched artist names._")
 
-    print("\n## Top Tracks")
-    if track_counts:
-        for track, count in track_counts.most_common(args.limit):
-            print(f"- {track}: {count}")
-    else:
-        print("_No matching tracks._")
+    lines.append("")
+    lines.append("## Events by Year")
+    lines.append("")
 
-    print("\n## Top Listening Dates")
-    if date_counts:
-        for day, count in date_counts.most_common(args.limit):
-            print(f"- {day}: {count}")
+    if result["year_counts"]:
+        for year in sorted(result["year_counts"]):
+            lines.append(f"- {year}: {result['year_counts'][year]}")
     else:
-        print("_No matching dates._")
+        lines.append("_No matching years._")
 
-    print("\n## Raw Descriptions")
-    if raw_counts:
-        for description, count in raw_counts.most_common(args.limit):
-            print(f"- {description}: {count}")
+    lines.append("")
+    lines.append("## Top Tracks")
+    lines.append("")
+
+    if result["track_counts"]:
+        for track, count in result["track_counts"].most_common(limit):
+            lines.append(f"- {track}: {count}")
     else:
-        print("_No matching descriptions._")
+        lines.append("_No matching tracks._")
+
+    lines.append("")
+    lines.append("## Top Listening Dates")
+    lines.append("")
+
+    if result["date_counts"]:
+        for day, count in result["date_counts"].most_common(limit):
+            lines.append(f"- {day}: {count}")
+    else:
+        lines.append("_No matching dates._")
+
+    lines.append("")
+    return lines
+
+
+def render_comparison(results):
+    lines = []
+    lines.append("# Music Query Workbench Comparison")
+    lines.append("")
+    lines.extend(md_table(
+        [
+            "Artist",
+            "Events",
+            "Years Active",
+            "First Seen",
+            "Latest Seen",
+            "Shape",
+        ],
+        [
+            [
+                result["canonical"],
+                result["matching_events"],
+                result["years_active"],
+                result["first_seen"] or "[not found]",
+                result["latest_seen"] or "[not found]",
+                result["shape"],
+            ]
+            for result in results
+        ],
+    ))
+    lines.append("")
+    return lines
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Artist lookup against Apple Music sanitized daily track summary."
+    )
+    parser.add_argument("--artist", action="append", help="Artist name. May be repeated.")
+    parser.add_argument("--compare", nargs="+", help="Run several artist lookups in one report.")
+    parser.add_argument("--source", default=str(DEFAULT_SOURCE))
+    parser.add_argument("--aliases", default=str(DEFAULT_ALIASES))
+    parser.add_argument("--limit", type=int, default=20)
+    parser.add_argument("--contains", action="store_true")
+    parser.add_argument(
+        "--md",
+        nargs="?",
+        const=str(DEFAULT_MD_OUT),
+        help="Optional Markdown output path. If no path is supplied, writes to docs/music/music-query-workbench-report.md.",
+    )
+
+    args = parser.parse_args()
+
+    source = Path(args.source)
+
+    if not source.exists():
+        raise SystemExit(f"Source not found: {source}")
+
+    alias_data, alias_to_canonical = load_aliases(args.aliases)
+
+    queries = []
+
+    if args.artist:
+        queries.extend(args.artist)
+
+    if args.compare:
+        queries.extend(args.compare)
+
+    if not queries:
+        raise SystemExit("Provide --artist or --compare.")
+
+    # Preserve order while removing duplicate query strings.
+    seen_queries = set()
+    deduped_queries = []
+
+    for query in queries:
+        key = query.lower()
+        if key not in seen_queries:
+            deduped_queries.append(query)
+            seen_queries.add(key)
+
+    results = []
+
+    for query in deduped_queries:
+        resolved = resolve_artist(query, alias_data, alias_to_canonical)
+        results.append(
+            lookup_artist(
+                source=source,
+                resolved=resolved,
+                contains=args.contains,
+                limit=args.limit,
+            )
+        )
+
+    output_lines = []
+
+    if len(results) > 1:
+        output_lines.extend(render_comparison(results))
+        output_lines.append("---")
+        output_lines.append("")
+
+    for index, result in enumerate(results):
+        if index:
+            output_lines.append("---")
+            output_lines.append("")
+        output_lines.extend(render_artist(result))
+
+    print("\n".join(output_lines))
+
+    if args.md:
+        out_path = Path(args.md)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text("\n".join(output_lines) + "\n", encoding="utf-8")
+        print(f"\nWrote Markdown report: {out_path}")
 
 
 if __name__ == "__main__":

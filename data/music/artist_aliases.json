@@ -1,0 +1,57 @@
+﻿{
+  "Death Cab for Cutie": {
+    "aliases": [
+      "Death Cab for Cutie"
+    ],
+    "source_note": "Major companion control case."
+  },
+  "The Breeders": {
+    "aliases": [
+      "The Breeders"
+    ],
+    "source_note": "Minor but meaningful steady companion calibration case."
+  },
+  "Billie Holiday": {
+    "aliases": [
+      "Billie Holiday"
+    ],
+    "source_note": "Quiet long-term presence / recurring song-session companion calibration case."
+  },
+  "The Misfits": {
+    "aliases": [
+      "The Misfits",
+      "Misfits"
+    ],
+    "source_note": "Alias normalization case. Use The Misfits as normalized artist name."
+  },
+  "Michelle Shocked": {
+    "aliases": [
+      "Michelle Shocked"
+    ],
+    "source_note": "Personal-library-only / source-limited memory. Do not treat weak data as evidence of absence."
+  },
+  "Matt Pond PA": {
+    "aliases": [
+      "Matt Pond PA",
+      "matt pond PA",
+      "matt pond pa"
+    ],
+    "source_note": "Case-sensitivity / naming normalization case."
+  },
+  "Almamegretta / 24 Grana": {
+    "aliases": [
+      "Almamegretta",
+      "Almagretta",
+      "24 Grana"
+    ],
+    "source_note": "Spelling-sensitive / source-limited identity case."
+  },
+  "Anne-Sophie Mutter": {
+    "aliases": [
+      "Anne-Sophie Mutter",
+      "Annie Sophie Mutter",
+      "Mutter"
+    ],
+    "source_note": "Classical metadata case. Performer, composer, and album identity may be split inconsistently."
+  }
+}
