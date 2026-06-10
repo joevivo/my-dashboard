@@ -1,0 +1,30 @@
+﻿{
+  "Michelle Shocked": {
+    "source_note": "Personal-library-only / source-limited memory. Not expected to resolve through Apple Music catalog metadata.",
+    "artists": ["Michelle Shocked"],
+    "albums": ["Short Sharp Shocked", "Captain Swing", "Arkansas Traveler"],
+    "songs": ["Anchorage", "When I Grow Up"],
+    "context_terms": ["Michelle", "Shocked", "Short Sharp", "Captain Swing", "Arkansas"]
+  },
+  "Almamegretta / 24 Grana": {
+    "source_note": "Likely spelling-sensitive and source-limited. Search both user spelling and expected band spelling.",
+    "artists": ["Almagretta", "Almamegretta", "24 Grana"],
+    "albums": [],
+    "songs": [],
+    "context_terms": ["Almagretta", "Almamegretta", "24 Grana", "Grana"]
+  },
+  "Anne-Sophie Mutter": {
+    "source_note": "Classical metadata case. Composer, performer, and album title may be split inconsistently.",
+    "artists": ["Anne-Sophie Mutter", "Annie Sophie Mutter", "Mutter"],
+    "albums": ["Mendelssohn; Brahms: Violin Concertos", "Mendelssohn", "Brahms", "Violin Concertos"],
+    "songs": [],
+    "context_terms": ["Mendelssohn", "Brahms", "Mutter", "Violin Concerto", "Violin Concertos"]
+  },
+  "Death Cab for Cutie / NPR Sick of Myself": {
+    "source_note": "Possible NPR/source-container case. Identity may live in song title, album title, or container name.",
+    "artists": ["Death Cab for Cutie"],
+    "albums": ["NPR", "Sick of Myself"],
+    "songs": ["Sick of Myself"],
+    "context_terms": ["Death Cab", "NPR", "Sick of Myself"]
+  }
+}
