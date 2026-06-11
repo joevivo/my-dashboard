@@ -1,0 +1,27 @@
+﻿{
+  "Elvis Costello Family": {
+    "members": [
+      "Elvis Costello",
+      "Elvis Costello & The Attractions",
+      "Elvis Costello and The Attractions",
+      "Elvis Costello & The Imposters",
+      "Elvis Costello and The Imposters"
+    ],
+    "source_note": "Artist-family rollup. Preserve solo, Attractions, and Imposters as sub-identities."
+  },
+  "Neil Young Family": {
+    "members": [
+      "Neil Young",
+      "Neil Young & Crazy Horse",
+      "Neil Young and Crazy Horse",
+      "Neil Young with Crazy Horse",
+      "Neil Young & Promise of the Real",
+      "Crosby, Stills, Nash & Young",
+      "Crosby, Stills, Nash and Young",
+      "CSNY",
+      "Buffalo Springfield",
+      "The Stills-Young Band"
+    ],
+    "source_note": "Artist-family rollup. Preserve solo, Crazy Horse, CSNY, Buffalo Springfield, and side-project identities."
+  }
+}

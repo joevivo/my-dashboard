@@ -13,6 +13,7 @@ def repo_root():
 
 DEFAULT_SOURCE = Path("C:/Users/joevi/apple-music-sanitized/apple-music-daily-track-summary.csv")
 DEFAULT_ALIASES = repo_root() / "data" / "music" / "artist_aliases.json"
+DEFAULT_GROUPS = repo_root() / "data" / "music" / "artist_groups.json"
 DEFAULT_MD_OUT = repo_root() / "docs" / "music" / "music-query-workbench-report.md"
 
 
@@ -119,6 +120,16 @@ def load_aliases(path):
 
     return data, alias_to_canonical
 
+
+
+def load_groups(path):
+    path = Path(path)
+
+    if not path.exists():
+        return {}
+
+    with path.open("r", encoding="utf-8-sig") as f:
+        return json.load(f)
 
 def resolve_artist(query, alias_data, alias_to_canonical):
     query_key = query.strip().lower()
@@ -419,14 +430,92 @@ def render_comparison(results):
     return lines
 
 
+
+def render_group_rollup(group_name, group_info, results):
+    total_events = sum(result["matching_events"] for result in results)
+
+    active_years = set()
+    first_dates = []
+    latest_dates = []
+
+    for result in results:
+        active_years.update(result["year_counts"].keys())
+
+        if result["first_seen"]:
+            first_dates.append(result["first_seen"])
+
+        if result["latest_seen"]:
+            latest_dates.append(result["latest_seen"])
+
+    first_seen = min(first_dates) if first_dates else None
+    latest_seen = max(latest_dates) if latest_dates else None
+
+    sorted_results = sorted(results, key=lambda result: result["matching_events"], reverse=True)
+
+    lines = []
+    lines.append(f"# Artist Group Lookup: {group_name}")
+    lines.append("")
+    lines.append(f"- Members searched: {len(results)}")
+
+    if group_info.get("source_note"):
+        lines.append(f"- Source note: {group_info['source_note']}")
+
+    lines.append("")
+    lines.append("## Group Summary")
+    lines.append("")
+    lines.append(f"- Total matching events: {total_events}")
+    lines.append(f"- First seen: {first_seen or '[not found]'}")
+    lines.append(f"- Latest seen: {latest_seen or '[not found]'}")
+    lines.append(f"- Active years: {len(active_years)}")
+
+    if sorted_results:
+        strongest = sorted_results[0]
+        lines.append(f"- Strongest sub-identity: {strongest['canonical']} ({strongest['matching_events']} events)")
+
+    lines.append("")
+    lines.append("## Sub-Identity Breakdown")
+    lines.append("")
+    lines.extend(md_table(
+        [
+            "Sub-Identity",
+            "Events",
+            "Years Active",
+            "First Seen",
+            "Latest Seen",
+            "Companion Type",
+            "Top Track Family",
+            "Top Share",
+            "Distinct Families",
+        ],
+        [
+            [
+                result["canonical"],
+                result["matching_events"],
+                result["years_active"],
+                result["first_seen"] or "[not found]",
+                result["latest_seen"] or "[not found]",
+                result["companion_type"],
+                result["top_track_family"] or "[not found]",
+                format_share(result["top_track_family_share"]),
+                result["distinct_track_families"],
+            ]
+            for result in sorted_results
+        ],
+    ))
+    lines.append("")
+    return lines
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Artist lookup against Apple Music sanitized daily track summary."
     )
     parser.add_argument("--artist", action="append", help="Artist name. May be repeated.")
     parser.add_argument("--compare", nargs="+", help="Run several artist lookups in one report.")
+    parser.add_argument("--group", action="append", help="Artist group name from data/music/artist_groups.json. May be repeated.")
     parser.add_argument("--source", default=str(DEFAULT_SOURCE))
     parser.add_argument("--aliases", default=str(DEFAULT_ALIASES))
+    parser.add_argument("--groups", default=str(DEFAULT_GROUPS))
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--contains", action="store_true")
     parser.add_argument(
@@ -444,53 +533,81 @@ def main():
         raise SystemExit(f"Source not found: {source}")
 
     alias_data, alias_to_canonical = load_aliases(args.aliases)
+    group_data = load_groups(args.groups)
 
-    queries = []
+    def run_lookup(query):
+        resolved = resolve_artist(query, alias_data, alias_to_canonical)
+        return lookup_artist(
+            source=source,
+            resolved=resolved,
+            contains=args.contains,
+            limit=args.limit,
+        )
+
+    explicit_queries = []
 
     if args.artist:
-        queries.extend(args.artist)
+        explicit_queries.extend(args.artist)
 
     if args.compare:
-        queries.extend(args.compare)
+        explicit_queries.extend(args.compare)
 
-    if not queries:
-        raise SystemExit("Provide --artist or --compare.")
-
-    # Preserve order while removing duplicate query strings.
-    seen_queries = set()
-    deduped_queries = []
-
-    for query in queries:
-        key = query.lower()
-        if key not in seen_queries:
-            deduped_queries.append(query)
-            seen_queries.add(key)
-
-    results = []
-
-    for query in deduped_queries:
-        resolved = resolve_artist(query, alias_data, alias_to_canonical)
-        results.append(
-            lookup_artist(
-                source=source,
-                resolved=resolved,
-                contains=args.contains,
-                limit=args.limit,
-            )
-        )
+    if not explicit_queries and not args.group:
+        raise SystemExit("Provide --artist, --compare, or --group.")
 
     output_lines = []
 
-    if len(results) > 1:
-        output_lines.extend(render_comparison(results))
-        output_lines.append("---")
-        output_lines.append("")
+    if explicit_queries:
+        seen_queries = set()
+        deduped_queries = []
 
-    for index, result in enumerate(results):
-        if index:
+        for query in explicit_queries:
+            key = query.lower()
+            if key not in seen_queries:
+                deduped_queries.append(query)
+                seen_queries.add(key)
+
+        explicit_results = [run_lookup(query) for query in deduped_queries]
+
+        if len(explicit_results) > 1:
+            output_lines.extend(render_comparison(explicit_results))
             output_lines.append("---")
             output_lines.append("")
-        output_lines.extend(render_artist(result))
+
+        for index, result in enumerate(explicit_results):
+            if index:
+                output_lines.append("---")
+                output_lines.append("")
+            output_lines.extend(render_artist(result))
+
+    if args.group:
+        for group_name in args.group:
+            group_info = group_data.get(group_name)
+
+            if not group_info:
+                available = ", ".join(sorted(group_data.keys())) or "[none]"
+                raise SystemExit(f"Group not found: {group_name}. Available groups: {available}")
+
+            members = group_info.get("members", [])
+
+            if not members:
+                raise SystemExit(f"Group has no members: {group_name}")
+
+            group_results = [run_lookup(member) for member in members]
+
+            if output_lines:
+                output_lines.append("---")
+                output_lines.append("")
+
+            output_lines.extend(render_group_rollup(group_name, group_info, group_results))
+            output_lines.append("---")
+            output_lines.append("")
+            output_lines.extend(render_comparison(group_results))
+
+            for result in sorted(group_results, key=lambda item: item["matching_events"], reverse=True):
+                output_lines.append("---")
+                output_lines.append("")
+                output_lines.extend(render_artist(result))
 
     print("\n".join(output_lines))
 
