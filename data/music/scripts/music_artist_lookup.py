@@ -431,6 +431,7 @@ def render_comparison(results):
 
 
 
+
 def render_group_rollup(group_name, group_info, results):
     total_events = sum(result["matching_events"] for result in results)
 
@@ -455,10 +456,16 @@ def render_group_rollup(group_name, group_info, results):
     lines = []
     lines.append(f"# Artist Group Lookup: {group_name}")
     lines.append("")
-    lines.append(f"- Members searched: {len(results)}")
+    lines.append(f"- Real sub-identities searched: {len(results)}")
 
     if group_info.get("source_note"):
         lines.append(f"- Source note: {group_info['source_note']}")
+
+    aliases = group_info.get("aliases", {})
+
+    if aliases:
+        alias_count = sum(len(values) for values in aliases.values())
+        lines.append(f"- Query aliases documented: {alias_count}")
 
     lines.append("")
     lines.append("## Group Summary")
@@ -503,8 +510,28 @@ def render_group_rollup(group_name, group_info, results):
         ],
     ))
     lines.append("")
-    return lines
 
+    if aliases:
+        lines.append("## Query Aliases / Variants")
+        lines.append("")
+        lines.append("These names are documented as search variants, but they are not shown as separate sub-identities unless the data contains a real matching artist identity.")
+        lines.append("")
+        alias_rows = []
+
+        for canonical, variants in aliases.items():
+            for variant in variants:
+                alias_rows.append([canonical, variant])
+
+        lines.extend(md_table(
+            [
+                "Canonical Sub-Identity",
+                "Alias / Variant",
+            ],
+            alias_rows,
+        ))
+        lines.append("")
+
+    return lines
 
 def main():
     parser = argparse.ArgumentParser(
