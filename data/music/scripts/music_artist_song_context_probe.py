@@ -150,6 +150,60 @@ def confidence(total):
     return "High"
 
 
+
+
+def song_companion_type(
+    artist_song_events,
+    context_rows,
+    playlist_share,
+    album_share,
+    radio_share,
+    unknown_share,
+):
+    if artist_song_events == 0:
+        return "Not found / source-limited"
+
+    if context_rows == 0:
+        return "Artist/song found; no context rows"
+
+    if playlist_share >= 0.80 and album_share < 0.10:
+        return "Playlist ritual song"
+
+    if unknown_share >= 0.50 and artist_song_events >= 20:
+        return "Context-lost deep cut"
+
+    if unknown_share >= 0.50:
+        return "Context-lost low-volume marker"
+
+    if album_share >= 0.40 and context_rows >= 75:
+        return "Durable album-rooted song companion"
+
+    if playlist_share >= 0.55 and album_share >= 0.20:
+        return "Playlist-carried album gateway"
+
+    if album_share >= 0.25 and radio_share >= 0.20:
+        return "Album/radio identity marker"
+
+    if album_share >= 0.25 and playlist_share >= 0.20:
+        return "Album/playlist identity marker"
+
+    if album_share >= 0.25:
+        return "Album-context identity marker"
+
+    if playlist_share >= 0.55:
+        return "Playlist-carried song companion"
+
+    if playlist_share >= 0.25 and radio_share >= 0.20:
+        return "Playlist/radio cultural marker"
+
+    if context_rows >= 75:
+        return "Durable mixed-context song companion"
+
+    if artist_song_events < 20:
+        return "Low-volume song marker"
+
+    return "Mixed-context song companion"
+
 def load_artist_song_events(source_path, artist_query, song_query):
     if not source_path.exists():
         raise SystemExit(f"Artist source not found: {source_path}")
@@ -310,6 +364,14 @@ def analyze_pair(spec, db_path, source_path):
         "latest_seen": context["latest_seen"],
         "context_read": context_read(counts),
         "confidence": confidence(total_context),
+        "song_companion_type": song_companion_type(
+            artist_song_events=len(identity["events"]),
+            context_rows=total_context,
+            playlist_share=(playlist / total_context) if total_context else 0,
+            album_share=(album / total_context) if total_context else 0,
+            radio_share=(radio / total_context) if total_context else 0,
+            unknown_share=(unknown_plus_blank / total_context) if total_context else 0,
+        ),
         "matched_titles": identity["matched_titles"],
         "matched_artists": identity["matched_artists"],
     }
@@ -343,6 +405,7 @@ def render_report(results):
             "First Seen",
             "Latest Seen",
             "Context Read",
+            "Song Companion Type",
             "Confidence",
         ],
         [
@@ -362,6 +425,7 @@ def render_report(results):
                 result["first_seen"],
                 result["latest_seen"],
                 result["context_read"],
+                result["song_companion_type"],
                 result["confidence"],
             ]
             for result in results
@@ -377,6 +441,7 @@ def render_report(results):
         lines.append(f"- Artist/song dates from sanitized source: {result['artist_song_dates']}")
         lines.append(f"- DuckDB context rows inferred: {result['duckdb_context_rows']}")
         lines.append(f"- Context read: {result['context_read']}")
+        lines.append(f"- Song companion type: {result['song_companion_type']}")
         lines.append(f"- Confidence: {result['confidence']}")
         lines.append("")
         lines.append("### Matched Titles")
