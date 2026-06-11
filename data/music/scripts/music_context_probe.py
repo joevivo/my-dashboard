@@ -11,6 +11,29 @@ def sql_escape(value):
     return str(value).replace("'", "''")
 
 
+
+def format_share(value):
+    return f"{value:.1%}"
+
+
+def album_root_strength(album_events, total_events):
+    if total_events == 0:
+        return "Not found / source-limited"
+
+    share = album_events / total_events
+
+    if share >= 0.45:
+        return "Strong album-root"
+
+    if share >= 0.25:
+        return "Moderate album-root"
+
+    if share >= 0.10:
+        return "Weak album-root"
+
+    return "Not album-rooted"
+
+
 def context_read(counts):
     total = sum(counts.values())
 
@@ -27,29 +50,40 @@ def context_read(counts):
     radio_share = radio / total
     unknown_share = unknown / total
 
-    if playlist_share >= 0.60:
-        return "Playlist-carried"
-
-    if album_share >= 0.50:
+    if album_share >= 0.45:
+        if radio_share >= 0.20:
+            return "Album-rooted with radio reinforcement"
+        if playlist_share >= 0.20:
+            return "Album-rooted with playlist reinforcement"
         return "Album-carried"
 
+    if playlist_share >= 0.55:
+        if album_share >= 0.20:
+            return "Playlist-carried with album reinforcement"
+        if radio_share >= 0.20:
+            return "Playlist-carried with radio reinforcement"
+        return "Playlist-carried"
+
     if radio_share >= 0.40:
+        if album_share >= 0.20:
+            return "Album-rooted with radio reinforcement"
+        if playlist_share >= 0.20:
+            return "Playlist-carried with radio reinforcement"
         return "Radio-reinforced"
 
     if unknown_share >= 0.50:
         return "Context-lost / unknown-heavy"
 
-    if playlist_share >= 0.35 and album_share >= 0.20:
-        return "Playlist-carried with album reinforcement"
-
-    if album_share >= 0.25 and radio_share >= 0.25:
+    if album_share >= 0.25 and radio_share >= 0.20:
         return "Album-rooted with radio reinforcement"
 
-    if playlist_share >= 0.25 and radio_share >= 0.25:
+    if album_share >= 0.25 and playlist_share >= 0.20:
+        return "Album-rooted with playlist reinforcement"
+
+    if playlist_share >= 0.25 and radio_share >= 0.20:
         return "Playlist-carried with radio reinforcement"
 
     return "Mixed-context"
-
 
 def md_table(headers, rows):
     lines = []
@@ -106,22 +140,35 @@ def query_target(con, label, target_type, pattern):
 
     total = sum(counts.values())
 
+    playlist = counts.get("PLAYLIST", 0)
+    album = counts.get("ALBUM", 0)
+    radio = counts.get("RADIO", 0)
+    unknown = counts.get("UNKNOWN", 0)
+    blank = counts.get("[blank]", 0)
+    unknown_plus_blank = unknown + blank
+
     return {
         "label": label,
         "target_type": target_type,
         "pattern": pattern,
         "total": total,
-        "playlist": counts.get("PLAYLIST", 0),
-        "album": counts.get("ALBUM", 0),
-        "radio": counts.get("RADIO", 0),
-        "unknown": counts.get("UNKNOWN", 0),
-        "blank": counts.get("[blank]", 0),
+        "playlist": playlist,
+        "album": album,
+        "radio": radio,
+        "unknown": unknown,
+        "blank": blank,
+        "unknown_plus_blank": unknown_plus_blank,
         "artist": counts.get("ARTIST", 0),
+        "playlist_share": (playlist / total) if total else 0,
+        "album_share": (album / total) if total else 0,
+        "radio_share": (radio / total) if total else 0,
+        "unknown_plus_blank_share": (unknown_plus_blank / total) if total else 0,
         "distinct_albums": distinct_albums,
         "distinct_songs": distinct_songs,
         "first_seen": min(first_dates) if first_dates else "[not found]",
         "latest_seen": max(latest_dates) if latest_dates else "[not found]",
         "context_read": context_read(counts),
+        "album_root_strength": album_root_strength(album, total),
         "raw_rows": rows,
     }
 
@@ -139,13 +186,17 @@ def render_report(results):
             "Type",
             "Total",
             "Playlist",
+            "Playlist %",
             "Album",
+            "Album %",
             "Radio",
-            "Unknown",
-            "Blank",
+            "Radio %",
+            "Unknown + Blank",
+            "Unknown %",
             "First Seen",
             "Latest Seen",
             "Context Read",
+            "Album Root Strength",
         ],
         [
             [
@@ -153,13 +204,17 @@ def render_report(results):
                 result["target_type"],
                 result["total"],
                 result["playlist"],
+                format_share(result["playlist_share"]),
                 result["album"],
+                format_share(result["album_share"]),
                 result["radio"],
-                result["unknown"],
-                result["blank"],
+                format_share(result["radio_share"]),
+                result["unknown_plus_blank"],
+                format_share(result["unknown_plus_blank_share"]),
                 result["first_seen"],
                 result["latest_seen"],
                 result["context_read"],
+                result["album_root_strength"],
             ]
             for result in results
         ],
