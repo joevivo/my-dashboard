@@ -821,41 +821,7 @@ const cancelEraEdit = () => {
 
 
       
-<DashboardSection
-  title="Music Intelligence"
-  Icon={BarChart3}
-  color="sky"
->
-  <MusicTimeMachine />
 
-  <div className="grid gap-4 md:grid-cols-2">
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h3 className="font-semibold">Rediscoveries</h3>
-      <p className="mt-2 text-sm text-slate-700">The dB&apos;s</p>
-      <p className="text-sm text-slate-700">Big Star</p>
-    </div>
-
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h3 className="font-semibold">Dormant Artists</h3>
-      <p className="mt-2 text-sm text-slate-700">R.E.M.</p>
-    </div>
-
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h3 className="font-semibold">Returning Artists</h3>
-      <p className="mt-2 text-sm text-slate-700">The dB&apos;s</p>
-      <p className="text-sm text-slate-700">Big Star</p>
-    </div>
-
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h3 className="font-semibold">Emerging Artists</h3>
-      <p className="mt-2 text-sm text-slate-500">None detected</p>
-    </div>
-  </div>
-
-  <p className="mt-4 text-xs text-slate-400">
-    Prototype intelligence signals from Apple Music listening patterns.
-  </p>
-</DashboardSection>
 
       {selectedAlbum && (
         <AlbumDossierModal

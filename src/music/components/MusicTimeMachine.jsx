@@ -1,10 +1,5 @@
 import { useState } from "react";
 import ArtistDossierModal from "./ArtistDossierModal";
-import {
-  getMusicTimeMachineMonth,
-  musicTimeMachineMonthOptions,
-} from "../../utils/musicTimeMachine";
-
 const quickRanges = [
   ["Spring 2020", "2020-03-01", "2020-04-30"],
   ["Summer 2021", "2021-06-01", "2021-08-31"],
@@ -528,6 +523,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
 
 
 
