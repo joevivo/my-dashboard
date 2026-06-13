@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ArtistDossierModal from "./ArtistDossierModal";
+import FeaturedMemoryCard from "./FeaturedMemoryCard";
 const quickRanges = [
   ["Spring 2020", "2020-03-01", "2020-04-30"],
   ["Summer 2021", "2021-06-01", "2021-08-31"],
@@ -142,6 +143,8 @@ export default function MusicTimeMachine() {
         <h4 className="font-semibold text-white">Memory Anchors</h4>
         <p className="mt-2 text-sm text-slate-300">{month.memoryPrompt}</p>
       </div>
+
+      <FeaturedMemoryCard />
 
       <div className="mt-6 rounded-2xl border border-sky-500/40 bg-slate-900/80 p-5">
         <div>
@@ -520,6 +523,8 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
+
 
 
 
