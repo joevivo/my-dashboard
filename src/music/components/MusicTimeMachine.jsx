@@ -51,14 +51,11 @@ function shiftDateRange(startDate, endDate, direction) {
 export default function MusicTimeMachine() {
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [selectedDossierArtist, setSelectedDossierArtist] = useState(null);
-  const [selectedMonthKey, setSelectedMonthKey] = useState("2020-03");
   const [startDate, setStartDate] = useState("2020-03-01");
   const [endDate, setEndDate] = useState("2020-04-30");
   const [rangeRead, setRangeRead] = useState(null);
   const [rangeLoading, setRangeLoading] = useState(false);
   const [rangeError, setRangeError] = useState("");
-
-  const month = getMusicTimeMachineMonth(selectedMonthKey);
 
   function updateDateRange(nextStartDate, nextEndDate) {
     setStartDate(nextStartDate);
@@ -523,6 +520,7 @@ function LiveTextCard({ title, items = [] }) {
     </div>
   );
 }
+
 
 
 
