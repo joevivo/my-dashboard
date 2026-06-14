@@ -114,7 +114,7 @@ export default function QueryWorkbench() {
                 {songs.map((item) => (
                   <li key={item.song}>
                     {item.song}
-                    {item.plays ? ` — ${item.plays}` : ""}
+                    {item.plays ? ` â€” ${item.plays}` : ""}
                   </li>
                 ))}
               </ul>
@@ -128,7 +128,7 @@ export default function QueryWorkbench() {
                 {albums.map((item) => (
                   <li key={item.album}>
                     {item.album}
-                    {item.plays ? ` — ${item.plays}` : ""}
+                    {item.plays ? ` â€” ${item.plays}` : ""}
                   </li>
                 ))}
               </ul>
