@@ -857,6 +857,46 @@ app.get("/api/music/time-machine", async (req, res) => {
 }    }
   );
 });
+
+app.get("/api/music/query/artist", async (req, res) => {
+  const { name } = req.query;
+
+  if (!name || !String(name).trim()) {
+    return res.status(400).json({ error: "Artist name required" });
+  }
+
+  const scriptPath = "../data/music/scripts/artist_query_summary.py";
+
+  execFile(
+    "python",
+    [scriptPath, String(name).trim()],
+    {
+      cwd: __dirname,
+      maxBuffer: 1024 * 1024 * 10,
+    },
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error("Artist query error:", error);
+        console.error(stderr);
+        return res.status(500).json({
+          error: "Failed to query artist",
+          details: stderr || error.message,
+        });
+      }
+
+      try {
+        res.json(JSON.parse(stdout));
+      } catch (parseError) {
+        console.error("Artist query parse error:", parseError);
+        console.error(stdout);
+        res.status(500).json({
+          error: "Failed to parse artist query output",
+        });
+      }
+    }
+  );
+});
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });

@@ -15,6 +15,7 @@ import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
 import BooksView from "./BooksView";
 import NotesView from "./NotesView";
+import QueryWorkbench from "./QueryWorkbench";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("IntelligenceHome");
@@ -40,6 +41,7 @@ export default function App() {
           title: "Personal Intelligence",
           items: [
             ["IntelligenceHome", "Intelligence Home"],
+            ["QueryWorkbench", "Query Workbench"],
             ["Music", "Music Intelligence"],
             ["Books", "Books"],
             ["Notes", "Notes"],
@@ -248,7 +250,9 @@ export default function App() {
 
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
-            {activeView === "IntelligenceHome" ? (
+            {activeView === "QueryWorkbench" ? (
+              <QueryWorkbench />
+            ) : activeView === "IntelligenceHome" ? (
               <IntelligenceHome />
             ) : activeView === "Calendar" ? (
               <>
