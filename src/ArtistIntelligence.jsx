@@ -30,7 +30,7 @@ function classifyArtist(result) {
   if (yearsActive >= 10 && totalPlays >= 75) {
     return {
       label: "Permanent Companion",
-      summary: `${yearsActive} active years ? ${totalPlays} reconstructed library plays`,
+      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
       rationale:
         "This artist shows both long-term persistence and substantial library evidence across the archive.",
     };
@@ -39,7 +39,7 @@ function classifyArtist(result) {
   if (yearsActive >= 8 && totalPlays < 75) {
     return {
       label: "Hidden Pillar",
-      summary: `${yearsActive} active years ? ${totalPlays} reconstructed library plays`,
+      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
       rationale:
         "This artist appears repeatedly across the archive despite relatively modest volume.",
     };
@@ -48,7 +48,7 @@ function classifyArtist(result) {
   if (yearsActive >= 4 && totalPlays >= 10) {
     return {
       label: "Established Companion",
-      summary: `${yearsActive} active years ? ${totalPlays} reconstructed library plays`,
+      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
       rationale:
         "This artist has enough recurrence to suggest an established relationship, but not enough evidence for Permanent Companion status.",
     };
@@ -57,7 +57,7 @@ function classifyArtist(result) {
   if (yearsActive <= 3) {
     return {
       label: "Recent Signal",
-      summary: `${yearsActive} active years ? ${totalPlays} reconstructed library plays`,
+      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
       rationale:
         "This artist has limited or recent evidence in the Library Tracks reconstruction.",
     };
@@ -65,7 +65,7 @@ function classifyArtist(result) {
 
   return {
     label: "Limited Evidence",
-    summary: `${yearsActive} active years ? ${totalPlays} reconstructed library plays`,
+    summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
     rationale:
       "This artist has some evidence, but the current pattern does not fit a v0 classification cleanly.",
   };
@@ -163,7 +163,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+      <section className="rounded-2xl bg-gradient-to-br from-white via-blue-50/70 to-purple-50/70 p-6 shadow-sm border border-blue-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:border-slate-800">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
@@ -193,12 +193,12 @@ export default function ArtistIntelligence({ artistName, onBack }) {
           <p className="mt-2 text-sm text-red-600 dark:text-red-300">{error}</p>
         </section>
       ) : loading ? (
-        <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+        <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
           <h3 className="text-lg font-black">Loading artist intelligence...</h3>
         </section>
       ) : (
         <>
-          <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600 dark:text-purple-300">
               Artist Classification
             </p>
@@ -211,7 +211,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             </p>
           </section>
 
-          <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
               {queryResult?.classification || "Library Evidence"}
             </p>
@@ -220,8 +220,8 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             </p>
 
             <div className="mt-5 grid gap-3 md:grid-cols-4">
-              <StatCard label="Library Plays" value={queryResult?.totalPlays ?? 0} />
-              <StatCard label="Years Active" value={queryResult?.yearsActive ?? 0} />
+              <StatCard label="Library Footprint" value={queryResult?.totalPlays ?? 0} />
+              <StatCard label="Years Represented" value={queryResult?.yearsActive ?? 0} />
               <StatCard label="First Seen" value={queryResult?.firstSeen || "?"} />
               <StatCard label="Latest Seen" value={queryResult?.latestSeen || "?"} />
             </div>
@@ -243,7 +243,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             ) : null}
           </section>
 
-          <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <h3 className="text-lg font-black">Top Library Evidence</h3>
 
             <div className="mt-4 grid gap-6 md:grid-cols-2">
@@ -281,7 +281,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <ArtistSpotlight
               artistName={displayArtist}
               artist={selectedArtistRecord}

@@ -93,6 +93,33 @@ Listening History is evidence.
 It should contain minimal interpretation.
 
 ---
+## Evidence Layers
+
+Music Intelligence operates on multiple evidence layers.
+
+### Play Activity
+
+Event-level listening history.
+
+Used for:
+- Total Plays
+- Listening Days
+- Companion Analysis
+- Persistence Analysis
+
+### Library Evidence
+
+Derived from Apple Music Library Tracks exports.
+
+Used for:
+- Artist Presence
+- Album Presence
+- Years Active
+- Long-term relationship reconstruction
+
+Library Evidence is not equivalent to Total Plays.
+
+Different evidence layers may produce different measurements for the same artist.
 
 ## Constants
 
@@ -280,3 +307,134 @@ Example:
 Artist A appears in listening history every year for a decade.
 
 This is a stronger Constant than an artist that dominates a single year and disappears.
+Library Footprint
+
+Definition:
+
+A measure of surviving artist evidence reconstructed from Apple Music Library Tracks. Useful for relationship persistence and archive presence. Not equivalent to listening volume.
+
+Years Represented
+
+Definition:
+
+Number of years in which surviving evidence exists for an artist within Library Tracks reconstruction.
+
+Library Evidence
+
+Definition:
+
+Reconstructed archival evidence derived from Apple Music Library Tracks. Best used for persistence, artist discovery, album survival, and relationship archaeology.
+
+Library Footprint
+
+Definition:
+
+Count of surviving Library Tracks evidence associated with an artist.
+
+Library Footprint is useful for understanding archive presence and
+relationship persistence.
+
+Library Footprint is not equivalent to listening volume.
+Years Represented
+
+Definition:
+
+Number of years in which Library Evidence exists for an artist.
+
+Useful for identifying persistent relationships and long-running
+companions.
+
+And I'd add one sentence that Brian Eno has now earned permanently:
+
+Brian Eno serves as the canonical example demonstrating why
+Play Activity and Library Evidence must remain separate systems.
+
+---
+
+## Importance Scale
+
+The Music Intelligence model now separates evidence from importance.
+
+### 1 ? Like
+
+The artist is enjoyable or familiar but does not strongly define the listener's musical identity.
+
+### 2 ? Fan
+
+The artist is liked and recognizable as part of the listener's taste, but not central.
+
+### 3 ? Important
+
+The artist matters and helps explain part of the listener's musical world.
+
+### 4 ? Essential
+
+The artist is a major part of the listener's musical identity or worldview.
+
+### 5 ? Constitutional
+
+The artist helps explain how the listener understands music itself.
+
+Constitutional artists are not necessarily the most played artists and may not have the largest Library Footprint. They are artists whose work shaped the listener's musical values.
+
+Current strongest examples:
+
+- R.E.M.
+- The Beatles
+- Peter Gabriel
+
+Related examples under consideration:
+
+- Billie Holiday
+- Brian Eno
+- King Crimson
+- Sam Cooke
+
+---
+
+## Evidence Systems
+
+Music Intelligence uses multiple evidence systems. These systems must not be collapsed into one another.
+
+### Play Activity
+
+Source: `apple_music_play_activity`
+
+Best for answering:
+
+- How much did I listen?
+- What dominated my listening?
+- What albums or artists had major listening volume?
+- What persisted through actual play behavior?
+
+Play Activity is the authoritative source for listening volume.
+
+### Library Evidence
+
+Source: `Apple Music Library Tracks`
+
+Best for answering:
+
+- What survived in the library?
+- What artists and albums remain represented?
+- Which relationships persisted across years?
+- Which albums form the surviving archive footprint?
+
+Library Evidence is useful for artist archaeology, persistence, and relationship reconstruction.
+
+Library Evidence is not complete listening volume.
+
+### Library Footprint
+
+Library Footprint is the count of surviving Library Tracks evidence associated with an artist.
+
+It should not be interpreted as Total Plays.
+
+Brian Eno is the canonical example: Library Evidence may understate an artist with very high actual listening volume.
+
+### Years Represented
+
+Years Represented is the number of years in which Library Evidence exists for an artist.
+
+This is useful for identifying persistence, but it is not the same as total listening activity.
+
