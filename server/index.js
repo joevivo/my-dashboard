@@ -872,6 +872,12 @@ app.get("/api/music/query/artist", async (req, res) => {
     [scriptPath, String(name).trim()],
     {
       cwd: __dirname,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        PYTHONUTF8: "1",
+      },
       maxBuffer: 1024 * 1024 * 10,
     },
     (error, stdout, stderr) => {
