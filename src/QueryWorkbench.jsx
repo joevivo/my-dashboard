@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export default function QueryWorkbench() {
-  const [query, setQuery] = useState("Billie Holiday");
+export default function QueryWorkbench({ onOpenArtist }) {
+  const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -85,7 +85,18 @@ export default function QueryWorkbench() {
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
             {result.classification || result.source || "Artist result"}
           </p>
-          <h3 className="mt-2 text-2xl font-black">{result.artist}</h3>
+          <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <h3 className="text-2xl font-black">{result.artist}</h3>
+            {onOpenArtist ? (
+              <button
+                type="button"
+                onClick={() => onOpenArtist(result.artist || query)}
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+              >
+                Open Artist Intelligence
+              </button>
+            ) : null}
+          </div>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{result.notes}</p>
 
           <div className="mt-5 grid gap-3 md:grid-cols-4">
@@ -153,10 +164,28 @@ export default function QueryWorkbench() {
         </section>
       ) : (
         <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
-          <h3 className="text-lg font-black">Ready</h3>
+          <h3 className="text-lg font-black">Search the archive</h3>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Enter an artist and search the Apple Music Library Tracks reconstruction.
+            Enter an artist to inspect library-track reconstruction, persistence, albums, songs, and timeline evidence.
           </p>
+
+          <div className="mt-4">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+              Try
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {["Peter Gabriel", "Billie Holiday", "The Feelies", "Sam Cooke", "H?sker D?", "The Replacements"].map((artist) => (
+                <button
+                  key={artist}
+                  type="button"
+                  onClick={() => setQuery(artist)}
+                  className="rounded-full border border-slate-300 px-3 py-1 text-xs font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+                  {artist}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
       )}
     </div>

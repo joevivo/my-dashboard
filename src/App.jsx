@@ -16,9 +16,11 @@ import MusicLibrary from "./MusicLibrary";
 import BooksView from "./BooksView";
 import NotesView from "./NotesView";
 import QueryWorkbench from "./QueryWorkbench";
+import ArtistIntelligence from "./ArtistIntelligence";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("IntelligenceHome");
+  const [selectedArtistForIntelligence, setSelectedArtistForIntelligence] = useState("Billie Holiday");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
   });
@@ -251,7 +253,17 @@ export default function App() {
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {activeView === "QueryWorkbench" ? (
-              <QueryWorkbench />
+              <QueryWorkbench
+                onOpenArtist={(artistName) => {
+                  setSelectedArtistForIntelligence(artistName);
+                  setActiveView("ArtistIntelligence");
+                }}
+              />
+            ) : activeView === "ArtistIntelligence" ? (
+              <ArtistIntelligence
+                artistName={selectedArtistForIntelligence}
+                onBack={() => setActiveView("QueryWorkbench")}
+              />
             ) : activeView === "IntelligenceHome" ? (
               <IntelligenceHome />
             ) : activeView === "Calendar" ? (
