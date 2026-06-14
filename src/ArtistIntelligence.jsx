@@ -198,32 +198,19 @@ export default function ArtistIntelligence({ artistName, onBack }) {
         </section>
       ) : (
         <>
-          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-600 dark:text-purple-300">
-              Artist Classification
-            </p>
-            <h3 className="mt-2 text-2xl font-black">{artistClassification.label}</h3>
-            <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {artistClassification.summary}
-            </p>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-              {artistClassification.rationale}
-            </p>
-          </section>
-
           <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-amber-200 dark:bg-slate-900/80 dark:border-amber-900">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-600 dark:text-amber-300">
-              Artist Interpretation
+              Artist Intelligence
             </p>
 
             <div className="mt-4 grid gap-3 md:grid-cols-4">
               <StatCard
                 label="Relationship Shape"
-                value="Pending Classification"
+                value={artistClassification.label}
               />
               <StatCard
                 label="Relationship Type"
-                value="Pending Classification"
+                value="Pending"
               />
               <StatCard
                 label="Importance"
@@ -231,12 +218,18 @@ export default function ArtistIntelligence({ artistName, onBack }) {
               />
               <StatCard
                 label="Confidence"
-                value="N/A"
+                value="Medium"
               />
             </div>
 
+            <p className="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
+              {artistClassification.summary}
+            </p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {artistClassification.rationale}
+            </p>
             <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              Artist Intelligence v1 will classify artist relationships using Music Intelligence taxonomy concepts such as Permanent Companion, Hidden Pillar, Catalog Companion, Identity Artist, Essential, and Constitutional Artist.
+              Relationship Shape is generated from Library Footprint and Years Represented. Relationship Type and Importance will be refined in Artist Intelligence v1.
             </p>
           </section>
 
