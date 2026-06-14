@@ -338,3 +338,242 @@
 - 2017-01-05: 1
 - 2017-01-08: 1
 
+# Music Query Workbench Sprint v1 Handoff
+
+## Preferred Name
+
+Ginto
+
+## Important Working Agreements
+
+* Avoid manual JSX edits whenever possible.
+* Repeated JSX edits are historically disastrous.
+* Prefer PowerShell patch scripts.
+* Make changes incrementally.
+* Build after every meaningful change.
+* Git checkpoint before moving to the next feature.
+
+---
+
+# Sprint Summary
+
+## Sprint Goal
+
+Realign Defending Sisyphus around Intelligence and validate query-driven discovery.
+
+## Definition of Done
+
+* Intelligence / Signals / Strat Tools navigation
+* Intelligence Home
+* Query Workbench v0
+* Live backend artist lookup
+* Git checkpoint
+
+## Status
+
+Completed.
+
+Git checkpoint:
+
+* Add live music query workbench artist lookup
+* Fix query workbench file encoding
+
+Pushed to GitHub.
+
+---
+
+# Major Discovery
+
+The Query Workbench works.
+
+More importantly:
+
+The act of asking questions is generating more value than browsing reports.
+
+Example:
+
+* Peter Gabriel
+* Led Zeppelin
+* Billie Holiday
+* Sam Cooke
+* The Misfits
+
+can now be explored directly from the application.
+
+This is the first genuine Intelligence feature in Defending Sisyphus.
+
+---
+
+# Architectural Discovery
+
+Library Evidence is not Play Activity.
+
+We now have two distinct evidence systems.
+
+## Play Activity
+
+Source:
+
+DuckDB Apple Music Play Activity
+
+Best for:
+
+* Total Plays
+* Listening Days
+* Companion Analysis
+* Volume Analysis
+* Persistence Analysis
+
+## Library Evidence
+
+Source:
+
+Apple Music Library Tracks export
+
+Best for:
+
+* Artist Presence
+* Album Presence
+* Years Active
+* First Seen
+* Latest Seen
+* Relationship Reconstruction
+
+Library Evidence should never be labeled "Total Plays."
+
+---
+
+# Terminology Updates
+
+Music Relationship Model was updated.
+
+New concepts under consideration:
+
+* Permanent Companion
+* Identity Artist
+* Hidden Pillar
+* Archive Giant
+* Resurgence Artist
+* Phase Artist
+
+Existing concepts remain:
+
+* Catalog Companion
+* Album-Rooted Companion
+* Single-Song Companion
+* Source-Limited Memory
+
+---
+
+# Most Interesting Results
+
+## Peter Gabriel
+
+* 14 active years
+* Strong evidence of Permanent Companion behavior
+* Birdy unexpectedly surfaced as the top album
+
+## Led Zeppelin
+
+* 13 active years
+* More persistent than expected
+* Candidate Hidden Pillar
+
+## R.E.M.
+
+* 14 active years
+* Strong evidence of Constant behavior
+* 2026 already showing renewed activity
+
+## Brian Eno
+
+Revealed the limitations of Library Evidence.
+
+Library reconstruction significantly understates actual listening volume.
+
+Important validation of the distinction between Library Evidence and Play Activity.
+
+---
+
+# Suggested Exploration Before Next Sprint
+
+Run artist lookups and keep notes on surprises.
+
+## Permanent Companion Candidates
+
+* R.E.M.
+* Neil Young
+* The Beatles
+* Peter Gabriel
+* The Cure
+* The Smiths
+* King Crimson
+* Brian Eno
+
+## Hidden Pillar Candidates
+
+* Sam Cooke
+* Billie Holiday
+* Johnny Cash
+* Led Zeppelin
+* Otis Redding
+* Ray Charles
+* The Replacements
+* The Breeders
+
+## Identity Artist Candidates
+
+* Toad The Wet Sprocket
+* Manchester Orchestra
+* Death Cab for Cutie
+* Matt Pond PA
+* Wilco
+
+## Surprise Audits
+
+* Bee Gees
+* Steve Miller Band
+* Lynyrd Skynyrd
+* Haircut 100
+* Modern English
+* Dexys Midnight Runners
+
+For each query ask:
+
+"What surprised me?"
+
+That question is more valuable than rankings.
+
+---
+
+# Candidate Next Sprint Goals
+
+Option A: Query Workbench v1.1
+
+* Search history
+* Better result presentation
+* Query persistence
+* Interpretation layer
+
+Option B: Artist Dossier Integration
+
+* Query Workbench launches Artist Dossier
+* Merge Library Evidence and Play Activity
+* Unified artist intelligence view
+
+Option C: Hidden Pillars Research
+
+* Formalize Hidden Pillar classification
+* Generate first report
+* Compare against Permanent Companions
+
+Option D: Living Rent Free
+
+* Operationalize the existing report
+* Surface directly in Intelligence
+
+---
+
+# Question To Begin Next Session
+
+Which artists surprised me, and what does that reveal about the difference between memory, identity, and listening volume?

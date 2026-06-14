@@ -101,11 +101,11 @@ export default function QueryWorkbench({ onOpenArtist }) {
 
           <div className="mt-5 grid gap-3 md:grid-cols-4">
             <div>
-              <p className="text-xs text-slate-500">Total Plays</p>
+              <p className="text-xs text-slate-500">Library Footprint</p>
               <p className="text-xl font-black">{result.totalPlays}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Years Active</p>
+              <p className="text-xs text-slate-500">Years Represented</p>
               <p className="text-xl font-black">{result.yearsActive}</p>
             </div>
             <div>
