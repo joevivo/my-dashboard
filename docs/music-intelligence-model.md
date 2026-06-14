@@ -438,3 +438,20 @@ Years Represented is the number of years in which Library Evidence exists for an
 
 This is useful for identifying persistence, but it is not the same as total listening activity.
 
+## Foundational Texts (Experimental)
+
+Some works function as teaching texts rather than favorite albums.
+
+These works help explain how the listener believes music should be approached.
+
+Current examples:
+
+- Fugazi — 13 Songs
+- George Winston — December
+- Brian Eno — Music for Airports
+
+Observed themes:
+
+- Integrity
+- Attention
+- Expanded listening
