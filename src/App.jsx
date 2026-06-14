@@ -34,7 +34,33 @@ export default function App() {
   };
   const navSections = [
     {
-      title: "StratOperations",
+      title: "Intelligence",
+      groups: [
+        {
+          title: "Personal Intelligence",
+          items: [
+            ["Music", "Music Intelligence"],
+            ["Books", "Books"],
+            ["Notes", "Notes"],
+          ],
+        },
+      ],
+    },
+    {
+      title: "Signals",
+      groups: [
+        {
+          title: "Live Signals",
+          items: [
+            ["Calendar", "Calendar"],
+            ["News", "News"],
+            ["Finance", "Finance"],
+          ],
+        },
+      ],
+    },
+    {
+      title: "Strat Tools",
       groups: [
         {
           title: "Simulation",
@@ -56,59 +82,12 @@ export default function App() {
           title: "Administration",
           items: [
             ["LeagueManager", "League Manager"],
+            ["CardImporter", "Card Importer"],
           ],
         },
       ],
     },
-    {
-      title: "Knowledge",
-      groups: [
-        {
-          title: "Library",
-          items: [
-            ["Books", "Books"],
-            ["Notes", "Notes"],
-          ],
-        },
-      ],
-    },
-    {
-      title: "Intelligence",
-      groups: [
-        {
-          title: "Signals",
-          items: [
-            ["News", "News"],
-            ["Finance", "Finance"],
-          ],
-        },
-      ],
-    },
-    {
-      title: "Archive",
-      groups: [
-        {
-          title: "Collections",
-          items: [
-            ["Music", "Music"],
-            ["MusicAnalytics", "Listening Analytics"],
-          ],
-        },
-      ],
-    },
-    {
-      title: "Utilities",
-      groups: [
-        {
-          title: "Tools",
-          items: [
-            ["Calendar", "Calendar"],
-            ["Cards", "Card Importer"],
-          ],
-        },
-      ],
-    },
-  ];
+  ]
 
   const navButton = (view, label) => (
     <button
