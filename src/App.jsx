@@ -17,7 +17,7 @@ import BooksView from "./BooksView";
 import NotesView from "./NotesView";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
-  const [activeView, setActiveView] = useState("Lineup");
+  const [activeView, setActiveView] = useState("IntelligenceHome");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
   });
@@ -39,6 +39,7 @@ export default function App() {
         {
           title: "Personal Intelligence",
           items: [
+            ["IntelligenceHome", "Intelligence Home"],
             ["Music", "Music Intelligence"],
             ["Books", "Books"],
             ["Notes", "Notes"],
@@ -102,6 +103,82 @@ export default function App() {
     >
       {label}
     </button>
+  );
+
+
+  const IntelligenceHome = () => (
+    <div className="space-y-6">
+      <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+          Defending Sisyphus
+        </p>
+        <h2 className="mt-2 text-3xl font-black tracking-tight">
+          Personal Intelligence System
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+          Query your archives, surface long-running patterns, and turn personal data into usable memory.
+        </p>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {[
+          ["Peter Gabriel", "14-year permanent companion", "A long-running signal with deep persistence."],
+          ["Billie Holiday", "Quiet persistence", "Not an archive giant, but present across many years."],
+          ["Sam Cooke", "Quiet persistence", "A durable companion hiding below headline totals."],
+          ["Led Zeppelin", "Surprising long-term companion", "Stronger persistence than expected."],
+          ["Johnny Cash", "Unexpected durability", "A recurring presence worth deeper inspection."],
+          ["Toad The Wet Sprocket", "Identity Artist", "Emotionally central without needing archive-dominant volume."],
+        ].map(([title, label, body]) => (
+          <div
+            key={title}
+            className="rounded-2xl bg-white/90 p-5 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
+              {label}
+            </p>
+            <h3 className="mt-2 text-lg font-black">{title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {body}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+        <h3 className="text-lg font-black">Next Intelligence Actions</h3>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <button
+            type="button"
+            className="rounded-xl border border-slate-300 px-4 py-3 text-left text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+          >
+            Query Workbench
+            <span className="block pt-1 text-xs font-medium text-slate-500">
+              Coming soon: artist, album, song, and date-range lookup.
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveView("Music")}
+            className="rounded-xl border border-slate-300 px-4 py-3 text-left text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+          >
+            Music Intelligence
+            <span className="block pt-1 text-xs font-medium text-slate-500">
+              Open the current music intelligence workspace.
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveView("Calendar")}
+            className="rounded-xl border border-slate-300 px-4 py-3 text-left text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+          >
+            Signals
+            <span className="block pt-1 text-xs font-medium text-slate-500">
+              Review calendar, news, and finance signals.
+            </span>
+          </button>
+        </div>
+      </section>
+    </div>
   );
 
   return (
@@ -171,7 +248,9 @@ export default function App() {
 
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
-            {activeView === "Calendar" ? (
+            {activeView === "IntelligenceHome" ? (
+              <IntelligenceHome />
+            ) : activeView === "Calendar" ? (
               <>
                 <WeatherBug />
                 <CalendarView />
