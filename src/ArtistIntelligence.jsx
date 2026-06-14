@@ -211,6 +211,35 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             </p>
           </section>
 
+          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-amber-200 dark:bg-slate-900/80 dark:border-amber-900">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-600 dark:text-amber-300">
+              Artist Interpretation
+            </p>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-4">
+              <StatCard
+                label="Relationship Shape"
+                value="Pending Classification"
+              />
+              <StatCard
+                label="Relationship Type"
+                value="Pending Classification"
+              />
+              <StatCard
+                label="Importance"
+                value="Not Rated"
+              />
+              <StatCard
+                label="Confidence"
+                value="N/A"
+              />
+            </div>
+
+            <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              Artist Intelligence v1 will classify artist relationships using Music Intelligence taxonomy concepts such as Permanent Companion, Hidden Pillar, Catalog Companion, Identity Artist, Essential, and Constitutional Artist.
+            </p>
+          </section>
+
           <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
               {queryResult?.classification || "Library Evidence"}
