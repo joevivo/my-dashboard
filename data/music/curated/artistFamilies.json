@@ -1,0 +1,21 @@
+[
+    {
+        "familyName":  "Tom Petty Family",
+        "primaryArtist":  "Tom Petty",
+        "members":  [
+                        "Tom Petty",
+                        "Tom Petty \u0026 The Heartbreakers"
+                    ],
+        "notes":  "Preserve solo and Heartbreakers identities while allowing relationship rollup."
+    },
+    {
+        "familyName":  "Robyn Hitchcock Family",
+        "primaryArtist":  "Robyn Hitchcock",
+        "members":  [
+                        "Robyn Hitchcock",
+                        "Robyn Hitchcock \u0026 The Egyptians",
+                        "Robyn Hitchcock \u0026 The Venus 3"
+                    ],
+        "notes":  "Preserve solo, Egyptians, and Venus 3 identities while allowing relationship rollup."
+    }
+]

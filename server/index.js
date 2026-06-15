@@ -12,6 +12,43 @@ import { execFile } from "child_process";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const ARTIST_FAMILIES_FILE = path.join(
+  __dirname,
+  "..",
+  "data",
+  "music",
+  "curated",
+  "artistFamilies.json"
+);
+
+function loadArtistFamilies() {
+  try {
+
+    const raw = fs.readFileSync(ARTIST_FAMILIES_FILE, "utf8");
+    const families = JSON.parse(raw);
+
+
+    return families;
+  } catch (error) {
+    console.error("Failed to load artist families:", error.message);
+    return [];
+  }
+}
+
+function resolveArtistFamily(artistName) {
+  const families = loadArtistFamilies();
+
+  return (
+    families.find((family) =>
+      family.members.some(
+        (member) =>
+          member.toLowerCase() ===
+          String(artistName).toLowerCase()
+      )
+    ) || null
+  );
+}
+
 dotenv.config({
   path: path.join(__dirname, ".env"),
 });
@@ -891,7 +928,12 @@ app.get("/api/music/query/artist", async (req, res) => {
       }
 
       try {
-        res.json(JSON.parse(stdout));
+        const result = JSON.parse(stdout);
+
+          result.family =
+            resolveArtistFamily(String(name).trim());
+
+          res.json(result);
       } catch (parseError) {
         console.error("Artist query parse error:", parseError);
         console.error(stdout);
@@ -918,6 +960,12 @@ app.get("/api/health", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
+
+
+
+
 
 
 
