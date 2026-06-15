@@ -113,6 +113,90 @@ function buildWhyBullets(result, classification) {
   return bullets;
 }
 
+
+function classifyRelationshipPattern(result) {
+  const albums = Array.isArray(result?.topAlbums)
+    ? result.topAlbums
+    : [];
+
+  const songs = Array.isArray(result?.topSongs)
+    ? result.topSongs
+    : [];
+
+  const totalPlays = Number(result?.totalPlays || 0);
+
+  if (!albums.length) {
+    return {
+      label: "Unknown Relationship",
+      rationale: "Not enough album evidence to determine a relationship pattern.",
+    };
+  }
+
+  const topAlbumShare =
+    totalPlays > 0 ? (albums[0]?.plays || 0) / totalPlays : 0;
+
+  const topSongShare =
+    totalPlays > 0 ? (songs[0]?.plays || 0) / totalPlays : 0;
+
+  if (topSongShare >= 0.60) {
+    return {
+      label: "Song-Centered Relationship",
+      rationale:
+        "A single song appears to dominate the surviving evidence.",
+    };
+  }
+
+  const greatestHitsAlbums = albums.filter((a) =>
+    /(greatest|best of|anthology|portrait|hits|retrospective|collection|essential|man and his music|man who invented soul)/i.test(
+      a.album || ""
+    )
+  );
+
+  const topAlbumIsCompilation =
+    /(greatest|best of|anthology|portrait|hits|retrospective|collection|essential|man and his music|man who invented soul)/i.test(
+      albums[0]?.album || ""
+    );
+
+  if (greatestHitsAlbums.length >= 2 || topAlbumIsCompilation) {
+    return {
+      label: "Greatest-Hits Relationship",
+      rationale:
+        "Compilation, retrospective, or legacy albums drive much of the evidence.",
+    };
+  }
+
+  if (topAlbumShare >= 0.40) {
+    return {
+      label: "Album-Centered Relationship",
+      rationale:
+        "A single non-compilation album accounts for a large share of the relationship.",
+    };
+  }
+
+  if (albums.length >= 7) {
+    return {
+      label: "Catalog Relationship",
+      rationale:
+        "Evidence spans many albums without a single dominant source.",
+    };
+  }
+
+  if (albums.length >= 3) {
+    return {
+      label: "Multi-Album Relationship",
+      rationale:
+        "Several albums contribute meaningfully to the relationship.",
+    };
+  }
+
+  return {
+    label: "Emerging Relationship",
+    rationale:
+      "A pattern exists, but there is not yet enough evidence for a stronger classification.",
+  };
+}
+
+
 const emptyData = {
   artists: [],
   albums: [],
@@ -203,6 +287,8 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   const timeline = queryResult?.timeline || [];
   const artistClassification = classifyArtist(queryResult);
   const whyBullets = buildWhyBullets(queryResult, artistClassification);
+  const relationshipPattern =
+    classifyRelationshipPattern(queryResult);
 
   return (
     <div className="space-y-6">
@@ -252,8 +338,8 @@ export default function ArtistIntelligence({ artistName, onBack }) {
                 value={artistClassification.label}
               />
               <StatCard
-                label="Relationship Type"
-                value="Pending"
+                label="Relationship Pattern"
+                value={relationshipPattern.label}
               />
               <StatCard
                 label="Importance"
@@ -280,10 +366,17 @@ export default function ArtistIntelligence({ artistName, onBack }) {
               <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
                 {artistClassification.rationale}
               </p>
+
+              <p className="mt-4 text-sm font-black text-slate-900 dark:text-slate-100">
+                Pattern
+              </p>
+              <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                {relationshipPattern.rationale}
+              </p>
             </div>
 
             <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              Relationship Shape is generated from Library Footprint and Years Represented. Relationship Type and Importance will be refined in Artist Intelligence v1.
+              Relationship Shape is generated from Library Footprint and Years Represented. Relationship Pattern is generated from album and song evidence.
             </p>
           </section>
 
