@@ -213,7 +213,38 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setMusicData(loadImportedMusicLibrary() || emptyData);
+    let isMounted = true;
+
+    const saved = localStorage.getItem("musicLibrary");
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setMusicData(parsed || emptyData);
+        return () => {
+          isMounted = false;
+        };
+      } catch (err) {
+        console.error("Failed to load curated music library:", err);
+      }
+    }
+
+    loadImportedMusicLibrary()
+      .then((library) => {
+        if (isMounted) {
+          setMusicData(library || emptyData);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load imported music library:", err);
+        if (isMounted) {
+          setMusicData(emptyData);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
