@@ -30,7 +30,7 @@ function classifyArtist(result) {
   if (yearsActive >= 10 && totalPlays >= 75) {
     return {
       label: "Permanent Companion",
-      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
+      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
       rationale:
         "This artist shows both long-term persistence and substantial library evidence across the archive.",
     };
@@ -39,7 +39,7 @@ function classifyArtist(result) {
   if (yearsActive >= 8 && totalPlays < 75) {
     return {
       label: "Hidden Pillar",
-      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
+      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
       rationale:
         "This artist appears repeatedly across the archive despite relatively modest volume.",
     };
@@ -48,7 +48,7 @@ function classifyArtist(result) {
   if (yearsActive >= 4 && totalPlays >= 10) {
     return {
       label: "Established Companion",
-      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
+      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
       rationale:
         "This artist has enough recurrence to suggest an established relationship, but not enough evidence for Permanent Companion status.",
     };
@@ -57,7 +57,7 @@ function classifyArtist(result) {
   if (yearsActive <= 3) {
     return {
       label: "Recent Signal",
-      summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
+      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
       rationale:
         "This artist has limited or recent evidence in the Library Tracks reconstruction.",
     };
@@ -65,10 +65,52 @@ function classifyArtist(result) {
 
   return {
     label: "Limited Evidence",
-    summary: `${yearsActive} active years ? ${totalPlays} library evidence records`,
+    summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
     rationale:
       "This artist has some evidence, but the current pattern does not fit a v0 classification cleanly.",
   };
+}
+
+
+function buildWhyBullets(result, classification) {
+  const totalPlays = Number(result?.totalPlays || 0);
+  const yearsActive = Number(result?.yearsActive || 0);
+  const albumCount = Array.isArray(result?.topAlbums) ? result.topAlbums.length : 0;
+  const timelineCount = Array.isArray(result?.timeline) ? result.timeline.length : 0;
+
+  const bullets = [];
+
+  if (yearsActive > 0) {
+    bullets.push(`${yearsActive} years represented in Library Evidence.`);
+  }
+
+  if (totalPlays > 0) {
+    bullets.push(`${totalPlays} Library Footprint records found.`);
+  }
+
+  if (timelineCount >= 8) {
+    bullets.push("Persistent archive presence across many years.");
+  } else if (timelineCount >= 4) {
+    bullets.push("Recurring archive presence across multiple periods.");
+  }
+
+  if (albumCount >= 7) {
+    bullets.push("Broad album spread suggests a catalog-level relationship.");
+  } else if (albumCount >= 3) {
+    bullets.push("Multiple albums are represented in the surviving archive.");
+  } else if (albumCount === 1) {
+    bullets.push("Evidence is concentrated around a single album.");
+  }
+
+  if (classification?.label === "Hidden Pillar") {
+    bullets.push("Modest footprint combined with long persistence suggests a hidden pillar.");
+  }
+
+  if (classification?.label === "Permanent Companion") {
+    bullets.push("Long-term persistence and substantial footprint suggest a permanent companion.");
+  }
+
+  return bullets;
 }
 
 const emptyData = {
@@ -125,10 +167,10 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   const selectedArtistRecord = useMemo(() => {
     if (!displayArtist) return null;
 
-    return musicData.artists.find(
+    return (musicData.artists || []).find(
       (item) => normalizeText(item.name) === normalizeText(displayArtist)
     );
-  }, [musicData.artists, displayArtist]);
+  }, [musicData, displayArtist]);
 
   const related = useMemo(() => {
     if (!displayArtist) {
@@ -141,16 +183,16 @@ export default function ArtistIntelligence({ artistName, onBack }) {
     }
 
     return {
-      albums: musicData.albums.filter((item) =>
+      albums: (musicData.albums || []).filter((item) =>
         itemMentionsArtist(item, displayArtist)
       ),
-      playlists: musicData.playlists.filter((item) =>
+      playlists: (musicData.playlists || []).filter((item) =>
         itemMentionsArtist(item, displayArtist)
       ),
-      shows: musicData.shows.filter((item) =>
+      shows: (musicData.shows || []).filter((item) =>
         itemMentionsArtist(item, displayArtist)
       ),
-      explore: musicData.explore.filter((item) =>
+      explore: (musicData.explore || []).filter((item) =>
         itemMentionsArtist(item, displayArtist)
       ),
     };
@@ -160,6 +202,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   const albums = queryResult?.topAlbums || [];
   const timeline = queryResult?.timeline || [];
   const artistClassification = classifyArtist(queryResult);
+  const whyBullets = buildWhyBullets(queryResult, artistClassification);
 
   return (
     <div className="space-y-6">
@@ -222,12 +265,23 @@ export default function ArtistIntelligence({ artistName, onBack }) {
               />
             </div>
 
-            <p className="mt-4 text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {artistClassification.summary}
-            </p>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-              {artistClassification.rationale}
-            </p>
+            <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50/60 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+              <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
+                Why
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
+                {whyBullets.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="text-amber-600 dark:text-amber-300">-</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                {artistClassification.rationale}
+              </p>
+            </div>
+
             <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
               Relationship Shape is generated from Library Footprint and Years Represented. Relationship Type and Importance will be refined in Artist Intelligence v1.
             </p>
@@ -276,7 +330,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
                     {songs.map((item) => (
                       <li key={item.song}>
                         {item.song}
-                        {item.plays ? ` ? ${item.plays}` : ""}
+                        {item.plays ? ` - ${item.plays}` : ""}
                       </li>
                     ))}
                   </ul>
@@ -292,7 +346,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
                     {albums.map((item) => (
                       <li key={item.album}>
                         {item.album}
-                        {item.plays ? ` ? ${item.plays}` : ""}
+                        {item.plays ? ` - ${item.plays}` : ""}
                       </li>
                     ))}
                   </ul>
