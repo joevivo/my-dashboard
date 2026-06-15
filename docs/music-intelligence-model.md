@@ -455,3 +455,114 @@ Observed themes:
 - Integrity
 - Attention
 - Expanded listening
+
+Relationship Shape
+------------------
+A pattern derived from archive evidence.
+
+Examples:
+- Permanent Companion
+- Hidden Pillar
+- Established Companion
+
+Relationship Shape is NOT artist importance.
+
+Examples:
+- Sam Cooke may be Hidden Pillar and Constitutional.
+- Peter Gabriel may be Permanent Companion and Constitutional.
+
+---
+
+## Artist Relationship Data Model v1
+
+Artist Intelligence separates artist interpretation into three independent fields:
+
+### Relationship Shape
+
+Relationship Shape describes the persistence and footprint pattern visible in the archive.
+
+Current values:
+
+- Permanent Companion
+- Hidden Pillar
+- Established Companion
+- Recent Signal
+- Limited Evidence
+
+Relationship Shape is derived primarily from Library Footprint and Years Represented.
+
+### Relationship Pattern
+
+Relationship Pattern describes what kind of listening relationship the surviving evidence suggests.
+
+Current values:
+
+- Catalog Relationship
+- Multi-Album Relationship
+- Album-Centered Relationship
+- Greatest-Hits Relationship
+- Song-Centered Relationship
+- Live-Catalog Relationship
+- Archive Relationship
+- Source-Limited Relationship
+
+Relationship Pattern is derived from album spread, song concentration, compilation evidence, and live/archive material.
+
+### Evidence Quality
+
+Evidence Quality describes how much trust should be placed in the current source for this artist.
+
+Current values:
+
+- Strong
+- Partial
+- Weak
+- Conflicted
+
+Evidence Quality prevents Library Evidence from being mistaken for complete listening reality.
+
+---
+
+## Regression Test Artists
+
+### Billie Holiday
+
+Library Evidence currently understates the relationship.
+
+Observed issue:
+
+- Library Tracks shows limited evidence.
+- Known relationship is more persistent and important than the Library Footprint suggests.
+
+Model implication:
+
+- Evidence Quality: Weak or Source-Limited
+- Do not treat Recent Signal as a full relationship interpretation.
+
+### Brian Eno
+
+Library Evidence conflicts with Play Activity.
+
+Observed issue:
+
+- Library Tracks shows modest footprint.
+- Play Activity shows massive listening volume and long-term ambient use.
+
+Model implication:
+
+- Evidence Quality: Conflicted
+- Play Activity should override Library Evidence for listening-volume interpretation.
+
+### Grateful Dead
+
+Standard catalog classification is insufficient.
+
+Observed issue:
+
+- Evidence is driven heavily by live releases, archive series, Dave's Picks, 30 Days of the Dead, and concert recordings.
+
+Model implication:
+
+- Pattern: Live-Catalog Relationship or Archive Relationship
+- Evidence Quality: Strong
+
