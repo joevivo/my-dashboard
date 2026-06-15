@@ -256,6 +256,28 @@ export default function ArtistIntelligence({ artistName, onBack }) {
     );
   }, [musicData, displayArtist]);
 
+
+  const evidenceQuality = useMemo(() => {
+    const years = queryResult?.yearsActive || 0;
+    const footprint = queryResult?.totalPlays || 0;
+
+    if (
+      normalizeText(displayArtist) === normalizeText("Brian Eno")
+    ) {
+      return "Conflicted";
+    }
+
+    if (years >= 8 && footprint >= 50) {
+      return "Strong";
+    }
+
+    if (years >= 4 && footprint >= 10) {
+      return "Partial";
+    }
+
+    return "Weak";
+  }, [displayArtist, queryResult]);
+
   const related = useMemo(() => {
     if (!displayArtist) {
       return {
@@ -342,8 +364,8 @@ export default function ArtistIntelligence({ artistName, onBack }) {
                 value={relationshipPattern.label}
               />
               <StatCard
-                label="Importance"
-                value="Not Rated"
+                label="Evidence Quality"
+                value={evidenceQuality}
               />
               <StatCard
                 label="Confidence"
