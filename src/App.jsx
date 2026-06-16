@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import AppleMusicAnalytics from "./AppleMusicAnalytics";
 import CalendarView from "./CalendarView";
 import LineupAnalyzer from "./LineupAnalyzer";
@@ -17,6 +17,7 @@ import BooksView from "./BooksView";
 import NotesView from "./NotesView";
 import QueryWorkbench from "./QueryWorkbench";
 import ArtistIntelligence from "./ArtistIntelligence";
+import PlaylistIntelligence from "./PlaylistIntelligence";
 import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("IntelligenceHome");
@@ -45,6 +46,7 @@ export default function App() {
             ["IntelligenceHome", "Intelligence Home"],
             ["QueryWorkbench", "Query Workbench"],
             ["Music", "Music Intelligence"],
+            ["PlaylistIntelligence", "Playlist Intelligence"],
             ["Books", "Books"],
             ["Notes", "Notes"],
           ],
@@ -289,7 +291,9 @@ export default function App() {
               <NewsView />
             ) : activeView === "Finance" ? (
               <FinanceView />
-              
+
+            ) : activeView === "PlaylistIntelligence" ? (
+              <PlaylistIntelligence />
             ) : activeView === "Music" ? (
               <MusicLibrary />
             ) : activeView === "MusicAnalytics" ? (
@@ -309,3 +313,6 @@ export default function App() {
     </div>
   );
 }
+
+
+

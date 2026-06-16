@@ -10,6 +10,11 @@ target_playlists = [
     "500 Songs",
     "deck & chill",
     "let’s go streaking!",
+    "sirens",
+    "not the original artist",
+    "road trip",
+    "rubik's cube",
+    "Above the fruited plain",
 ]
 
 output_path = Path("data/music/playlist_intelligence.json")
@@ -85,6 +90,12 @@ for name, pts in playlist_tracks.items():
             {"artist": artist, "songCount": count}
             for artist, count in artists.most_common(10)
         ],
+        "signatureSongs": [],
+        "bridgeSongs": [],
+        "exclusiveSongCount": 0,
+        "sharedSongCount": 0,
+        "exclusivityScore": 0,
+        "playlistWorldSummary": "",
     })
 
 artist_to_playlists = defaultdict(set)
@@ -129,25 +140,93 @@ bridge_songs = sorted(
     key=lambda x: (-x["playlistCount"], x["artist"].lower(), x["song"].lower())
 )
 
+playlist_summary_by_name = {
+    item["name"]: item
+    for item in playlist_summaries
+}
+
+for name, pts in playlist_tracks.items():
+    summary = playlist_summary_by_name[name]
+    exclusive_count = 0
+    shared_count = 0
+    playlist_bridge_songs = []
+
+    for track in pts:
+        skey = song_key(track)
+        playlist_count = len(song_to_playlists[skey])
+
+        if playlist_count == 1:
+            exclusive_count += 1
+        else:
+            shared_count += 1
+            item = song_obj(track)
+            item["playlists"] = sorted(list(song_to_playlists[skey]))
+            item["playlistCount"] = playlist_count
+            playlist_bridge_songs.append(item)
+
+    summary["exclusiveSongCount"] = exclusive_count
+    summary["sharedSongCount"] = shared_count
+    summary["exclusivityScore"] = round((exclusive_count / len(pts)) * 100, 1) if pts else 0
+    summary["bridgeSongs"] = sorted(
+        playlist_bridge_songs,
+        key=lambda x: (-x["playlistCount"], -x["plays"], x["artist"].lower(), x["song"].lower())
+    )[:10]
+    summary["playlistWorldSummary"] = (
+        f"{name} is {summary['exclusivityScore']}% exclusive "
+        f"with {exclusive_count} playlist-unique songs and {shared_count} bridge songs."
+    )
+
 playlist_signatures = []
 
 for name, pts in playlist_tracks.items():
-    # v0 placeholder: use highest-played songs as provisional signatures.
-    # This is intentionally not final intelligence logic.
+    candidates = []
+
+    for track in pts:
+        skey = song_key(track)
+        item = song_obj(track)
+        playlist_count = len(song_to_playlists[skey])
+
+        candidates.append({
+            **item,
+            "playlistCount": playlist_count,
+            "signatureScore": item["plays"] - ((playlist_count - 1) * 10),
+        })
+
     top_tracks = sorted(
-        [song_obj(t) for t in pts],
-        key=lambda x: (-x["plays"], x["artist"].lower(), x["song"].lower())
+        candidates,
+        key=lambda x: (x["playlistCount"], -x["signatureScore"], -x["plays"], x["artist"].lower(), x["song"].lower())
     )[:5]
 
+    summary_signature_songs = []
+
     for track in top_tracks:
-        playlist_signatures.append({
+        reason = "Characteristic candidate: playlist-unique song with play evidence"
+        if track["playlistCount"] > 1:
+            reason = "Characteristic candidate: shared song retained due to strong play evidence"
+
+        signature_item = {
             "playlist": name,
             "artist": track["artist"],
             "song": track["song"],
             "album": track["album"],
             "plays": track["plays"],
-            "reason": "Provisional signature: high-play representative song",
+            "playlistCount": track["playlistCount"],
+            "signatureScore": track["signatureScore"],
+            "reason": reason,
+        }
+
+        playlist_signatures.append(signature_item)
+        summary_signature_songs.append({
+            "artist": track["artist"],
+            "song": track["song"],
+            "album": track["album"],
+            "plays": track["plays"],
+            "playlistCount": track["playlistCount"],
+            "signatureScore": track["signatureScore"],
+            "reason": reason,
         })
+
+    playlist_summary_by_name[name]["signatureSongs"] = summary_signature_songs
 
 data = {
     "generatedBy": "playlist_intelligence_export.py",
@@ -167,4 +246,5 @@ print(f"Playlists: {len(playlist_summaries)}")
 print(f"Shared core artists: {len(shared_core_artists)}")
 print(f"Bridge songs: {len(bridge_songs)}")
 print(f"Playlist signatures: {len(playlist_signatures)}")
+
 

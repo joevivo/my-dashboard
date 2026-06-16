@@ -957,9 +957,62 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+
+app.get("/api/music/playlist-intelligence", (req, res) => {
+  const playlistIntelligenceFile = path.join(
+    __dirname,
+    "..",
+    "data",
+    "music",
+    "playlist_intelligence.json"
+  );
+
+  try {
+    const raw = fs.readFileSync(playlistIntelligenceFile, "utf8");
+    res.json(JSON.parse(raw));
+  } catch (error) {
+    console.error("Failed to load playlist intelligence:", error.message);
+    res.status(500).json({
+      error: "Failed to load playlist intelligence",
+      details: error.message,
+    });
+  }
+});
+
+app.get("/api/music/playlist-intelligence/summary", (req, res) => {
+  const playlistIntelligenceFile = path.join(
+    __dirname,
+    "..",
+    "data",
+    "music",
+    "playlist_intelligence.json"
+  );
+
+  try {
+    const raw = fs.readFileSync(playlistIntelligenceFile, "utf8");
+    const data = JSON.parse(raw);
+
+    res.json({
+      playlists: data.playlists,
+      sharedCoreArtists: data.sharedCoreArtists
+        .filter((artist) => artist.playlistCount === 3)
+        .slice(0, 12),
+      bridgeSongs: data.bridgeSongs.slice(0, 12),
+      playlistSignatures: data.playlistSignatures,
+    });
+  } catch (error) {
+    console.error("Failed to load playlist intelligence summary:", error.message);
+    res.status(500).json({
+      error: "Failed to load playlist intelligence summary",
+      details: error.message,
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
 
 
 
