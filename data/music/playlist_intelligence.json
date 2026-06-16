@@ -1,0 +1,1491 @@
+{
+  "generatedBy": "playlist_intelligence_export.py",
+  "playlists": [
+    {
+      "name": "500 Songs",
+      "songCount": 453,
+      "artistCount": 219,
+      "albumCount": 397,
+      "totalPlays": 3948,
+      "averagePlays": 8.7,
+      "medianPlays": 6,
+      "zeroPlayCount": 32,
+      "lowPlayCount": 188,
+      "highPlayCount": 26,
+      "topArtists": [
+        {
+          "artist": "The Beatles",
+          "songCount": 10
+        },
+        {
+          "artist": "Led Zeppelin",
+          "songCount": 10
+        },
+        {
+          "artist": "R.E.M.",
+          "songCount": 9
+        },
+        {
+          "artist": "Genesis",
+          "songCount": 8
+        },
+        {
+          "artist": "Wilco",
+          "songCount": 8
+        },
+        {
+          "artist": "The Cure",
+          "songCount": 7
+        },
+        {
+          "artist": "David Bowie",
+          "songCount": 7
+        },
+        {
+          "artist": "Pearl Jam",
+          "songCount": 6
+        },
+        {
+          "artist": "The Police",
+          "songCount": 6
+        },
+        {
+          "artist": "King Crimson",
+          "songCount": 6
+        }
+      ]
+    },
+    {
+      "name": "deck & chill",
+      "songCount": 288,
+      "artistCount": 265,
+      "albumCount": 286,
+      "totalPlays": 1449,
+      "averagePlays": 5.0,
+      "medianPlays": 2.0,
+      "zeroPlayCount": 68,
+      "lowPlayCount": 140,
+      "highPlayCount": 9,
+      "topArtists": [
+        {
+          "artist": "The Smashing Pumpkins",
+          "songCount": 4
+        },
+        {
+          "artist": "Lana Del Rey",
+          "songCount": 3
+        },
+        {
+          "artist": "Andrew Bird",
+          "songCount": 3
+        },
+        {
+          "artist": "Rilo Kiley",
+          "songCount": 2
+        },
+        {
+          "artist": "Beach Bunny",
+          "songCount": 2
+        },
+        {
+          "artist": "Hippo Campus",
+          "songCount": 2
+        },
+        {
+          "artist": "Phillip LaRue",
+          "songCount": 2
+        },
+        {
+          "artist": "The Marías",
+          "songCount": 2
+        },
+        {
+          "artist": "Two Feet",
+          "songCount": 2
+        },
+        {
+          "artist": "Dire Straits",
+          "songCount": 2
+        }
+      ]
+    },
+    {
+      "name": "let’s go streaking!",
+      "songCount": 167,
+      "artistCount": 147,
+      "albumCount": 163,
+      "totalPlays": 1614,
+      "averagePlays": 9.7,
+      "medianPlays": 8,
+      "zeroPlayCount": 19,
+      "lowPlayCount": 48,
+      "highPlayCount": 15,
+      "topArtists": [
+        {
+          "artist": "Tom Petty & The Heartbreakers",
+          "songCount": 4
+        },
+        {
+          "artist": "K.Flay",
+          "songCount": 3
+        },
+        {
+          "artist": "The Beatles",
+          "songCount": 2
+        },
+        {
+          "artist": "Pixies",
+          "songCount": 2
+        },
+        {
+          "artist": "The Lemonheads",
+          "songCount": 2
+        },
+        {
+          "artist": "The Cult",
+          "songCount": 2
+        },
+        {
+          "artist": "Billy Joel",
+          "songCount": 2
+        },
+        {
+          "artist": "Talking Heads",
+          "songCount": 2
+        },
+        {
+          "artist": "Creedence Clearwater Revival",
+          "songCount": 2
+        },
+        {
+          "artist": "James Gang",
+          "songCount": 2
+        }
+      ]
+    }
+  ],
+  "sharedCoreArtists": [
+    {
+      "artist": "Climax Blues Band",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Fleetwood Mac",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Grateful Dead",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Ray Charles",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Sam Cooke",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Talk Talk",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "Tom Petty & The Heartbreakers",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "U2",
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "10cc",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "A Flock of Seagulls",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "AC/DC",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Adele",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Art Brut",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Beach Slang",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Beck",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Billy Joel",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Bob Marley & The Wailers",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Bob Mould",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Cage The Elephant",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Camper Van Beethoven",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Caroline Rose",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Cheap Trick",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Cheech & Chong",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Chris Isaak",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Courtney Barnett",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "David Gilmour",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "De La Soul",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Death Cab For Cutie",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Def Leppard",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Dire Straits",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Edgehill",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Elvis Costello",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Elvis Costello & The Attractions",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Emmylou Harris",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Eve 6",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Everclear",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Fiona Apple",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Foo Fighters",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Foreigner",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Guided By Voices",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Haircut 100",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Hippo Campus",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Incubus",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "James Gang",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Jimmy Buffett",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "K.C. & The Sunshine Band",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Led Zeppelin",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "matt pond PA",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Michael Kiwanuka",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Modest Mouse",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Nina Simone",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Old 97's",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Pat Benatar",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Peter Gabriel",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Pixies",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Pretty Lights",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Queen",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "R.E.M.",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Robyn Hitchcock",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sammy Hagar",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sex Pistols",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sidewinders",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Silversun Pickups",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sinéad O'Connor",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sonic Youth",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Spendtime Palace",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Squeeze",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Steely Dan",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sting",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "T. Rex",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Talking Heads",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The B-52's",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Band",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Beatles",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Beths",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Cult",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Cure",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Feelies",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Knack",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The La's",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Lemonheads",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Monkees",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Playmates & Rudy Traylor And His Orchestra",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Plimsouls",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Replacements",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Smashing Pumpkins",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Smiths",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Them",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Three Dog Night",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Trip Shakespeare",
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Van Morrison",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "War",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Whiskeytown",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Wilco",
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Wilson Pickett",
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    }
+  ],
+  "bridgeSongs": [
+    {
+      "artist": "Climax Blues Band",
+      "song": "Couldn't Get It Right",
+      "album": "Gold Plated",
+      "plays": 7,
+      "playlists": [
+        "500 Songs",
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 3
+    },
+    {
+      "artist": "A Flock of Seagulls",
+      "song": "Space Age Love Song",
+      "album": "A Flock of Seagulls",
+      "plays": 11,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "AC/DC",
+      "song": "Gimme A Bullet",
+      "album": "Powerage",
+      "plays": 15,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Bob Marley & The Wailers",
+      "song": "Three Little Birds",
+      "album": "Exodus",
+      "plays": 39,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Camper Van Beethoven",
+      "song": "(We're A) Bad Trip",
+      "album": "II & III",
+      "plays": 25,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Cheap Trick",
+      "song": "If You Want My Love",
+      "album": "Cheap Trick: The Greatest Hits",
+      "plays": 11,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Dire Straits",
+      "song": "Once Upon a Time In the West",
+      "album": "Communique",
+      "plays": 9,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Edgehill",
+      "song": "Just Got Clean",
+      "album": "Just Got Clean / Attic Friends - Single",
+      "plays": 2,
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Eve 6",
+      "song": "Inside Out",
+      "album": "Eve 6",
+      "plays": 20,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Everclear",
+      "song": "Santa Monica",
+      "album": "Sparkle And Fade",
+      "plays": 27,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Fiona Apple",
+      "song": "Sleep To Dream",
+      "album": "Tidal",
+      "plays": 15,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Fleetwood Mac",
+      "song": "Go Your Own Way",
+      "album": "Rumours",
+      "plays": 11,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Grateful Dead",
+      "song": "Scarlet Begonias",
+      "album": "From the Mars Hotel",
+      "plays": 19,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Haircut 100",
+      "song": "Love Plus One",
+      "album": "Haircut 100",
+      "plays": 8,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Incubus",
+      "song": "Wish You Were Here",
+      "album": "Morning View",
+      "plays": 29,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "James Gang",
+      "song": "Funk #49",
+      "album": "Dogtown and Z-Boys: O.G. Motion Picture Soundtrack",
+      "plays": 4,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "K.C. & The Sunshine Band",
+      "song": "Boogie Shoes",
+      "album": "Saturday Night Fever (Disc 2)",
+      "plays": 13,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Old 97's",
+      "song": "Bloomington",
+      "album": "Drag It Up",
+      "plays": 17,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Pixies",
+      "song": "Gouge Away",
+      "album": "Doolittle",
+      "plays": 42,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Pretty Lights",
+      "song": "Finally Moving",
+      "album": "Taking Up Your Precious Time",
+      "plays": 25,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "R.E.M.",
+      "song": "Belong",
+      "album": "Out Of Time",
+      "plays": 16,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Sidewinders",
+      "song": "We Don't Do That Anymore",
+      "album": "Auntie Ramos' Pool Hall",
+      "plays": 2,
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Spendtime Palace",
+      "song": "Heart in Threes",
+      "album": "Sonora - EP",
+      "plays": 2,
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Squeeze",
+      "song": "Goodbye Girl",
+      "album": "Singles 45's And Under",
+      "plays": 16,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Squeeze",
+      "song": "Tempted",
+      "album": "Singles 45's And Under",
+      "plays": 17,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Steely Dan",
+      "song": "Dirty Work",
+      "album": "Can't Buy A Thrill",
+      "plays": 19,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "T. Rex",
+      "song": "Jeepster",
+      "album": "Electric Warrior (Expanded Edition) [2003 Remaster]",
+      "plays": 14,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Talk Talk",
+      "song": "Life's What You Make It",
+      "album": "Natural History - The Very Best Of Talk Talk",
+      "plays": 17,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Cult",
+      "song": "She Sells Sanctuary",
+      "album": "Love",
+      "plays": 16,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Cure",
+      "song": "Push",
+      "album": "The Head On The Door",
+      "plays": 19,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Knack",
+      "song": "Good Girls Don't",
+      "album": "Get The Knack",
+      "plays": 16,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The La's",
+      "song": "There She Goes",
+      "album": "The La's",
+      "plays": 12,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Playmates & Rudy Traylor And His Orchestra",
+      "song": "Let's Have a Party",
+      "album": "The Playmates, 1958 (feat. Rudy Traylor And His Orchestra)",
+      "plays": 0,
+      "playlists": [
+        "deck & chill",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Plimsouls",
+      "song": "A Million Miles Away",
+      "album": "Everywhere at once",
+      "plays": 32,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "The Smiths",
+      "song": "There Is A Light That Never Goes Out",
+      "album": "The Queen Is Dead",
+      "plays": 31,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Tom Petty & The Heartbreakers",
+      "song": "Breakdown",
+      "album": "Greatest Hits",
+      "plays": 37,
+      "playlists": [
+        "500 Songs",
+        "deck & chill"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Tom Petty & The Heartbreakers",
+      "song": "Even the Losers",
+      "album": "Damn the Torpedoes",
+      "plays": 15,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Tom Petty & The Heartbreakers",
+      "song": "Stop Draggin' My Heart Around",
+      "album": "Stupid 80's Rock - Volume 3",
+      "plays": 21,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    },
+    {
+      "artist": "Wilco",
+      "song": "I'm always in love",
+      "album": "Summerteeth Demos",
+      "plays": 22,
+      "playlists": [
+        "500 Songs",
+        "let’s go streaking!"
+      ],
+      "playlistCount": 2
+    }
+  ],
+  "playlistSignatures": [
+    {
+      "playlist": "500 Songs",
+      "artist": "Whiskeytown",
+      "song": "kiss & make up",
+      "album": "Those Weren't the Days - EP",
+      "plays": 69,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "500 Songs",
+      "artist": "Hippo Campus",
+      "song": "Suicide Saturday",
+      "album": "Bashful Creatures - EP",
+      "plays": 66,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "500 Songs",
+      "artist": "Toad The Wet Sprocket",
+      "song": "Stupid",
+      "album": "Dulcinea",
+      "plays": 54,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "500 Songs",
+      "artist": "Matchbox Twenty",
+      "song": "How Far We've Come",
+      "album": "Exile On Mainstream [Disc 1]",
+      "plays": 48,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "500 Songs",
+      "artist": "Pixies",
+      "song": "Gouge Away",
+      "album": "Doolittle",
+      "plays": 42,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "deck & chill",
+      "artist": "Lana Del Rey",
+      "song": "High By the Beach",
+      "album": "Honeymoon",
+      "plays": 51,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "deck & chill",
+      "artist": "Beach Bunny",
+      "song": "Shoegazer",
+      "album": "Pool Party - EP",
+      "plays": 43,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "deck & chill",
+      "artist": "Lana Del Rey",
+      "song": "Doin' Time",
+      "album": "Norman F*****g Rockwell!",
+      "plays": 42,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "deck & chill",
+      "artist": "Tom Petty & The Heartbreakers",
+      "song": "Breakdown",
+      "album": "Greatest Hits",
+      "plays": 37,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "deck & chill",
+      "artist": "The Trouble With Sweeney",
+      "song": "She Is Right Here Tonight",
+      "album": "Dear Life",
+      "plays": 28,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "let’s go streaking!",
+      "artist": "Silversun Pickups",
+      "song": "Nightlight",
+      "album": "Better Nature",
+      "plays": 52,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "let’s go streaking!",
+      "artist": "Pixies",
+      "song": "Gouge Away",
+      "album": "Doolittle",
+      "plays": 42,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "let’s go streaking!",
+      "artist": "Bob Marley & The Wailers",
+      "song": "Three Little Birds",
+      "album": "Exodus",
+      "plays": 39,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "let’s go streaking!",
+      "artist": "K.Flay",
+      "song": "This Baby Don’t Cry",
+      "album": "Solutions",
+      "plays": 38,
+      "reason": "Provisional signature: high-play representative song"
+    },
+    {
+      "playlist": "let’s go streaking!",
+      "artist": "The Plimsouls",
+      "song": "A Million Miles Away",
+      "album": "Everywhere at once",
+      "plays": 32,
+      "reason": "Provisional signature: high-play representative song"
+    }
+  ]
+}
