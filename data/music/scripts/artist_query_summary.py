@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import re
 import sys
@@ -20,6 +21,8 @@ ARTIST_ALIASES = {
     "the eagles": "eagles",
     "eagles": "eagles",
 }
+
+PLAY_ACTIVITY_SOURCE = Path("C:/Users/joevi/apple-music-sanitized/apple-music-daily-track-summary.csv")
 
 
 def norm(value: object) -> str:
@@ -72,6 +75,63 @@ def match_rank(query: str, artist: str) -> int | None:
         return 4
 
     return None
+
+
+def parse_track_artist(track_description: object) -> str | None:
+    value = str(track_description or "").strip()
+
+    if " - " not in value:
+        return None
+
+    artist = value.split(" - ", 1)[0].strip()
+    if not artist:
+        return None
+
+    if artist.upper() in {"UNKNOWN", "N/A", "NONE", "NULL"}:
+        return None
+
+    return artist
+
+
+def parse_int(value: object) -> int:
+    try:
+        return int(float(str(value or "0").strip() or "0"))
+    except Exception:
+        return 0
+
+
+def load_play_activity_summary(query: str) -> dict:
+    if not PLAY_ACTIVITY_SOURCE.exists():
+        return {
+            "actualPlays": None,
+            "actualSkips": None,
+            "listeningDurationMs": None,
+            "playActivitySource": "missing",
+        }
+
+    actual_plays = 0
+    actual_skips = 0
+    listening_duration_ms = 0
+
+    with PLAY_ACTIVITY_SOURCE.open("r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            artist = parse_track_artist(row.get("Track Description"))
+            if match_rank(query, artist) is None:
+                continue
+
+            actual_plays += parse_int(row.get("Play Count"))
+            actual_skips += parse_int(row.get("Skip Count"))
+            listening_duration_ms += parse_int(row.get("Play Duration Milliseconds"))
+
+    return {
+        "actualPlays": actual_plays,
+        "actualSkips": actual_skips,
+        "hoursListened": round(listening_duration_ms / 1000 / 60 / 60, 1),
+        "listeningDurationMs": listening_duration_ms,
+        "playActivitySource": "apple_music_daily_track_summary",
+    }
 
 
 def parse_date(value: object):
@@ -149,10 +209,17 @@ def main() -> int:
     top_albums = Counter(item["album"] for item in matches if item["album"])
     year_counts = Counter(item["year"] for item in matches)
 
+    play_activity = load_play_activity_summary(query)
+
     result = {
         "artist": canonical_artist,
         "query": query,
-        "totalPlays": len(matches),
+        "libraryEvidenceRecords": len(matches),
+        "actualPlays": play_activity["actualPlays"],
+        "actualSkips": play_activity["actualSkips"],
+        "hoursListened": play_activity["hoursListened"],
+        "listeningDurationMs": play_activity["listeningDurationMs"],
+        "playActivitySource": play_activity["playActivitySource"],
         "yearsActive": len(years),
         "firstSeen": str(dates[0].year) if dates else "",
         "latestSeen": str(dates[-1].year) if dates else "",
@@ -182,4 +249,6 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
 
