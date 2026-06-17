@@ -32,9 +32,15 @@ def norm(value: object) -> str:
     return text
 
 
+def strip_leading_article(value: str) -> str:
+    return re.sub(r"^the\s+", "", value).strip()
+
+
 def canonical_key(value: object) -> str:
     normalized = norm(value)
-    return ARTIST_ALIASES.get(normalized, normalized)
+    aliased = ARTIST_ALIASES.get(normalized, normalized)
+    stripped = strip_leading_article(aliased)
+    return ARTIST_ALIASES.get(stripped, stripped)
 
 
 def match_rank(query: str, artist: str) -> int | None:
@@ -176,3 +182,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
