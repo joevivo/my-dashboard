@@ -1060,9 +1060,79 @@ app.get("/api/music/playlist-intelligence/summary", (req, res) => {
     });
   }
 });
+
+app.get("/api/apple-music/recent-tracks", async (req, res) => {
+  const developerToken = process.env.APPLE_MUSIC_DEVELOPER_TOKEN;
+  const musicUserToken = process.env.APPLE_MUSIC_USER_TOKEN;
+
+  if (!developerToken || !musicUserToken) {
+    return res.status(501).json({
+      error: "Apple Music tokens not configured",
+      requiredEnv: [
+        "APPLE_MUSIC_DEVELOPER_TOKEN",
+        "APPLE_MUSIC_USER_TOKEN"
+      ],
+      purpose: "POC endpoint for Apple Music recently played tracks"
+    });
+  }
+
+  const limit = Math.min(Number(req.query.limit || 30), 30);
+  const types = String(req.query.types || "songs,library-songs");
+
+  const url = new URL("https://api.music.apple.com/v1/me/recent/played/tracks");
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("types", types);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${developerToken}`,
+        "Music-User-Token": musicUserToken
+      }
+    });
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: "Apple Music API request failed",
+        status: response.status,
+        payload
+      });
+    }
+
+    const tracks = (payload.data || []).map((item) => ({
+      id: item.id,
+      type: item.type,
+      href: item.href,
+      name: item.attributes?.name || null,
+      artistName: item.attributes?.artistName || null,
+      albumName: item.attributes?.albumName || null,
+      durationInMillis: item.attributes?.durationInMillis || null,
+      releaseDate: item.attributes?.releaseDate || null,
+      isrc: item.attributes?.isrc || null,
+      playParams: item.attributes?.playParams || null
+    }));
+
+    res.json({
+      source: "apple_music_api_recent_played_tracks",
+      limit,
+      returned: tracks.length,
+      next: payload.next || null,
+      tracks,
+      rawShapeSample: payload.data?.[0] || null
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Apple Music API POC failed",
+      message: error.message
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
 
