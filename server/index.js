@@ -945,6 +945,58 @@ app.get("/api/music/query/artist", async (req, res) => {
   );
 });
 
+app.get("/api/music/query/song", async (req, res) => {
+  const { artist, song } = req.query;
+
+  if (!artist || !String(artist).trim()) {
+    return res.status(400).json({ error: "Artist required" });
+  }
+
+  if (!song || !String(song).trim()) {
+    return res.status(400).json({ error: "Song required" });
+  }
+
+  const scriptPath = "../data/music/scripts/music_artist_song_context_probe.py";
+  const artistSong = `${String(artist).trim()}::${String(song).trim()}`;
+
+  execFile(
+    "python",
+    [scriptPath, "--artist-song", artistSong, "--json"],
+    {
+      cwd: __dirname,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        PYTHONUTF8: "1",
+      },
+      maxBuffer: 1024 * 1024 * 10,
+    },
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error("Song query error:", error);
+        console.error(stderr);
+        return res.status(500).json({
+          error: "Failed to query song",
+          details: stderr || error.message,
+        });
+      }
+
+      try {
+        const results = JSON.parse(stdout);
+        res.json(results[0] || null);
+      } catch (parseError) {
+        console.error("Song query parse error:", parseError);
+        console.error(stdout);
+        res.status(500).json({
+          error: "Failed to parse song query output",
+        });
+      }
+    }
+  );
+});
+
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "test route works" });
 });

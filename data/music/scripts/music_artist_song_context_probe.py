@@ -1,5 +1,7 @@
 ﻿import argparse
+import json
 import csv
+import unicodedata
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -20,8 +22,27 @@ def q(name):
 
 
 def normalize_text(value):
-    return "".join(ch for ch in str(value).lower() if ch.isalnum())
+    text = str(value or "").lower()
 
+    replacements = {
+        "ü": "u",
+        "ö": "o",
+        "ä": "a",
+        "é": "e",
+        "è": "e",
+        "á": "a",
+        "à": "a",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "ñ": "n",
+        "ç": "c",
+    }
+
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+
+    return "".join(ch for ch in text if ch.isalnum())
 
 def display_date(value):
     value = str(value or "").strip()
@@ -476,6 +497,7 @@ def main():
         help="Sanitized daily track summary CSV.",
     )
     parser.add_argument("--md")
+    parser.add_argument("--json", action="store_true")
 
     args = parser.parse_args()
 
@@ -490,6 +512,10 @@ def main():
         for spec in args.artist_song
     ]
 
+    if args.json:
+        print(json.dumps(results, indent=2, ensure_ascii=False))
+        return
+
     lines = render_report(results)
 
     if args.md:
@@ -503,3 +529,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+

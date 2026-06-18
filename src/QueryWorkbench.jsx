@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 export default function QueryWorkbench({ onOpenArtist }) {
   const [mode, setMode] = useState("artist");
@@ -182,9 +182,9 @@ export default function QueryWorkbench({ onOpenArtist }) {
     "Elvis Costello & The Attractions",
     "Tom Petty",
     "Robyn Hitchcock",
-    "HÃ¼sker DÃ¼",
-    "BjÃ¶rk",
-    "SinÃ©ad O'Connor",
+    "Hüsker Dü",
+    "Björk",
+    "Sinéad O'Connor",
   ];
 
   return (
@@ -310,7 +310,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
               "Billie Holiday",
               "Neil Young",
               "Tom Petty",
-              "HÃ¼sker DÃ¼"
+              "Hüsker Dü"
             ].map((artist) => (
               <button
                 key={artist}
@@ -332,8 +332,8 @@ export default function QueryWorkbench({ onOpenArtist }) {
               "Neil Young & Crazy Horse",
               "Elvis Costello & The Attractions",
               "Robyn Hitchcock",
-              "BjÃ¶rk",
-              "SinÃ©ad O'Connor"
+              "Björk",
+              "Sinéad O'Connor"
             ].map((artist) => (
               <button
                 key={artist}
@@ -374,7 +374,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
 
               {result.resultType === "date" ? (
                 <p className="mt-1 text-sm text-slate-500">
-                  {dateStart} â†’ {dateEnd}
+                  {dateStart} Ã¢â€ â€™ {dateEnd}
                 </p>
               ) : null}
             </div>
@@ -586,7 +586,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
                 {songs.map((item) => (
                   <li key={item.song}>
                     {item.song}
-                    {item.plays ? ` â€” ${item.plays}` : ""}
+                    {item.plays ? ` — ${item.plays}` : ""}
                   </li>
                 ))}
               </ul>
@@ -600,7 +600,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
                 {albums.map((item) => (
                   <li key={item.album}>
                     {item.album}
-                    {item.plays ? ` â€” ${item.plays}` : ""}
+                    {item.plays ? ` — ${item.plays}` : ""}
                   </li>
                 ))}
               </ul>
@@ -631,6 +631,11 @@ export default function QueryWorkbench({ onOpenArtist }) {
     </div>
   );
 }
+
+
+
+
+
 
 
 
