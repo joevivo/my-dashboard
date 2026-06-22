@@ -1,21 +1,164 @@
 [
-    {
-        "familyName":  "Tom Petty Family",
-        "primaryArtist":  "Tom Petty",
-        "members":  [
-                        "Tom Petty",
-                        "Tom Petty \u0026 The Heartbreakers"
-                    ],
-        "notes":  "Preserve solo and Heartbreakers identities while allowing relationship rollup."
-    },
-    {
-        "familyName":  "Robyn Hitchcock Family",
-        "primaryArtist":  "Robyn Hitchcock",
-        "members":  [
-                        "Robyn Hitchcock",
-                        "Robyn Hitchcock \u0026 The Egyptians",
-                        "Robyn Hitchcock \u0026 The Venus 3"
-                    ],
-        "notes":  "Preserve solo, Egyptians, and Venus 3 identities while allowing relationship rollup."
-    }
+  {
+    "familyName": "Tom Petty Family",
+    "primaryArtist": "Tom Petty",
+    "members": [
+      "Tom Petty",
+      "Tom Petty & The Heartbreakers"
+    ],
+    "notes": "Preserve solo and Heartbreakers identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Robyn Hitchcock Family",
+    "primaryArtist": "Robyn Hitchcock",
+    "members": [
+      "Robyn Hitchcock",
+      "Robyn Hitchcock & The Egyptians",
+      "Robyn Hitchcock & The Venus 3"
+    ],
+    "notes": "Preserve solo, Egyptians, and Venus 3 identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Elvis Costello Family",
+    "primaryArtist": "Elvis Costello",
+    "members": [
+      "Elvis Costello",
+      "Elvis Costello & The Attractions",
+      "Elvis Costello & The Imposters"
+    ],
+    "notes": "Preserve solo, Attractions, and Imposters identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Neil Young Family",
+    "primaryArtist": "Neil Young",
+    "members": [
+      "Neil Young",
+      "Neil Young & Crazy Horse",
+      "Neil Young + The Chrome Hearts",
+      "Neil Young & The Bluenotes",
+      "Neil Young with the Santa Monica Flyers",
+      "Neil Young & The Restless"
+    ],
+    "notes": "Preserve solo and major backing-band identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Ryan Adams Family",
+    "primaryArtist": "Ryan Adams",
+    "members": [
+      "Ryan Adams",
+      "Ryan Adams & The Cardinals",
+      "Whiskeytown"
+    ],
+    "notes": "Preserve solo, Cardinals, and Whiskeytown identities while allowing relationship rollup.",
+    "relationshipType": "career"
+  },
+  {
+    "familyName": "Sam Cooke Family",
+    "primaryArtist": "Sam Cooke",
+    "members": [
+      "Sam Cooke",
+      "Sam Cooke & The Soul Stirrers"
+    ],
+    "notes": "Preserve solo and Soul Stirrers identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Bob Marley Family",
+    "primaryArtist": "Bob Marley",
+    "members": [
+      "Bob Marley",
+      "Bob Marley & The Wailers"
+    ],
+    "notes": "Preserve solo and Wailers identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Jason Isbell Family",
+    "primaryArtist": "Jason Isbell",
+    "members": [
+      "Jason Isbell",
+      "Jason Isbell and the 400 Unit"
+    ],
+    "notes": "Preserve solo and 400 Unit identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Prince Family",
+    "primaryArtist": "Prince",
+    "members": [
+      "Prince",
+      "Prince & The Revolution",
+      "Prince & The New Power Generation"
+    ],
+    "notes": "Preserve solo, Revolution, and New Power Generation identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Joan Jett Family",
+    "primaryArtist": "Joan Jett",
+    "members": [
+      "Joan Jett",
+      "Joan Jett & The Blackhearts"
+    ],
+    "notes": "Preserve solo and Blackhearts identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Heart Family",
+    "primaryArtist": "Heart",
+    "members": [
+      "Heart",
+      "The Lovemongers"
+    ],
+    "notes": "Preserve Heart and Lovemongers identities while allowing relationship rollup.",
+    "relationshipType": "career"
+  },
+  {
+    "familyName": "Tommy James Family",
+    "primaryArtist": "Tommy James",
+    "members": [
+      "Tommy James",
+      "Tommy James & The Shondells"
+    ],
+    "notes": "Preserve solo and Shondells identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Buddy Holly Family",
+    "primaryArtist": "Buddy Holly",
+    "members": [
+      "Buddy Holly",
+      "Buddy Holly & The Crickets"
+    ],
+    "notes": "Preserve solo and Crickets identities while allowing relationship rollup.",
+    "relationshipType": "identity"
+  },
+  {
+    "familyName": "Grateful Dead Family",
+    "primaryArtist": "Grateful Dead",
+    "members": [
+      "Grateful Dead",
+      "Jerry Garcia",
+      "Jerry Garcia Band",
+      "Bob Weir",
+      "Dead & Company"
+    ],
+    "notes": "Preserve Grateful Dead, Garcia, Weir, and Dead & Company identities while allowing relationship rollup.",
+    "relationshipType": "career"
+  },
+  {
+    "familyName": "Bob Mould Family",
+    "primaryArtist": "Bob Mould",
+    "members": [
+      "Bob Mould",
+      "Husker Du",
+      "Sugar"
+    ],
+    "notes": "Preserve Bob Mould solo, H?sker D?, and Sugar identities as a career relationship.",
+    "relationshipType": "career"
+  }
 ]

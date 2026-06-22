@@ -216,6 +216,72 @@ Imported data should support:
 The import pipeline should prioritize normalized and sanitized datasets.
 
 ---
+## Identity Resolution v2
+
+Music Intelligence is built on a canonical identity layer that separates artist identity from artist relationships.
+
+Every artist query is first normalized into a canonical artist key before any intelligence is generated. This canonical key is then used consistently for artist lookup, family resolution, deduplication, and aggregation.
+
+### Canonical Identity
+
+Canonical identity resolves multiple representations of the same artist into a single normalized identity.
+
+Examples:
+
+* Hüsker Dü
+* Husker Du
+* Bob Marley
+* Bob Marley & The Wailers
+
+Canonical identity exists to eliminate differences caused by encoding, punctuation, aliases, articles, and data-source inconsistencies.
+
+### Relationship Types
+
+Not every musical relationship has the same meaning.
+
+Current relationship types include:
+
+* **identity** — Multiple performing identities that represent the same long-term artist relationship (for example, Elvis Costello and The Attractions, Tom Petty and The Heartbreakers).
+* **career** — Distinct creative projects that together describe a musician's artistic evolution (for example, Bob Mould, Hüsker Dü, and Sugar; Ryan Adams, Whiskeytown, and The Cardinals).
+
+Additional relationship types may be introduced as the knowledge model expands.
+
+### Family Intelligence
+
+Artist families preserve individual identities while allowing aggregated relationship analysis.
+
+Family intelligence produces metrics that cannot be derived from a single artist identity alone, including:
+
+* Family Actual Plays
+* Family Listening Time
+* Family Library Evidence
+* Family Years Active
+* Family Amplification Factor
+
+Queries may begin from any member of a family while resolving to the same aggregated relationship.
+
+### Timeline Union
+
+Family Years Active are calculated from the union of observed timeline years across all family members.
+
+This replaces earlier span-based calculations that incorrectly assumed continuous activity between the first and last observed dates.
+
+Timeline Union reflects only years with actual evidence.
+
+### Canonical Deduplication
+
+Family aggregation operates on canonical identities rather than raw member names.
+
+If multiple family members resolve to the same canonical artist, they are counted only once.
+
+This prevents alias collisions from inflating family metrics while preserving legitimate multi-identity relationships.
+
+### Architectural Principle
+
+Identity resolution is infrastructure, not presentation.
+
+User interfaces, reports, playlist intelligence, artist intelligence, and future Apple Music integrations should all rely on the same canonical identity layer rather than implementing independent normalization logic.
+
 
 # Privacy Requirements
 

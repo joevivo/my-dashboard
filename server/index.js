@@ -8,7 +8,7 @@ import Parser from "rss-parser";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execFile } from "child_process";
+import { execFile, execFileSync } from "child_process";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,16 +35,48 @@ function loadArtistFamilies() {
   }
 }
 
+const ARTIST_ALIASES = {
+  "h sker d": "husker du",
+  "h?sker d?": "husker du",
+  "husker du": "husker du",
+  "love rockets": "love and rockets",
+  "love and rockets": "love and rockets",
+  "the scorpions": "scorpions",
+  "scorpions": "scorpions",
+  "the eagles": "eagles",
+  "eagles": "eagles",
+};
+
+function normalizeArtistKey(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripLeadingArticle(value) {
+  return String(value || "").replace(/^the\s+/, "");
+}
+
+function canonicalArtistKey(value) {
+  const normalized = normalizeArtistKey(value);
+  const aliased = ARTIST_ALIASES[normalized] || normalized;
+  const stripped = stripLeadingArticle(aliased);
+  return ARTIST_ALIASES[stripped] || stripped;
+}
+
 function resolveArtistFamily(artistName) {
   const families = loadArtistFamilies();
+  const targetKey = canonicalArtistKey(artistName);
 
   return (
     families.find((family) =>
-      family.members.some(
-        (member) =>
-          member.toLowerCase() ===
-          String(artistName).toLowerCase()
-      )
+      family.members.some((member) => canonicalArtistKey(member) === targetKey)
     ) || null
   );
 }
@@ -53,6 +85,82 @@ dotenv.config({
   path: path.join(__dirname, ".env"),
 });
 
+
+function buildFamilyMetrics(family, runArtistQuery) {
+  if (!family || !Array.isArray(family.members)) return null;
+
+  const metrics = {
+    familyName: family.familyName,
+    primaryArtist: family.primaryArtist,
+    actualPlays: 0,
+    actualSkips: 0,
+    hoursListened: 0,
+    listeningDurationMs: 0,
+    libraryEvidenceRecords: 0,
+    yearsActive: 0,
+    firstPlayedDate: null,
+    latestPlayedDate: null,
+    membersMatched: [],
+  };
+
+  const seenCanonicalArtists = new Set();
+
+  for (const member of family.members) {
+    const memberResult = runArtistQuery(member);
+    if (!memberResult || memberResult.error) continue;
+
+    const canonicalArtist = canonicalArtistKey(memberResult.artist || member);
+    if (seenCanonicalArtists.has(canonicalArtist)) continue;
+    seenCanonicalArtists.add(canonicalArtist);
+
+    metrics.actualPlays += Number(memberResult.actualPlays || 0);
+    metrics.actualSkips += Number(memberResult.actualSkips || 0);
+    metrics.hoursListened += Number(memberResult.hoursListened || 0);
+    metrics.listeningDurationMs += Number(memberResult.listeningDurationMs || 0);
+    metrics.libraryEvidenceRecords += Number(memberResult.libraryEvidenceRecords || 0);
+
+    if (memberResult.firstPlayedDate) {
+      if (!metrics.firstPlayedDate || memberResult.firstPlayedDate < metrics.firstPlayedDate) {
+        metrics.firstPlayedDate = memberResult.firstPlayedDate;
+      }
+    }
+
+    if (memberResult.latestPlayedDate) {
+      if (!metrics.latestPlayedDate || memberResult.latestPlayedDate > metrics.latestPlayedDate) {
+        metrics.latestPlayedDate = memberResult.latestPlayedDate;
+      }
+    }
+
+    metrics.membersMatched.push({
+      artist: memberResult.artist || member,
+      query: member,
+      actualPlays: Number(memberResult.actualPlays || 0),
+      actualSkips: Number(memberResult.actualSkips || 0),
+      hoursListened: Number(memberResult.hoursListened || 0),
+      libraryEvidenceRecords: Number(memberResult.libraryEvidenceRecords || 0),
+      yearsActive: Number(memberResult.yearsActive || 0),
+      firstPlayedDate: memberResult.firstPlayedDate || null,
+      latestPlayedDate: memberResult.latestPlayedDate || null,
+      timeline: Array.isArray(memberResult.timeline) ? memberResult.timeline : [],
+    });
+  }
+
+  const activeYears = new Set();
+  for (const member of metrics.membersMatched) {
+    for (const row of member.timeline || []) {
+      if (row && row.year) activeYears.add(String(row.year));
+    }
+  }
+
+  metrics.yearsActive = activeYears.size;
+  metrics.hoursListened = Number(metrics.hoursListened.toFixed(1));
+  metrics.familyAmplificationFactor =
+    metrics.membersMatched.length && Number(metrics.membersMatched[0].actualPlays || 0)
+      ? Number((metrics.actualPlays / Number(metrics.membersMatched[0].actualPlays || 0)).toFixed(2))
+      : null;
+
+  return metrics;
+}
 const app = express();
 const PORT = 4000;
 const parser = new Parser();
@@ -884,6 +992,8 @@ app.get("/api/music/time-machine", async (req, res) => {
 
       try {
   const result = JSON.parse(stdout);
+
+
   res.json(result);
 } catch (parseError) {
   console.error(parseError);
@@ -931,7 +1041,27 @@ app.get("/api/music/query/artist", async (req, res) => {
         const result = JSON.parse(stdout);
 
           result.family =
+            resolveArtistFamily(String(result.artist || name).trim()) ||
             resolveArtistFamily(String(name).trim());
+
+          result.familyMetrics = buildFamilyMetrics(result.family, (memberName) => {
+            const memberOutput = execFileSync(
+              "python",
+              [scriptPath, memberName],
+              {
+                cwd: __dirname,
+                encoding: "utf8",
+                env: {
+                  ...process.env,
+                  PYTHONIOENCODING: "utf-8",
+                  PYTHONUTF8: "1",
+                },
+                maxBuffer: 1024 * 1024 * 10,
+              }
+            );
+
+            return JSON.parse(memberOutput);
+          });
 
           res.json(result);
       } catch (parseError) {
@@ -1132,6 +1262,17 @@ app.get("/api/apple-music/recent-tracks", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

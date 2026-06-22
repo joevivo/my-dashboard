@@ -1,0 +1,79 @@
+{
+  "Brian Eno": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "R.E.M.": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "The Beatles": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Death Cab For Cutie": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Halsey": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Silversun Pickups": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Rush": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "U2": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Steely Dan": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "George Winston": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  },
+  "Frank Sinatra": {
+    "status": "reviewed_standalone",
+    "reviewedOn": "2026-06-21",
+    "reviewedBy": "manual",
+    "confidence": "high",
+    "notes": "Reviewed as a standalone artist identity for family candidate filtering."
+  }
+}
