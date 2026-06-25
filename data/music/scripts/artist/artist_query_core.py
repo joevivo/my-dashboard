@@ -98,6 +98,21 @@ def parse_track_artist(track_description: object) -> str | None:
 
     return artist
 
+def parse_track_title(track_description: object) -> str | None:
+    value = str(track_description or "").strip()
+
+    if " - " not in value:
+        return None
+
+    title = value.split(" - ", 1)[1].strip()
+    if not title:
+        return None
+
+    if title.upper() in {"UNKNOWN", "N/A", "NONE", "NULL"}:
+        return None
+
+    return title
+
 
 def parse_int(value: object) -> int:
     try:
@@ -143,20 +158,27 @@ def load_play_activity_summary(query: str, rows: list[dict] | None = None) -> di
             "listeningDurationMs": None,
             "hoursListened": None,
             "playActivitySource": "missing",
+            "actualTopSongs": [],
         }
 
     actual_plays = 0
     actual_skips = 0
     listening_duration_ms = 0
+    song_play_counts = Counter()
 
     for row in rows:
         artist = parse_track_artist(row.get("Track Description"))
         if match_rank(query, artist) is None:
             continue
 
-        actual_plays += parse_int(row.get("Play Count"))
+        play_count = parse_int(row.get("Play Count"))
+        actual_plays += play_count
         actual_skips += parse_int(row.get("Skip Count"))
         listening_duration_ms += parse_int(row.get("Play Duration Milliseconds"))
+
+        title = parse_track_title(row.get("Track Description"))
+        if title:
+            song_play_counts[title] += play_count
 
     return {
         "actualPlays": actual_plays,
@@ -164,8 +186,11 @@ def load_play_activity_summary(query: str, rows: list[dict] | None = None) -> di
         "hoursListened": round(listening_duration_ms / 1000 / 60 / 60, 1),
         "listeningDurationMs": listening_duration_ms,
         "playActivitySource": "apple_music_daily_track_summary",
+        "actualTopSongs": [
+            {"song": song, "plays": count}
+            for song, count in song_play_counts.most_common(10)
+        ],
     }
-
 
 class ArtistQueryEngine:
     def __init__(
@@ -274,7 +299,7 @@ class ArtistQueryEngine:
 
         play_activity = self._play_activity_summary_for_query(query)
 
-        return {
+        result = {
             "artist": canonical_artist,
             "query": query,
             "libraryEvidenceRecords": len(matches),
@@ -283,6 +308,7 @@ class ArtistQueryEngine:
             "hoursListened": play_activity["hoursListened"],
             "listeningDurationMs": play_activity["listeningDurationMs"],
             "playActivitySource": play_activity["playActivitySource"],
+            "actualTopSongs": play_activity.get("actualTopSongs", []),
             "yearsActive": len(years),
             "firstSeen": str(dates[0].year) if dates else "",
             "latestSeen": str(dates[-1].year) if dates else "",
@@ -306,6 +332,61 @@ class ArtistQueryEngine:
             "matchRank": min((item["rank"] for item in matches), default=None),
         }
 
+        result["identity"] = {
+            "query": query,
+            "resolvedArtist": canonical_artist,
+            "canonicalKey": query_key,
+            "matchRank": min((item["rank"] for item in matches), default=None),
+            "source": "artist_query_core",
+            "confidence": "high" if matches else "low",
+        }
+
+        result["evidence"] = {
+            "type": "Library Evidence",
+            "source": "Apple Music Library Tracks Last Played Date",
+            "records": result.get("libraryEvidenceRecords"),
+            "yearsRepresented": result.get("yearsActive"),
+            "firstPlayedDate": result.get("firstPlayedDate"),
+            "latestPlayedDate": result.get("latestPlayedDate"),
+            "topSongs": result.get("topSongs", []),
+            "topAlbums": result.get("topAlbums", []),
+            "timeline": result.get("timeline", []),
+            "confidence": "high" if matches else "low",
+            "notes": "Useful for artist lookup and library footprint; not complete event-level play history.",
+        }
+
+        result["activity"] = {
+            "type": "Play Activity",
+            "source": result.get("playActivitySource"),
+            "actualPlays": result.get("actualPlays"),
+            "actualSkips": result.get("actualSkips"),
+            "hoursListened": result.get("hoursListened"),
+            "listeningDurationMs": result.get("listeningDurationMs"),
+            "actualTopSongs": result.get("actualTopSongs", []),
+            "confidence": "high" if result.get("playActivitySource") != "missing" else "missing",
+        }
+
+        result["derived"] = {
+            "type": "Derived Intelligence",
+            "classification": result.get("classification"),
+            "yearsRepresented": result.get("yearsActive"),
+            "source": "Derived from Library Evidence and Play Activity",
+            "confidence": "medium" if matches else "low",
+        }
+
+        result["investigation"] = {
+            "type": "Investigation",
+            "notes": result.get("notes"),
+            "suggestedInvestigations": [],
+            "openQuestions": [],
+        }
+
+        return result
+
 
 def query_artist(query: str) -> dict:
     return ArtistQueryEngine().query_artist(query)
+
+
+
+
