@@ -1,0 +1,67 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BIE Capture Manifest",
+  "description": "Authoritative manifest for a completed capture operation.",
+  "type": "object",
+
+  "required": [
+    "provider",
+    "season",
+    "captureVersion",
+    "startedAt",
+    "completedAt",
+    "status",
+    "players",
+    "ballparks"
+  ],
+
+  "properties": {
+
+    "provider": {
+      "type": "string"
+    },
+
+    "season": {
+      "type": "integer"
+    },
+
+    "captureVersion": {
+      "type": "string"
+    },
+
+    "startedAt": {
+      "type": "string"
+    },
+
+    "completedAt": {
+      "type": "string"
+    },
+
+    "status": {
+      "enum": [
+        "running",
+        "completed",
+        "failed"
+      ]
+    },
+
+    "players": {
+      "type": "array"
+    },
+
+    "ballparks": {
+      "type": "array"
+    },
+
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "expectedPlayers": { "type": "integer" },
+        "capturedPlayers": { "type": "integer" },
+        "failedPlayers": { "type": "integer" },
+        "capturedBallparks": { "type": "integer" }
+      }
+    }
+
+  }
+}

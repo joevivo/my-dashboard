@@ -31,3 +31,14 @@ server/credentials.json
 album-import-template (1).csv
 
 data/music/music.db
+.bie-auth/
+data/baseball/raw/strat365/authenticated/
+# Baseball Intelligence Engine local/auth/raw captures
+data/baseball/raw/strat365/*/cards/
+data/baseball/raw/strat365/*/card_capture_summary.json
+# Python cache files
+__pycache__/
+*.py[cod]
+# Baseball Intelligence Engine transient discovery probes
+data/baseball/raw/strat365/*/players/*_player_browser.html
+data/baseball/raw/strat365/*/players/*_pitcher_probe_*
