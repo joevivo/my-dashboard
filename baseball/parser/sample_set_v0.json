@@ -1,0 +1,57 @@
+﻿{
+  "sampleSetId": "bie-parser-v0-controlled-sample",
+  "season": 1980,
+  "purpose": "Controlled authenticated-card sample for parser contract validation before full-corpus parsing.",
+  "acceptanceUse": [
+    "role-aware parsing",
+    "hitter trait extraction",
+    "pitcher trait extraction",
+    "printed result evidence extraction",
+    "provenance preservation",
+    "gated-shell rejection"
+  ],
+  "players": [
+    {
+      "playerId": 35273,
+      "playerName": "Hernandez, Keith",
+      "role": "hitter",
+      "team": "STL1980",
+      "reason": "Original authenticated capture proof card; refreshed role-aware metadata."
+    },
+    {
+      "playerId": 31286,
+      "playerName": "Brett, George",
+      "role": "hitter",
+      "team": "KC1980",
+      "reason": "Authenticated hitter card that exposed validation-marker edge cases."
+    },
+    {
+      "playerId": 32392,
+      "playerName": "Cooper, Cecil",
+      "role": "hitter",
+      "team": "MIL1980",
+      "reason": "Authenticated hitter card that exposed validation-marker edge cases."
+    },
+    {
+      "playerId": 40040,
+      "playerName": "Reuss, Jerry",
+      "role": "pitcher",
+      "team": "LAD1980",
+      "reason": "Initial authenticated pitcher proof card."
+    },
+    {
+      "playerId": 37920,
+      "playerName": "McGraw, Tug",
+      "role": "pitcher",
+      "team": "PHI1980",
+      "reason": "Role-aware pitcher validation sample."
+    },
+    {
+      "playerId": 32405,
+      "playerName": "Corbett, Doug",
+      "role": "pitcher",
+      "team": "MIN1980",
+      "reason": "Role-aware pitcher validation sample."
+    }
+  ]
+}

@@ -42,3 +42,5 @@ __pycache__/
 # Baseball Intelligence Engine transient discovery probes
 data/baseball/raw/strat365/*/players/*_player_browser.html
 data/baseball/raw/strat365/*/players/*_pitcher_probe_*
+# Baseball Intelligence Engine parsed card evidence
+data/baseball/parsed/
