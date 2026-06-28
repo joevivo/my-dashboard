@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
+import argparse
 import json
 import re
 from typing import Any
@@ -12,6 +13,7 @@ PARSER_VERSION = "bie-parser-v0.1"
 SCHEMA_VERSION = "bie.parsed-card-evidence.v0"
 
 SAMPLE_PATH = Path("baseball/parser/sample_set_v0.json")
+UNIVERSE_PATH = Path("data/baseball/raw/strat365/1980/players/1980_players_universe.json")
 CARDS_DIR = Path("data/baseball/raw/strat365/authenticated/1980/cards")
 OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/cards")
 
@@ -202,28 +204,51 @@ def parse_card(player: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def main() -> None:
-    sample = read_json(SAMPLE_PATH)
+def load_players(parse_all: bool) -> tuple[str, list[dict[str, Any]]]:
+    if parse_all:
+        universe = read_json(UNIVERSE_PATH)
+        return "full-universe", universe.get("players", [])
 
-    print("BIE Parser v0 Controlled Sample Run")
+    sample = read_json(SAMPLE_PATH)
+    return sample.get("sampleSetId", "controlled-sample"), sample.get("players", [])
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 authenticated card evidence.")
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Parse the full discovered player universe instead of the controlled sample.",
+    )
+    args = parser.parse_args()
+
+    run_id, players = load_players(parse_all=args.all)
+
+    print("BIE Parser v0 Run")
     print("=" * 72)
+    print(f"Run: {run_id}")
+    print(f"Players selected: {len(players)}")
 
     parsed_count = 0
     failed_count = 0
+    warning_count = 0
 
-    for player in sample["players"]:
+    for player in players:
         player_id = int(player["playerId"])
         try:
             parsed = parse_card(player)
             output_path = OUTPUT_DIR / f"{player_id}.parsed-card-evidence.json"
             write_json(output_path, parsed)
 
+            warnings = parsed.get("warnings", [])
+            warning_count += len(warnings)
+
             print(
                 f"PARSED {player_id} {player['playerName']} "
                 f"role={parsed['role']} "
                 f"balance={parsed['card']['balance']} "
                 f"results={len(parsed['resultEvidence'])} "
-                f"warnings={len(parsed['warnings'])}"
+                f"warnings={len(warnings)}"
             )
             parsed_count += 1
         except Exception as exc:
@@ -233,6 +258,7 @@ def main() -> None:
     print("-" * 72)
     print(f"Parsed: {parsed_count}")
     print(f"Failed: {failed_count}")
+    print(f"Warnings: {warning_count}")
     print(f"Output: {OUTPUT_DIR}")
     print("=" * 72)
 
