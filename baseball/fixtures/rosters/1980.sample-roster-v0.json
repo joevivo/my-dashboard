@@ -1,0 +1,18 @@
+﻿{
+  "schemaVersion": "bie.roster-fixture.v0",
+  "season": 1980,
+  "name": "sample-roster-v0",
+  "ballparkName": "Tiger Stadium 1980",
+  "salaryCapMillions": 80.0,
+  "playerIds": [
+    33887,
+    40700,
+    31286,
+    2732,
+    35273,
+    32392,
+    40040,
+    37920,
+    32405
+  ]
+}

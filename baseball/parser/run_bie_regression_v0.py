@@ -1,4 +1,4 @@
-﻿import subprocess
+import subprocess
 import sys
 from pathlib import Path
 
@@ -25,6 +25,8 @@ VERIFY_SCRIPTS = [
     "verify_defense_aware_draft_signals_v0.py",
     "verify_ballparks_v0.py",
     "verify_ballpark_aware_draft_signals_v0.py",
+    "evaluate_roster_construction_v0.py",
+    "verify_roster_construction_v0.py",
 ]
 
 def main():
