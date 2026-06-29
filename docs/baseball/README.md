@@ -1,4 +1,4 @@
-﻿# Baseball Intelligence Engine
+# Baseball Intelligence Engine
 
 The Baseball Intelligence Engine, or BIE, is the durable analytical foundation behind the Strat baseball tools.
 
@@ -52,6 +52,8 @@ Applications consume BIE data. Applications do not define BIE data.
 - `capture-spec.md`
 - `capture-v020-status.md`
 - `manager-domain-model.md`
+- `roster-fixture-format-v0.md`
+- `observed-results-ingestion-design-v0.md`
 - `bie-parser-contract-v0.md`
 
 ## Current Committed Capabilities
