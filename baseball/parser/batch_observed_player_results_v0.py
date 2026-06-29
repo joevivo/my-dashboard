@@ -1,0 +1,140 @@
+﻿import argparse
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_INPUT_DIR = ROOT / "data" / "baseball" / "raw" / "strat365" / "1980" / "observed-results"
+DEFAULT_OUTPUT_DIR = ROOT / "data" / "baseball" / "parsed" / "strat365" / "1980" / "observed-results"
+PARSER = ROOT / "baseball" / "parser" / "parse_observed_player_results_v0.py"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Batch parse observed Strat player results CSV files into BIE observed-results JSON."
+    )
+    parser.add_argument(
+        "--input-dir",
+        default=str(DEFAULT_INPUT_DIR),
+        help="Directory containing observed player results CSV files.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default=str(DEFAULT_OUTPUT_DIR),
+        help="Directory for parsed observed player results JSON files.",
+    )
+    parser.add_argument(
+        "--pattern",
+        default="*.csv",
+        help="CSV filename pattern to parse.",
+    )
+    return parser.parse_args()
+
+
+def load_json(path):
+    return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def main():
+    args = parse_args()
+    input_dir = Path(args.input_dir)
+    output_dir = Path(args.output_dir)
+
+    if not input_dir.is_absolute():
+        input_dir = ROOT / input_dir
+
+    if not output_dir.is_absolute():
+        output_dir = ROOT / output_dir
+
+    if not input_dir.exists():
+        raise SystemExit(f"Missing input directory: {input_dir}")
+
+    csv_files = sorted(input_dir.glob(args.pattern))
+    if not csv_files:
+        raise SystemExit(f"No CSV files matched {args.pattern} in {input_dir}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    parsed = []
+    failures = []
+
+    for csv_path in csv_files:
+        output_path = output_dir / f"{csv_path.stem}.observed-player-results-v0.json"
+
+        command = [
+            sys.executable,
+            str(PARSER),
+            "--input",
+            str(csv_path),
+            "--output",
+            str(output_path),
+        ]
+
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+        if result.returncode != 0:
+            failures.append({
+                "inputCsv": str(csv_path.relative_to(ROOT)).replace("\\", "/"),
+                "returnCode": result.returncode,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            })
+            continue
+
+        report = load_json(output_path)
+        parsed.append({
+            "inputCsv": str(csv_path.relative_to(ROOT)).replace("\\", "/"),
+            "outputJson": str(output_path.relative_to(ROOT)).replace("\\", "/"),
+            "rows": report["counts"]["rows"],
+            "hitters": report["counts"]["hitters"],
+            "pitchers": report["counts"]["pitchers"],
+            "resolvedPlayers": report["counts"]["resolvedPlayers"],
+            "warnings": report["counts"]["warnings"],
+        })
+
+    print("# BIE Observed Player Results Batch v0")
+    print()
+    print(f"Input directory: {input_dir.relative_to(ROOT)}")
+    print(f"Output directory: {output_dir.relative_to(ROOT)}")
+    print(f"CSV files: {len(csv_files)}")
+    print(f"Parsed: {len(parsed)}")
+    print(f"Failures: {len(failures)}")
+    print()
+
+    total_rows = sum(item["rows"] for item in parsed)
+    total_hitters = sum(item["hitters"] for item in parsed)
+    total_pitchers = sum(item["pitchers"] for item in parsed)
+    total_resolved = sum(item["resolvedPlayers"] for item in parsed)
+    total_warnings = sum(item["warnings"] for item in parsed)
+
+    print("Totals:")
+    print(f"- Rows: {total_rows}")
+    print(f"- Hitters: {total_hitters}")
+    print(f"- Pitchers: {total_pitchers}")
+    print(f"- Resolved players: {total_resolved}")
+    print(f"- Warnings: {total_warnings}")
+    print()
+
+    print("Files:")
+    for item in parsed:
+        print(
+            f"- {item['inputCsv']} -> {item['outputJson']} | "
+            f"rows {item['rows']} | warnings {item['warnings']}"
+        )
+
+    if failures:
+        print()
+        print("Failures:")
+        for failure in failures:
+            print(f"- {failure['inputCsv']} failed with code {failure['returnCode']}")
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

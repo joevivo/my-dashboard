@@ -29,6 +29,7 @@ VERIFY_SCRIPTS = [
     "verify_roster_construction_v0.py",
     "parse_observed_player_results_v0.py",
     "verify_observed_player_results_v0.py",
+    "verify_batch_observed_player_results_v0.py",
 ]
 
 def main():
