@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from collections import Counter
 from fractions import Fraction
@@ -115,6 +115,29 @@ def add_probability(
     dice_weight = Fraction(DICE_2D6_NUMERATORS[dice_roll], 36)
     cell_weight = col_weight * dice_weight
 
+    base_outcome = outcome.get("resultSemantics", {}).get("baseOutcomeType")
+
+    if base_outcome == "INJURY_FLAG":
+        probability = {
+            "probabilityScope": "within_card_side",
+            "probabilityStatus": "non_probability_flag",
+            "columnIndexWithinSide": column_index(role, table_number),
+            "columnWeight": fraction_payload(col_weight),
+            "diceRoll": dice_roll,
+            "dice2d6Weight": fraction_payload(dice_weight),
+            "cellWeightBeforeSplit": fraction_payload(cell_weight),
+            "splitWeight": {
+                "rangeKind": outcome.get("splitRange", {}).get("rangeKind"),
+                "reason": "injury flag is secondary cell metadata, not a probability-bearing baseball outcome",
+            },
+            "finalWeight": None,
+            "note": "Secondary flags do not receive separate probability mass.",
+        }
+
+        parsed = dict(outcome)
+        parsed["resultProbability"] = probability
+        return parsed
+
     split_status, split_weight, split_payload = split_probability(outcome)
 
     probability = {
@@ -183,7 +206,7 @@ def parse_file(path: Path) -> dict[str, Any]:
                 parsed_outcome = add_probability(role, table_number, dice_roll, outcome)
 
                 status = parsed_outcome["resultProbability"]["probabilityStatus"]
-                if status != "exact":
+                if status.startswith("unresolved_"):
                     output["warnings"].append(
                         {
                             "warning": "unresolved_probability",

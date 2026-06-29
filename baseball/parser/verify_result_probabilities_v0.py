@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
@@ -14,7 +14,8 @@ EXPECTED_ENTRIES = 47586
 EXPECTED_OUTCOME_ROWS = 54748
 EXPECTED_WARNINGS = 9
 EXPECTED_STATUS_COUNTS = {
-    "exact": 54739,
+    "exact": 53877,
+    "non_probability_flag": 862,
     "unresolved_open_split": 9,
 }
 
@@ -103,8 +104,8 @@ def main() -> None:
                     if status == "exact" and probability.get("finalWeight") is None:
                         failures.append(f"{player_id}: exact outcome missing finalWeight")
 
-                    if status == "unresolved_open_split" and probability.get("finalWeight") is not None:
-                        failures.append(f"{player_id}: unresolved open split should not have finalWeight")
+                    if status in ("unresolved_open_split", "non_probability_flag") and probability.get("finalWeight") is not None:
+                        failures.append(f"{player_id}: {status} should not have finalWeight")
 
     print("BIE Result Probability Verification")
     print("=" * 72)
