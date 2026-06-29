@@ -1,0 +1,6 @@
+observedSeasonId,teamId,teamName,ballparkName,playerId,playerName,role,games,plateAppearances,atBats,runs,hits,doubles,triples,homeRuns,runsBattedIn,walks,strikeouts,stolenBases,caughtStealing,battingAverage,onBasePercentage,sluggingPercentage,ops,inningsPitched,wins,losses,saves,hitsAllowed,walksAllowed,strikeoutsPitching,homeRunsAllowed,runsAllowed,earnedRuns,era,whip
+sample-1980-001,TIGER-TEST,Tiger Test,Tiger Stadium 1980,40700,"Schmidt, Mike",hitter,162,650,548,104,157,25,3,48,121,98,130,12,5,.286,.397,.606,1.003,,,,,,,,,,,,
+sample-1980-001,TIGER-TEST,Tiger Test,Tiger Stadium 1980,31286,"Brett, George",hitter,117,515,449,87,175,33,9,24,118,58,22,15,4,.390,.454,.664,1.118,,,,,,,,,,,,
+sample-1980-001,TIGER-TEST,Tiger Test,Tiger Stadium 1980,35273,"Hernandez, Keith",hitter,159,654,595,111,191,39,7,16,99,94,78,4,2,.321,.408,.494,.902,,,,,,,,,,,,
+sample-1980-001,TIGER-TEST,Tiger Test,Tiger Stadium 1980,40040,"Reuss, Jerry",pitcher,38,,,,,,,,,,,,,,,,,229.2,18,6,0,216,38,113,17,82,74,2.90,1.11
+sample-1980-001,TIGER-TEST,Tiger Test,Tiger Stadium 1980,37920,"McGraw, Tug",pitcher,57,,,,,,,,,,,,,,,,,92.1,5,4,20,65,23,75,5,20,19,1.85,.95

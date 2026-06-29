@@ -27,6 +27,8 @@ VERIFY_SCRIPTS = [
     "verify_ballpark_aware_draft_signals_v0.py",
     "evaluate_roster_construction_v0.py",
     "verify_roster_construction_v0.py",
+    "parse_observed_player_results_v0.py",
+    "verify_observed_player_results_v0.py",
 ]
 
 def main():
