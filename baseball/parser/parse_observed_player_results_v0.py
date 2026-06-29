@@ -1,4 +1,5 @@
-﻿import csv
+﻿import argparse
+import csv
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -6,13 +7,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "data" / "baseball" / "parsed" / "strat365" / "1980"
 
-INPUT = ROOT / "baseball" / "fixtures" / "observed-results" / "1980.sample-observed-player-results-v0.csv"
+DEFAULT_INPUT = ROOT / "baseball" / "fixtures" / "observed-results" / "1980.sample-observed-player-results-v0.csv"
 ROSTER_META = BASE / "player-roster-metadata" / "1980.player-roster-metadata.json"
 BALLPARKS = BASE / "ballparks" / "ballparks_v0.json"
 DEFENSE_AWARE = BASE / "draft-signals" / "1980.defense-aware-draft-signals.json"
 BALLPARK_AWARE = BASE / "draft-signals" / "1980.ballpark-aware-draft-signals.json"
 
-OUT = BASE / "observed-results" / "1980.sample-observed-player-results-v0.json"
+DEFAULT_OUTPUT = BASE / "observed-results" / "1980.sample-observed-player-results-v0.json"
 
 
 def load_json(path):
@@ -57,9 +58,36 @@ def score_value(value):
     return None
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Parse observed Strat player results CSV into BIE observed-results JSON."
+    )
+    parser.add_argument(
+        "--input",
+        default=str(DEFAULT_INPUT),
+        help="Input observed player results CSV path.",
+    )
+    parser.add_argument(
+        "--output",
+        default=str(DEFAULT_OUTPUT),
+        help="Output observed player results JSON path.",
+    )
+    return parser.parse_args()
+
+
 def main():
-    if not INPUT.exists():
-        raise SystemExit(f"Missing input CSV: {INPUT}")
+    args = parse_args()
+    input_path = Path(args.input)
+    output_path = Path(args.output)
+
+    if not input_path.is_absolute():
+        input_path = ROOT / input_path
+
+    if not output_path.is_absolute():
+        output_path = ROOT / output_path
+
+    if not input_path.exists():
+        raise SystemExit(f"Missing input CSV: {input_path}")
 
     roster_meta = load_json(ROSTER_META)
     ballparks = load_json(BALLPARKS)
@@ -80,7 +108,7 @@ def main():
     rows = []
     warnings = []
 
-    with INPUT.open("r", encoding="utf-8-sig", newline="") as handle:
+    with input_path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         for index, raw in enumerate(reader, start=1):
             player_id = maybe_int(raw.get("playerId"))
@@ -190,7 +218,7 @@ def main():
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "season": 1980,
         "sourceFiles": {
-            "inputCsv": str(INPUT.relative_to(ROOT)).replace("\\", "/"),
+            "inputCsv": str(input_path.relative_to(ROOT)).replace("\\", "/"),
             "rosterMetadata": str(ROSTER_META.relative_to(ROOT)).replace("\\", "/"),
             "ballparks": str(BALLPARKS.relative_to(ROOT)).replace("\\", "/"),
             "defenseAwareSignals": str(DEFENSE_AWARE.relative_to(ROOT)).replace("\\", "/"),
@@ -207,9 +235,9 @@ def main():
         "warnings": warnings,
     }
 
-    write_json(OUT, payload)
+    write_json(output_path, payload)
 
-    print("Saved", OUT.relative_to(ROOT))
+    print("Saved", output_path.relative_to(ROOT))
     print("Rows:", len(rows))
     print("Hitters:", len(hitters))
     print("Pitchers:", len(pitchers))
