@@ -1,0 +1,224 @@
+{
+  "schemaVersion": "bie.printed-result-semantics-rules.v0",
+  "officialHelpSources": [
+    "https://365.strat-o-matic.com/help/hittercard",
+    "https://365.strat-o-matic.com/help/pitchercard"
+  ],
+  "notes": [
+    "Printed result semantics rules. Built from official Strat365 card help pages.",
+    "This file is rules-only. It does not score, rank, simulate, or draft."
+  ],
+  "splitRangeKinds": {
+    "none": {
+      "requiresD20Roll": false,
+      "semanticType": "fixed_result"
+    },
+    "d20_closed": {
+      "requiresD20Roll": true,
+      "semanticType": "split_roll_closed_range"
+    },
+    "d20_open_high": {
+      "requiresD20Roll": true,
+      "semanticType": "split_roll_open_high_range",
+      "note": "Preserve as printed. Do not infer an upper bound."
+    }
+  },
+  "entryTokenMarkers": {
+    "#": {
+      "semanticType": "ballpark_home_run_check",
+      "isContextual": true,
+      "originalPrintedResultIgnored": true,
+      "requiresBallparkRating": "home_run",
+      "possibleFinalResults": [
+        "HOME_RUN",
+        "FLYBALL_OUT"
+      ]
+    },
+    ">": {
+      "semanticType": "ballpark_single_check",
+      "isContextual": true,
+      "originalPrintedResultIgnored": true,
+      "requiresBallparkRating": "single",
+      "possibleFinalResults": [
+        "SINGLE",
+        "LINEOUT"
+      ]
+    },
+    "$": {
+      "semanticType": "clutch_context_reversal",
+      "isContextual": true,
+      "context": "two_outs_runner_in_scoring_position"
+    },
+    "@": {
+      "semanticType": "pitcher_fatigue_marker_ignored_in_365",
+      "isContextual": false,
+      "isIgnoredIn365": true
+    }
+  },
+  "outcomeLabelMarkers": {
+    "*": {
+      "semanticType": "legacy_baserunning_marker",
+      "isContextual": true,
+      "isBoardGameLegacyMarker": true,
+      "isDirectlyAppliedIn365": false
+    },
+    "**": {
+      "semanticType": "legacy_baserunning_marker",
+      "isContextual": true,
+      "isBoardGameLegacyMarker": true,
+      "isDirectlyAppliedIn365": false
+    },
+    "?": {
+      "semanticType": "flyball_runner_third_may_attempt_score",
+      "isContextual": true,
+      "context": "runner_on_third"
+    },
+    "+": {
+      "semanticType": "contextual_plus_marker",
+      "isContextual": true,
+      "knownUses": {
+        "GROUNDBALL": "groundball_becomes_automatic_single_if_infield_is_in",
+        "INJURY_FLAG": "printed_injury_marker"
+      }
+    }
+  },
+  "normalizedLabels": {
+    "SINGLE": {
+      "baseOutcomeType": "SINGLE",
+      "isHitCandidate": true,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "DOUBLE": {
+      "baseOutcomeType": "DOUBLE",
+      "isHitCandidate": true,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "TRIPLE": {
+      "baseOutcomeType": "TRIPLE",
+      "isHitCandidate": true,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "HOME_RUN": {
+      "baseOutcomeType": "HOME_RUN",
+      "isHitCandidate": true,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "WALK": {
+      "baseOutcomeType": "WALK",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "HBP": {
+      "baseOutcomeType": "HBP",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": true,
+      "isOutCandidate": false,
+      "dependencies": []
+    },
+    "STRIKEOUT": {
+      "baseOutcomeType": "STRIKEOUT",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": []
+    },
+    "GROUNDBALL": {
+      "baseOutcomeType": "GROUNDBALL",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": [
+        "base_out_state"
+      ]
+    },
+    "FLYBALL": {
+      "baseOutcomeType": "FLYBALL",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": [
+        "runner_advancement_state"
+      ]
+    },
+    "LINEOUT": {
+      "baseOutcomeType": "LINEOUT",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": []
+    },
+    "LINEOUT_MAX": {
+      "baseOutcomeType": "LINEOUT_MAX",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": [
+        "base_out_state"
+      ]
+    },
+    "POPOUT": {
+      "baseOutcomeType": "POPOUT",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": []
+    },
+    "FOULOUT": {
+      "baseOutcomeType": "FOULOUT",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": true,
+      "dependencies": []
+    },
+    "GROUNDBALL_X": {
+      "baseOutcomeType": "GROUNDBALL_X",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": false,
+      "isContextual": true,
+      "dependencies": [
+        "defensive_x_chart"
+      ]
+    },
+    "FLYBALL_X": {
+      "baseOutcomeType": "FLYBALL_X",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": false,
+      "isContextual": true,
+      "dependencies": [
+        "defensive_x_chart"
+      ]
+    },
+    "CATCHER_X": {
+      "baseOutcomeType": "CATCHER_X",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": false,
+      "isContextual": true,
+      "dependencies": [
+        "catcher_defensive_chart"
+      ]
+    },
+    "INJURY_FLAG": {
+      "baseOutcomeType": "INJURY_FLAG",
+      "isHitCandidate": false,
+      "isOnBaseCandidate": false,
+      "isOutCandidate": false,
+      "isContextual": true,
+      "dependencies": [
+        "injury_check"
+      ]
+    }
+  }
+}
