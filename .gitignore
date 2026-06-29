@@ -46,3 +46,5 @@ data/baseball/raw/strat365/*/players/*_pitcher_probe_*
 data/baseball/parsed/
 
 data/baseball/raw/strat365/*/ballparks/
+
+data/baseball/raw/strat365/*/observed-results/
