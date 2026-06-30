@@ -9,6 +9,9 @@ DEFAULT_BALLPARK_AWARE_PATH = Path(
 DEFAULT_DEFENSE_AWARE_PATH = Path(
     "data/baseball/parsed/strat365/1980/draft-signals/1980.defense-aware-draft-signals.json"
 )
+DEFAULT_DEFENSE_METADATA_PATH = Path(
+    "data/baseball/parsed/strat365/1980/player-defense-metadata/1980.player-defense-metadata.json"
+)
 DEFAULT_BALLPARK_NAME = "Comiskey Park 1980"
 DEFAULT_CAP_MILLIONS = 80.0
 
@@ -57,6 +60,7 @@ def parse_args():
     parser.add_argument("roster_csv", type=Path)
     parser.add_argument("--ballpark-aware", type=Path, default=DEFAULT_BALLPARK_AWARE_PATH)
     parser.add_argument("--defense-aware", type=Path, default=DEFAULT_DEFENSE_AWARE_PATH)
+    parser.add_argument("--defense-metadata", type=Path, default=DEFAULT_DEFENSE_METADATA_PATH)
     parser.add_argument("--ballpark", default=DEFAULT_BALLPARK_NAME)
     parser.add_argument("--archetype", choices=sorted(ARCHETYPES), default="value-spine")
     parser.add_argument(
@@ -128,17 +132,53 @@ def build_defense_lookup(payload):
     return lookup
 
 
+def build_position_lookup(defense_metadata_payload):
+    lookup = {}
+    for row in defense_metadata_payload.get("players", []):
+        pid = row.get("playerId")
+        positions = []
+        for item in (row.get("hitterDefense") or {}).get("positions") or []:
+            position = item.get("position")
+            if position:
+                positions.append(position)
+        if pid is not None:
+            lookup[str(pid)] = positions
+    return lookup
+
+
 def build_player_lookup(ballpark_payload, defense_payload):
     defense_lookup = build_defense_lookup(defense_payload)
     by_id = {}
     by_name = {}
+    initial_candidates = {}
 
     for group in ["hitters", "pitchers"]:
         for row in ballpark_payload.get(group, []):
             item = dict(row)
             item["_defenseAware"] = defense_lookup.get(player_id(row), {})
             by_id[str(player_id(row))] = item
-            by_name[normalize_name(player_name(row))] = item
+
+            name = player_name(row)
+            by_name[normalize_name(name)] = item
+
+            if "," in name:
+                last, first = name.split(",", 1)
+                first = first.strip()
+                if first:
+                    initial_key = normalize_name(f"{last.strip()}, {first[0]}")
+                    initial_candidates.setdefault(initial_key, []).append(item)
+
+    for key, matches in initial_candidates.items():
+        if len(matches) == 1 and key not in by_name:
+            by_name[key] = matches[0]
+
+        hitter_matches = [match for match in matches if match.get("role") == "hitter"]
+        pitcher_matches = [match for match in matches if match.get("role") == "pitcher"]
+
+        if len(hitter_matches) == 1:
+            by_name[f"{key}|hitter"] = hitter_matches[0]
+        if len(pitcher_matches) == 1:
+            by_name[f"{key}|pitcher"] = pitcher_matches[0]
 
     return by_id, by_name
 
@@ -184,7 +224,15 @@ def load_roster(path, by_id, by_name):
             if lookup_id:
                 player = by_id.get(lookup_id)
             if player is None and lookup_name:
-                player = by_name.get(normalize_name(lookup_name))
+                name_key = normalize_name(lookup_name)
+                player = by_name.get(name_key)
+
+                if player is None and slot:
+                    slot_lower = slot.lower()
+                    if slot_lower in {"starter", "relief", "bullpen"}:
+                        player = by_name.get(f"{name_key}|pitcher")
+                    else:
+                        player = by_name.get(f"{name_key}|hitter")
 
             if player is None:
                 unresolved.append(raw)
@@ -227,15 +275,20 @@ def bucket_salary(rows):
     return totals
 
 
-def position_coverage(rows):
+def position_coverage(rows, position_lookup=None):
     coverage = {position: [] for position in REQUIRED_POSITIONS}
+    position_lookup = position_lookup or {}
+
     for item in rows:
         player = item["player"]
         if player.get("role") != "hitter":
             continue
-        primary = role_label(player)
-        if primary in coverage:
-            coverage[primary].append(player_name(player))
+
+        positions = position_lookup.get(str(player_id(player))) or [role_label(player)]
+        for position in positions:
+            if position in coverage:
+                coverage[position].append(player_name(player))
+
     return coverage
 
 
@@ -406,11 +459,13 @@ def main():
 
     ballpark_payload = load_json(args.ballpark_aware)
     defense_payload = load_json(args.defense_aware)
+    defense_metadata_payload = load_json(args.defense_metadata)
     by_id, by_name = build_player_lookup(ballpark_payload, defense_payload)
+    position_lookup = build_position_lookup(defense_metadata_payload)
 
     rows, unresolved = load_roster(args.roster_csv, by_id, by_name)
     salary_totals = bucket_salary(rows)
-    coverage = position_coverage(rows)
+    coverage = position_coverage(rows, position_lookup)
 
     if args.compare_archetypes:
         print("# BIE Roster Archetype Comparison v0")

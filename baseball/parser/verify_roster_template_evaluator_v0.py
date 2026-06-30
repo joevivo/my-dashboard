@@ -35,7 +35,17 @@ def write_sample_roster(path):
 def main():
     ballpark_payload = evaluator.load_json(evaluator.DEFAULT_BALLPARK_AWARE_PATH)
     defense_payload = evaluator.load_json(evaluator.DEFAULT_DEFENSE_AWARE_PATH)
+    defense_metadata_payload = evaluator.load_json(evaluator.DEFAULT_DEFENSE_METADATA_PATH)
     by_id, by_name = evaluator.build_player_lookup(ballpark_payload, defense_payload)
+    position_lookup = evaluator.build_position_lookup(defense_metadata_payload)
+
+    brett_matches = [
+        row for row in ballpark_payload["hitters"]
+        if row.get("player", {}).get("playerName") == "Brett, George"
+    ]
+    assert brett_matches, "Expected to find Brett, George"
+    brett_positions = position_lookup.get(str(evaluator.player_id(brett_matches[0])), [])
+    assert "1B" in brett_positions, "Expected Brett, George to qualify at 1B"
 
     with tempfile.TemporaryDirectory() as temp_dir:
         roster_path = Path(temp_dir) / "sample-roster.csv"
@@ -46,7 +56,7 @@ def main():
         assert len(unresolved) == 0, f"Expected 0 unresolved rows, got {len(unresolved)}"
 
         salary_totals = evaluator.bucket_salary(rows)
-        coverage = evaluator.position_coverage(rows)
+        coverage = evaluator.position_coverage(rows, position_lookup)
         archetype = evaluator.ARCHETYPES["value-spine"]
 
         score, flags, risk_items = evaluator.archetype_score(
