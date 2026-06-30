@@ -102,6 +102,18 @@ def salary_raw(row):
     return (row.get("salary") or {}).get("raw", "n/a")
 
 
+
+def salary_lookup_key(value):
+    text = str(value or "").strip().replace("$", "").replace(",", "")
+    text = text.replace("M", "").replace("m", "")
+    if text.startswith("."):
+        text = "0" + text
+    try:
+        return f"{float(text):.2f}"
+    except ValueError:
+        return ""
+
+
 def find_fit(row, ballpark_name):
     for fit in row.get("ballparkFits") or []:
         if fit.get("ballparkName") == ballpark_name:
@@ -151,6 +163,7 @@ def build_player_lookup(ballpark_payload, defense_payload):
     by_id = {}
     by_name = {}
     initial_candidates = {}
+    initial_salary_candidates = {}
 
     for group in ["hitters", "pitchers"]:
         for row in ballpark_payload.get(group, []):
@@ -167,6 +180,13 @@ def build_player_lookup(ballpark_payload, defense_payload):
                 if first:
                     initial_key = normalize_name(f"{last.strip()}, {first[0]}")
                     initial_candidates.setdefault(initial_key, []).append(item)
+                    salary_key = salary_lookup_key(salary_raw(item))
+                    if salary_key:
+                        initial_salary_candidates.setdefault(f"{initial_key}|salary:{salary_key}", []).append(item)
+
+    for key, matches in initial_salary_candidates.items():
+        if len(matches) == 1:
+            by_name[key] = matches[0]
 
     for key, matches in initial_candidates.items():
         if len(matches) == 1 and key not in by_name:
@@ -226,6 +246,11 @@ def load_roster(path, by_id, by_name):
             if player is None and lookup_name:
                 name_key = normalize_name(lookup_name)
                 player = by_name.get(name_key)
+
+                if player is None:
+                    salary_key = salary_lookup_key(raw.get("salary") or raw.get("inputSalary") or raw.get("rosterSalary"))
+                    if salary_key:
+                        player = by_name.get(f"{name_key}|salary:{salary_key}")
 
                 if player is None and slot:
                     slot_lower = slot.lower()

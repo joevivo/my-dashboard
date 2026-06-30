@@ -252,7 +252,10 @@ HITTER_COLUMNS = [
 
 
 def clean_player_name(value: str) -> str:
-    return normalize_space(re.sub(r"\s+I(?:-\d+)?\s*$", "", value))
+    value = normalize_space(value)
+    value = re.sub(r"^#+\s*", "", value)
+    value = re.sub(r"\s+I(?:-\d+)?\s*$", "", value)
+    return normalize_space(value)
 
 
 def table_rows_from_cell_lines(section_lines: list[str], columns: list[str]) -> list[list[str]]:
@@ -376,10 +379,10 @@ def default_output_path(metadata: dict, url: str) -> Path:
 def write_roster_csv(path: Path, players: list[ImportedPlayer]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["playerName", "slot"])
+        writer = csv.DictWriter(handle, fieldnames=["playerName", "slot", "salary"])
         writer.writeheader()
         for player in players:
-            writer.writerow({"playerName": player.player_name, "slot": player.slot})
+            writer.writerow({"playerName": player.player_name, "slot": player.slot, "salary": player.salary})
 
 
 def write_metadata(path: Path, metadata: dict, players: list[ImportedPlayer]) -> None:
