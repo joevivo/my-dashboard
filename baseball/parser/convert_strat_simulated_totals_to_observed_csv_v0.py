@@ -44,7 +44,7 @@ def load_players(metadata_path):
     return payload.get("players") or payload.get("rows") or []
 
 
-def resolve_player(players, abbreviated_name):
+def resolve_player(players, abbreviated_name, salary_raw=None):
     match = re.match(r"^([^,]+),\s+([A-Z])\.$", abbreviated_name)
     if not match:
         raise ValueError(f"Could not parse abbreviated name: {abbreviated_name}")
@@ -56,7 +56,13 @@ def resolve_player(players, abbreviated_name):
         if player.get("playerName", "").split(",")[0] == last_name
         and player.get("playerName", "").split(",", 1)[1].strip().startswith(first_initial)
     ]
-
+    if len(matches) != 1 and salary_raw:
+        salary_matches = [
+            player for player in matches
+            if player.get("salary", {}).get("raw") == salary_raw
+        ]
+        if len(salary_matches) == 1:
+            matches = salary_matches
     if len(matches) != 1:
         names = ", ".join(player.get("playerName", "") for player in matches) or "none"
         raise ValueError(f"Expected one match for {abbreviated_name}; found {len(matches)}: {names}")
@@ -139,7 +145,7 @@ def main():
     rows = []
     for index, line in enumerate(lines):
         abbreviated_name, tokens = parse_line(line)
-        player = resolve_player(players, abbreviated_name)
+        player = resolve_player(players, abbreviated_name, tokens[-1])
 
         if index < args.pitcher_count:
             rows.append(parse_pitcher(player, tokens, args))
