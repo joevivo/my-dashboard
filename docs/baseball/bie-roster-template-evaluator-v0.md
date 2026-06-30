@@ -124,10 +124,11 @@ The evaluator prints:
 
 1. archetype match score
 2. salary allocation
-3. position coverage
-4. player signal snapshot
-5. model-risk players
-6. unresolved rows
+3. improvement targets
+4. position coverage
+5. player signal snapshot
+6. model-risk players
+7. unresolved rows
 
 ## Model-Risk Flags
 
@@ -139,6 +140,24 @@ Current risk flags include:
 - relief/workload dependency
 - large negative park movement
 - positive movement / thin card caution
+
+
+## Improvement Targets
+
+The evaluator now emits suggested structural fixes when a roster misses the selected archetype.
+
+Current improvement targets can include:
+
+- salary needed to approach the selected cap
+- hitter salary needed to reach the archetype floor
+- starter salary needed to reach the archetype floor
+- relief salary needed to reach the archetype floor
+- missing position coverage
+- thin starter count
+- thin relief count
+- expensive negative park movers that should be reviewed
+
+These targets are not player recommendations yet. They identify what kind of roster correction is needed next.
 
 ## Current Limitations
 
