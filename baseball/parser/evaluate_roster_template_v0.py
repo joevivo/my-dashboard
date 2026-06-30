@@ -301,34 +301,41 @@ def salary_flag(label, value, target_range):
     return f"[ok] {label} salary within archetype range: ${value:.2f}M"
 
 
-def improvement_targets(salary_totals, archetype, coverage, rows, ballpark_name, cap_millions):
-    targets = []
+def structural_tensions(salary_totals, archetype, coverage, rows, ballpark_name, cap_millions):
+    tensions = []
 
     total_salary = sum(salary_totals.values())
     cap_gap = cap_millions - total_salary
     if cap_gap > 10:
-        targets.append(f"Add approximately ${cap_gap:.2f}M in useful salary before treating this as a full-cap roster.")
+        tensions.append(
+            f"Roster is ${cap_gap:.2f}M below the selected cap. "
+            "This may indicate unused buying power, a low-cost construction, or an incomplete roster template."
+        )
 
     for label in ["hitters", "starters", "relief"]:
         low, high = archetype["salary"][label]
         value = salary_totals[label]
         if value < low:
-            targets.append(f"Add ${low - value:.2f}M+ to {label} to reach the archetype floor.")
+            tensions.append(
+                f"{label} salary is ${low - value:.2f}M below this archetype's expected floor."
+            )
         elif value > high:
-            targets.append(f"Reduce ${value - high:.2f}M+ from {label} to return to the archetype range.")
+            tensions.append(
+                f"{label} salary is ${value - high:.2f}M above this archetype's expected ceiling."
+            )
 
     missing = [position for position, players in coverage.items() if not players]
     if missing:
-        targets.append(f"Resolve missing position coverage: {', '.join(missing)}.")
+        tensions.append(f"Required position coverage is missing: {', '.join(missing)}.")
 
     pitchers = [item for item in rows if item["player"].get("role") == "pitcher"]
     starters = [item for item in pitchers if role_bucket(item) == "starters"]
     relievers = [item for item in pitchers if role_bucket(item) == "relief"]
 
     if len(starters) < 4:
-        targets.append("Add starter workload before trusting the roster shape.")
+        tensions.append("Starter count is thin for a conventional roster shape.")
     if len(relievers) < 4:
-        targets.append("Add relief depth before trusting the bullpen shape.")
+        tensions.append("Relief count is thin for a conventional roster shape.")
 
     high_salary_negative_movers = []
     for item in rows:
@@ -339,16 +346,17 @@ def improvement_targets(salary_totals, archetype, coverage, rows, ballpark_name,
             high_salary_negative_movers.append(player_name(player))
 
     if high_salary_negative_movers:
-        targets.append(
-            "Review expensive negative park movers: "
+        tensions.append(
+            "Expensive negative park movers should be reviewed as model-risk cases: "
             + ", ".join(high_salary_negative_movers)
             + "."
         )
 
-    if not targets:
-        targets.append("No major structural improvement targets detected.")
+    if not tensions:
+        tensions.append("No major structural tensions detected against the selected archetype.")
 
-    return targets
+    return tensions
+
 
 
 def model_risks(item, ballpark_name):
@@ -526,12 +534,12 @@ def main():
     print(f"- Total: ${sum(salary_totals.values()):.2f}M")
     print()
 
-    print("## Improvement Targets")
+    print("## Structural Tensions")
     print()
-    for target in improvement_targets(
+    for tension in structural_tensions(
         salary_totals, archetype, coverage, rows, args.ballpark, args.cap
     ):
-        print(f"- {target}")
+        print(f"- {tension}")
     print()
 
     print("## Position Coverage")

@@ -124,7 +124,7 @@ The evaluator prints:
 
 1. archetype match score
 2. salary allocation
-3. improvement targets
+3. structural tensions
 4. position coverage
 5. player signal snapshot
 6. model-risk players
@@ -142,11 +142,11 @@ Current risk flags include:
 - positive movement / thin card caution
 
 
-## Improvement Targets
+## Structural Tensions
 
-The evaluator now emits suggested structural fixes when a roster misses the selected archetype.
+The evaluator now emits structural tensions when a roster differs from the selected archetype.
 
-Current improvement targets can include:
+Current structural tensions can include:
 
 - salary needed to approach the selected cap
 - hitter salary needed to reach the archetype floor
@@ -157,7 +157,7 @@ Current improvement targets can include:
 - thin relief count
 - expensive negative park movers that should be reviewed
 
-These targets are not player recommendations yet. They identify what kind of roster correction is needed next.
+These tensions are not player recommendations. They identify where a roster differs from the selected archetype.
 
 ## Current Limitations
 
