@@ -91,6 +91,60 @@ def parse_line(line):
     return match.group(1), match.group(2).split()
 
 
+def looks_like_player_total_line(line):
+    if line.lstrip().startswith("#"):
+        return False
+    return re.match(r"^[^,]+,\s+[A-Z]\.\s+", line) is not None
+
+
+def extract_player_total_lines(raw_lines):
+    lines = []
+    section = None
+    seen_simulated_stats = False
+
+    for raw_line in raw_lines:
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        if line.startswith("Simulated Stats"):
+            seen_simulated_stats = True
+            continue
+
+        if not seen_simulated_stats:
+            continue
+
+        if line.startswith("Simulated L/R Splits"):
+            break
+
+        if line.startswith("Pitchers ("):
+            section = "pitcher"
+            continue
+
+        if line.startswith("Hitters ("):
+            section = "hitter"
+            continue
+
+        if line.startswith("TOTALS"):
+            section = None
+            continue
+
+        if line.startswith("1 player no longer on roster"):
+            section = None
+            continue
+
+        if line.startswith("I-#:"):
+            break
+
+        if section in {"pitcher", "hitter"} and looks_like_player_total_line(line):
+            lines.append(line)
+
+    if lines:
+        return lines
+
+    return [line.strip() for line in raw_lines if line.strip()]
+
+
 def parse_pitcher(player, tokens, args):
     row = blank_row(player, "pitcher", args)
     row.update({
@@ -140,7 +194,8 @@ def parse_hitter(player, tokens, args):
 def main():
     args = parse_args()
     players = load_players(args.metadata)
-    lines = [line for line in args.input.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+    raw_lines = args.input.read_text(encoding="utf-8-sig").splitlines()
+    lines = extract_player_total_lines(raw_lines)
 
     rows = []
     for index, line in enumerate(lines):
