@@ -1,4 +1,4 @@
-﻿# BIE Roster Template Evaluator v0
+# BIE Roster Template Evaluator v0
 
 ## Purpose
 
@@ -53,6 +53,23 @@ python .\baseball\parser\evaluate_roster_template_v0.py `
   .\data\baseball\parsed\strat365\1980\draft-reports\1980.comiskey-sample-roster-template-v0.csv `
   --archetype value-spine `
   --cap 80
+
+## Archetype Comparison Command
+
+Use this when the proposed roster should be scored against every supported archetype:
+
+python .\baseball\parser\evaluate_roster_template_v0.py `
+  .\data\baseball\parsed\strat365\1980\draft-reports\1980.comiskey-sample-roster-template-v0.csv `
+  --compare-archetypes `
+  --cap 80
+
+Comparison mode prints:
+
+- archetype key
+- score
+- error count
+- warning count
+- notes explaining the score
 
 ## Supported Archetypes
 
