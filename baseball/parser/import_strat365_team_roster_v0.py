@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import csv
@@ -197,6 +197,96 @@ HITTER_RE = re.compile(
 )
 
 
+PITCHER_COLUMNS = [
+    "Name",
+    "T",
+    "End.",
+    "W",
+    "L",
+    "S",
+    "BS",
+    "IP",
+    "H",
+    "R",
+    "ER",
+    "BB",
+    "SO",
+    "HR",
+    "Hold",
+    "BkR",
+    "WpR",
+    "Bat",
+    "ERA",
+    "WHIP",
+    "BAL",
+    "Salary",
+]
+
+HITTER_COLUMNS = [
+    "Name",
+    "B",
+    "P",
+    "Def.",
+    "AB",
+    "R",
+    "H",
+    "2B",
+    "3B",
+    "HR",
+    "RBI",
+    "BB",
+    "SO",
+    "HBP",
+    "SB",
+    "CS",
+    "E",
+    "Stl",
+    "Run",
+    "BA",
+    "OBP",
+    "SLG",
+    "Inj",
+    "BAL",
+    "Salary",
+]
+
+
+def clean_player_name(value: str) -> str:
+    return normalize_space(re.sub(r"\s+I(?:-\d+)?\s*$", "", value))
+
+
+def table_rows_from_cell_lines(section_lines: list[str], columns: list[str]) -> list[list[str]]:
+    try:
+        header_start = next(
+            idx
+            for idx in range(0, len(section_lines) - len(columns) + 1)
+            if section_lines[idx : idx + len(columns)] == columns
+        )
+    except StopIteration:
+        return []
+
+    width = len(columns)
+    rows: list[list[str]] = []
+    idx = header_start + width
+
+    while idx + width <= len(section_lines):
+        if section_lines[idx] == "TOTALS":
+            break
+
+        row = section_lines[idx : idx + width]
+        if row[0].startswith(("Pitchers", "Hitters")):
+            idx += 1
+            continue
+
+        if re.search(r"\.?\d+(?:\.\d+)?M$", row[-1]):
+            rows.append(row)
+            idx += width
+        else:
+            idx += 1
+
+    return rows
+
+
 def pitcher_slot(endurance: str) -> str:
     endurance = endurance.upper()
     if endurance.startswith("R") and not endurance.startswith("S"):
@@ -207,34 +297,62 @@ def pitcher_slot(endurance: str) -> str:
 def parse_players(lines: list[str]) -> list[ImportedPlayer]:
     players: list[ImportedPlayer] = []
 
-    pitcher_lines = candidate_stat_lines(find_section_lines(lines, "Pitchers", "Hitters"))
-    hitter_lines = candidate_stat_lines(find_section_lines(lines, "Hitters", None))
+    pitcher_section = find_section_lines(lines, "Pitchers", "Hitters")
+    hitter_section = find_section_lines(lines, "Hitters", None)
 
-    for line in pitcher_lines:
-        match = PITCHER_RE.match(line)
-        if not match:
-            raise ValueError(f"Could not parse pitcher row: {line}")
+    pitcher_lines = candidate_stat_lines(pitcher_section)
+    hitter_lines = candidate_stat_lines(hitter_section)
+
+    if pitcher_lines or hitter_lines:
+        for line in pitcher_lines:
+            match = PITCHER_RE.match(line)
+            if not match:
+                raise ValueError(f"Could not parse pitcher row: {line}")
+            players.append(
+                ImportedPlayer(
+                    player_name=clean_player_name(match.group("name")),
+                    slot=pitcher_slot(match.group("endurance")),
+                    section="pitcher",
+                    salary=match.group("salary"),
+                    raw_line=line,
+                )
+            )
+
+        for line in hitter_lines:
+            match = HITTER_RE.match(line)
+            if not match:
+                raise ValueError(f"Could not parse hitter row: {line}")
+            players.append(
+                ImportedPlayer(
+                    player_name=clean_player_name(match.group("name")),
+                    slot=match.group("position"),
+                    section="hitter",
+                    salary=match.group("salary"),
+                    raw_line=line,
+                )
+            )
+
+        return players
+
+    for row in table_rows_from_cell_lines(pitcher_section, PITCHER_COLUMNS):
         players.append(
             ImportedPlayer(
-                player_name=normalize_space(match.group("name")),
-                slot=pitcher_slot(match.group("endurance")),
+                player_name=clean_player_name(row[0]),
+                slot=pitcher_slot(row[2]),
                 section="pitcher",
-                salary=match.group("salary"),
-                raw_line=line,
+                salary=row[-1],
+                raw_line=" | ".join(row),
             )
         )
 
-    for line in hitter_lines:
-        match = HITTER_RE.match(line)
-        if not match:
-            raise ValueError(f"Could not parse hitter row: {line}")
+    for row in table_rows_from_cell_lines(hitter_section, HITTER_COLUMNS):
         players.append(
             ImportedPlayer(
-                player_name=normalize_space(match.group("name")),
-                slot=match.group("position"),
+                player_name=clean_player_name(row[0]),
+                slot=row[2],
                 section="hitter",
-                salary=match.group("salary"),
-                raw_line=line,
+                salary=row[-1],
+                raw_line=" | ".join(row),
             )
         )
 
