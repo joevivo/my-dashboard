@@ -59,6 +59,11 @@ def parse_args():
     parser.add_argument("--defense-aware", type=Path, default=DEFAULT_DEFENSE_AWARE_PATH)
     parser.add_argument("--ballpark", default=DEFAULT_BALLPARK_NAME)
     parser.add_argument("--archetype", choices=sorted(ARCHETYPES), default="value-spine")
+    parser.add_argument(
+        "--compare-archetypes",
+        action="store_true",
+        help="Compare the roster against every supported archetype.",
+    )
     parser.add_argument("--cap", type=float, default=DEFAULT_CAP_MILLIONS)
     return parser.parse_args()
 
@@ -354,9 +359,40 @@ def main():
     by_id, by_name = build_player_lookup(ballpark_payload, defense_payload)
 
     rows, unresolved = load_roster(args.roster_csv, by_id, by_name)
-    archetype = ARCHETYPES[args.archetype]
     salary_totals = bucket_salary(rows)
     coverage = position_coverage(rows)
+
+    if args.compare_archetypes:
+        print("# BIE Roster Archetype Comparison v0")
+        print()
+        print(f"Roster input: {args.roster_csv}")
+        print(f"Season: {ballpark_payload.get('season')}")
+        print(f"Ballpark: {args.ballpark}")
+        print(f"Players resolved: {len(rows)}")
+        print(f"Rows unresolved: {len(unresolved)}")
+        print(f"Salary total: ${sum(salary_totals.values()):.2f}M")
+        print()
+        print("| Archetype | Score | Errors | Warnings | Notes |")
+        print("|---|---:|---:|---:|---|")
+        for archetype_key, candidate in ARCHETYPES.items():
+            score, flags, risk_items = archetype_score(
+                rows, unresolved, salary_totals, candidate, coverage, args.ballpark, args.cap
+            )
+            errors = sum(1 for flag in flags if flag.startswith("[error]"))
+            warnings = sum(1 for flag in flags if flag.startswith("[warning]"))
+            note = "; ".join(
+                flag.replace("[warning] ", "").replace("[error] ", "")
+                for flag in flags
+                if flag.startswith("[warning]") or flag.startswith("[error]")
+            )
+            if not note:
+                note = "clean fit"
+            print(
+                f"| {archetype_key} | {score} | {errors} | {warnings} | {note} |"
+            )
+        return
+
+    archetype = ARCHETYPES[args.archetype]
     score, flags, risk_items = archetype_score(
         rows, unresolved, salary_totals, archetype, coverage, args.ballpark, args.cap
     )
