@@ -31,6 +31,7 @@ VERIFY_SCRIPTS = [
     "verify_observed_player_results_v0.py",
     "verify_batch_observed_player_results_v0.py",
     "report_observed_player_batch_calibration_v0.py",
+    "report_observed_player_aggregate_calibration_v0.py",
 ]
 
 def main():
