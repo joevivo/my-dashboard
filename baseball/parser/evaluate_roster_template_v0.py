@@ -248,6 +248,56 @@ def salary_flag(label, value, target_range):
     return f"[ok] {label} salary within archetype range: ${value:.2f}M"
 
 
+def improvement_targets(salary_totals, archetype, coverage, rows, ballpark_name, cap_millions):
+    targets = []
+
+    total_salary = sum(salary_totals.values())
+    cap_gap = cap_millions - total_salary
+    if cap_gap > 10:
+        targets.append(f"Add approximately ${cap_gap:.2f}M in useful salary before treating this as a full-cap roster.")
+
+    for label in ["hitters", "starters", "relief"]:
+        low, high = archetype["salary"][label]
+        value = salary_totals[label]
+        if value < low:
+            targets.append(f"Add ${low - value:.2f}M+ to {label} to reach the archetype floor.")
+        elif value > high:
+            targets.append(f"Reduce ${value - high:.2f}M+ from {label} to return to the archetype range.")
+
+    missing = [position for position, players in coverage.items() if not players]
+    if missing:
+        targets.append(f"Resolve missing position coverage: {', '.join(missing)}.")
+
+    pitchers = [item for item in rows if item["player"].get("role") == "pitcher"]
+    starters = [item for item in pitchers if role_bucket(item) == "starters"]
+    relievers = [item for item in pitchers if role_bucket(item) == "relief"]
+
+    if len(starters) < 4:
+        targets.append("Add starter workload before trusting the roster shape.")
+    if len(relievers) < 4:
+        targets.append("Add relief depth before trusting the bullpen shape.")
+
+    high_salary_negative_movers = []
+    for item in rows:
+        player = item["player"]
+        salary = salary_millions(player) or 0.0
+        delta = park_delta(player, ballpark_name)
+        if salary >= 7.5 and delta is not None and delta <= -30:
+            high_salary_negative_movers.append(player_name(player))
+
+    if high_salary_negative_movers:
+        targets.append(
+            "Review expensive negative park movers: "
+            + ", ".join(high_salary_negative_movers)
+            + "."
+        )
+
+    if not targets:
+        targets.append("No major structural improvement targets detected.")
+
+    return targets
+
+
 def model_risks(item, ballpark_name):
     player = item["player"]
     risks = []
@@ -419,6 +469,14 @@ def main():
     print(f"- Starters: ${salary_totals['starters']:.2f}M")
     print(f"- Relief: ${salary_totals['relief']:.2f}M")
     print(f"- Total: ${sum(salary_totals.values()):.2f}M")
+    print()
+
+    print("## Improvement Targets")
+    print()
+    for target in improvement_targets(
+        salary_totals, archetype, coverage, rows, args.ballpark, args.cap
+    ):
+        print(f"- {target}")
     print()
 
     print("## Position Coverage")
