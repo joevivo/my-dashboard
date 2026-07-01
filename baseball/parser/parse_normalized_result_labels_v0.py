@@ -59,6 +59,10 @@ def normalize_label(raw_label: str) -> dict[str, Any]:
     if match:
         return {"normalizedLabel": "SINGLE", "fieldLocation": match.group(1)}
 
+    match = re.match(r"^SI\(([^)]+)\)$", label)
+    if match:
+        return {"normalizedLabel": "SINGLE", "fieldLocation": match.group(1), "rawVariant": label}
+
     if label in {"DO", "DO**", "DOUBLE**"}:
         return {"normalizedLabel": "DOUBLE", "rawVariant": label}
 
