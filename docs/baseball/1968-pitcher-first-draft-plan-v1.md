@@ -102,8 +102,8 @@ Primary draft card order:
 1. Tiant, Luis
 2. Kaline, Al
 3. Flood, Curt
-4. Maxvill, Dal
-5. Boyer, Clete
+4. Boyer, Clete
+5. Maxvill, Dal
 6. McAuliffe, Dick
 7. Messersmith, Andy
 8. Chance, Dean
@@ -193,3 +193,74 @@ Draft this team with **Astrodome 1968** as the primary park.
 Astrodome gives the roster elite HR suppression while preserving enough singles support for a right-heavy lineup. Dodger Stadium remains the fallback if Astrodome is unavailable, but Dodger's 9/3 singles split is less friendly to this roster's right-handed core.
 
 Do not drift toward Wrigley/Crosley-style offense after selecting this roster. The roster works only if the park, pitching, and defense all point in the same direction.
+
+## Final Draft Refinement Notes
+
+### Final Primary Draft-Card Order v2
+
+1. Tiant, Luis
+2. Kaline, Al
+3. Flood, Curt
+4. Boyer, Clete
+5. Maxvill, Dal
+6. McAuliffe, Dick
+7. Messersmith, Andy
+8. Chance, Dean
+9. Cash, Norm
+10. McDaniel, Lindy
+11. Hoerner, Joe
+12. Corrales, Pat
+13. Hamilton, Steve
+14. Etchebarren, Andy
+15. Mota, Manny
+16. Gonzalez, Tony
+17. Richert, Pete
+18. Knowles, Darold
+19. Aguirre, Hank
+20. Face, Roy
+21. Billingham, Jack
+22. Kirkpatrick, Ed
+23. Stahl, Larry
+24. May, Dave
+25. Harrelson, Bud
+
+### Replacement Ladder Summary
+
+Tiant missed:
+
+1. McNally, Dave
+2. Gibson, Bob
+3. McDowell, Sam
+4. McLain, Denny
+5. Protect Messersmith / Chance value path
+
+Boyer missed:
+
+1. Santo, Ron if salary can be solved
+2. Reassess 3B immediately
+3. Do not casually pivot to Foy or Sudakis unless accepting range-4 defense
+
+Maxvill missed:
+
+1. Aparicio, Luis
+2. Alley, Gene
+3. Belanger, Mark
+4. Lanier, Hal
+5. Oyler, Ray
+
+McAuliffe missed:
+
+- Do not blindly select a browser-baseline 2B.
+- Capture and score the specific 2B replacement if time allows.
+
+Kaline or Flood missed:
+
+- Kaline role: Aaron / Clemente / Mays / Frank Robinson depending salary and defense.
+- Flood role: Mays / Alou / Monday / Reggie Smith depending salary and availability.
+
+Cash missed:
+
+1. McCovey, Willie if salary allows
+2. Killebrew, Harmon
+3. Clendenon, Donn
+4. Parker, Wes
