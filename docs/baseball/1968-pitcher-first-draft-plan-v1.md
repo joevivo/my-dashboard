@@ -1,4 +1,4 @@
-# 1968 Strat365 Pitcher-First Draft Plan v1
+﻿# 1968 Strat365 Pitcher-First Draft Plan v1
 
 ## Status
 
@@ -15,12 +15,14 @@ This is not a UI artifact. It is an analytical draft plan based on:
 
 Build type: **Pitcher-first / run suppression**
 
-Preferred park family:
+Primary park: **Astrodome 1968**
 
-- Dodger Stadium 1968
-- Astrodome 1968
-- Busch Stadium 1968
+Fallback park: **Dodger Stadium 1968**
+
+Avoid for this build:
+
 - Oakland Coliseum 1968
+- Busch Stadium 1968
 
 Draft thesis:
 
@@ -127,22 +129,22 @@ Primary draft card order:
 
 ### If Maxvill is unavailable
 
-1. Aparicio, Luis — ss-2e21, $3.97M
-2. Alley, Gene — ss-2e24 / 2b-3e8, $2.41M
-3. Belanger, Mark — ss-2e26, $1.11M
-4. Lanier, Hal — ss-2e19, $0.50M
-5. Oyler, Ray — ss-2e17, $0.54M
+1. Aparicio, Luis â€” ss-2e21, $3.97M
+2. Alley, Gene â€” ss-2e24 / 2b-3e8, $2.41M
+3. Belanger, Mark â€” ss-2e26, $1.11M
+4. Lanier, Hal â€” ss-2e19, $0.50M
+5. Oyler, Ray â€” ss-2e17, $0.54M
 
 Avoid as starting SS for this build:
 
-- McFadden, Leon — ss-4e23
-- Campaneris, Bert — ss-3e36
-- Tresh, Tom — ss-3e44
+- McFadden, Leon â€” ss-4e23
+- Campaneris, Bert â€” ss-3e36
+- Tresh, Tom â€” ss-3e44
 
 ### If Boyer is unavailable
 
-1. Santo, Ron — 3b-1e15, $7.46M
-2. Foy, Joe — 3b-4e34, $2.39M only if offense becomes more important than run suppression
+1. Santo, Ron â€” 3b-1e15, $7.46M
+2. Foy, Joe â€” 3b-4e34, $2.39M only if offense becomes more important than run suppression
 
 ### If Tiant is unavailable
 
@@ -186,6 +188,8 @@ Outfield alternatives:
 
 ## Current Recommendation
 
-Draft this team only with a pitcher-friendly park posture.
+Draft this team with **Astrodome 1968** as the primary park.
+
+Astrodome gives the roster elite HR suppression while preserving enough singles support for a right-heavy lineup. Dodger Stadium remains the fallback if Astrodome is unavailable, but Dodger's 9/3 singles split is less friendly to this roster's right-handed core.
 
 Do not drift toward Wrigley/Crosley-style offense after selecting this roster. The roster works only if the park, pitching, and defense all point in the same direction.
