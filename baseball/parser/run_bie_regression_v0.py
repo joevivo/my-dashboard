@@ -31,6 +31,7 @@ VERIFY_SCRIPTS = [
     "verify_strat365_team_importer_v0.py",
     "verify_strat365_playerset_to_bie_metadata_v0.py",
     "verify_strat365_browser_baseline_draft_board_v0.py",
+    "verify_strat365_browser_baseline_strategy_brief_v0.py",
     "verify_strat365_browser_baseline_park_movers_v0.py",
     "verify_strat365_browser_baseline_draft_signals_v0.py",
     "verify_strat365_playerset_importer_v0.py",
