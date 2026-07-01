@@ -1,0 +1,154 @@
+{
+  "fixtureId": "1968-illegal-four-starters-v1",
+  "description": "Regression fixture proving the validator catches a 1968 roster with only 4 pitchers who have starter endurance while all other basic roster-count requirements pass.",
+  "playerSet": "1968",
+  "players": [
+    {
+      "name": "Catcher One",
+      "type": "hitter",
+      "primaryPosition": "C"
+    },
+    {
+      "name": "Catcher Two",
+      "type": "hitter",
+      "primaryPosition": "C"
+    },
+    {
+      "name": "Hitter 03",
+      "type": "hitter",
+      "primaryPosition": "1B"
+    },
+    {
+      "name": "Hitter 04",
+      "type": "hitter",
+      "primaryPosition": "2B"
+    },
+    {
+      "name": "Hitter 05",
+      "type": "hitter",
+      "primaryPosition": "3B"
+    },
+    {
+      "name": "Hitter 06",
+      "type": "hitter",
+      "primaryPosition": "SS"
+    },
+    {
+      "name": "Hitter 07",
+      "type": "hitter",
+      "primaryPosition": "LF"
+    },
+    {
+      "name": "Hitter 08",
+      "type": "hitter",
+      "primaryPosition": "CF"
+    },
+    {
+      "name": "Hitter 09",
+      "type": "hitter",
+      "primaryPosition": "RF"
+    },
+    {
+      "name": "Hitter 10",
+      "type": "hitter",
+      "primaryPosition": "OF"
+    },
+    {
+      "name": "Hitter 11",
+      "type": "hitter",
+      "primaryPosition": "IF"
+    },
+    {
+      "name": "Hitter 12",
+      "type": "hitter",
+      "primaryPosition": "OF"
+    },
+    {
+      "name": "Hitter 13",
+      "type": "hitter",
+      "primaryPosition": "IF"
+    },
+    {
+      "name": "Hitter 14",
+      "type": "hitter",
+      "primaryPosition": "OF"
+    },
+    {
+      "name": "Starter 01",
+      "type": "pitcher",
+      "starterEndurance": "S7",
+      "reliefEndurance": null,
+      "closerEndurance": null
+    },
+    {
+      "name": "Starter 02",
+      "type": "pitcher",
+      "starterEndurance": "S7",
+      "reliefEndurance": null,
+      "closerEndurance": null
+    },
+    {
+      "name": "Starter 03",
+      "type": "pitcher",
+      "starterEndurance": "S6",
+      "reliefEndurance": null,
+      "closerEndurance": null
+    },
+    {
+      "name": "Starter 04",
+      "type": "pitcher",
+      "starterEndurance": "S6",
+      "reliefEndurance": null,
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 01",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R2",
+      "closerEndurance": "C4"
+    },
+    {
+      "name": "Reliever 02",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R2",
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 03",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R2",
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 04",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R2",
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 05",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R2",
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 06",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R1",
+      "closerEndurance": null
+    },
+    {
+      "name": "Reliever 07",
+      "type": "pitcher",
+      "starterEndurance": null,
+      "reliefEndurance": "R1",
+      "closerEndurance": null
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "ruleSetId": "strat365-baseball-1968-roster-rules-v1",
+  "source": {
+    "name": "Strat-O-Matic Baseball 365 Rules",
+    "url": "https://365.strat-o-matic.com/help/rules/baseball",
+    "retrievedNote": "1968-style roster requirements: 25-28 players, 13-17 hitters, 11-14 pitchers, minimum 5 starter-endurance pitchers, minimum 4 pure relievers, minimum 1 closer-endurance pitcher."
+  },
+  "playerSet": "1968",
+  "roster": {
+    "minPlayers": 25,
+    "maxPlayers": 28,
+    "minHitters": 13,
+    "maxHitters": 17,
+    "minPitchers": 11,
+    "maxPitchers": 14,
+    "minPrimaryCatchers": 2,
+    "minStartingEndurancePitchers": 5,
+    "minPureRelievers": 4,
+    "minCloserEndurancePitchers": 1
+  },
+  "definitions": {
+    "startingEndurancePitcher": "Pitcher has a starter endurance rating such as S7.",
+    "pureReliever": "Pitcher has a relief endurance rating such as R2 and no starter endurance rating.",
+    "closerEndurancePitcher": "Pitcher has a closer endurance rating such as C4.",
+    "primaryCatcher": "Hitter has catcher as primary position."
+  }
+}
