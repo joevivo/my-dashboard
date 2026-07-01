@@ -1,14 +1,16 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
+import argparse
 import json
 import re
 from typing import Any
 
 
 PARSER_VERSION = "bie-result-cell-parser-v0.1"
+DEFAULT_SEASON = 1980
 
 UNIVERSE_PATH = Path("data/baseball/raw/strat365/1980/players/1980_players_universe.json")
 CARDS_DIR = Path("data/baseball/raw/strat365/authenticated/1980/cards")
@@ -171,9 +173,56 @@ def parse_player(player: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def configure_paths(season: int) -> None:
+    global UNIVERSE_PATH, CARDS_DIR, OUTPUT_DIR
+
+    UNIVERSE_PATH = Path("data/baseball/raw/strat365") / str(season) / "players" / f"{season}_players_universe.json"
+    CARDS_DIR = Path("data/baseball/raw/strat365/authenticated") / str(season) / "cards"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-cells"
+
+
+def select_players(players: list[dict[str, Any]], player_ids: list[int] | None) -> list[dict[str, Any]]:
+    if not player_ids:
+        return players
+
+    wanted = {int(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for player in players:
+        player_id = int(player["playerId"])
+        if player_id in wanted:
+            selected.append(player)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in universe: {missing}")
+
+    return selected
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 result cells from authenticated card HTML.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season universe.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
+
     universe = read_json(UNIVERSE_PATH)
-    players = universe.get("players", [])
+    players = select_players(universe.get("players", []), args.player_ids)
 
     parsed_count = 0
     failed_count = 0

@@ -1,10 +1,13 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
+import argparse
 import json
 from typing import Any
 
+
+DEFAULT_SEASON = 1980
 
 ATOM_DIR = Path("data/baseball/parsed/strat365/1980/result-atoms")
 OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/result-semantics")
@@ -178,11 +181,56 @@ def parse_file(path: Path, rules: dict[str, Any]) -> dict[str, Any]:
     return output
 
 
+def configure_paths(season: int) -> None:
+    global ATOM_DIR, OUTPUT_DIR
+
+    ATOM_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-atoms"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-semantics"
+
+
+def select_paths(paths: list[Path], player_ids: list[int] | None) -> list[Path]:
+    if not player_ids:
+        return paths
+
+    wanted = {str(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for path in paths:
+        player_id = path.name.replace(".result-atoms.json", "")
+        if player_id in wanted:
+            selected.append(path)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in result-atom outputs: {missing}")
+
+    return selected
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 result semantics from result atoms.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season result-atom outputs.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     rules = read_json(RULES_PATH)
-    paths = sorted(ATOM_DIR.glob("*.result-atoms.json"))
+    paths = select_paths(sorted(ATOM_DIR.glob("*.result-atoms.json")), args.player_ids)
 
     parsed = 0
     failed = 0
@@ -221,6 +269,7 @@ def main() -> None:
 
     print("BIE Result Semantics Parser v0")
     print("=" * 72)
+    print(f"Season: {args.season}")
     print(f"Source files: {len(paths)}")
     print(f"Parsed files: {parsed}")
     print(f"Failed files: {failed}")
@@ -236,7 +285,16 @@ def main() -> None:
     print(f"Output: {OUTPUT_DIR}")
     print("=" * 72)
 
-    if failed or total_warnings or parsed != 721 or total_entries != 47586 or total_outcome_rows != 54748:
+    strict_1980_full_run = args.season == DEFAULT_SEASON and not args.player_ids
+
+    if failed or total_warnings:
+        raise SystemExit(1)
+
+    if strict_1980_full_run and (
+        parsed != 721
+        or total_entries != 47586
+        or total_outcome_rows != 54748
+    ):
         raise SystemExit(1)
 
 

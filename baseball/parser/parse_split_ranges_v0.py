@@ -1,6 +1,7 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pathlib import Path
+import argparse
 import json
 import re
 from typing import Any
@@ -11,6 +12,7 @@ OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/split-ranges")
 
 SCHEMA_VERSION = "bie.result-split-ranges.v0"
 PARSER_VERSION = "bie-result-split-range-parser-v0.1"
+DEFAULT_SEASON = 1980
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -112,10 +114,55 @@ def parse_file(path: Path) -> dict[str, Any]:
     return output
 
 
+def configure_paths(season: int) -> None:
+    global NORMALIZED_DIR, OUTPUT_DIR
+
+    NORMALIZED_DIR = Path("data/baseball/parsed/strat365") / str(season) / "normalized-result-labels"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "split-ranges"
+
+
+def select_paths(paths: list[Path], player_ids: list[int] | None) -> list[Path]:
+    if not player_ids:
+        return paths
+
+    wanted = {str(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for path in paths:
+        player_id = path.name.replace(".normalized-result-labels.json", "")
+        if player_id in wanted:
+            selected.append(path)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in normalized-label outputs: {missing}")
+
+    return selected
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 split ranges from normalized result labels.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season normalized-label outputs.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    paths = sorted(NORMALIZED_DIR.glob("*.normalized-result-labels.json"))
+    paths = select_paths(sorted(NORMALIZED_DIR.glob("*.normalized-result-labels.json")), args.player_ids)
 
     parsed = 0
     failed = 0
@@ -139,6 +186,7 @@ def main() -> None:
 
     print("BIE Split Range Parser v0")
     print("=" * 72)
+    print(f"Season: {args.season}")
     print(f"Source files: {len(paths)}")
     print(f"Parsed files: {parsed}")
     print(f"Failed files: {failed}")

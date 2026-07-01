@@ -1,13 +1,15 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+import argparse
 import json
 import re
 from typing import Any
 
 
 PARSER_VERSION = "bie-result-label-normalizer-v0.1"
+DEFAULT_SEASON = 1980
 
 RESULT_CELLS_DIR = Path("data/baseball/parsed/strat365/1980/result-cells")
 OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/normalized-result-labels")
@@ -193,8 +195,57 @@ def normalize_player(path: Path) -> tuple[dict[str, Any], int, int]:
     return result, outcome_count, unmatched_count
 
 
+def configure_paths(season: int) -> None:
+    global RESULT_CELLS_DIR, OUTPUT_DIR
+
+    RESULT_CELLS_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-cells"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "normalized-result-labels"
+
+
+def select_paths(paths: list[Path], player_ids: list[int] | None) -> list[Path]:
+    if not player_ids:
+        return paths
+
+    wanted = {str(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for path in paths:
+        player_id = path.name.replace(".result-cells.json", "")
+        if player_id in wanted:
+            selected.append(path)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in result-cell outputs: {missing}")
+
+    return selected
+
+
 def main() -> None:
-    paths = sorted(RESULT_CELLS_DIR.glob("*.result-cells.json"))
+    parser = argparse.ArgumentParser(description="Normalize Strat365 printed result labels.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season result-cell outputs.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
+
+    paths = select_paths(sorted(RESULT_CELLS_DIR.glob("*.result-cells.json")), args.player_ids)
+
+    if not paths:
+        raise FileNotFoundError(f"No result cell files found in {RESULT_CELLS_DIR}")
 
     parsed_count = 0
     failed_count = 0
@@ -203,6 +254,7 @@ def main() -> None:
 
     print("BIE Normalized Result Label Parser v0")
     print("=" * 72)
+    print(f"Season: {args.season}")
     print(f"Result-cell files selected: {len(paths)}")
 
     for path in paths:

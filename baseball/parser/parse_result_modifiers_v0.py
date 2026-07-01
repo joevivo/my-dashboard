@@ -1,6 +1,7 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pathlib import Path
+import argparse
 import json
 import re
 from typing import Any
@@ -11,6 +12,7 @@ OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/result-modifiers")
 
 SCHEMA_VERSION = "bie.result-modifiers.v0"
 PARSER_VERSION = "bie-result-modifier-parser-v0.1"
+DEFAULT_SEASON = 1980
 
 ENTRY_TOKEN_MARKERS = ["#", ">", "$", "@"]
 OUTCOME_LABEL_MARKERS = ["**", "*", "+", "?"]
@@ -145,10 +147,55 @@ def parse_file(path: Path) -> dict[str, Any]:
     return output
 
 
+def configure_paths(season: int) -> None:
+    global SPLIT_RANGE_DIR, OUTPUT_DIR
+
+    SPLIT_RANGE_DIR = Path("data/baseball/parsed/strat365") / str(season) / "split-ranges"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-modifiers"
+
+
+def select_paths(paths: list[Path], player_ids: list[int] | None) -> list[Path]:
+    if not player_ids:
+        return paths
+
+    wanted = {str(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for path in paths:
+        player_id = path.name.replace(".split-ranges.json", "")
+        if player_id in wanted:
+            selected.append(path)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in split-range outputs: {missing}")
+
+    return selected
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 result modifiers from split ranges.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season split-range outputs.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    paths = sorted(SPLIT_RANGE_DIR.glob("*.split-ranges.json"))
+    paths = select_paths(sorted(SPLIT_RANGE_DIR.glob("*.split-ranges.json")), args.player_ids)
 
     parsed = 0
     failed = 0
@@ -172,6 +219,7 @@ def main() -> None:
 
     print("BIE Result Modifier Parser v0")
     print("=" * 72)
+    print(f"Season: {args.season}")
     print(f"Source files: {len(paths)}")
     print(f"Parsed files: {parsed}")
     print(f"Failed files: {failed}")

@@ -3,9 +3,12 @@ from __future__ import annotations
 from collections import Counter
 from fractions import Fraction
 from pathlib import Path
+import argparse
 import json
 from typing import Any
 
+
+DEFAULT_SEASON = 1980
 
 SEMANTICS_DIR = Path("data/baseball/parsed/strat365/1980/result-semantics")
 OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/result-probabilities")
@@ -227,10 +230,55 @@ def parse_file(path: Path) -> dict[str, Any]:
     return output
 
 
+def configure_paths(season: int) -> None:
+    global SEMANTICS_DIR, OUTPUT_DIR
+
+    SEMANTICS_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-semantics"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "result-probabilities"
+
+
+def select_paths(paths: list[Path], player_ids: list[int] | None) -> list[Path]:
+    if not player_ids:
+        return paths
+
+    wanted = {str(player_id) for player_id in player_ids}
+    selected = []
+    found = set()
+
+    for path in paths:
+        player_id = path.name.replace(".result-semantics.json", "")
+        if player_id in wanted:
+            selected.append(path)
+            found.add(player_id)
+
+    missing = sorted(wanted - found)
+    if missing:
+        raise ValueError(f"Player IDs not found in result-semantics outputs: {missing}")
+
+    return selected
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Strat365 result probabilities from result semantics.")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season result-semantics outputs.",
+    )
+    args = parser.parse_args()
+
+    configure_paths(args.season)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    paths = sorted(SEMANTICS_DIR.glob("*.result-semantics.json"))
+    paths = select_paths(sorted(SEMANTICS_DIR.glob("*.result-semantics.json")), args.player_ids)
 
     parsed = 0
     failed = 0
@@ -266,6 +314,7 @@ def main() -> None:
 
     print("BIE Result Probability Parser v0")
     print("=" * 72)
+    print(f"Season: {args.season}")
     print(f"Source files: {len(paths)}")
     print(f"Parsed files: {parsed}")
     print(f"Failed files: {failed}")
@@ -276,9 +325,13 @@ def main() -> None:
     print(f"Output: {OUTPUT_DIR}")
     print("=" * 72)
 
-    if (
+    strict_1980_full_run = args.season == DEFAULT_SEASON and not args.player_ids
+
+    if failed:
+        raise SystemExit(1)
+
+    if strict_1980_full_run and (
         parsed != 721
-        or failed != 0
         or total_entries != 47586
         or total_outcome_rows != 54748
         or status_counts.get("exact") != 54739

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from html import unescape
@@ -13,6 +13,7 @@ PARSER_VERSION = "bie-parser-v0.1"
 SCHEMA_VERSION = "bie.parsed-card-evidence.v0"
 
 SAMPLE_PATH = Path("baseball/parser/sample_set_v0.json")
+DEFAULT_SEASON = 1980
 UNIVERSE_PATH = Path("data/baseball/raw/strat365/1980/players/1980_players_universe.json")
 CARDS_DIR = Path("data/baseball/raw/strat365/authenticated/1980/cards")
 OUTPUT_DIR = Path("data/baseball/parsed/strat365/1980/cards")
@@ -204,10 +205,36 @@ def parse_card(player: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def load_players(parse_all: bool) -> tuple[str, list[dict[str, Any]]]:
-    if parse_all:
+def configure_paths(season: int) -> None:
+    global UNIVERSE_PATH, CARDS_DIR, OUTPUT_DIR
+
+    UNIVERSE_PATH = Path("data/baseball/raw/strat365") / str(season) / "players" / f"{season}_players_universe.json"
+    CARDS_DIR = Path("data/baseball/raw/strat365/authenticated") / str(season) / "cards"
+    OUTPUT_DIR = Path("data/baseball/parsed/strat365") / str(season) / "cards"
+
+
+def load_players(parse_all: bool, player_ids: list[int] | None) -> tuple[str, list[dict[str, Any]]]:
+    if parse_all or player_ids:
         universe = read_json(UNIVERSE_PATH)
-        return "full-universe", universe.get("players", [])
+        players = universe.get("players", [])
+
+        if player_ids:
+            wanted = {int(player_id) for player_id in player_ids}
+            selected = []
+            found = set()
+            for player in players:
+                player_id = int(player["playerId"])
+                if player_id in wanted:
+                    selected.append(player)
+                    found.add(player_id)
+
+            missing = sorted(wanted - found)
+            if missing:
+                raise ValueError(f"Player IDs not found in universe: {missing}")
+
+            return "targeted-universe", selected
+
+        return "full-universe", players
 
     sample = read_json(SAMPLE_PATH)
     return sample.get("sampleSetId", "controlled-sample"), sample.get("players", [])
@@ -220,9 +247,23 @@ def main() -> None:
         action="store_true",
         help="Parse the full discovered player universe instead of the controlled sample.",
     )
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_SEASON,
+        help="Season to parse. Defaults to 1980 to preserve existing behavior.",
+    )
+    parser.add_argument(
+        "--player-ids",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional targeted player IDs from the selected season universe.",
+    )
     args = parser.parse_args()
 
-    run_id, players = load_players(parse_all=args.all)
+    configure_paths(args.season)
+    run_id, players = load_players(parse_all=args.all, player_ids=args.player_ids)
 
     print("BIE Parser v0 Run")
     print("=" * 72)
