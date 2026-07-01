@@ -1,4 +1,4 @@
-﻿"""
+"""
 BIE Capture v0.2.1 — Authenticated Strat365 Card Capture
 
 Purpose:
@@ -229,9 +229,9 @@ def capture_authenticated_card(
             "Run capture_auth_state.py first."
         )
 
-    url = player_url(player_id, season)
     html_path, meta_path = output_paths(player_id, season)
     player_record = read_player_record(player_id, season)
+    url = player_record.get("sourceUrl") or player_url(player_id, season)
 
     player_name = player_record.get("playerName", "")
     role = player_record.get("role")

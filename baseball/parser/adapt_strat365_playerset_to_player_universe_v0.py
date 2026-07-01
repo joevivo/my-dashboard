@@ -78,7 +78,7 @@ def pitcher_row_text(row: dict[str, Any]) -> str:
 def player_url(player_id: str, season: str) -> str:
     # Mirrors the existing 1980 universe URL shape closely enough for provenance.
     # Authenticated card capture will validate the exact URL shape before batch use.
-    return f"https://365.strat-o-matic.com/player/{player_id}/{season}/4/{season}"
+    return f"https://365.strat-o-matic.com/player/{player_id}/{season}/5/{season}"
 
 
 def adapt_hitter(row: dict[str, Any], season: str) -> dict[str, Any]:

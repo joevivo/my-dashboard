@@ -1,4 +1,4 @@
-﻿"""
+"""
 BIE Capture v0.2.1 — Authenticated Strat365 Batch Card Capture
 
 Purpose:
@@ -104,7 +104,7 @@ def capture_one_with_page(page, season: int, player: dict[str, Any], force: bool
     player_id = int(player["playerId"])
     player_name = player.get("playerName", "")
     role = player.get("role")
-    url = player_url(player_id, season)
+    url = player.get("sourceUrl") or player_url(player_id, season)
     html_path, meta_path = output_paths(player_id, season)
 
     if html_path.exists() and meta_path.exists() and not force:
