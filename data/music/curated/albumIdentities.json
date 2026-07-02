@@ -1,0 +1,57 @@
+{
+  "Peter Gabriel::petergabriel3": {
+    "artist": "Peter Gabriel",
+    "displayName": "Peter Gabriel (3)",
+    "aliases": [
+      "Peter Gabriel (3)",
+      "Peter Gabriel 3",
+      "Peter Gabriel 3: Melt",
+      "Peter Gabriel III",
+      "Melt"
+    ],
+    "confidence": "curated",
+    "notes": "Peter Gabriel's third self-titled album, commonly known as Melt."
+  },
+  "The Cure::theheadonthedoor": {
+    "artist": "The Cure",
+    "displayName": "The Head On The Door",
+    "aliases": [
+      "The Head On The Door",
+      "The Head On the Door",
+      "The Head On the Door (Remastered) [Bonus Version]"
+    ],
+    "confidence": "curated",
+    "notes": "Collapse remastered/bonus edition variants."
+  },
+  "Talking Heads::moresongsaboutbuildingsandfood": {
+    "artist": "Talking Heads",
+    "displayName": "More Songs About Buildings And Food",
+    "aliases": [
+      "More Songs About Buildings And Food",
+      "More Songs About Buildings and Food"
+    ],
+    "confidence": "curated",
+    "notes": "Case/title-style variant."
+  },
+  "U2::thejoshuatree": {
+    "artist": "U2",
+    "displayName": "The Joshua Tree",
+    "aliases": [
+      "The Joshua Tree",
+      "Joshua Tree"
+    ],
+    "confidence": "curated",
+    "notes": "Article variant."
+  },
+  "Alice In Chains::jarofflies": {
+    "artist": "Alice In Chains",
+    "displayName": "Jar Of Flies",
+    "aliases": [
+      "Jar Of Flies",
+      "Jar of Flies",
+      "Jar of Flies - EP"
+    ],
+    "confidence": "curated",
+    "notes": "EP suffix variant."
+  }
+}
