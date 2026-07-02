@@ -1,6 +1,6 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 
-export default function QueryWorkbench({ onOpenArtist }) {
+export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
   const [mode, setMode] = useState("artist");
   const [query, setQuery] = useState("");
   const [songArtist, setSongArtist] = useState("");
@@ -66,6 +66,14 @@ export default function QueryWorkbench({ onOpenArtist }) {
     }
   };
 
+  useEffect(() => {
+    if (!initialArtist) return;
+    setMode("artist");
+    setQuery(initialArtist);
+    setResult(null);
+    setError("");
+  }, [initialArtist]);
+
   const runSearch = async () => {
     const trimmed = query.trim();
 
@@ -75,6 +83,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
       return;
     }
 
+    setMode("artist");
     setLoading(true);
     setError("");
 
@@ -108,6 +117,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
       return;
     }
 
+    setMode("song");
     setLoading(true);
     setError("");
 
@@ -141,6 +151,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
       return;
     }
 
+    setMode("date");
     setLoading(true);
     setError("");
 
@@ -168,11 +179,20 @@ export default function QueryWorkbench({ onOpenArtist }) {
   };
 
 
-  const songs = result?.topSongs || [];
-  const albums = result?.topAlbums || [];
-  const timeline = result?.timeline || [];
-  const family = result?.family || null;
-  const familyMembers = family?.members || family?.aliases || [];
+  const identity = result?.identity || result?.investigation?.identity || {};
+  const evidence = result?.evidence || {};
+  const activity = result?.activity || {};
+  const derived = result?.derived || {};
+  const bridge = result?.bridge || {};
+  const investigation = result?.investigation || {};
+
+  const actualSongs = activity?.actualTopSongs || result?.actualTopSongs || [];
+  const evidenceSongs = evidence?.topSongs || result?.topSongs || [];
+  const albums = evidence?.topAlbums || result?.topAlbums || [];
+  const timeline = evidence?.timeline || result?.timeline || [];
+  const family = result?.family || investigation?.identity?.familyName || null;
+  const familyLabel = typeof family === "string" ? family : family?.familyName || family?.name || family?.family || investigation?.identity?.familyName || null;
+  const familyMembers = result?.family?.members || result?.family?.aliases || investigation?.identity?.familyMembers || [];
   const probeArtists = [
     "Peter Gabriel",
     "Billie Holiday",
@@ -252,26 +272,38 @@ export default function QueryWorkbench({ onOpenArtist }) {
           </div>
         ) : mode === "song" ? (
           <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
-            <input
-              value={songArtist}
-              onChange={(event) => setSongArtist(event.target.value)}
-              className="rounded-xl border border-slate-300 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-950"
-              placeholder="Artist, e.g. Guster"
-            />
-            <input
-              value={songTitle}
-              onChange={(event) => setSongTitle(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && runSongSearch()}
-              className="rounded-xl border border-slate-300 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-950"
-              placeholder="Song, e.g. Satellite"
-            />
+            <label className="block">
+              <span className="mb-1 block text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                Artist
+              </span>
+              <input
+                value={songArtist}
+                onChange={(event) => setSongArtist(event.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-950"
+                placeholder="The Shins"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1 block text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                Song
+              </span>
+              <input
+                value={songTitle}
+                onChange={(event) => setSongTitle(event.target.value)}
+                onKeyDown={(event) => event.key === "Enter" && runSongSearch()}
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-950"
+                placeholder="New Slang"
+              />
+            </label>
+
             <button
               type="button"
               onClick={runSongSearch}
               disabled={loading}
-              className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-60"
+              className="self-end rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-60"
             >
-              {loading ? "Analyzing..." : "Analyze"}
+              {loading ? "Analyzing..." : "Analyze Song"}
             </button>
           </div>
         ) : (
@@ -360,7 +392,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
               ? result.song_companion_type || "Song result"
               : result.resultType === "date"
               ? "Period Intelligence"
-              : result.classification || result.source || "Artist result"}
+              : "Artist Investigation"}
           </p>
           <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
@@ -388,7 +420,7 @@ export default function QueryWorkbench({ onOpenArtist }) {
               </button>
             ) : null}
           </div>
-          {result.resultType === "song" ? (
+{result.resultType === "song" ? (
             <div className="mt-5 space-y-5">
               <div className="grid gap-3 md:grid-cols-4">
                 <div>
@@ -506,11 +538,28 @@ export default function QueryWorkbench({ onOpenArtist }) {
               {result.topAlbums?.length ? (
                 <div>
                   <h4 className="text-sm font-black">Top Albums</h4>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Source: current query result. Counts are result records.
+                  </p>
                   <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
                     {result.topAlbums.slice(0, 5).map((item) => (
                       <li key={item.album}>
-                        {item.album} ({item.count})
-                      </li>
+  <span className="font-semibold">
+    {item.identityConfidence === "curated" ? "✓ " : "• "}
+    {item.album}
+  </span>{" "}
+  ({item.plays ?? item.count})
+  {item.identityConfidence === "curated" ? (
+    <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+      Curated identity
+    </span>
+  ) : null}
+  {item.aliasesMerged > 1 ? (
+    <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
+      {item.aliasesMerged} aliases
+    </span>
+  ) : null}
+</li>
                     ))}
                   </ul>
                 </div>
@@ -519,74 +568,160 @@ export default function QueryWorkbench({ onOpenArtist }) {
             </div>
           ) : (
             <>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{result.notes}</p>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            Investigation dossier assembled from identity resolution, historical evidence, play activity, and live Apple Music bridge facts.
+          </p>
 
           <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
-              Normalization Status
+              Identity
             </p>
-            {family ? (
-              <div className="mt-2 space-y-2">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                  Family: {family.name || family.family || "Mapped artist family"}
+
+            <div className="mt-3 grid gap-3 md:grid-cols-4">
+              <div>
+                <p className="text-xs text-slate-500">Resolved Entity</p>
+                <p className="text-sm font-black text-slate-900 dark:text-slate-100">
+                  {identity.resolvedArtist || identity.resolvedName || result.artist || "-"}
                 </p>
-                {familyMembers.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {familyMembers.map((member) => (
-                      <span
-                        key={member}
-                        className="rounded-full border border-slate-300 px-3 py-1 text-xs dark:border-slate-700"
-                      >
-                        {member}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
               </div>
-            ) : (
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                No family mapping found. This is useful normalization debt if the artist belongs to a known artist family.
+
+              <div>
+                <p className="text-xs text-slate-500">Canonical Key</p>
+                <p className="text-sm font-black text-slate-900 dark:text-slate-100">
+                  {identity.canonicalKey || result.canonicalKey || "-"}
+                </p>
+              </div>
+
+            </div>
+
+            <div className="mt-4">
+              {family ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    Family: {familyLabel || "Mapped artist family"}
+                  </p>
+                  {familyMembers.length ? (
+                    <div className="flex flex-wrap gap-2">
+                      {familyMembers.map((member) => (
+                        <span
+                          key={member}
+                          className="rounded-full border border-slate-300 px-3 py-1 text-xs dark:border-slate-700"
+                        >
+                          {member}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  No family mapping found. This is useful normalization debt if the artist belongs to a known artist family.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+              Evidence Sources
+            </p>
+
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                  Library Evidence
+                </p>
+                <p className="mt-2 text-lg font-black">
+                  {evidence.records ?? result.libraryEvidenceRecords ?? result.totalPlays ?? "-"} records
+                </p>
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  {evidence.firstPlayedDate || result.firstPlayedDate || result.firstSeen || "-"} →{" "}
+                  {evidence.latestPlayedDate || result.latestPlayedDate || result.latestSeen || "-"}
+                  {(evidence.latestPlayedDate || result.latestPlayedDate) ? (
+                    <span> · {daysSince(evidence.latestPlayedDate || result.latestPlayedDate)}</span>
+                  ) : null}
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Confidence: {evidence.confidence || "medium"}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                  Play Activity
+                </p>
+                <p className="mt-2 text-lg font-black">
+                  {activity.actualPlays ?? result.actualPlays ?? "-"} actual plays
+                </p>
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  {activity.hoursListened ?? result.hoursListened ?? "-"} hours ·{" "}
+                  {activity.actualSkips ?? result.actualSkips ?? "-"} skips
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Confidence: {activity.confidence || "high"}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                  Live Apple Music
+                </p>
+                <p className="mt-2 text-lg font-black">
+                  {bridge.live?.recentObjectCount ?? 0} recent objects
+                </p>
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  {bridge.live?.heavyRotationCount ?? 0} heavy rotation objects
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Source: live warehouse
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {result.investigation?.facts?.length ? (
+            <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-900 dark:bg-blue-950/30">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
+                Investigation Facts
               </p>
-            )}
-          </div>
+              <ul className="mt-2 list-disc pl-5 text-slate-700 dark:text-slate-200">
+                {result.investigation.facts.map((fact) => (
+                  <li key={fact.id || fact.statement}>
+                    {fact.statement}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
-          <div className="mt-5 grid gap-3 md:grid-cols-4">
-            <div>
-              <p className="text-xs text-slate-500">Actual Plays</p>
-              <p className="text-xl font-black">{result.actualPlays ?? "-"}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500">Hours Listened</p>
-              <p className="text-xl font-black">{result.hoursListened ?? "-"}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500">Actual Skips</p>
-              <p className="text-xl font-black">{result.actualSkips ?? "-"}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500">Years Represented</p>
-              <p className="text-xl font-black">{result.yearsActive}</p>
-            </div>
-          </div>
-
-          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
-            <span className="font-bold text-slate-800 dark:text-slate-100">Evidence:</span>{" "}
-            Library Evidence {result.libraryEvidenceRecords ?? result.totalPlays ?? "-"} records ·{" "}
-            First Seen {result.firstPlayedDate || result.firstSeen || "-"} ·{" "}
-            Latest Seen {result.latestPlayedDate || result.latestSeen || "-"}
-            {result.latestPlayedDate ? (
-              <span> · {daysSince(result.latestPlayedDate)}</span>
-            ) : null}
-          </div>
-
-          {songs.length ? (
+          {actualSongs.length ? (
             <div className="mt-6">
-              <h4 className="text-sm font-black">Top Songs</h4>
+              <h4 className="text-sm font-black">Actual Top Songs</h4>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Source: Apple Music daily play activity. Counts are actual plays.
+              </p>
               <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
-                {songs.map((item) => (
-                  <li key={item.song}>
+                {actualSongs.map((item) => (
+                  <li key={`actual-${item.song}`}>
                     {item.song}
-                    {item.plays ? ` — ${item.plays}` : ""}
+                    {item.plays != null ? ` - ${item.plays} plays` : ""}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {evidenceSongs.length ? (
+            <div className="mt-6">
+              <h4 className="text-sm font-black">Library Evidence Songs</h4>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Source: Apple Music Library Tracks / last-played reconstruction. Counts are evidence records, not total plays.
+              </p>
+              <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
+                {evidenceSongs.map((item) => (
+                  <li key={`evidence-${item.song}`}>
+                    {item.song}
+                    {item.plays != null ? ` - ${item.plays} evidence records` : ""}
                   </li>
                 ))}
               </ul>
@@ -595,13 +730,29 @@ export default function QueryWorkbench({ onOpenArtist }) {
 
           {albums.length ? (
             <div className="mt-6">
-              <h4 className="text-sm font-black">Top Albums</h4>
+              <h4 className="text-sm font-black">Library Evidence Albums</h4>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Source: Apple Music Library Tracks / album evidence reconstruction. Counts are evidence records.
+              </p>
               <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
                 {albums.map((item) => (
                   <li key={item.album}>
-                    {item.album}
-                    {item.plays ? ` — ${item.plays}` : ""}
-                  </li>
+  <span className="font-semibold">
+    {item.identityConfidence === "curated" ? "✓ " : "• "}
+    {item.album}
+  </span>
+  {item.plays ? ` - ${item.plays}` : ""}
+  {item.identityConfidence === "curated" ? (
+    <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+      Curated identity
+    </span>
+  ) : null}
+  {item.aliasesMerged > 1 ? (
+    <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
+      {item.aliasesMerged} aliases
+    </span>
+  ) : null}
+</li>
                 ))}
               </ul>
             </div>
@@ -609,7 +760,10 @@ export default function QueryWorkbench({ onOpenArtist }) {
 
           {timeline.length ? (
             <div className="mt-6">
-              <h4 className="text-sm font-black">Timeline</h4>
+              <h4 className="text-sm font-black">Library Evidence Timeline</h4>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Source: Apple Music Library Tracks / last-played reconstruction. Counts are evidence records by year.
+              </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {timeline.map((item) => (
                   <span
@@ -631,13 +785,4 @@ export default function QueryWorkbench({ onOpenArtist }) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
 

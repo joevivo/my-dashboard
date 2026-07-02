@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execFile, execFileSync } from "child_process";
+import { buildArtistInvestigation } from "./lib/investigationBuilder.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -966,6 +967,31 @@ app.get("/api/strat/team-analysis/:teamId", async (req, res) => {
     res.status(500).json({ error: "Failed to analyze Strat team" });
   }
 });
+app.get("/api/music/dashboard", (req, res) => {
+  const dashboardFile = path.join(
+    __dirname,
+    "..",
+    "data",
+    "music",
+    "live",
+    "music_dashboard.json"
+  );
+
+  fs.readFile(dashboardFile, "utf8", (error, raw) => {
+    if (error) {
+      console.error("Music dashboard read error:", error);
+      return res.status(500).json({ error: "Failed to read music dashboard" });
+    }
+
+    try {
+      res.json(JSON.parse(raw));
+    } catch (parseError) {
+      console.error("Music dashboard parse error:", parseError);
+      res.status(500).json({ error: "Failed to parse music dashboard" });
+    }
+  });
+});
+
 app.get("/api/music/time-machine", async (req, res) => {
   const { start, end } = req.query;
 
@@ -976,7 +1002,7 @@ app.get("/api/music/time-machine", async (req, res) => {
   }
 
   const scriptPath =
-    "../data/music/scripts/library_range_summary.py";
+    "../data/music/scripts/period_intelligence.py";
 
   execFile(
     "python",
@@ -1062,6 +1088,25 @@ app.get("/api/music/query/artist", async (req, res) => {
 
             return JSON.parse(memberOutput);
           });
+
+          const bridgeScriptPath = "data/music/scripts/bridge/artist_bridge.py";
+          const bridgeOutput = execFileSync(
+            "python",
+            [bridgeScriptPath, String(result.artist || name).trim()],
+            {
+              cwd: path.join(__dirname, ".."),
+              encoding: "utf8",
+              env: {
+                ...process.env,
+                PYTHONIOENCODING: "utf-8",
+                PYTHONUTF8: "1",
+              },
+              maxBuffer: 1024 * 1024 * 10,
+            }
+          );
+
+          result.bridge = JSON.parse(bridgeOutput);
+          result.investigation = buildArtistInvestigation(result);
 
           res.json(result);
       } catch (parseError) {
@@ -1262,26 +1307,3 @@ app.get("/api/apple-music/recent-tracks", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,0 +1,253 @@
+﻿import { useEffect, useMemo, useState } from "react";
+import DashboardCard from "./components/music/DashboardCard";
+import { Activity, Disc3, ListMusic, Radio, Users } from "lucide-react";
+import { musicTheme } from "./components/music/musicTheme";
+import MusicBadge from "./components/music/MusicBadge";
+import AlbumCard from "./components/music/AlbumCard";
+
+const API_BASE = "http://localhost:4000";
+
+function formatTimestamp(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(date);
+}
+
+function objectLabel(count) {
+  return `${count} object${count === 1 ? "" : "s"}`;
+}
+
+function artistSummary(item) {
+  return `${item.artist} is active in the latest Apple Music snapshot.`;
+}
+function getStoryArtist(dashboard) {
+  const relationships = dashboard?.relationshipActivity || [];
+  return relationships[0]?.artist || "Your listening";
+}
+
+function getStoryText(dashboard) {
+  const artist = getStoryArtist(dashboard);
+  return `${artist} anchors this listening period.`;
+}
+
+
+export default function MusicDashboard({ onOpenArtist }) {
+  const [dashboard, setDashboard] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/music/dashboard`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Music Dashboard failed to load.");
+        return response.json();
+      })
+      .then((data) => {
+        setDashboard(data);
+        setError("");
+      })
+      .catch((err) => setError(err.message || "Music Dashboard failed to load."));
+  }, []);
+
+  const listeningEnvironment = useMemo(() => {
+    const playlists = dashboard?.playlistsAndStations?.playlists || [];
+    const stations = dashboard?.playlistsAndStations?.stations || [];
+    return { playlists, stations };
+  }, [dashboard]);
+
+  if (error) {
+    return (
+      <section className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+        {error}
+      </section>
+    );
+  }
+
+  if (!dashboard) {
+    return (
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
+        Loading Music Dashboard...
+      </section>
+    );
+  }
+
+  const summary = dashboard.liveSummary || {};
+  const relationships = dashboard.relationshipActivity || [];
+  const albums = dashboard.recentAlbums || [];
+  const artists = dashboard.recentArtists || [];
+
+  return (
+    <section className="space-y-6">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+          Music Intelligence
+        </p>
+        <h2 className="mt-2 text-5xl font-black text-slate-900 dark:text-slate-50">
+          Music Dashboard
+        </h2>
+        <p className="mt-2 max-w-4xl text-base text-slate-600 dark:text-slate-300">
+          The dashboard observes the present. The Workbench explains why it matters.
+        </p>
+      </div>
+
+      <div className="rounded-3xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30">
+        <div className="flex items-start gap-4">
+          <div className="rounded-2xl bg-blue-600 p-3 text-white">
+            <Activity size={24} />
+          </div>
+          <div>
+            <MusicBadge tone="story">Current Listening Story</MusicBadge>
+            <h3 className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-50">
+              {getStoryText(dashboard)}
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              {summary.recentObjectCount ?? 0} live listening objects observed · Updated {formatTimestamp(dashboard.capturedAt)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <DashboardCard title="Current Snapshot">
+        <div className="grid gap-4 md:grid-cols-4">
+          <div>
+            <p className="text-xs text-slate-500">Last Updated</p>
+            <p className="mt-1 text-lg font-black text-slate-900 dark:text-slate-50">
+              {formatTimestamp(dashboard.capturedAt)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-500">Live Objects</p>
+            <p className="mt-1 text-3xl font-black text-slate-900 dark:text-slate-50">
+              {summary.recentObjectCount ?? "-"}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-500">Heavy Rotation Signals</p>
+            <p className="mt-1 text-3xl font-black text-slate-900 dark:text-slate-50">
+              {summary.heavyRotationCount ?? "-"}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-500">Snapshot</p>
+            <p className="mt-1 text-sm font-black text-slate-900 dark:text-slate-50">
+              {dashboard.snapshotId || "-"}
+            </p>
+          </div>
+        </div>
+        <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+          {dashboard.sourceNote}
+        </p>
+      </DashboardCard>
+
+      <div className="grid gap-6 xl:grid-cols-12">
+        <DashboardCard title="Relationship Activity" className="xl:col-span-8">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Relationships worth investigating from the latest Apple Music snapshot.
+          </p>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {relationships.slice(0, 8).map((item) => (
+              <button
+                key={item.artist}
+                type="button"
+                onClick={() => onOpenArtist?.(item.artist)}
+                className="rounded-xl border border-slate-200 p-4 text-left transition hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-lg font-black text-slate-900 dark:text-slate-50">
+                      {item.artist}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                      {artistSummary(item)}
+                    </p>
+                  </div>
+                  <MusicBadge tone="relationship">
+                    {objectLabel(item.recentObjectCount)}
+                  </MusicBadge>
+                </div>
+                <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
+                  Investigate →
+                </p>
+              </button>
+            ))}
+          </div>
+        </DashboardCard>
+
+        <DashboardCard title="Listening Environment" className="xl:col-span-4">
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                Stations
+              </p>
+              <div className="mt-3 space-y-2">
+                {listeningEnvironment.stations.slice(0, 5).map((item) => (
+                  <div key={`${item.appleId}-${item.source}-${item.rank}`} className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
+                    <p className="font-black text-slate-900 dark:text-slate-50">{item.name}</p>
+                    <p className="mt-1 text-xs text-slate-500">{item.source}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                Playlists
+              </p>
+              <div className="mt-3 space-y-2">
+                {listeningEnvironment.playlists.slice(0, 6).map((item) => (
+                  <div key={`${item.appleId}-${item.source}-${item.rank}`} className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
+                    <p className="font-black text-slate-900 dark:text-slate-50">{item.name}</p>
+                    <p className="mt-1 text-xs text-slate-500">{item.source}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </DashboardCard>
+      </div>
+
+      <DashboardCard title="Recently Active Albums">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {albums.slice(0, 12).map((album) => (
+            <AlbumCard key={`${album.appleId}-${album.rank}`} album={album} />
+          ))}
+        </div>
+      </DashboardCard>
+
+      <div className="grid gap-6 xl:grid-cols-12">
+        <DashboardCard title="Recently Active Artists" className="xl:col-span-7">
+          <div className="grid gap-3 md:grid-cols-2">
+            {artists.slice(0, 10).map((item) => (
+              <button
+                key={item.artist}
+                type="button"
+                onClick={() => onOpenArtist?.(item.artist)}
+                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+              >
+                <span className="font-black text-slate-900 dark:text-slate-50">{item.artist}</span>
+                <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                  {objectLabel(item.count)}
+                </span>
+              </button>
+            ))}
+          </div>
+        </DashboardCard>
+
+        <DashboardCard title="What's Changed" className="xl:col-span-5">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            {dashboard.whatsChanged?.note || dashboard.whatsChanged?.status || "Snapshot comparison has not been calculated yet."}
+          </p>
+        </DashboardCard>
+      </div>
+    </section>
+  );
+}

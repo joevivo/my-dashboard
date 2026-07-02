@@ -13,6 +13,7 @@ import WeatherBug from "./WeatherBug";
 import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
+import MusicDashboard from "./MusicDashboard";
 import BooksView from "./BooksView";
 import NotesView from "./NotesView";
 import QueryWorkbench from "./QueryWorkbench";
@@ -22,6 +23,7 @@ import ScrollToTopButton from "./ScrollToTopButton";
 export default function App() {
   const [activeView, setActiveView] = useState("IntelligenceHome");
   const [selectedArtistForIntelligence, setSelectedArtistForIntelligence] = useState("Billie Holiday");
+  const [queryWorkbenchArtist, setQueryWorkbenchArtist] = useState("");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
   });
@@ -44,6 +46,7 @@ export default function App() {
           title: "Personal Intelligence",
           items: [
             ["IntelligenceHome", "Intelligence Home"],
+            ["MusicDashboard", "Music Dashboard"],
             ["QueryWorkbench", "Query Workbench"],
             ["Music", "Music Intelligence"],
             ["PlaylistIntelligence", "Playlist Intelligence"],
@@ -253,9 +256,17 @@ export default function App() {
         </aside>
 
         <main className="flex-1 p-6">
-          <div className="max-w-7xl mx-auto">
-            {activeView === "QueryWorkbench" ? (
+          <div className="max-w-screen-2xl mx-auto px-4">
+            {activeView === "MusicDashboard" ? (
+              <MusicDashboard
+                onOpenArtist={(artist) => {
+                  setQueryWorkbenchArtist(artist);
+                  setActiveView("QueryWorkbench");
+                }}
+              />
+            ) : activeView === "QueryWorkbench" ? (
               <QueryWorkbench
+                initialArtist={queryWorkbenchArtist}
                 onOpenArtist={(artistName) => {
                   setSelectedArtistForIntelligence(artistName);
                   setActiveView("ArtistIntelligence");
