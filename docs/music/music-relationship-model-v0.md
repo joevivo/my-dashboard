@@ -22,9 +22,68 @@ Music relationships are not just play counts. They have shape and context.
 - Album probes by title alone can be ambiguous.
 - Artist and album context still live in different data surfaces.
 
-## Next sprint options
+## Normalization Lessons
 
-1. Clean artist group aliases.
-2. Build album-centered detection.
-3. Plan playlist allocation strategy.
-4. Run more retrospective batches.
+Music identity is often fragmented by metadata.
+
+Validated examples:
+
+- Hüsker Dü vs Husker Du
+- Björk vs Bjork
+- Sinéad O'Connor vs Sinead O'Connor
+- Love & Rockets vs Love and Rockets
+- The Pixies vs Pixies
+
+Future work:
+
+- Artist normalization
+- Album normalization
+- Album family rollups
+- Canonical identity keys
+
+## UNKNOWN Container Findings
+
+UNKNOWN is not necessarily a distinct listening behavior.
+
+Evidence:
+
+Document session (2026-01-21) showed:
+
+ALBUM → UNKNOWN → ALBUM
+
+for the same song (Lightnin' Hopkins) during the same listening session.
+
+Current hypothesis:
+
+UNKNOWN reflects Apple metadata limitations rather than a separate listening intent.
+
+Status:
+
+Research ongoing.
+## Album Relationship Model v0
+## Next Sprint Options
+
+### Option A — Album Intelligence
+
+- Build album-session reconstruction script
+- Album Immersion Score
+- Album relationship classification
+
+### Option B — UNKNOWN Research
+
+- Reconstruct additional UNKNOWN-heavy sessions
+- Compare ALBUM vs UNKNOWN behavior
+- Quantify metadata anomalies
+
+### Option C — Normalization Layer
+
+- Centralize normalize_text()
+- Artist aliases
+- Album title normalization
+- Canonical album keys
+
+### Option D — Live Data Foundation
+
+- Begin Apple Developer API research
+- Design historical + live listening architecture
+- Define fresh-data ingestion strategy
