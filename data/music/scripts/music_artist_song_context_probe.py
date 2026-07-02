@@ -1,12 +1,12 @@
 ﻿import argparse
 import json
 import csv
-import unicodedata
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 import duckdb
+from music_normalization import normalize_text
 
 
 TABLE = "apple_music_play_activity"
@@ -20,29 +20,6 @@ def repo_root():
 def q(name):
     return '"' + name.replace('"', '""') + '"'
 
-
-def normalize_text(value):
-    text = str(value or "").lower()
-
-    replacements = {
-        "ü": "u",
-        "ö": "o",
-        "ä": "a",
-        "é": "e",
-        "è": "e",
-        "á": "a",
-        "à": "a",
-        "í": "i",
-        "ó": "o",
-        "ú": "u",
-        "ñ": "n",
-        "ç": "c",
-    }
-
-    for source, target in replacements.items():
-        text = text.replace(source, target)
-
-    return "".join(ch for ch in text if ch.isalnum())
 
 def display_date(value):
     value = str(value or "").strip()
@@ -529,7 +506,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-

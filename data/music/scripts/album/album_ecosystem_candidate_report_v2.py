@@ -4,6 +4,13 @@ import zipfile
 from collections import defaultdict
 from math import log2
 from pathlib import Path
+import sys
+
+IDENTITY_DIR = Path(__file__).resolve().parents[1] / "identity"
+if str(IDENTITY_DIR) not in sys.path:
+    sys.path.append(str(IDENTITY_DIR))
+
+from music_identity import resolve_album
 
 SOURCE = Path("C:/Users/joevi/Downloads/apple-music-working/Apple_Media_Services_python/Apple_Media_Services/Apple Music Activity/Apple Music Library Tracks.json.zip")
 
@@ -42,8 +49,9 @@ def normalize_artist(value):
     return ARTIST_ALIASES.get(key, artist)
 
 
-def normalize_album(value):
-    album = clean(value)
+def normalize_album(value, artist_name=None):
+    identity = resolve_album(clean(value), artist_name)
+    album = identity.get("displayName", clean(value))
     album = re.sub(r"\s+", " ", album).strip()
     return album
 
@@ -86,7 +94,7 @@ excluded = defaultdict(int)
 
 for row in rows:
     artist = normalize_artist(row.get("Album Artist") or row.get("Artist"))
-    album = normalize_album(row.get("Album"))
+    album = normalize_album(row.get("Album"), artist)
 
     if not artist or not album:
         continue

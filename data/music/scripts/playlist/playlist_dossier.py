@@ -132,8 +132,3 @@ for artist, count in artists.most_common():
         print(f"{count:3}  {artist}")
         for title, album, plays in sorted(artist_titles[artist]):
             print(f"     - {title} [{album}] ({plays} plays)")
-
-
-
-
-

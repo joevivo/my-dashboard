@@ -246,5 +246,3 @@ print(f"Playlists: {len(playlist_summaries)}")
 print(f"Shared core artists: {len(shared_core_artists)}")
 print(f"Bridge songs: {len(bridge_songs)}")
 print(f"Playlist signatures: {len(playlist_signatures)}")
-
-

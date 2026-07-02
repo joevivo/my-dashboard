@@ -8,6 +8,13 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
+import sys
+
+IDENTITY_DIR = Path(__file__).resolve().parents[1] / "identity"
+if str(IDENTITY_DIR) not in sys.path:
+    sys.path.append(str(IDENTITY_DIR))
+
+from music_identity import resolve_album
 
 
 ARTIST_ALIASES = {
@@ -294,7 +301,18 @@ class ArtistQueryEngine:
         dates = sorted(item["played_date"] for item in matches)
 
         top_songs = Counter(item["title"] for item in matches if item["title"])
-        top_albums = Counter(item["album"] for item in matches if item["album"])
+        top_albums = Counter()
+        album_identity_by_name = {}
+
+        for item in matches:
+            raw_album = item.get("album")
+            if not raw_album:
+                continue
+
+            identity = resolve_album(raw_album, canonical_artist)
+            display_name = identity.get("displayName") or raw_album
+            top_albums[display_name] += 1
+            album_identity_by_name[display_name] = identity
         year_counts = Counter(item["year"] for item in matches)
 
         play_activity = self._play_activity_summary_for_query(query)
@@ -321,7 +339,14 @@ class ArtistQueryEngine:
                 for song, count in top_songs.most_common(10)
             ],
             "topAlbums": [
-                {"album": album, "plays": count}
+                {
+                    "album": album,
+                    "plays": count,
+                    "canonicalKey": album_identity_by_name.get(album, {}).get("canonicalKey", ""),
+                    "identityConfidence": album_identity_by_name.get(album, {}).get("confidence", "normalized"),
+                    "aliasesMerged": len(album_identity_by_name.get(album, {}).get("aliases", [])),
+                    "identitySource": "music_identity",
+                }
                 for album, count in top_albums.most_common(10)
             ],
             "timeline": [
@@ -386,7 +411,3 @@ class ArtistQueryEngine:
 
 def query_artist(query: str) -> dict:
     return ArtistQueryEngine().query_artist(query)
-
-
-
-
