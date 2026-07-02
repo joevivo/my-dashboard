@@ -48,3 +48,7 @@ data/baseball/parsed/
 data/baseball/raw/strat365/*/ballparks/
 
 data/baseball/raw/strat365/*/observed-results/
+
+# Local/private live data snapshots
+data/live/
+data/music/live/
