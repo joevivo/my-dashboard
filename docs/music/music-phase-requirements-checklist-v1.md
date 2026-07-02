@@ -505,17 +505,53 @@ Decision:
 
 ---
 
-## 6. Open Decisions Before UI Work
+## 6. Approved Decisions Before UI Work
 
-- Should Music Library remain visible in primary navigation?
-- Should Music Library become admin/curation only?
-- Should Query Workbench produce reusable investigation packets as JSON?
-- Should Artist Intelligence consume the same packet shape as Query Workbench?
-- What exact formulas define Friction and Momentum?
-- What recent/baseline windows define Emerging Core Artist?
-- What source is authoritative for live freshness?
-- Which mojibake cleanup belongs in this phase?
-- Should reports/examples be committed now as docs fixtures?
+### Music Library
+
+Decision:
+
+- Music Library remains available as an admin/curation surface.
+- Music Library should not be treated as a primary analytical page.
+- Music Library may later move out of primary navigation after equivalent admin workflows exist elsewhere.
+
+### Investigation packets
+
+Decision:
+
+- Query Workbench should produce reusable investigation packets as JSON.
+- Investigation packets should become the canonical investigation output shape.
+- Artist Intelligence should consume the same packet shape where practical, but render it as a polished profile rather than a debugging cockpit.
+
+### Friction, Momentum, and Emerging Core Artist
+
+Decision:
+
+- Friction and Momentum remain blocked until formula docs exist.
+- Emerging Core Artist remains blocked until Friction, Momentum, time windows, and confidence rules are approved.
+- No UI classification should be built for these concepts until those gates are met.
+
+### Live freshness
+
+Decision:
+
+- Live freshness should use live snapshot metadata.
+- Required fields where available: generatedAt, snapshotId, endpoint/source name, and latest object timestamp.
+- Historical truth remains the exported Apple Music daily summary.
+
+### Mojibake cleanup
+
+Decision:
+
+- This phase may clean docs and visible UI copy/examples.
+- This phase should not rewrite source datasets.
+
+### Reports and examples
+
+Decision:
+
+- Reports and examples are accepted as docs fixtures.
+- Completed in commit 22a361f.
 
 ---
 
