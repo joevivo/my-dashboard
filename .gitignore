@@ -52,3 +52,8 @@ data/baseball/raw/strat365/*/observed-results/
 # Local/private live data snapshots
 data/live/
 data/music/live/
+
+# Local/generated Music investigation artifacts
+data/music/apple_green_catalog_probe.json
+data/music/audit/
+data/music/artist_ratings_sample.csv
