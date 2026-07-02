@@ -1,0 +1,201 @@
+﻿{
+    "question":  {
+                     "originalQuery":  "Elvis Costello",
+                     "normalizedQuery":  "elvis costello",
+                     "investigationType":  "artistFamily"
+                 },
+    "entity":  {
+                   "type":  "artistFamily",
+                   "displayName":  "Elvis Costello Family",
+                   "canonicalKey":  "elvis-costello-family"
+               },
+    "identity":  {
+                     "resolvedName":  "Elvis Costello Family",
+                     "canonicalKey":  "elvis-costello-family",
+                     "aliases":  [
+                                     "Elvis Costello"
+                                 ],
+                     "familyName":  "Elvis Costello Family",
+                     "familyMembers":  [
+                                           "Elvis Costello",
+                                           "Elvis Costello \u0026 The Attractions",
+                                           "Elvis Costello \u0026 The Imposters"
+                                       ],
+                     "matchConfidence":  "high",
+                     "notes":  [
+                                   "Curated family mapping found."
+                               ]
+                 },
+    "evidence":  [
+                     {
+                         "id":  "evidence-actual-plays",
+                         "label":  "Actual Plays",
+                         "source":  "apple_music_daily_track_summary",
+                         "provenance":  "Aggregated across Elvis Costello Family members from Apple Music daily track summary.",
+                         "value":  1056,
+                         "confidence":  "high",
+                         "sourceType":  "apple_music_daily_summary"
+                     },
+                     {
+                         "id":  "evidence-hours-listened",
+                         "label":  "Hours Listened",
+                         "source":  "apple_music_daily_track_summary",
+                         "provenance":  "Aggregated listening duration across Elvis Costello Family members.",
+                         "value":  48.4,
+                         "confidence":  "high",
+                         "sourceType":  "apple_music_daily_summary"
+                     },
+                     {
+                         "id":  "evidence-library-records",
+                         "label":  "Library Evidence Records",
+                         "source":  "apple_music_library_tracks",
+                         "provenance":  "Library evidence records matched to Elvis Costello Family members.",
+                         "value":  95,
+                         "confidence":  "medium",
+                         "sourceType":  "apple_music_library"
+                     },
+                     {
+                         "id":  "evidence-years-active",
+                         "label":  "Years Represented",
+                         "source":  "derived_family_timeline",
+                         "provenance":  "Distinct represented years across merged Elvis Costello Family timeline.",
+                         "value":  14,
+                         "confidence":  "high",
+                         "sourceType":  "derived"
+                     }
+                 ],
+    "facts":  [
+                  {
+                      "factType":  "count",
+                      "id":  "fact-family-plays",
+                      "statement":  "Elvis Costello Family has 1,056 actual plays.",
+                      "sourceEvidenceIds":  [
+                                                "evidence-actual-plays"
+                                            ]
+                  },
+                  {
+                      "factType":  "duration",
+                      "id":  "fact-family-hours",
+                      "statement":  "Elvis Costello Family has 48.4 hours listened.",
+                      "sourceEvidenceIds":  [
+                                                "evidence-hours-listened"
+                                            ]
+                  },
+                  {
+                      "factType":  "count",
+                      "id":  "fact-library-records",
+                      "statement":  "Elvis Costello Family has 95 library evidence records.",
+                      "sourceEvidenceIds":  [
+                                                "evidence-library-records"
+                                            ]
+                  },
+                  {
+                      "factType":  "timeline",
+                      "id":  "fact-years-represented",
+                      "statement":  "Elvis Costello Family has evidence across 14 represented years.",
+                      "sourceEvidenceIds":  [
+                                                "evidence-years-active"
+                                            ]
+                  }
+              ],
+    "hypotheses":  [
+                       {
+                           "id":  "hypothesis-durable-family-relationship",
+                           "confidence":  "high",
+                           "rationale":  "The family has substantial actual plays, meaningful listening duration, and evidence across 14 represented years.",
+                           "claim":  "Elvis Costello Family appears to be a durable long-term relationship.",
+                           "opposingFactIds":  [
+
+                                               ],
+                           "supportingFactIds":  [
+                                                     "fact-family-plays",
+                                                     "fact-family-hours",
+                                                     "fact-years-represented"
+                                                 ]
+                       },
+                       {
+                           "id":  "hypothesis-family-rollup-matters",
+                           "confidence":  "medium",
+                           "rationale":  "The family-level view aggregates related identities that would otherwise be split across solo and band-credit variants.",
+                           "claim":  "Family rollup materially changes the interpretation of the Elvis Costello relationship.",
+                           "opposingFactIds":  [
+
+                                               ],
+                           "supportingFactIds":  [
+                                                     "fact-family-plays",
+                                                     "fact-library-records"
+                                                 ]
+                       }
+                   ],
+    "insights":  [
+                     {
+                         "id":  "insight-family-amplification",
+                         "caveats":  [
+                                         "Family membership is based on curated mappings.",
+                                         "Some listening history is reconstructed from library evidence rather than complete event-level history."
+                                     ],
+                         "confidence":  "high",
+                         "supportingHypothesisIds":  [
+                                                         "hypothesis-durable-family-relationship",
+                                                         "hypothesis-family-rollup-matters"
+                                                     ],
+                         "summary":  "Viewing Elvis Costello as a family rather than a solo artist provides a more complete picture of the listening relationship by combining activity across related performing identities.",
+                         "title":  "Family amplification reveals a stronger relationship"
+                     }
+                 ],
+    "confidence":  {
+                       "provenance":  "medium",
+                       "identity":  "high",
+                       "temporalCoverage":  "high",
+                       "evidenceCoverage":  "medium",
+                       "summary":  "Confidence is high for identity and temporal coverage because curated family mapping exists and the relationship spans 14 represented years. Evidence coverage and provenance are medium because some history is reconstructed rather than complete event-level listening history.",
+                       "modelConfidence":  "high"
+                   },
+    "reasoningTrace":  [
+                           {
+                               "label":  "Resolve identity",
+                               "step":  1,
+                               "ruleApplied":  "Use curated artist-family mapping when available.",
+                               "input":  "Elvis Costello",
+                               "output":  "Resolved query to Elvis Costello Family."
+                           },
+                           {
+                               "label":  "Collect family evidence",
+                               "step":  2,
+                               "ruleApplied":  "Aggregate evidence across mapped family members.",
+                               "input":  "Elvis Costello Family members",
+                               "output":  "Collected plays, hours, library records, and represented years."
+                           },
+                           {
+                               "label":  "Generate facts",
+                               "step":  3,
+                               "ruleApplied":  "Convert source-backed measurements into objective fact statements.",
+                               "input":  "Evidence records",
+                               "output":  "Generated count, duration, and timeline facts."
+                           },
+                           {
+                               "label":  "Generate insight",
+                               "step":  4,
+                               "ruleApplied":  "Combine supported hypotheses into a user-facing interpretation.",
+                               "input":  "Durability and family-rollup hypotheses",
+                               "output":  "Generated family amplification insight."
+                           }
+                       ],
+    "openQuestions":  [
+                          {
+                              "category":  "evidence",
+                              "whyItMatters":  "Library reconstruction provides strong coverage but may not capture every listening event.",
+                              "question":  "Would complete event-level Apple Music history strengthen or change this conclusion?",
+                              "resolutionPath":  "Incorporate live Apple Music event history when available."
+                          }
+                      ],
+    "suggestedInvestigations":  [
+                                    {
+                                        "title":  "Investigate Elvis Costello albums",
+                                        "targetEntity":  "Elvis Costello Family",
+                                        "investigationType":  "albumUniverse",
+                                        "reason":  "Album distribution could show whether this is a broad catalog relationship or concentrated around a few records.",
+                                        "expectedValue":  "high"
+                                    }
+                                ]
+}

@@ -57,7 +57,7 @@ Examples:
   "playlists": [
     "500 Songs",
     "deck & chill",
-    "let’s go streaking!"
+    "let's go streaking!"
   ]
 }
 ```
@@ -205,6 +205,184 @@ Describe playlist behavior using evidence rather than interpretation.
 
 ---
 
+
+---
+
+# Playlist Scoring and Relationship Shapes
+
+These concepts were harvested from the duplicate playlist model draft and are retained as draft requirements for future validation.
+
+## Playlist Types
+
+### Intentional Playlists
+
+Playlists created or maintained by the user.
+
+Examples:
+
+* conversation fear
+* deck & chill
+* aquarium drinker
+* songs of the apocalypse
+* road trip
+* Tom Petty
+
+Intentional playlists are the primary evidence source for playlist intelligence.
+
+### Generated Playlists
+
+Algorithmically generated playlists.
+
+Examples:
+
+* Indie Rock Genius Mix
+* Americana Genius Mix
+* Classic R&B Genius Mix
+
+Generated playlists may be retained as supporting evidence but should be excluded from primary playlist scoring unless explicitly marked otherwise.
+
+---
+
+## Draft Playlist Metrics
+
+### Intentional Playlist Count
+
+Number of non-generated playlists containing the artist.
+
+### Generated Playlist Count
+
+Number of generated playlists containing the artist.
+
+### Track Links
+
+Total artist-song appearances across intentional playlists.
+
+### Density
+
+Track Links divided by Intentional Playlist Count.
+
+Density measures average playlist saturation.
+
+### World Score
+
+Largest Playlist Count divided by Track Links.
+
+World Score measures concentration within a single playlist world.
+
+Interpretation:
+
+* High World Score = dominant artist world.
+* Low World Score = distributed playlist presence.
+
+---
+
+## Draft Playlist Relationship Shapes
+
+These classifications are provisional. They should not drive production UI classifications until formulas, thresholds, and confidence rules are documented.
+
+### Sparse Curated Presence
+
+Characteristics:
+
+* Very few intentional playlist appearances.
+
+Example:
+
+* Billie Holiday
+
+Observation:
+
+Artist relationship is visible primarily through listening history rather than playlist construction.
+
+### Dedicated World Artist
+
+Characteristics:
+
+* One dominant playlist world.
+* High World Score.
+* Large artist-specific playlist.
+
+Example:
+
+* Tom Petty
+
+Observation:
+
+The user maintains a dedicated artist universe.
+
+### World + Context Artist
+
+Characteristics:
+
+* Dominant playlist world.
+* Additional deployment across many contexts.
+
+Example:
+
+* Wilco
+
+Observation:
+
+Artist functions both as a dedicated world and as a recurring life companion.
+
+### Distributed Identity Artist
+
+Characteristics:
+
+* Appears across many playlists.
+* No dominant world.
+
+Example:
+
+* The Replacements
+
+Observation:
+
+Artist participates in self-expression and identity formation.
+
+### Context Artist
+
+Characteristics:
+
+* Appears across many contextual playlists.
+* No dominant world.
+
+Example:
+
+* Sam Cooke
+
+Observation:
+
+Artist helps define environments rather than identities.
+
+Status:
+
+Requires additional validation and refinement.
+
+---
+
+## Future Artist Intelligence Integration
+
+Potential Artist Intelligence playlist section:
+
+* Playlist classification.
+* Intentional Playlist Count.
+* Track Links.
+* Density.
+* World Score.
+* Largest Playlist.
+* Top Playlists.
+
+Example:
+
+Playlist Intelligence example:
+
+Classification: World + Context Artist
+Intentional Playlists: 18
+Track Links: 70
+Largest Playlist: aquarium drinker (41)
+Top Playlists: aquarium drinker, 500 songs, road trip, Favorite Songs
+
 # Future Research Areas
 
 The following remain open questions:
@@ -218,6 +396,3 @@ The following remain open questions:
 * Structural artists vs bridge artists
 
 These concepts require additional evidence before inclusion in the primary intelligence model.
-
-```
-```
