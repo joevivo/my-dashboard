@@ -664,16 +664,16 @@ export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
 
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
-                  Live Apple Music
+                  Live Apple Music Evidence
                 </p>
                 <p className="mt-2 text-lg font-black">
                   {bridge.live?.recentObjectCount ?? 0} recent objects
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  {bridge.live?.heavyRotationCount ?? 0} heavy rotation objects
+                  Additional Apple source objects are retained as provenance only.
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Source: live warehouse
+                  Source: live warehouse · Apple classifications are not relationship labels
                 </p>
               </div>
             </div>
@@ -785,4 +785,3 @@ export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
     </div>
   );
 }
-
