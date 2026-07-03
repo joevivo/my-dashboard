@@ -992,6 +992,64 @@ app.get("/api/music/dashboard", (req, res) => {
   });
 });
 
+app.post("/api/music/dashboard/refresh", (req, res) => {
+  const dashboardFile = path.join(
+    __dirname,
+    "..",
+    "data",
+    "music",
+    "live",
+    "music_dashboard.json"
+  );
+
+  const scriptPath = "../data/music/scripts/apple/refresh_music_dashboard.py";
+
+  execFile(
+    "python",
+    [scriptPath],
+    {
+      cwd: __dirname,
+      timeout: 120000,
+      windowsHide: true,
+      maxBuffer: 1024 * 1024,
+    },
+    (scriptError, stdout, stderr) => {
+      if (scriptError) {
+        console.error("Music dashboard refresh error:", scriptError);
+        return res.status(500).json({
+          error: "Failed to refresh music dashboard",
+          detail: stderr || scriptError.message,
+        });
+      }
+
+      fs.readFile(dashboardFile, "utf8", (readError, raw) => {
+        if (readError) {
+          console.error("Music dashboard read-after-refresh error:", readError);
+          return res.status(500).json({
+            error: "Refreshed music dashboard but failed to read result",
+          });
+        }
+
+        try {
+          res.json({
+            refreshed: true,
+            dashboard: JSON.parse(raw),
+            refreshLog: stdout
+              .split(/\r?\n/)
+              .filter(Boolean)
+              .slice(-12),
+          });
+        } catch (parseError) {
+          console.error("Music dashboard parse-after-refresh error:", parseError);
+          res.status(500).json({
+            error: "Refreshed music dashboard but failed to parse result",
+          });
+        }
+      });
+    }
+  );
+});
+
 app.get("/api/music/time-machine", async (req, res) => {
   const { start, end } = req.query;
 
