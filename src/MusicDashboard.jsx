@@ -208,17 +208,9 @@ export default function MusicDashboard({ onOpenArtist }) {
                     <p className="text-lg font-black text-slate-900 dark:text-slate-50">
                       {item.artist}
                     </p>
-                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                    <p className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
                       {item.whyItMatters || artistSummary(item)}
                     </p>
-                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                      {item.evidence || `${item.recentObjectCount ?? 0} recent Apple live objects.`}
-                    </p>
-                    {item.context ? (
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {item.context}
-                      </p>
-                    ) : null}
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <MusicBadge tone="relationship">
@@ -229,10 +221,19 @@ export default function MusicDashboard({ onOpenArtist }) {
                     </span>
                   </div>
                 </div>
-                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                  {item.confidence || "Source-backed current signal."}
-                </p>
-                <p className="mt-2 text-xs font-bold text-blue-700 dark:text-blue-300">
+                <div className="mt-3 rounded-lg bg-slate-50 p-2 text-xs text-slate-600 dark:bg-slate-900/60 dark:text-slate-300">
+                  <p>
+                    <span className="font-bold">Evidence:</span>{" "}
+                    {item.evidence || `${item.recentObjectCount ?? 0} recent Apple live objects.`}
+                  </p>
+                  {item.context ? (
+                    <p className="mt-1">
+                      <span className="font-bold">Context:</span>{" "}
+                      {item.context.replace("Recent album context: ", "")}
+                    </p>
+                  ) : null}
+                </div>
+                <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
                   {item.nextStep || "Open Artist Intelligence"} →
                 </p>
               </button>
