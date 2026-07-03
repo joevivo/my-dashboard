@@ -209,15 +209,31 @@ export default function MusicDashboard({ onOpenArtist }) {
                       {item.artist}
                     </p>
                     <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                      {artistSummary(item)}
+                      {item.whyItMatters || artistSummary(item)}
                     </p>
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      {item.evidence || `${item.recentObjectCount ?? 0} recent Apple live objects.`}
+                    </p>
+                    {item.context ? (
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {item.context}
+                      </p>
+                    ) : null}
                   </div>
-                  <MusicBadge tone="relationship">
-                    {objectLabel(item.recentObjectCount)}
-                  </MusicBadge>
+                  <div className="flex flex-col items-end gap-2">
+                    <MusicBadge tone="relationship">
+                      {item.priority || objectLabel(item.recentObjectCount)}
+                    </MusicBadge>
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                      {objectLabel(item.recentObjectCount)}
+                    </span>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
-                  Investigate â†’
+                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  {item.confidence || "Source-backed current signal."}
+                </p>
+                <p className="mt-2 text-xs font-bold text-blue-700 dark:text-blue-300">
+                  {item.nextStep || "Open Artist Intelligence"} →
                 </p>
               </button>
             ))}

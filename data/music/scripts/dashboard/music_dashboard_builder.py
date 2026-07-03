@@ -145,15 +145,65 @@ def playlists_and_stations(rows):
 def relationship_activity(rows):
     artists = ranked_artists(rows)
 
-    return [
-        {
-            "artist": item["artist"],
-            "recentObjectCount": item["count"],
-            "status": "Observed in latest Apple Music snapshot",
-            "investigationHint": f"Investigate why {item['artist']} is active now.",
-        }
-        for item in artists
-    ]
+    rows_by_artist = {}
+    for row in rows:
+        artist = row.get("artistName") or row.get("artist") or row.get("name")
+        if not artist:
+            continue
+        rows_by_artist.setdefault(artist, []).append(row)
+
+    activity = []
+
+    for item in artists:
+        artist = item["artist"]
+        count = item["count"]
+        artist_rows = rows_by_artist.get(artist, [])
+
+        album_names = []
+        source_types = set()
+
+        for row in artist_rows:
+            source_types.add(row.get("objectType") or "unknown")
+            if row.get("objectType") in ["albums", "library-albums"] and row.get("name"):
+                album_names.append(row["name"])
+
+        unique_albums = []
+        for name in album_names:
+            if name not in unique_albums:
+                unique_albums.append(name)
+
+        if count >= 3:
+            priority = "High"
+            why = "Concentrated current listening signal."
+        elif count == 2:
+            priority = "Medium"
+            why = "Repeated current listening signal."
+        else:
+            priority = "Low"
+            why = "Single current listening signal."
+
+        if unique_albums:
+            context = "Recent album context: " + ", ".join(unique_albums[:2])
+        elif source_types:
+            context = "Recent source types: " + ", ".join(sorted(source_types)[:3])
+        else:
+            context = "Recent Apple live source evidence is available."
+
+        activity.append({
+            "artist": artist,
+            "recentObjectCount": count,
+            "priority": priority,
+            "status": f"{priority}-priority current signal",
+            "whyItMatters": why,
+            "evidence": f"{count} recent Apple live object{'s' if count != 1 else ''}.",
+            "context": context,
+            "confidence": "Source-backed current signal; not a relationship classification.",
+            "investigationHint": f"Open {artist} to compare live evidence with actual plays, skips, albums, and family identity.",
+            "nextStep": "Open Artist Intelligence",
+            "source": "apple_music_recent_played",
+        })
+
+    return activity
 
 
 def build_dashboard():
