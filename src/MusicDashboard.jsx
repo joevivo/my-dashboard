@@ -35,8 +35,18 @@ function getStoryArtist(dashboard) {
 }
 
 function getStoryText(dashboard) {
-  const artist = getStoryArtist(dashboard);
-  return `${artist} is prominent in this listening period.`;
+  const topSignal = dashboard?.relationshipActivity?.[0];
+
+  if (!topSignal?.artist) {
+    return "Current Apple live evidence is ready for investigation.";
+  }
+
+  const objectCount = objectLabel(topSignal.recentObjectCount ?? 0);
+  const why = (topSignal.whyItMatters || "Current listening signal.")
+    .replace(/\.$/, "")
+    .toLowerCase();
+
+  return `${topSignal.artist} leads this snapshot: ${why} across ${objectCount}.`;
 }
 
 
