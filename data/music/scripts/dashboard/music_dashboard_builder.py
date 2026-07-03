@@ -334,11 +334,18 @@ def whats_changed(current_rows, current_snapshot_id):
         key=lambda item: (-abs(item["delta"]), item["artist"])
     )
 
-    headline = (
-        f"{len(new_artists)} new, "
-        f"{len(changed_artists)} changed, "
-        f"{len(departed_artists)} no longer visible versus previous snapshot."
-    )
+    new_count = len(new_artists)
+    changed_count = len(changed_artists)
+    departed_count = len(departed_artists)
+
+    if new_count == 0 and changed_count == 0 and departed_count == 0:
+        headline = "No meaningful artist movement since the previous refresh."
+    else:
+        headline = (
+            f"{new_count} new, "
+            f"{changed_count} changed, "
+            f"{departed_count} no longer visible versus previous snapshot."
+        )
 
     return {
         "status": "Calculated",
