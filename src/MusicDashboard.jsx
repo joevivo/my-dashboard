@@ -124,6 +124,13 @@ export default function MusicDashboard({ onOpenArtist }) {
   const relationships = dashboard.relationshipActivity || [];
   const albums = dashboard.recentAlbums || [];
   const artists = dashboard.recentArtists || [];
+  const relationshipByArtist = new Map(
+    relationships.map((item) => [item.artist, item])
+  );
+  const enrichedArtists = artists.map((item) => ({
+    ...item,
+    signal: relationshipByArtist.get(item.artist),
+  }));
 
   return (
     <section className="space-y-6">
@@ -295,17 +302,32 @@ export default function MusicDashboard({ onOpenArtist }) {
       <div className="grid gap-6 xl:grid-cols-12">
         <DashboardCard title="Recently Active Artists" className="xl:col-span-7">
           <div className="grid gap-3 md:grid-cols-2">
-            {artists.slice(0, 10).map((item) => (
+            {enrichedArtists.slice(0, 10).map((item) => (
               <button
                 key={item.artist}
                 type="button"
                 onClick={() => onOpenArtist?.(item.artist)}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                className="rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
               >
-                <span className="font-black text-slate-900 dark:text-slate-50">{item.artist}</span>
-                <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-                  {objectLabel(item.count)}
-                </span>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="font-black text-slate-900 dark:text-slate-50">
+                    {item.artist}
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                    {item.signal?.priority || objectLabel(item.count)}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  {item.signal?.whyItMatters || "Current Apple live evidence."}
+                </p>
+
+                <div className="mt-3 space-y-1 text-xs text-slate-500 dark:text-slate-400">
+                  <p>{objectLabel(item.signal?.recentObjectCount ?? item.count)}</p>
+                  {item.signal?.context ? (
+                    <p>{item.signal.context.replace(/^Recent album context:\s*/i, "Context: ")}</p>
+                  ) : null}
+                </div>
               </button>
             ))}
           </div>
