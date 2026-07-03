@@ -209,7 +209,7 @@ export default function MusicDashboard({ onOpenArtist }) {
       <div className="grid gap-6 xl:grid-cols-12">
         <DashboardCard title="Investigation Queue" className="xl:col-span-8">
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Recent source-backed signals worth investigating. These are not settled relationship classifications.
+            Ranked by current Apple live evidence, repeated artist appearance, and album context. These are leads, not conclusions; open an artist to compare live signal against actual plays, skips, albums, and family identity.
           </p>
 
           <div className="mt-4 grid gap-3 md:grid-cols-2">
