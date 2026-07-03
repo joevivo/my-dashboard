@@ -154,6 +154,44 @@ export default function MusicDashboard({ onOpenArtist }) {
         </button>
       </div>
 
+      <div className="grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/40 md:grid-cols-3">
+        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+            Evidence
+          </p>
+          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
+            Apple live objects
+          </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Captured source observations, not complete play-count history.
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+            Signal
+          </p>
+          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
+            Current listening signal
+          </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Repeated artist appearances and album context become investigation leads.
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+            Investigation
+          </p>
+          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
+            Workbench comparison
+          </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Compare live leads against actual plays, skips, albums, and family identity.
+          </p>
+        </div>
+      </div>
+
       <div className="rounded-3xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30">
         <div className="flex items-start gap-4">
           <div className="rounded-2xl bg-blue-600 p-3 text-white">
