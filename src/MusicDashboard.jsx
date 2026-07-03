@@ -27,7 +27,7 @@ function objectLabel(count) {
 }
 
 function artistSummary(item) {
-  return `${item.artist} appears in the latest Apple Music snapshot. Treat this as a recent activity signal, not a settled relationship classification.`;
+  return `${item.artist} appears in the latest Apple Music snapshot.`;
 }
 function getStoryArtist(dashboard) {
   const relationships = dashboard?.relationshipActivity || [];
@@ -115,7 +115,7 @@ export default function MusicDashboard({ onOpenArtist }) {
         </div>
       </div>
 
-      <DashboardCard title="Source Snapshot & Data Health">
+      <DashboardCard title="Source Snapshot">
         <div className="grid gap-4 md:grid-cols-4">
           <div>
             <p className="text-xs text-slate-500">Last Updated</p>
