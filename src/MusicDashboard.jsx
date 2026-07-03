@@ -27,7 +27,7 @@ function objectLabel(count) {
 }
 
 function artistSummary(item) {
-  return `${item.artist} is active in the latest Apple Music snapshot.`;
+  return `${item.artist} appears in the latest Apple Music snapshot. Treat this as a recent activity signal, not a settled relationship classification.`;
 }
 function getStoryArtist(dashboard) {
   const relationships = dashboard?.relationshipActivity || [];
@@ -36,7 +36,7 @@ function getStoryArtist(dashboard) {
 
 function getStoryText(dashboard) {
   const artist = getStoryArtist(dashboard);
-  return `${artist} anchors this listening period.`;
+  return `${artist} is prominent in this listening period.`;
 }
 
 
@@ -104,18 +104,18 @@ export default function MusicDashboard({ onOpenArtist }) {
             <Activity size={24} />
           </div>
           <div>
-            <MusicBadge tone="story">Current Listening Story</MusicBadge>
+            <MusicBadge tone="story">Current Listening Signal</MusicBadge>
             <h3 className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-50">
               {getStoryText(dashboard)}
             </h3>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-              {summary.recentObjectCount ?? 0} live listening objects observed · Updated {formatTimestamp(dashboard.capturedAt)}
+              {summary.recentObjectCount ?? 0} live listening objects observed Â· Updated {formatTimestamp(dashboard.capturedAt)}
             </p>
           </div>
         </div>
       </div>
 
-      <DashboardCard title="Current Snapshot">
+      <DashboardCard title="Source Snapshot & Data Health">
         <div className="grid gap-4 md:grid-cols-4">
           <div>
             <p className="text-xs text-slate-500">Last Updated</p>
@@ -143,14 +143,14 @@ export default function MusicDashboard({ onOpenArtist }) {
           </div>
         </div>
         <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-          {dashboard.sourceNote}
+          {dashboard.sourceNote || "Apple Music live snapshot metadata is available for this dashboard."}
         </p>
       </DashboardCard>
 
       <div className="grid gap-6 xl:grid-cols-12">
-        <DashboardCard title="Relationship Activity" className="xl:col-span-8">
+        <DashboardCard title="Investigation Queue" className="xl:col-span-8">
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Relationships worth investigating from the latest Apple Music snapshot.
+            Recent source-backed signals worth investigating. These are not settled relationship classifications.
           </p>
 
           <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -175,7 +175,7 @@ export default function MusicDashboard({ onOpenArtist }) {
                   </MusicBadge>
                 </div>
                 <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
-                  Investigate →
+                  Investigate â†’
                 </p>
               </button>
             ))}
