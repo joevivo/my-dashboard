@@ -206,6 +206,153 @@ def relationship_activity(rows):
     return activity
 
 
+def load_recent_rows_from_snapshot(snapshot_id):
+    if not snapshot_id:
+        return []
+
+    raw_path = LIVE_DIR / "history" / snapshot_id / "apple_recent_played.json"
+    if not raw_path.exists():
+        return []
+
+    with raw_path.open("r", encoding="utf-8") as f:
+        raw = json.load(f)
+
+    captured_at = raw.get("capturedAt")
+    rows = []
+
+    for index, item in enumerate(raw.get("response", {}).get("data", []), start=1):
+        attributes = item.get("attributes", {})
+        play_params = attributes.get("playParams") or {}
+
+        rows.append(normalize_row({
+            "snapshotId": snapshot_id,
+            "capturedAt": captured_at,
+            "rank": index,
+            "appleId": item.get("id"),
+            "objectType": item.get("type"),
+            "name": attributes.get("name"),
+            "artistName": attributes.get("artistName"),
+            "releaseDate": attributes.get("releaseDate"),
+            "genreNames": attributes.get("genreNames") or [],
+            "trackCount": attributes.get("trackCount"),
+            "url": attributes.get("url"),
+            "playParamsKind": play_params.get("kind"),
+            "source": "apple_music_recent_played",
+        }))
+
+    return rows
+
+
+def previous_recent_snapshot_id(current_snapshot_id):
+    history_dir = LIVE_DIR / "history"
+
+    if not history_dir.exists():
+        return None
+
+    snapshot_ids = sorted([
+        path.name
+        for path in history_dir.iterdir()
+        if path.is_dir() and (path / "apple_recent_played.json").exists()
+    ])
+
+    if not snapshot_ids:
+        return None
+
+    if not current_snapshot_id:
+        return snapshot_ids[-1]
+
+    previous = [
+        snapshot_id
+        for snapshot_id in snapshot_ids
+        if snapshot_id < current_snapshot_id
+    ]
+
+    return previous[-1] if previous else None
+
+
+def whats_changed(current_rows, current_snapshot_id):
+    previous_snapshot_id = previous_recent_snapshot_id(current_snapshot_id)
+
+    if not previous_snapshot_id:
+        return {
+            "status": "Unavailable",
+            "headline": "No previous comparable snapshot found.",
+            "note": "Run another live refresh to enable snapshot comparison.",
+            "currentSnapshotId": current_snapshot_id,
+            "previousSnapshotId": None,
+            "newArtists": [],
+            "departedArtists": [],
+            "changedArtists": [],
+        }
+
+    previous_rows = load_recent_rows_from_snapshot(previous_snapshot_id)
+
+    current_artists = ranked_artists(current_rows)
+    previous_artists = ranked_artists(previous_rows)
+
+    current_map = {
+        item["artist"]: item["count"]
+        for item in current_artists
+    }
+    previous_map = {
+        item["artist"]: item["count"]
+        for item in previous_artists
+    }
+
+    new_artists = [
+        {"artist": artist, "currentCount": current_map[artist]}
+        for artist in current_map
+        if artist not in previous_map
+    ]
+
+    departed_artists = [
+        {"artist": artist, "previousCount": previous_map[artist]}
+        for artist in previous_map
+        if artist not in current_map
+    ]
+
+    changed_artists = []
+
+    for artist in current_map:
+        if artist not in previous_map:
+            continue
+
+        current_count = current_map[artist]
+        previous_count = previous_map[artist]
+        delta = current_count - previous_count
+
+        if delta:
+            changed_artists.append({
+                "artist": artist,
+                "previousCount": previous_count,
+                "currentCount": current_count,
+                "delta": delta,
+            })
+
+    changed_artists = sorted(
+        changed_artists,
+        key=lambda item: (-abs(item["delta"]), item["artist"])
+    )
+
+    headline = (
+        f"{len(new_artists)} new, "
+        f"{len(changed_artists)} changed, "
+        f"{len(departed_artists)} no longer visible versus previous snapshot."
+    )
+
+    return {
+        "status": "Calculated",
+        "headline": headline,
+        "note": "Compares current Apple recent-played artist evidence with the previous usable live snapshot.",
+        "currentSnapshotId": current_snapshot_id,
+        "previousSnapshotId": previous_snapshot_id,
+        "newArtists": new_artists[:8],
+        "departedArtists": departed_artists[:8],
+        "changedArtists": changed_artists[:8],
+    }
+
+
+
 def build_dashboard():
     recent = load_dataset(RECENT_PATH)
     heavy = load_dataset(HEAVY_PATH)
@@ -233,10 +380,7 @@ def build_dashboard():
         "heavyRotation": heavy_rows,
         "playlistsAndStations": playlists_and_stations(recent_rows + heavy_rows),
         "relationshipActivity": relationship_activity(recent_rows),
-        "whatsChanged": {
-            "status": "Not calculated yet",
-            "note": "Snapshot comparison will be added after Dashboard v1 is rendering.",
-        },
+        "whatsChanged": whats_changed(recent_rows, recent.get("snapshotId")),
     }
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

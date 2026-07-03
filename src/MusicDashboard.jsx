@@ -302,9 +302,54 @@ export default function MusicDashboard({ onOpenArtist }) {
         </DashboardCard>
 
         <DashboardCard title="What's Changed" className="xl:col-span-5">
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            {dashboard.whatsChanged?.note || dashboard.whatsChanged?.status || "Snapshot comparison has not been calculated yet."}
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {dashboard.whatsChanged?.headline || dashboard.whatsChanged?.status || "Snapshot comparison has not been calculated yet."}
           </p>
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            {dashboard.whatsChanged?.note}
+          </p>
+
+          {dashboard.whatsChanged?.previousSnapshotId ? (
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+              Compared with {dashboard.whatsChanged.previousSnapshotId}
+            </p>
+          ) : null}
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-900/60">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">New</p>
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-50">
+                {dashboard.whatsChanged?.newArtists?.length ?? 0}
+              </p>
+            </div>
+            <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-900/60">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Changed</p>
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-50">
+                {dashboard.whatsChanged?.changedArtists?.length ?? 0}
+              </p>
+            </div>
+            <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-900/60">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">No Longer Visible</p>
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-50">
+                {dashboard.whatsChanged?.departedArtists?.length ?? 0}
+              </p>
+            </div>
+          </div>
+
+          {dashboard.whatsChanged?.changedArtists?.length ? (
+            <div className="mt-4">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                Count Changes
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+                {dashboard.whatsChanged.changedArtists.slice(0, 5).map((item) => (
+                  <li key={item.artist}>
+                    {item.artist}: {item.previousCount} → {item.currentCount}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </DashboardCard>
       </div>
     </section>
