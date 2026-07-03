@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DashboardCard from "./components/music/DashboardCard";
 import { Activity, Disc3, ListMusic, Radio, Users } from "lucide-react";
 import { musicTheme } from "./components/music/musicTheme";
@@ -109,7 +109,7 @@ export default function MusicDashboard({ onOpenArtist }) {
               {getStoryText(dashboard)}
             </h3>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-              {summary.recentObjectCount ?? 0} live listening objects observed Â· Updated {formatTimestamp(dashboard.capturedAt)}
+              {summary.recentObjectCount ?? 0} Apple live objects observed · Updated {formatTimestamp(dashboard.capturedAt)}
             </p>
           </div>
         </div>
@@ -124,15 +124,18 @@ export default function MusicDashboard({ onOpenArtist }) {
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Live Objects</p>
+            <p className="text-xs text-slate-500">Recent Objects</p>
             <p className="mt-1 text-3xl font-black text-slate-900 dark:text-slate-50">
               {summary.recentObjectCount ?? "-"}
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Heavy Rotation Signals</p>
-            <p className="mt-1 text-3xl font-black text-slate-900 dark:text-slate-50">
-              {summary.heavyRotationCount ?? "-"}
+            <p className="text-xs text-slate-500">Source Evidence</p>
+            <p className="mt-1 text-sm font-black text-slate-900 dark:text-slate-50">
+              Apple live APIs
+            </p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              Opaque Apple classifications are retained as provenance only.
             </p>
           </div>
           <div>
