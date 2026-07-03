@@ -43,18 +43,49 @@ function getStoryText(dashboard) {
 export default function MusicDashboard({ onOpenArtist }) {
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetch(`${API_BASE}/api/music/dashboard`)
+  function loadDashboard({ refresh = false } = {}) {
+    const url = refresh
+      ? `${API_BASE}/api/music/dashboard/refresh`
+      : `${API_BASE}/api/music/dashboard`;
+
+    if (refresh) {
+      setIsRefreshing(true);
+    }
+
+    return fetch(url, { method: refresh ? "POST" : "GET" })
       .then((response) => {
-        if (!response.ok) throw new Error("Music Dashboard failed to load.");
+        if (!response.ok) {
+          throw new Error(
+            refresh
+              ? "Music Dashboard refresh failed."
+              : "Music Dashboard failed to load."
+          );
+        }
         return response.json();
       })
       .then((data) => {
-        setDashboard(data);
+        setDashboard(refresh ? data.dashboard : data);
         setError("");
       })
-      .catch((err) => setError(err.message || "Music Dashboard failed to load."));
+      .catch((err) =>
+        setError(
+          err.message ||
+            (refresh
+              ? "Music Dashboard refresh failed."
+              : "Music Dashboard failed to load.")
+        )
+      )
+      .finally(() => {
+        if (refresh) {
+          setIsRefreshing(false);
+        }
+      });
+  }
+
+  useEffect(() => {
+    loadDashboard();
   }, []);
 
   const listeningEnvironment = useMemo(() => {
@@ -96,6 +127,14 @@ export default function MusicDashboard({ onOpenArtist }) {
         <p className="mt-2 max-w-4xl text-base text-slate-600 dark:text-slate-300">
           The dashboard observes the present. The Workbench explains why it matters.
         </p>
+        <button
+          type="button"
+          onClick={() => loadDashboard({ refresh: true })}
+          disabled={isRefreshing}
+          className="mt-4 rounded-xl border border-slate-300 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
+        >
+          {isRefreshing ? "Refreshing..." : "Refresh Live Data"}
+        </button>
       </div>
 
       <div className="rounded-3xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30">
