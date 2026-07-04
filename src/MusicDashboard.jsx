@@ -263,41 +263,49 @@ export default function MusicDashboard({ onOpenArtist }) {
                 key={item.artist}
                 type="button"
                 onClick={() => onOpenArtist?.(item.artist)}
-                className="rounded-xl border border-slate-200 p-4 text-left transition hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-blue-800"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-lg font-black text-slate-900 dark:text-slate-50">
-                      {item.artist}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
-                      {item.whyItMatters || artistSummary(item)}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <MusicBadge tone="relationship">
-                      {item.priority || objectLabel(item.recentObjectCount)}
-                    </MusicBadge>
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                      {objectLabel(item.recentObjectCount)}
-                    </span>
+                <div className="border-b border-slate-100 bg-gradient-to-br from-white to-slate-50 p-4 dark:border-slate-800 dark:from-slate-950 dark:to-slate-900">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
+                        {item.artist}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold leading-5 text-slate-700 dark:text-slate-200">
+                        {item.whyItMatters || artistSummary(item)}
+                      </p>
+                    </div>
+
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      <MusicBadge tone="relationship">
+                        {item.priority || objectLabel(item.recentObjectCount)}
+                      </MusicBadge>
+                      <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-black text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                        {objectLabel(item.recentObjectCount)}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3 rounded-lg bg-slate-50 p-2 text-xs text-slate-600 dark:bg-slate-900/60 dark:text-slate-300">
-                  <p>
-                    <span className="font-bold">Evidence:</span>{" "}
-                    {item.evidence || `${item.recentObjectCount ?? 0} recent Apple live objects.`}
-                  </p>
-                  {item.context ? (
-                    <p className="mt-1">
-                      <span className="font-bold">Context:</span>{" "}
-                      {item.context.replace("Recent album context: ", "")}
+
+                <div className="space-y-3 p-4">
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+                    <p>
+                      <span className="font-black text-slate-700 dark:text-slate-200">Evidence:</span>{" "}
+                      {item.evidence || `${item.recentObjectCount ?? 0} recent Apple live objects.`}
                     </p>
-                  ) : null}
+                    {item.context ? (
+                      <p className="mt-1">
+                        <span className="font-black text-slate-700 dark:text-slate-200">Context:</span>{" "}
+                        {item.context.replace("Recent album context: ", "")}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-black text-blue-700 dark:text-blue-300">
+                    <span>{item.nextStep || "Investigate in Workbench"}</span>
+                    <span className="transition group-hover:translate-x-1">→</span>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
-                  {item.nextStep || "Investigate in Workbench"} →
-                </p>
               </button>
             ))}
           </div>
