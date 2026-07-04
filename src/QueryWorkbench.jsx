@@ -431,7 +431,7 @@ export default function QueryWorkbench({
 
               {result.resultType === "date" ? (
                 <p className="mt-1 text-sm text-slate-500">
-                  {dateStart} Ã¢â€ â€™ {dateEnd}
+                  {dateStart} → {dateEnd}
                 </p>
               ) : null}
             </div>
