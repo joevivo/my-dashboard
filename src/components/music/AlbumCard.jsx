@@ -33,7 +33,7 @@ function sourceLabel(album) {
   return album?.source || "Live source evidence";
 }
 
-export default function AlbumCard({ album }) {
+export default function AlbumCard({ album, signal }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-950/40">
       <div className="flex items-center gap-4">
@@ -80,6 +80,10 @@ export default function AlbumCard({ album }) {
             <p className="mt-1">
               <span className="font-bold">Genre:</span>{" "}
               {genreSignal(album)}
+            </p>
+            <p className="mt-1">
+              <span className="font-bold">Queue status:</span>{" "}
+              {signal?.status || "Not currently prioritized"}
             </p>
           </div>
         </div>

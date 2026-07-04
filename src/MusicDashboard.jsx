@@ -332,7 +332,11 @@ export default function MusicDashboard({ onOpenArtist }) {
       <DashboardCard title="Recently Active Albums">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {albums.slice(0, 12).map((album) => (
-            <AlbumCard key={`${album.appleId}-${album.rank}`} album={album} />
+            <AlbumCard
+              key={`${album.appleId}-${album.rank}`}
+              album={album}
+              signal={relationshipByArtist.get(album.artistName)}
+            />
           ))}
         </div>
       </DashboardCard>
