@@ -1,0 +1,486 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Music Intelligence UI Concept v1</title>
+  <style>
+    :root {
+      --bg: #071122;
+      --panel: #101d33;
+      --panel2: #14243d;
+      --line: #263a5c;
+      --text: #e9f0ff;
+      --muted: #94a3b8;
+      --blue: #3b82f6;
+      --indigo: #6366f1;
+      --purple: #8b5cf6;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --red: #fb7185;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.22), transparent 32rem),
+        radial-gradient(circle at top right, rgba(139,92,246,.18), transparent 32rem),
+        linear-gradient(135deg, #050b16, #0b1728 45%, #111827);
+      color: var(--text);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      border-right: 1px solid rgba(148,163,184,.16);
+      background: rgba(3,7,18,.72);
+      backdrop-filter: blur(18px);
+      padding: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: 0 0 40px rgba(59,130,246,.45);
+    }
+
+    .brand strong { display: block; }
+    .brand span { color: var(--muted); font-size: 12px; }
+
+    .nav-title {
+      margin: 26px 0 10px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .nav-item.active {
+      color: white;
+      background: rgba(59,130,246,.20);
+      border: 1px solid rgba(59,130,246,.35);
+    }
+
+    main {
+      padding: 34px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 42px;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.55;
+    }
+
+    .button {
+      border: 1px solid rgba(96,165,250,.45);
+      background: linear-gradient(135deg, rgba(59,130,246,.92), rgba(99,102,241,.88));
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      box-shadow: 0 14px 34px rgba(37,99,235,.24);
+    }
+
+    .model-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .model-card,
+    .card {
+      border: 1px solid rgba(148,163,184,.18);
+      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.64));
+      border-radius: 22px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.22);
+    }
+
+    .model-card {
+      padding: 18px;
+    }
+
+    .eyebrow {
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .model-card h3 {
+      margin: 8px 0 6px;
+      font-size: 16px;
+    }
+
+    .model-card p,
+    .card p {
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .hero {
+      padding: 26px;
+      min-height: 210px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(15,23,42,.92), rgba(15,23,42,.58)),
+        radial-gradient(circle at 78% 30%, rgba(59,130,246,.55), transparent 22rem),
+        linear-gradient(135deg, #0f172a, #172554);
+    }
+
+    .hero h2 {
+      margin: 14px 0 8px;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-art {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 44%;
+      height: 100%;
+      opacity: .32;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.75), transparent 3px) 0 0 / 22px 22px,
+        linear-gradient(135deg, transparent, rgba(96,165,250,.32));
+      mask-image: linear-gradient(90deg, transparent, black);
+    }
+
+    .snapshot {
+      padding: 22px;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(148,163,184,.16);
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 20px;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.65fr .9fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    .mini-link {
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .queue {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .queue-card {
+      padding: 14px;
+      border-radius: 17px;
+      background: rgba(15,23,42,.72);
+      border: 1px solid rgba(148,163,184,.15);
+    }
+
+    .queue-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .high { background: rgba(59,130,246,.16); color: #93c5fd; }
+    .medium { background: rgba(251,191,36,.16); color: #fde68a; }
+    .low { background: rgba(148,163,184,.18); color: #cbd5e1; }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .album {
+      padding: 10px;
+      border-radius: 16px;
+      background: rgba(15,23,42,.72);
+      border: 1px solid rgba(148,163,184,.15);
+    }
+
+    .cover {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 30px rgba(255,255,255,.18);
+    }
+
+    .album strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .album span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .artist-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(148,163,184,.12);
+    }
+
+    .artist-row:last-child {
+      border-bottom: 0;
+    }
+
+    .changed-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .changed-box .metric strong {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <div class="logo">MI</div>
+        <div>
+          <strong>Music Intelligence</strong>
+          <span>Defending Sisyphus</span>
+        </div>
+      </div>
+
+      <div class="nav-title">Intelligence</div>
+      <div class="nav-item active">Music Dashboard</div>
+      <div class="nav-item">Query Workbench</div>
+      <div class="nav-item">Artist Intelligence</div>
+      <div class="nav-item">Playlist Intelligence</div>
+
+      <div class="nav-title">System</div>
+      <div class="nav-item">Source Snapshot</div>
+      <div class="nav-item">Model Status</div>
+      <div class="nav-item">Evidence Ledger</div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <h1>Music Dashboard</h1>
+          <div class="subtitle">
+            The dashboard observes the present. The Workbench explains why it matters.
+          </div>
+        </div>
+        <button class="button">Refresh Live Data</button>
+      </div>
+
+      <section class="model-strip">
+        <div class="model-card">
+          <div class="eyebrow">Evidence</div>
+          <h3>Apple live objects</h3>
+          <p>Captured source observations, not complete play-count history.</p>
+        </div>
+        <div class="model-card">
+          <div class="eyebrow">Signal</div>
+          <h3>Current listening signal</h3>
+          <p>Repeated artist appearances and album context become leads.</p>
+        </div>
+        <div class="model-card">
+          <div class="eyebrow">Investigation</div>
+          <h3>Workbench comparison</h3>
+          <p>Compare live leads against plays, skips, albums, and family identity.</p>
+        </div>
+      </section>
+
+      <section class="hero-grid">
+        <div class="card hero">
+          <div class="hero-art"></div>
+          <div class="eyebrow">Current Listening Signal</div>
+          <h2>Billie Holiday leads this snapshot</h2>
+          <p>Concentrated current listening signal across 3 objects.</p>
+          <br />
+          <button class="button">Investigate in Workbench →</button>
+        </div>
+
+        <div class="card snapshot">
+          <div class="card-header">
+            <h2>Source Snapshot</h2>
+            <span class="mini-link">View details</span>
+          </div>
+          <div class="snapshot-grid">
+            <div class="metric"><span>Last Updated</span><strong>9:45 AM</strong></div>
+            <div class="metric"><span>Recent Objects</span><strong>46</strong></div>
+            <div class="metric"><span>Source</span><strong>Apple APIs</strong></div>
+            <div class="metric"><span>Snapshot</span><strong>144519Z</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2>Investigation Queue</h2>
+            <span class="mini-link">Ranked leads</span>
+          </div>
+          <p>Ranked by current Apple live evidence, repeated artist appearance, and album context.</p>
+          <br />
+          <div class="queue">
+            <div class="queue-card"><span class="badge high">High</span><strong>Billie Holiday</strong><p>Concentrated signal · Jazz / Vocal</p></div>
+            <div class="queue-card"><span class="badge medium">Medium</span><strong>Wilco</strong><p>Repeated signal · Alternative</p></div>
+            <div class="queue-card"><span class="badge medium">Medium</span><strong>Toad the Wet Sprocket</strong><p>Repeated signal · Alternative / Rock</p></div>
+            <div class="queue-card"><span class="badge low">Low</span><strong>Pearl Jam</strong><p>Single signal · Live album</p></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>What’s Changed</h2>
+            <span class="mini-link">Snapshot diff</span>
+          </div>
+          <p>0 new, 1 changed, 0 no longer visible versus previous snapshot.</p>
+          <div class="changed-box">
+            <div class="metric"><span>New</span><strong>0</strong></div>
+            <div class="metric"><span>Changed</span><strong>1</strong></div>
+            <div class="metric"><span>Gone</span><strong>0</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2>Recently Active Albums</h2>
+            <span class="mini-link">Artwork-led evidence</span>
+          </div>
+          <div class="album-grid">
+            <div class="album"><div class="cover"></div><strong>Lady Sings the Blues</strong><span>Billie Holiday · High</span></div>
+            <div class="album"><div class="cover"></div><strong>Lady in Satin</strong><span>Billie Holiday · High</span></div>
+            <div class="album"><div class="cover"></div><strong>Give Way (Live)</strong><span>Pearl Jam · Low</span></div>
+            <div class="album"><div class="cover"></div><strong>Meat Is Murder</strong><span>The Smiths · Low</span></div>
+            <div class="album"><div class="cover"></div><strong>Dulcinea</strong><span>Toad · Medium</span></div>
+            <div class="album"><div class="cover"></div><strong>Sky Blue Sky</strong><span>Wilco · Medium</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Recently Active Artists</h2>
+            <span class="mini-link">Open Workbench</span>
+          </div>
+          <div class="artist-row"><strong>Billie Holiday</strong><span class="badge high">High</span></div>
+          <div class="artist-row"><strong>Wilco</strong><span class="badge medium">Medium</span></div>
+          <div class="artist-row"><strong>Toad the Wet Sprocket</strong><span class="badge medium">Medium</span></div>
+          <div class="artist-row"><strong>Death Cab for Cutie</strong><span class="badge medium">Medium</span></div>
+          <div class="artist-row"><strong>The Smiths</strong><span class="badge low">Low</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
