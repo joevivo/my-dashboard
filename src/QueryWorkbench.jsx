@@ -68,10 +68,7 @@ export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
 
   useEffect(() => {
     if (!initialArtist) return;
-    setMode("artist");
-    setQuery(initialArtist);
-    setResult(null);
-    setError("");
+    runArtistSearch(initialArtist);
   }, [initialArtist]);
 
   const runSearch = async () => {
