@@ -134,75 +134,82 @@ export default function MusicDashboard({ onOpenArtist }) {
 
   return (
     <section className="space-y-6">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-          Music Intelligence
-        </p>
-        <h2 className="mt-2 text-5xl font-black text-slate-900 dark:text-slate-50">
-          Music Dashboard
-        </h2>
-        <p className="mt-2 max-w-4xl text-base text-slate-600 dark:text-slate-300">
-          The dashboard observes the present. The Workbench explains why it matters.
-        </p>
-        <button
-          type="button"
-          onClick={() => loadDashboard({ refresh: true })}
-          disabled={isRefreshing}
-          className="mt-4 rounded-xl border border-slate-300 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
-        >
-          {isRefreshing ? "Refreshing..." : "Refresh Live Data"}
-        </button>
+      <div className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950 text-white shadow-2xl">
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-6 md:p-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-300">
+                Music Intelligence
+              </p>
+              <h2 className="mt-3 text-5xl font-black tracking-tight text-white md:text-6xl">
+                Music Dashboard
+              </h2>
+              <p className="mt-3 max-w-4xl text-base leading-7 text-slate-300">
+                The dashboard observes the present. The Workbench explains why it matters.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => loadDashboard({ refresh: true })}
+              disabled={isRefreshing}
+              className="rounded-2xl border border-blue-300/50 bg-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isRefreshing ? "Refreshing..." : "Refresh Live Data"}
+            </button>
+          </div>
+
+          <div className="mt-8 grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-200">
+                Evidence
+              </p>
+              <p className="mt-2 text-sm font-black text-white">
+                Apple live objects
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                Captured source observations, not complete play-count history.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-200">
+                Signal
+              </p>
+              <p className="mt-2 text-sm font-black text-white">
+                Current listening signal
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                Repeated artist appearances and album context become investigation leads.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-200">
+                Investigation
+              </p>
+              <p className="mt-2 text-sm font-black text-white">
+                Workbench comparison
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                Compare live leads against actual plays, skips, albums, and family identity.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/40 md:grid-cols-3">
-        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
-            Evidence
-          </p>
-          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
-            Apple live objects
-          </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Captured source observations, not complete play-count history.
-          </p>
-        </div>
-
-        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
-            Signal
-          </p>
-          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
-            Current listening signal
-          </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Repeated artist appearances and album context become investigation leads.
-          </p>
-        </div>
-
-        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
-            Investigation
-          </p>
-          <p className="mt-2 text-sm font-black text-slate-900 dark:text-slate-50">
-            Workbench comparison
-          </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Compare live leads against actual plays, skips, albums, and family identity.
-          </p>
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-blue-200 bg-blue-50 p-6 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30">
-        <div className="flex items-start gap-4">
-          <div className="rounded-2xl bg-blue-600 p-3 text-white">
+      <div className="overflow-hidden rounded-[2rem] border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-6 shadow-lg dark:border-blue-900/60 dark:from-blue-950/40 dark:via-slate-950 dark:to-slate-900">
+        <div className="flex flex-col gap-5 md:flex-row md:items-start">
+          <div className="rounded-2xl bg-blue-600 p-3 text-white shadow-lg shadow-blue-900/20">
             <Activity size={24} />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <MusicBadge tone="story">Current Listening Signal</MusicBadge>
-            <h3 className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-50">
+            <h3 className="mt-3 max-w-5xl text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {getStoryText(dashboard)}
             </h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
               {summary.recentObjectCount ?? 0} Apple live objects observed · Updated {formatTimestamp(dashboard.capturedAt)}
             </p>
           </div>
