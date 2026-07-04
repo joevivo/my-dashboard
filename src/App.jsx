@@ -24,6 +24,7 @@ export default function App() {
   const [activeView, setActiveView] = useState("IntelligenceHome");
   const [selectedArtistForIntelligence, setSelectedArtistForIntelligence] = useState("Billie Holiday");
   const [queryWorkbenchArtist, setQueryWorkbenchArtist] = useState("");
+  const [queryWorkbenchSource, setQueryWorkbenchSource] = useState("");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
   });
@@ -101,7 +102,14 @@ export default function App() {
 
   const navButton = (view, label) => (
     <button
-      onClick={() => setActiveView(view)}
+      onClick={() => {
+        if (view === "QueryWorkbench") {
+          setQueryWorkbenchArtist("");
+          setQueryWorkbenchSource("");
+        }
+
+        setActiveView(view);
+      }}
       className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition ${
         activeView === view
           ? "bg-slate-900 text-white font-semibold shadow-sm"
@@ -261,12 +269,15 @@ export default function App() {
               <MusicDashboard
                 onOpenArtist={(artist) => {
                   setQueryWorkbenchArtist(artist);
+                  setQueryWorkbenchSource("dashboard");
                   setActiveView("QueryWorkbench");
                 }}
               />
             ) : activeView === "QueryWorkbench" ? (
               <QueryWorkbench
                 initialArtist={queryWorkbenchArtist}
+                fromDashboard={queryWorkbenchSource === "dashboard"}
+                onBackToDashboard={() => setActiveView("MusicDashboard")}
                 onOpenArtist={(artistName) => {
                   setSelectedArtistForIntelligence(artistName);
                   setActiveView("ArtistIntelligence");
@@ -324,6 +335,3 @@ export default function App() {
     </div>
   );
 }
-
-
-

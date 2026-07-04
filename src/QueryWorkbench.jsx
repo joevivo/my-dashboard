@@ -1,6 +1,11 @@
 ﻿import { useEffect, useState } from "react";
 
-export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
+export default function QueryWorkbench({
+  onOpenArtist,
+  initialArtist = "",
+  fromDashboard = false,
+  onBackToDashboard,
+}) {
   const [mode, setMode] = useState("artist");
   const [query, setQuery] = useState("");
   const [songArtist, setSongArtist] = useState("");
@@ -215,6 +220,29 @@ export default function QueryWorkbench({ onOpenArtist, initialArtist = "" }) {
           Ask direct questions of the archive. Artist lookup is currently backed by Apple Music Library Tracks reconstruction.
         </p>
       </section>
+
+      {fromDashboard && initialArtist ? (
+        <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300">
+            Dashboard investigation lead
+          </p>
+          <h3 className="mt-2 text-xl font-black text-slate-900 dark:text-slate-50">
+            {initialArtist}
+          </h3>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            This query was launched from the Music Dashboard current-signal queue.
+          </p>
+          {onBackToDashboard ? (
+            <button
+              type="button"
+              onClick={onBackToDashboard}
+              className="mt-4 rounded-xl border border-blue-300 px-4 py-2 text-sm font-black text-blue-800 transition hover:bg-blue-100 dark:border-blue-800 dark:text-blue-200 dark:hover:bg-blue-950"
+            >
+              Back to Music Dashboard
+            </button>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
         <div className="flex flex-wrap gap-2">
