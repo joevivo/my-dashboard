@@ -199,7 +199,7 @@ def relationship_activity(rows):
             "context": context,
             "confidence": "Source-backed current signal; not a relationship classification.",
             "investigationHint": f"Open {artist} to compare live evidence with actual plays, skips, albums, and family identity.",
-            "nextStep": "Open Artist Intelligence",
+            "nextStep": "Investigate in Workbench",
             "source": "apple_music_recent_played",
         })
 

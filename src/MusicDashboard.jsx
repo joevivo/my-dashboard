@@ -289,7 +289,7 @@ export default function MusicDashboard({ onOpenArtist }) {
                   ) : null}
                 </div>
                 <p className="mt-3 text-xs font-bold text-blue-700 dark:text-blue-300">
-                  {item.nextStep || "Open Artist Intelligence"} →
+                  {item.nextStep || "Investigate in Workbench"} →
                 </p>
               </button>
             ))}
