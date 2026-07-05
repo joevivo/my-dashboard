@@ -54,6 +54,7 @@ export default function MusicDashboard({ onOpenArtist }) {
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [recentAlbumsOpen, setRecentAlbumsOpen] = useState(false);
 
   function loadDashboard({ refresh = false } = {}) {
     const url = refresh
@@ -131,6 +132,8 @@ export default function MusicDashboard({ onOpenArtist }) {
     ...item,
     signal: relationshipByArtist.get(item.artist),
   }));
+  const recentAlbumCount = Math.min(albums.length, 20);
+  const recentAlbumsTitle = `Recently Active Albums · ${recentAlbumCount} current album${recentAlbumCount === 1 ? "" : "s"} · ${getStoryArtist(dashboard)} leads`;
 
   return (
     <section className="space-y-6">
@@ -344,7 +347,11 @@ export default function MusicDashboard({ onOpenArtist }) {
         </DashboardCard>
       </div>
 
-      <DashboardCard title="Recently Active Albums">
+      <DashboardCard
+        title={recentAlbumsTitle}
+        isOpen={recentAlbumsOpen}
+        onToggle={() => setRecentAlbumsOpen((value) => !value)}
+      >
         <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
           Ordered by current artist signal, then Apple live source position. Current rank is this dashboard display order, not all-time plays or a favorite-album ranking.
         </p>
