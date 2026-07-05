@@ -68,12 +68,12 @@ def clean_text(value):
 
     text = str(value)
     replacements = {
-        "â€™": "’",
-        "â€˜": "‘",
-        "â€œ": "“",
-        "â€": "”",
-        "â€“": "–",
-        "â€”": "—",
+        "\u00e2\u20ac\u2122": "’",
+        "\u00e2\u20ac\u02dc": "‘",
+        "\u00e2\u20ac\u0153": "“",
+        "\u00e2\u20ac": "”",
+        "\u00e2\u20ac\u201c": "–",
+        "\u00e2\u20ac\u201d": "—",
     }
 
     for bad, good in replacements.items():
@@ -120,10 +120,62 @@ def filter_objects(rows, object_type):
     ]
 
 
-def top_albums(rows):
-    albums = filter_objects(rows, "albums")
-    return albums[:16]
+def top_albums(rows, limit=20):
+    artist_counts = Counter()
 
+    for row in rows:
+        artist = row.get("artistName")
+        if artist:
+            artist_counts[artist] += 1
+
+    albums = filter_objects(rows, "albums")
+    grouped = {}
+
+    for row in albums:
+        album_key = (
+            row.get("appleId")
+            or f"{row.get('artistName') or ''}::{row.get('name') or ''}".lower()
+        )
+
+        if not album_key:
+            continue
+
+        source_rank = row.get("rank") or 999999
+        artist_name = row.get("artistName")
+        artist_evidence_count = artist_counts.get(artist_name, 0)
+
+        existing = grouped.get(album_key)
+
+        if existing is None:
+            album = dict(row)
+            album["sourceRank"] = source_rank
+            album["evidenceCount"] = 1
+            album["artistEvidenceCount"] = artist_evidence_count
+            grouped[album_key] = album
+            continue
+
+        existing["evidenceCount"] = existing.get("evidenceCount", 1) + 1
+        existing["sourceRank"] = min(existing.get("sourceRank", source_rank), source_rank)
+        existing["artistEvidenceCount"] = max(
+            existing.get("artistEvidenceCount", 0),
+            artist_evidence_count,
+        )
+
+    sorted_albums = sorted(
+        grouped.values(),
+        key=lambda album: (
+            -album.get("evidenceCount", 1),
+            -album.get("artistEvidenceCount", 0),
+            album.get("sourceRank", 999999),
+            (album.get("artistName") or "").lower(),
+            (album.get("name") or "").lower(),
+        ),
+    )
+
+    for index, album in enumerate(sorted_albums[:limit], start=1):
+        album["displayRank"] = index
+
+    return sorted_albums[:limit]
 
 def playlists_and_stations(rows):
     playlists = [

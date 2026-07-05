@@ -35,54 +35,67 @@ function sourceLabel(album) {
 
 export default function AlbumCard({ album, signal }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-950/40">
-      <div className="flex items-center gap-4">
+    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-blue-800">
+      <div className="relative bg-slate-100 dark:bg-slate-900">
         {album.artworkUrl ? (
           <img
             src={album.artworkUrl}
             alt=""
-            className="h-20 w-20 shrink-0 rounded-xl object-cover shadow"
+            className="aspect-square w-full object-cover"
           />
         ) : (
-          <div className="h-20 w-20 shrink-0 rounded-xl bg-slate-200 dark:bg-slate-800" />
+          <div className="aspect-square w-full bg-slate-200 dark:bg-slate-800" />
         )}
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="text-lg font-black leading-tight text-slate-900 dark:text-slate-50">
-                {album.name}
-              </h3>
+        <div className="absolute left-3 top-3 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-black text-white shadow">
+          Current #{album.displayRank || album.rank}
+        </div>
 
-              <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-300">
-                {album.artistName}
-              </p>
-            </div>
-
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-              #{album.rank}
-            </span>
-          </div>
-
-          <p className="mt-3 text-xs text-slate-500">
-            {album.releaseDate || "Unknown"} · {album.trackCount || "-"} tracks
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/85 to-transparent p-4">
+          <p className="truncate text-sm font-black text-white">
+            {album.artistName}
           </p>
+          <p className="mt-1 text-xs font-semibold text-slate-200">
+            {album.evidenceCount > 1 ? `${album.evidenceCount} live evidence objects` : sourceLabel(album)}
+          </p>
+        </div>
+      </div>
 
-          <div className="mt-4 rounded-lg bg-slate-50 p-2 text-xs text-slate-600 dark:bg-slate-900/60 dark:text-slate-300">
-            <p>
-              <span className="font-bold">Why visible:</span>{" "}
-              {sourceLabel(album)}
+      <div className="space-y-4 p-4">
+        <div>
+          <h3 className="line-clamp-2 text-lg font-black leading-tight tracking-tight text-slate-950 dark:text-slate-50">
+            {album.name}
+          </h3>
+
+          <p className="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+            {album.releaseDate || "Unknown"} / {album.trackCount || "-"} tracks
+          </p>
+        </div>
+
+        <div className="grid gap-2 text-xs">
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+            <p className="font-black uppercase tracking-[0.12em] text-slate-500">
+              Type
             </p>
-            <p className="mt-1">
-              <span className="font-bold">Type:</span>{" "}
+            <p className="mt-1 font-bold text-slate-800 dark:text-slate-200">
               {albumTypeLabel(album)}
             </p>
-            <p className="mt-1">
-              <span className="font-bold">Genre:</span>{" "}
+          </div>
+
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
+            <p className="font-black uppercase tracking-[0.12em] text-slate-500">
+              Genre
+            </p>
+            <p className="mt-1 font-bold text-slate-800 dark:text-slate-200">
               {genreSignal(album)}
             </p>
-            <p className="mt-1">
-              <span className="font-bold">Queue status:</span>{" "}
+          </div>
+
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 dark:border-blue-900/60 dark:bg-blue-950/30">
+            <p className="font-black uppercase tracking-[0.12em] text-blue-700 dark:text-blue-300">
+              Queue status
+            </p>
+            <p className="mt-1 font-bold text-slate-800 dark:text-slate-200">
               {signal?.status || "Not currently prioritized"}
             </p>
           </div>

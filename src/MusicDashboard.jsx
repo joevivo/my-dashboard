@@ -345,8 +345,12 @@ export default function MusicDashboard({ onOpenArtist }) {
       </div>
 
       <DashboardCard title="Recently Active Albums">
+        <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
+          Ordered by current artist signal, then Apple live source position. Current rank is this dashboard display order, not all-time plays or a favorite-album ranking.
+        </p>
+
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {albums.slice(0, 12).map((album) => (
+          {albums.slice(0, 20).map((album) => (
             <AlbumCard
               key={`${album.appleId}-${album.rank}`}
               album={album}
