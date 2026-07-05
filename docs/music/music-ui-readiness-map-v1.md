@@ -326,3 +326,26 @@ The first implementation slice must not include:
 Implementation rule:
 
 First slice changes should improve language, routing, and safety without introducing new formula-backed classifications.
+
+## Backlog: Compact Recently Active Albums Card Density
+
+Status: backlog
+
+Surface: Music Dashboard
+
+Problem:
+- Expanded Recently Active Albums cards are visually useful but too tall.
+- Type, Genre, and Queue Status blocks consume too much vertical space.
+- The dashboard should surface current album evidence without turning into an album wall.
+
+Current behavior:
+- Recently Active Albums defaults closed.
+- Expanded view shows artwork-led cards.
+- Cards preserve Current # ranking and explanatory ordering copy.
+
+Potential direction:
+- Keep artwork-led cards.
+- Compress Type, Genre, and Queue Status into chips or a single compact context strip.
+- Preserve Current # ranking.
+- Preserve the distinction between current album evidence, Top Albums, and Favorite Albums.
+- Avoid changing data logic unless the ordering model needs additional provenance.
