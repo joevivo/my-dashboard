@@ -362,32 +362,58 @@ export default function MusicDashboard({ onOpenArtist }) {
 
       <div className="grid gap-6 xl:grid-cols-12">
         <DashboardCard title="Recently Active Artists" className="xl:col-span-7">
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
+            Current artists ranked by Apple live evidence count. Open an artist to compare the current signal against historical plays, skips, albums, and family identity.
+          </p>
+
           <div className="grid gap-3 md:grid-cols-2">
             {enrichedArtists.slice(0, 10).map((item) => (
               <button
                 key={item.artist}
                 type="button"
                 onClick={() => onOpenArtist?.(item.artist)}
-                className="rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg dark:border-slate-800 dark:bg-slate-950/50 dark:hover:border-blue-800"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <span className="font-black text-slate-900 dark:text-slate-50">
-                    {item.artist}
-                  </span>
-                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-                    {item.signal?.priority || objectLabel(item.count)}
-                  </span>
+                <div className="border-b border-slate-100 bg-gradient-to-br from-white to-slate-50 p-4 dark:border-slate-800 dark:from-slate-950 dark:to-slate-900">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
+                        {item.artist}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold leading-5 text-slate-700 dark:text-slate-200">
+                        {item.signal?.whyItMatters || "Current Apple live evidence."}
+                      </p>
+                    </div>
+
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      <MusicBadge tone="relationship">
+                        {item.signal?.priority || objectLabel(item.count)}
+                      </MusicBadge>
+                      <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-black text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                        {objectLabel(item.signal?.recentObjectCount ?? item.count)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <p className="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  {item.signal?.whyItMatters || "Current Apple live evidence."}
-                </p>
+                <div className="space-y-3 p-4">
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+                    <p>
+                      <span className="font-black text-slate-700 dark:text-slate-200">Evidence:</span>{" "}
+                      {objectLabel(item.signal?.recentObjectCount ?? item.count)}
+                    </p>
+                    {item.signal?.context ? (
+                      <p className="mt-1">
+                        <span className="font-black text-slate-700 dark:text-slate-200">Context:</span>{" "}
+                        {item.signal.context.replace(/^Recent album context:\s*/i, "")}
+                      </p>
+                    ) : null}
+                  </div>
 
-                <div className="mt-3 space-y-1 text-xs text-slate-500 dark:text-slate-400">
-                  <p>{objectLabel(item.signal?.recentObjectCount ?? item.count)}</p>
-                  {item.signal?.context ? (
-                    <p>{item.signal.context.replace(/^Recent album context:\s*/i, "Context: ")}</p>
-                  ) : null}
+                  <div className="flex items-center justify-between text-xs font-black text-blue-700 dark:text-blue-300">
+                    <span>Investigate in Workbench</span>
+                    <span className="transition group-hover:translate-x-1">→</span>
+                  </div>
                 </div>
               </button>
             ))}
