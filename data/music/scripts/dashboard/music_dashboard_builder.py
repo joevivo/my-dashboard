@@ -329,7 +329,7 @@ def whats_changed(current_rows, current_snapshot_id):
         return {
             "status": "Unavailable",
             "headline": "No previous comparable snapshot found.",
-            "note": "Run another live refresh to enable snapshot comparison.",
+            "note": "Run another live refresh to enable refresh comparison.",
             "currentSnapshotId": current_snapshot_id,
             "previousSnapshotId": None,
             "newArtists": [],

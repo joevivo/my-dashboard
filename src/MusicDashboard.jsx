@@ -27,7 +27,7 @@ function objectLabel(count) {
 }
 
 function artistSummary(item) {
-  return `${item.artist} appears in the latest Apple Music snapshot.`;
+  return `${item.artist} appears in the latest Apple Music refresh.`;
 }
 function getStoryArtist(dashboard) {
   const relationships = dashboard?.relationshipActivity || [];
@@ -46,7 +46,7 @@ function getStoryText(dashboard) {
     .replace(/\.$/, "")
     .toLowerCase();
 
-  return `${topSignal.artist} leads this snapshot: ${why} across ${objectCount}.`;
+  return `${topSignal.artist} leads current listening: ${why} across ${objectCount}.`;
 }
 
 
@@ -219,7 +219,7 @@ export default function MusicDashboard({ onOpenArtist }) {
         </div>
       </div>
 
-      <DashboardCard title="Source Snapshot">
+      <DashboardCard title="Live Source Evidence">
         <div className="grid gap-4 md:grid-cols-4">
           <div>
             <p className="text-xs text-slate-500">Last Updated</p>
@@ -243,14 +243,14 @@ export default function MusicDashboard({ onOpenArtist }) {
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Snapshot</p>
+            <p className="text-xs text-slate-500">Refresh ID</p>
             <p className="mt-1 text-sm font-black text-slate-900 dark:text-slate-50">
               {dashboard.snapshotId || "-"}
             </p>
           </div>
         </div>
         <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-          {dashboard.sourceNote || "Apple Music live snapshot metadata is available for this dashboard."}
+          {dashboard.sourceNote || "Apple Music live source metadata is available for this dashboard."}
         </p>
       </DashboardCard>
 
@@ -427,9 +427,9 @@ export default function MusicDashboard({ onOpenArtist }) {
           </div>
         </DashboardCard>
 
-        <DashboardCard title="What's Changed" className="xl:col-span-5">
+        <DashboardCard title="Since Previous Refresh" className="xl:col-span-5">
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-            {dashboard.whatsChanged?.headline || dashboard.whatsChanged?.status || "Snapshot comparison has not been calculated yet."}
+            {dashboard.whatsChanged?.headline || dashboard.whatsChanged?.status || "Refresh comparison has not been calculated yet."}
           </p>
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
             {dashboard.whatsChanged?.note}
@@ -437,7 +437,7 @@ export default function MusicDashboard({ onOpenArtist }) {
 
           {dashboard.whatsChanged?.previousSnapshotId ? (
             <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-              Compared with {dashboard.whatsChanged.previousSnapshotId}
+              Compared with previous refresh
             </p>
           ) : null}
 
