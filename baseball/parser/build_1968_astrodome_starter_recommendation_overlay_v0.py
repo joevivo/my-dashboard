@@ -6,6 +6,7 @@ from typing import Any
 
 
 INPUT_CSV = Path("data/baseball/parsed/strat365/1968/draft-prep/1968.astrodome-starter-tier-report-v0.csv")
+PITCHER_MECHANICS_CSV = Path("data/baseball/parsed/strat365/1968/card-mechanics/1968.pitcher-card-mechanics-v0.csv")
 OUT_CSV = Path("data/baseball/parsed/strat365/1968/draft-prep/1968.astrodome-starter-recommendation-overlay-v0.csv")
 OUT_MD = Path("data/baseball/parsed/strat365/1968/draft-prep/1968.astrodome-starter-recommendation-overlay-v0.md")
 
@@ -37,7 +38,39 @@ def to_int(value: Any, default: int = 0) -> int:
         return default
 
 
-def classify(row: dict[str, str]) -> dict[str, str]:
+
+def normalized_salary(value: str) -> str:
+    try:
+        return f"{float(value):.2f}"
+    except Exception:
+        return value.strip()
+
+
+def identity_key(row: dict[str, str]) -> tuple[str, str, str]:
+    return (
+        row.get("playerName", "").strip(),
+        row.get("team", "").strip(),
+        normalized_salary(row.get("salary", "")),
+    )
+
+
+def read_player_id_lookup() -> dict[tuple[str, str, str], str]:
+    if not PITCHER_MECHANICS_CSV.exists():
+        raise FileNotFoundError(f"Missing pitcher mechanics file: {PITCHER_MECHANICS_CSV}")
+
+    with PITCHER_MECHANICS_CSV.open("r", newline="", encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
+
+    lookup: dict[tuple[str, str, str], str] = {}
+    for row in rows:
+        player_id = row.get("playerId", "").strip()
+        if player_id:
+            lookup[identity_key(row)] = player_id
+
+    return lookup
+
+
+def classify(row: dict[str, str], player_id_lookup: dict[tuple[str, str, str], str]) -> dict[str, str]:
     salary = to_float(row.get("salary"))
     score = to_float(row.get("astrodomeScore"))
     oba = to_float(row.get("weightedOnBaseAllowed"))
@@ -98,6 +131,7 @@ def classify(row: dict[str, str]) -> dict[str, str]:
         recommendation = "depth_review"
 
     out = dict(row)
+    out["playerId"] = player_id_lookup.get(identity_key(row), "")
     out["recommendation"] = recommendation
     out["pitcherDefense"] = f"{row.get('pitcherFieldingRating', '')}/e{row.get('pitcherError', '')}"
     out["strengths"] = ";".join(strengths)
@@ -121,6 +155,7 @@ def write_csv(rows: list[dict[str, str]]) -> None:
     fieldnames = [
         "recommendation",
         "tier",
+        "playerId",
         "playerName",
         "team",
         "salary",
@@ -192,8 +227,10 @@ def main() -> int:
     if not INPUT_CSV.exists():
         raise FileNotFoundError(f"Missing starter tier report: {INPUT_CSV}")
 
+    player_id_lookup = read_player_id_lookup()
+
     with INPUT_CSV.open("r", newline="", encoding="utf-8-sig") as f:
-        rows = [classify(row) for row in csv.DictReader(f)]
+        rows = [classify(row, player_id_lookup) for row in csv.DictReader(f)]
 
     rows = sorted_rows(rows)
     write_csv(rows)
