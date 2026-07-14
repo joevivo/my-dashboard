@@ -116,7 +116,7 @@ def roster_warnings(roster: list[dict[str, str]]) -> list[str]:
     return result
 
 
-def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
+def validate_roster(roster: list[dict[str, str]], scenario: str = "") -> dict[str, str]:
     hitters = [row for row in roster if row.get("sourcePool") == "hitter"]
     pitchers = [row for row in roster if row.get("sourcePool") in {"starter", "reliever"}]
 
@@ -152,6 +152,16 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
         1 for row in bench_bats
         if "low_ob" not in warnings(row)
     )
+    core_target_starters = sum(
+        1 for row in pitchers
+        if row.get("sourcePool") == "starter"
+        and row.get("recommendation") == "core_target"
+    )
+    core_or_closer_target_relievers = sum(
+        1 for row in pitchers
+        if row.get("sourcePool") == "reliever"
+        and row.get("recommendation") in {"closer_target", "core_relief_target"}
+    )
 
     legal_checks = {
         "total_players": len(roster) == 25,
@@ -174,6 +184,12 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
         "bench_bat_without_low_ob_1_plus": bench_bats_without_low_ob >= 1,
     }
 
+    if scenario in {"premium_sp_anchor", "premium_pitching_and_relief"}:
+        credibility_checks["core_target_starter_1_plus"] = core_target_starters >= 1
+
+    if scenario == "premium_pitching_and_relief":
+        credibility_checks["core_or_closer_relievers_5_plus"] = core_or_closer_target_relievers >= 5
+
     legal = all(legal_checks.values())
     credible = legal and all(credibility_checks.values())
 
@@ -192,6 +208,8 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
         "primaryShortstops": str(primary_shortstops),
         "middleInfieldTypes": str(middle_infield_types),
         "benchBatsWithoutLowOb": str(bench_bats_without_low_ob),
+        "coreTargetStarters": str(core_target_starters),
+        "coreOrCloserTargetRelievers": str(core_or_closer_target_relievers),
         "failedChecks": ";".join(key for key, passed in legal_checks.items() if not passed),
         "failedCredibilityChecks": ";".join(key for key, passed in credibility_checks.items() if not passed),
         "warningCount": str(len(roster_warnings(roster))),
@@ -410,7 +428,7 @@ def build_scenario(
 
         break
 
-    summary = validate_roster(roster)
+    summary = validate_roster(roster, scenario=name)
     summary["scenario"] = name
     summary["hitterMode"] = hitter_mode
     summary["starterMode"] = starter_mode
@@ -441,6 +459,8 @@ def write_csv(scenarios: list[tuple[dict[str, str], list[dict[str, str]]]]) -> N
         "primaryShortstops",
         "middleInfieldTypes",
         "benchBatsWithoutLowOb",
+        "coreTargetStarters",
+        "coreOrCloserTargetRelievers",
         "hitterMode",
         "starterMode",
         "relieverMode",
