@@ -370,9 +370,20 @@ def build_scenario(
             if row.get("sourcePool") == "hitter" and not is_required_role(row)
         ]
 
+        current_core_target_starters = sum(
+            1 for row in roster
+            if row.get("sourcePool") == "starter"
+            and row.get("recommendation") == "core_target"
+        )
+
         expensive_starters = [
             row for row in roster
             if row.get("sourcePool") == "starter"
+            and not (
+                name in {"premium_sp_anchor", "premium_pitching_and_relief"}
+                and row.get("recommendation") == "core_target"
+                and current_core_target_starters <= 1
+            )
         ]
 
         remove_hitter = (
