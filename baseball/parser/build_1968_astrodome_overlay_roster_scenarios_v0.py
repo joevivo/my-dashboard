@@ -131,6 +131,28 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
     )
     closers = sum(1 for row in pitchers if to_int(row.get("closerEndurance", "0")) > 0)
 
+    of_or_corner_bats_beyond_cf = sum(
+        1 for row in hitters
+        if row.get("rosterRole") != "clean_cf"
+        and (
+            row.get("positionGroup") == "Corner Bat"
+            or row.get("primaryPosition") in {"LF", "RF", "1B"}
+        )
+    )
+    primary_shortstops = sum(1 for row in hitters if row.get("primaryPosition") == "SS")
+    middle_infield_types = sum(
+        1 for row in hitters
+        if row.get("primaryPosition") in {"SS", "2B"}
+    )
+    bench_bats = [
+        row for row in hitters
+        if row.get("rosterRole") in {"hitter_target", "salary_fit_hitter"}
+    ]
+    bench_bats_without_low_ob = sum(
+        1 for row in bench_bats
+        if "low_ob" not in warnings(row)
+    )
+
     legal_checks = {
         "total_players": len(roster) == 25,
         "salary_cap": total_salary <= CAP,
@@ -146,6 +168,10 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
         "primary_catchers_3_or_less": primary_catchers <= 3,
         "salary_70_plus": total_salary >= 70.0,
         "warning_count_24_or_less": len(roster_warnings(roster)) <= 24,
+        "of_corner_bats_beyond_cf_2_plus": of_or_corner_bats_beyond_cf >= 2,
+        "primary_ss_3_or_less": primary_shortstops <= 3,
+        "middle_infield_types_4_or_less": middle_infield_types <= 4,
+        "bench_bat_without_low_ob_1_plus": bench_bats_without_low_ob >= 1,
     }
 
     legal = all(legal_checks.values())
@@ -162,6 +188,10 @@ def validate_roster(roster: list[dict[str, str]]) -> dict[str, str]:
         "starterEndurancePitchers": str(starter_endurance),
         "pureRelievers": str(pure_relievers),
         "closers": str(closers),
+        "ofCornerBatsBeyondCf": str(of_or_corner_bats_beyond_cf),
+        "primaryShortstops": str(primary_shortstops),
+        "middleInfieldTypes": str(middle_infield_types),
+        "benchBatsWithoutLowOb": str(bench_bats_without_low_ob),
         "failedChecks": ";".join(key for key, passed in legal_checks.items() if not passed),
         "failedCredibilityChecks": ";".join(key for key, passed in credibility_checks.items() if not passed),
         "warningCount": str(len(roster_warnings(roster))),
@@ -256,12 +286,19 @@ def build_scenario(
     for row in hitter_order:
         if len([p for p in roster if p.get("sourcePool") == "hitter"]) >= 14:
             break
-        current_catchers = sum(
-            1 for p in roster
-            if p.get("sourcePool") == "hitter" and p.get("primaryPosition") == "C"
-        )
+
+        current_hitters = [p for p in roster if p.get("sourcePool") == "hitter"]
+        current_catchers = sum(1 for p in current_hitters if p.get("primaryPosition") == "C")
+        current_shortstops = sum(1 for p in current_hitters if p.get("primaryPosition") == "SS")
+        current_middle_infield = sum(1 for p in current_hitters if p.get("primaryPosition") in {"SS", "2B"})
+
         if row.get("primaryPosition") == "C" and current_catchers >= 3:
             continue
+        if row.get("primaryPosition") == "SS" and current_shortstops >= 3:
+            continue
+        if row.get("primaryPosition") in {"SS", "2B"} and current_middle_infield >= 4:
+            continue
+
         add_player(roster, row, "hitter_target", seen)
 
     # Required pitching structure: 5 starters + 6 pure relievers = 11 pitchers.
@@ -350,16 +387,19 @@ def build_scenario(
                 continue
 
         if remove_hitter:
-            current_catchers = sum(
-                1 for p in roster
-                if p.get("sourcePool") == "hitter" and p.get("primaryPosition") == "C"
-            )
+            current_hitters = [p for p in roster if p.get("sourcePool") == "hitter" and player_key(p) != player_key(remove_hitter)]
+            current_catchers = sum(1 for p in current_hitters if p.get("primaryPosition") == "C")
+            current_shortstops = sum(1 for p in current_hitters if p.get("primaryPosition") == "SS")
+            current_middle_infield = sum(1 for p in current_hitters if p.get("primaryPosition") in {"SS", "2B"})
+
             replacement = first_available(
                 fallback_order,
                 seen,
                 lambda row: (
                     salary(row) < salary(remove_hitter)
                     and not (row.get("primaryPosition") == "C" and current_catchers >= 3)
+                    and not (row.get("primaryPosition") == "SS" and current_shortstops >= 3)
+                    and not (row.get("primaryPosition") in {"SS", "2B"} and current_middle_infield >= 4)
                 ),
             )
             if replacement:
@@ -397,6 +437,10 @@ def write_csv(scenarios: list[tuple[dict[str, str], list[dict[str, str]]]]) -> N
         "failedChecks",
         "credible",
         "failedCredibilityChecks",
+        "ofCornerBatsBeyondCf",
+        "primaryShortstops",
+        "middleInfieldTypes",
+        "benchBatsWithoutLowOb",
         "hitterMode",
         "starterMode",
         "relieverMode",
@@ -417,14 +461,15 @@ def write_markdown(scenarios: list[tuple[dict[str, str], list[dict[str, str]]]])
         "",
         "## Scenario Summary",
         "",
-        "| Scenario | Legal | Credible | Salary | Players | Hitters | Pitchers | C | SP | Pure RP | Closers | Warnings | Failed Checks | Failed Credibility Checks |",
-        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|",
+        "| Scenario | Legal | Credible | Salary | Players | Hitters | Pitchers | C | SP | Pure RP | Closers | OF/Corner | SS | MI | Bench no-low-OB | Warnings | Failed Checks | Failed Credibility Checks |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|",
     ]
 
     for summary, _ in scenarios:
         lines.append(
             "| {scenario} | {legal} | {credible} | {salary} | {players} | {hitters} | {pitchers} | "
             "{primaryCatchers} | {starterEndurancePitchers} | {pureRelievers} | {closers} | "
+            "{ofCornerBatsBeyondCf} | {primaryShortstops} | {middleInfieldTypes} | {benchBatsWithoutLowOb} | "
             "{warningCount} | {failedChecks} | {failedCredibilityChecks} |".format(**summary)
         )
 
