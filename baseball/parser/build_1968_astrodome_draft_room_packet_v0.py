@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
 from collections import Counter, defaultdict
@@ -196,11 +196,11 @@ def main() -> None:
         if count == len(selected)
     ]
 
-    scenario_specific = {
+    scenario_differentiators = {
         scenario: [
             player_name(row["player"])
             for row in rows
-            if appearances[player_name(row["player"])] == 1
+            if appearances[player_name(row["player"])] < len(selected)
         ]
         for scenario, rows in rosters.items()
     }
@@ -284,7 +284,7 @@ def main() -> None:
             "",
             "## Draft Priority Order",
             "",
-            "Players appearing across more selected credible scenarios are treated as stronger draft-room targets than scenario-specific players.",
+            "Players appearing across more selected credible scenarios are treated as stronger draft-room targets than scenario-differentiating players.",
             "",
         ]
     )
@@ -327,19 +327,25 @@ def main() -> None:
 
     lines.extend(
         [
-            "## Scenario-Specific Targets",
+            "## Scenario-Differentiating Targets",
+            "",
+            "These players are not shared by all selected credible scenarios. They show where the build families actually diverge.",
             "",
         ]
     )
-    for scenario, names in scenario_specific.items():
+    for scenario, names in scenario_differentiators.items():
         lines.append(f"### {scenario}")
         lines.append("")
         if not names:
-            lines.append("- No scenario-specific players.")
+            lines.append("- No differentiating players; this shell uses only the shared target pool.")
         else:
             for name in sorted(names):
                 row = by_player[name]
-                lines.append(f"- {row['player']} - {tier_for(row)} / {row['recommendation']} / {row['posEndurance']}")
+                memberships = ", ".join(scenario_membership[name])
+                lines.append(
+                    f"- {row['player']} - appears in {appearances[name]}/{len(selected)} scenarios "
+                    f"({memberships}) - {tier_for(row)} / {row['recommendation']} / {row['posEndurance']}"
+                )
         lines.append("")
 
     lines.extend(
@@ -359,18 +365,18 @@ def main() -> None:
             "## Current Risks",
             "",
             "- The selected credible scenarios now include multiple build families, but some shells still share most of the same low-cost support structure.",
-            "- Premium-pitching scenario labels correctly fail credibility because no core-target starter survives cap repair.",
+            "- Premium-pitching scenarios now preserve a core-target starter, but their offensive and support-player tradeoffs still require human review.",
             "- Some offensive targets carry dead-HR-park dependency or strikeout/defense warnings; these should remain visible during draft decisions.",
             "- Salary-fit hitters still include low-OB fallback options. They are legal bench pieces, not preferred offensive targets.",
             "",
             "## Next Refinement",
             "",
-            "Generate distinct build families:",
+            "Convert the verified scenario packet into the operational 1968 Astrodome Draft Board v0:",
             "",
-            "1. Balanced baseline",
-            "2. Premium bat / value pitching",
-            "3. True premium-SP anchor if it can survive cap and roster-shape gates",
-            "4. Defense-and-bullpen shell",
+            "1. Must-target anchors and draft-sensitive priorities",
+            "2. Position, starter, and bullpen locks",
+            "3. Salary-fit and structural fallback options",
+            "4. Named contingencies for losing core targets",
             "",
         ]
     )
