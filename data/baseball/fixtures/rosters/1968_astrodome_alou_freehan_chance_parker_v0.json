@@ -1,0 +1,182 @@
+{
+    "fixtureId":  "1968-astrodome-alou-freehan-chance-parker-v0",
+    "description":  "Preferred DH Astrodome roster shell using Felipe Alou, Bill Freehan, Dean Chance, and Wes Parker as the everyday first baseman.",
+    "playerSet":  "1968",
+    "leagueFormat":  "DH",
+    "park":  "Astrodome 1968",
+    "projectedSalaryMillions":  79.73,
+    "players":  [
+                    {
+                        "name":  "Freehan, Bill",
+                        "type":  "hitter",
+                        "primaryPosition":  "C",
+                        "salaryMillions":  8.21
+                    },
+                    {
+                        "name":  "Fernandez, Frank",
+                        "type":  "hitter",
+                        "primaryPosition":  "C",
+                        "salaryMillions":  1.96
+                    },
+                    {
+                        "name":  "Alou, Felipe",
+                        "type":  "hitter",
+                        "primaryPosition":  "CF",
+                        "salaryMillions":  8.17
+                    },
+                    {
+                        "name":  "Fregosi, Jim",
+                        "type":  "hitter",
+                        "primaryPosition":  "SS",
+                        "salaryMillions":  5.43
+                    },
+                    {
+                        "name":  "McAuliffe, Dick",
+                        "type":  "hitter",
+                        "primaryPosition":  "2B",
+                        "salaryMillions":  7.34
+                    },
+                    {
+                        "name":  "Santo, Ron",
+                        "type":  "hitter",
+                        "primaryPosition":  "3B",
+                        "salaryMillions":  7.46
+                    },
+                    {
+                        "name":  "Jimenez, Manny",
+                        "type":  "hitter",
+                        "primaryPosition":  "LF",
+                        "salaryMillions":  3.31
+                    },
+                    {
+                        "name":  "Mota, Manny",
+                        "type":  "hitter",
+                        "primaryPosition":  "LF",
+                        "salaryMillions":  1.94
+                    },
+                    {
+                        "name":  "Schaal, Paul",
+                        "type":  "hitter",
+                        "primaryPosition":  "3B",
+                        "salaryMillions":  1.97
+                    },
+                    {
+                        "name":  "Tartabull, Jose",
+                        "type":  "hitter",
+                        "primaryPosition":  "RF",
+                        "salaryMillions":  2.38
+                    },
+                    {
+                        "name":  "Gosger, Jim",
+                        "type":  "hitter",
+                        "primaryPosition":  "LF",
+                        "salaryMillions":  0.5
+                    },
+                    {
+                        "name":  "Brinkman, Ed",
+                        "type":  "hitter",
+                        "primaryPosition":  "SS",
+                        "salaryMillions":  0.5
+                    },
+                    {
+                        "name":  "Torres, Hector",
+                        "type":  "hitter",
+                        "primaryPosition":  "SS",
+                        "salaryMillions":  0.5
+                    },
+                    {
+                        "name":  "Parker, Wes",
+                        "type":  "hitter",
+                        "primaryPosition":  "1B",
+                        "salaryMillions":  2.82
+                    },
+                    {
+                        "name":  "Chance, Dean",
+                        "type":  "pitcher",
+                        "starterEndurance":  "S7*",
+                        "reliefEndurance":  "R3",
+                        "closerEndurance":  null,
+                        "salaryMillions":  6.18
+                    },
+                    {
+                        "name":  "Singer, Bill",
+                        "type":  "pitcher",
+                        "starterEndurance":  "S7*",
+                        "reliefEndurance":  null,
+                        "closerEndurance":  null,
+                        "salaryMillions":  2.25
+                    },
+                    {
+                        "name":  "Moose, Bob",
+                        "type":  "pitcher",
+                        "starterEndurance":  "S7",
+                        "reliefEndurance":  "R3",
+                        "closerEndurance":  null,
+                        "salaryMillions":  2.6
+                    },
+                    {
+                        "name":  "Niekro, Phil",
+                        "type":  "pitcher",
+                        "starterEndurance":  "S8*",
+                        "reliefEndurance":  "R3",
+                        "closerEndurance":  null,
+                        "salaryMillions":  3.22
+                    },
+                    {
+                        "name":  "Washburn, Ray",
+                        "type":  "pitcher",
+                        "starterEndurance":  "S7*",
+                        "reliefEndurance":  null,
+                        "closerEndurance":  null,
+                        "salaryMillions":  3.58
+                    },
+                    {
+                        "name":  "Hoerner, Joe",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R2",
+                        "closerEndurance":  "C5",
+                        "salaryMillions":  1.71
+                    },
+                    {
+                        "name":  "Hamilton, Steve",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R2",
+                        "closerEndurance":  "C4",
+                        "salaryMillions":  1.53
+                    },
+                    {
+                        "name":  "Wilhelm, Hoyt",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R2",
+                        "closerEndurance":  "C4",
+                        "salaryMillions":  1.62
+                    },
+                    {
+                        "name":  "Knowles, Darold",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R3",
+                        "closerEndurance":  "C2",
+                        "salaryMillions":  0.5
+                    },
+                    {
+                        "name":  "Aguirre, Hank",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R2",
+                        "closerEndurance":  "C2",
+                        "salaryMillions":  1.35
+                    },
+                    {
+                        "name":  "McDaniel, Lindy",
+                        "type":  "pitcher",
+                        "starterEndurance":  null,
+                        "reliefEndurance":  "R3",
+                        "closerEndurance":  "C3",
+                        "salaryMillions":  2.7
+                    }
+                ]
+}
