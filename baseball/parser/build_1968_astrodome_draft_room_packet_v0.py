@@ -10,7 +10,12 @@ SCENARIO_MD = Path("data/baseball/parsed/strat365/1968/draft-prep/1968.astrodome
 OUT_MD = Path("data/baseball/parsed/strat365/1968/draft-prep/1968.astrodome-draft-room-packet-v0.md")
 
 BASELINE_SCENARIO = "balanced_card_score"
-ALTERNATE_SCENARIO = "premium_bats_value_pitching"
+PREFERRED_SCENARIO_ORDER = [
+    "balanced_card_score",
+    "premium_bats_value_pitching",
+    "premium_sp_anchor",
+    "premium_pitching_and_relief",
+]
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -147,12 +152,17 @@ def main() -> None:
     ]
 
     selected = [
-        name for name in [BASELINE_SCENARIO, ALTERNATE_SCENARIO]
+        name for name in PREFERRED_SCENARIO_ORDER
         if name in credible_scenarios
     ]
 
+    selected += [
+        name for name in credible_scenarios
+        if name not in selected
+    ]
+
     if not selected:
-        raise SystemExit("No credible baseline/alternate scenarios found.")
+        raise SystemExit("No credible scenarios found.")
 
     rosters = {
         name: parse_roster_table(sections[name])
@@ -208,7 +218,7 @@ def main() -> None:
         f"- Scenario report: `{SCENARIO_MD}`",
         "- Credible scenario filter: `credible == yes`",
         f"- Baseline scenario: `{BASELINE_SCENARIO}`",
-        f"- Alternate scenario: `{ALTERNATE_SCENARIO}`",
+        f"- Selected scenarios: `{', '.join(selected)}`",
         "",
         "## Executive Recommendation",
         "",
@@ -217,10 +227,10 @@ def main() -> None:
         "Rationale:",
         "- It is legal and credible.",
         "- It is close to the $80M cap.",
-        "- It preserves a stronger offensive spine than the failed premium-pitching identities.",
+        "- It preserves the strongest offensive spine among the current credible families.",
         "- It passes the bench-composition gates for catcher count, OF/corner depth, SS count, MI count, and non-low-OB bench depth.",
         "",
-        f"Use `{ALTERNATE_SCENARIO}` as the first alternate. At the current build stage it is effectively the same strategic family as the baseline, so the next refinement should make alternatives more distinct.",
+        "Use the remaining selected credible scenarios as alternate build families. Compare them by protected anchors, salary shape, pitcher spend, and fallback exposure.",
         "",
         "## Credible Scenario Summaries",
         "",
@@ -248,29 +258,33 @@ def main() -> None:
             f"{row['salary']} | {row['posEndurance']} | {row['warnings']} |"
         )
 
-    lines.extend(
-        [
-            "",
-            "## Alternate Roster Shell",
-            "",
-            f"Scenario: `{ALTERNATE_SCENARIO}`",
-            "",
-            "| Role | Pool | Recommendation | Player | Salary | Position/Endurance | Warnings |",
-            "|---|---|---|---|---:|---|---|",
-        ]
-    )
-    for row in rosters[ALTERNATE_SCENARIO]:
-        lines.append(
-            f"| {row['role']} | {row['pool']} | {row['recommendation']} | {row['player']} | "
-            f"{row['salary']} | {row['posEndurance']} | {row['warnings']} |"
+    for scenario in selected:
+        if scenario == BASELINE_SCENARIO:
+            continue
+
+        lines.extend(
+            [
+                "",
+                "## Alternate Roster Shell",
+                "",
+                f"Scenario: `{scenario}`",
+                "",
+                "| Role | Pool | Recommendation | Player | Salary | Position/Endurance | Warnings |",
+                "|---|---|---|---|---:|---|---|",
+            ]
         )
+        for row in rosters[scenario]:
+            lines.append(
+                f"| {row['role']} | {row['pool']} | {row['recommendation']} | {row['player']} | "
+                f"{row['salary']} | {row['posEndurance']} | {row['warnings']} |"
+            )
 
     lines.extend(
         [
             "",
             "## Draft Priority Order",
             "",
-            "Players appearing in both credible shells are treated as stronger draft-room targets than scenario-specific players.",
+            "Players appearing across more selected credible scenarios are treated as stronger draft-room targets than scenario-specific players.",
             "",
         ]
     )
@@ -344,7 +358,7 @@ def main() -> None:
             "",
             "## Current Risks",
             "",
-            "- The two credible scenarios are too similar; this packet has a baseline and alternate, but not yet truly distinct build families.",
+            "- The selected credible scenarios now include multiple build families, but some shells still share most of the same low-cost support structure.",
             "- Premium-pitching scenario labels correctly fail credibility because no core-target starter survives cap repair.",
             "- Some offensive targets carry dead-HR-park dependency or strikeout/defense warnings; these should remain visible during draft decisions.",
             "- Salary-fit hitters still include low-OB fallback options. They are legal bench pieces, not preferred offensive targets.",
@@ -369,7 +383,7 @@ def main() -> None:
     print(f"CREDIBLE_SCENARIOS: {len(credible_scenarios)}")
     print(f"SELECTED_SCENARIOS: {', '.join(selected)}")
     print(f"BASELINE: {BASELINE_SCENARIO}")
-    print(f"ALTERNATE: {ALTERNATE_SCENARIO}")
+    print(f"SELECTED_COUNT: {len(selected)}")
     print(f"SHARED_TARGETS: {len(shared_players)}")
     print(f"PRIORITY_PLAYERS: {len(priority_items)}")
 
