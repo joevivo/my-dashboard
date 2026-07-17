@@ -14,188 +14,6 @@ function itemMentionsArtist(item, artistName) {
   );
 }
 
-function classifyArtist(result) {
-  const totalPlays = Number(result?.totalPlays || 0);
-  const yearsActive = Number(result?.yearsActive || 0);
-
-  if (!totalPlays || !yearsActive) {
-    return {
-      label: "Limited Evidence",
-      summary: "Not enough library-track evidence to classify this artist yet.",
-      rationale:
-        "This does not mean the artist is unimportant. It means the current Library Tracks source has limited evidence for this lookup.",
-    };
-  }
-
-  if (yearsActive >= 10 && totalPlays >= 75) {
-    return {
-      label: "Permanent Companion",
-      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
-      rationale:
-        "This artist shows both long-term persistence and substantial library evidence across the archive.",
-    };
-  }
-
-  if (yearsActive >= 8 && totalPlays < 75) {
-    return {
-      label: "Hidden Pillar",
-      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
-      rationale:
-        "This artist appears repeatedly across the archive despite relatively modest volume.",
-    };
-  }
-
-  if (yearsActive >= 4 && totalPlays >= 10) {
-    return {
-      label: "Established Companion",
-      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
-      rationale:
-        "This artist has enough recurrence to suggest an established relationship, but not enough evidence for Permanent Companion status.",
-    };
-  }
-
-  if (yearsActive <= 3) {
-    return {
-      label: "Recent Signal",
-      summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
-      rationale:
-        "This artist has limited or recent evidence in the Library Tracks reconstruction.",
-    };
-  }
-
-  return {
-    label: "Limited Evidence",
-    summary: `${yearsActive} years represented - ${totalPlays} library evidence records`,
-    rationale:
-      "This artist has some evidence, but the current pattern does not fit a v0 classification cleanly.",
-  };
-}
-
-
-function buildWhyBullets(result, classification) {
-  const totalPlays = Number(result?.totalPlays || 0);
-  const yearsActive = Number(result?.yearsActive || 0);
-  const albumCount = Array.isArray(result?.topAlbums) ? result.topAlbums.length : 0;
-  const timelineCount = Array.isArray(result?.timeline) ? result.timeline.length : 0;
-
-  const bullets = [];
-
-  if (yearsActive > 0) {
-    bullets.push(`${yearsActive} years represented in Library Evidence.`);
-  }
-
-  if (totalPlays > 0) {
-    bullets.push(`${totalPlays} Library Footprint records found.`);
-  }
-
-  if (timelineCount >= 8) {
-    bullets.push("Persistent archive presence across many years.");
-  } else if (timelineCount >= 4) {
-    bullets.push("Recurring archive presence across multiple periods.");
-  }
-
-  if (albumCount >= 7) {
-    bullets.push("Broad album spread suggests a catalog-level relationship.");
-  } else if (albumCount >= 3) {
-    bullets.push("Multiple albums are represented in the surviving archive.");
-  } else if (albumCount === 1) {
-    bullets.push("Evidence is concentrated around a single album.");
-  }
-
-  if (classification?.label === "Hidden Pillar") {
-    bullets.push("Modest footprint combined with long persistence suggests a hidden pillar.");
-  }
-
-  if (classification?.label === "Permanent Companion") {
-    bullets.push("Long-term persistence and substantial footprint suggest a permanent companion.");
-  }
-
-  return bullets;
-}
-
-
-function classifyRelationshipPattern(result) {
-  const albums = Array.isArray(result?.topAlbums)
-    ? result.topAlbums
-    : [];
-
-  const songs = Array.isArray(result?.topSongs)
-    ? result.topSongs
-    : [];
-
-  const totalPlays = Number(result?.totalPlays || 0);
-
-  if (!albums.length) {
-    return {
-      label: "Unknown Relationship",
-      rationale: "Not enough album evidence to determine a relationship pattern.",
-    };
-  }
-
-  const topAlbumShare =
-    totalPlays > 0 ? (albums[0]?.plays || 0) / totalPlays : 0;
-
-  const topSongShare =
-    totalPlays > 0 ? (songs[0]?.plays || 0) / totalPlays : 0;
-
-  if (topSongShare >= 0.60) {
-    return {
-      label: "Song-Centered Relationship",
-      rationale:
-        "A single song appears to dominate the surviving evidence.",
-    };
-  }
-
-  const greatestHitsAlbums = albums.filter((a) =>
-    /(greatest|best of|anthology|portrait|hits|retrospective|collection|essential|man and his music|man who invented soul)/i.test(
-      a.album || ""
-    )
-  );
-
-  const topAlbumIsCompilation =
-    /(greatest|best of|anthology|portrait|hits|retrospective|collection|essential|man and his music|man who invented soul)/i.test(
-      albums[0]?.album || ""
-    );
-
-  if (greatestHitsAlbums.length >= 2 || topAlbumIsCompilation) {
-    return {
-      label: "Greatest-Hits Relationship",
-      rationale:
-        "Compilation, retrospective, or legacy albums drive much of the evidence.",
-    };
-  }
-
-  if (topAlbumShare >= 0.40) {
-    return {
-      label: "Album-Centered Relationship",
-      rationale:
-        "A single non-compilation album accounts for a large share of the relationship.",
-    };
-  }
-
-  if (albums.length >= 7) {
-    return {
-      label: "Catalog Relationship",
-      rationale:
-        "Evidence spans many albums without a single dominant source.",
-    };
-  }
-
-  if (albums.length >= 3) {
-    return {
-      label: "Multi-Album Relationship",
-      rationale:
-        "Several albums contribute meaningfully to the relationship.",
-    };
-  }
-
-  return {
-    label: "Emerging Relationship",
-    rationale:
-      "A pattern exists, but there is not yet enough evidence for a stronger classification.",
-  };
-}
-
 
 const emptyData = {
   artists: [],
@@ -203,7 +21,6 @@ const emptyData = {
   playlists: [],
   shows: [],
   explore: [],
-  eras: [],
 };
 
 export default function ArtistIntelligence({ artistName, onBack }) {
@@ -338,10 +155,6 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   const songs = queryResult?.topSongs || [];
   const albums = queryResult?.topAlbums || [];
   const timeline = queryResult?.timeline || [];
-  const artistClassification = classifyArtist(queryResult);
-  const whyBullets = buildWhyBullets(queryResult, artistClassification);
-  const relationshipPattern =
-    classifyRelationshipPattern(queryResult);
 
   return (
     <div className="space-y-6">
@@ -380,59 +193,6 @@ export default function ArtistIntelligence({ artistName, onBack }) {
         </section>
       ) : (
         <>
-          <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-amber-200 dark:bg-slate-900/80 dark:border-amber-900">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-600 dark:text-amber-300">
-              Artist Intelligence
-            </p>
-
-            <div className="mt-4 grid gap-3 md:grid-cols-4">
-              <StatCard
-                label="Relationship Shape"
-                value={artistClassification.label}
-              />
-              <StatCard
-                label="Relationship Pattern"
-                value={relationshipPattern.label}
-              />
-              <StatCard
-                label="Evidence Quality"
-                value={evidenceQuality}
-              />
-              <StatCard
-                label="Confidence"
-                value="Medium"
-              />
-            </div>
-
-            <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50/60 p-4 dark:border-amber-900 dark:bg-amber-950/20">
-              <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
-                Why
-              </h3>
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
-                {whyBullets.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span className="text-amber-600 dark:text-amber-300">-</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                {artistClassification.rationale}
-              </p>
-
-              <p className="mt-4 text-sm font-black text-slate-900 dark:text-slate-100">
-                Pattern
-              </p>
-              <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                {relationshipPattern.rationale}
-              </p>
-            </div>
-
-            <p className="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              Relationship Shape is generated from Library Footprint and Years Represented. Relationship Pattern is generated from album and song evidence.
-            </p>
-          </section>
-
           <section className="rounded-2xl bg-white/95 p-6 shadow-sm border border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
               {queryResult?.classification || "Library Evidence"}
@@ -444,8 +204,8 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             <div className="mt-5 grid gap-3 md:grid-cols-4">
               <StatCard label="Library Footprint" value={queryResult?.totalPlays ?? 0} />
               <StatCard label="Years Represented" value={queryResult?.yearsActive ?? 0} />
-              <StatCard label="First Seen" value={queryResult?.firstSeen || "?"} />
-              <StatCard label="Latest Seen" value={queryResult?.latestSeen || "?"} />
+              <StatCard label="First Library Evidence" value={queryResult?.firstSeen || "?"} />
+              <StatCard label="Latest Library Evidence" value={queryResult?.latestSeen || "?"} />
             </div>
 
             {timeline.length ? (
@@ -470,7 +230,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
 
             <div className="mt-4 grid gap-6 md:grid-cols-2">
               <div>
-                <h4 className="text-sm font-black">Top Songs</h4>
+                <h4 className="text-sm font-black">Top Songs by Library Evidence</h4>
                 {songs.length ? (
                   <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
                     {songs.map((item) => (
@@ -486,7 +246,7 @@ export default function ArtistIntelligence({ artistName, onBack }) {
               </div>
 
               <div>
-                <h4 className="text-sm font-black">Top Albums</h4>
+                <h4 className="text-sm font-black">Top Albums by Library Evidence</h4>
                 {albums.length ? (
                   <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
                     {albums.map((item) => (
@@ -527,14 +287,7 @@ function ArtistSpotlight({ artistName, artist, related }) {
         <h3 className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
           {artistName}
         </h3>
-
-        {artist?.favoriteEra && (
-          <div className="text-sm text-slate-500 mt-1">
-            Favorite era: {artist.favoriteEra}
-          </div>
-        )}
-
-        {artist?.tags && <TagPills value={artist.tags} />}
+{artist?.tags && <TagPills value={artist.tags} />}
 
         {artist?.notes && (
           <p className="text-sm text-slate-600 mt-3 max-w-3xl dark:text-slate-300">

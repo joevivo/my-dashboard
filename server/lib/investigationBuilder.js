@@ -1,4 +1,4 @@
-﻿export function buildArtistInvestigation(artistResult = {}) {
+export function buildArtistInvestigation(artistResult = {}) {
   const canonicalKey = (artistResult.artist ?? "")
     .toLowerCase()
     .replace(/\s+/g, "-");
@@ -30,9 +30,9 @@
     artistResult.bridge?.live?.recentObjectCount
       ? {
           id: "fact-live-apple-music-present",
-          statement: `Live Apple Music shows ${artistResult.bridge.live.recentObjectCount} recent listening objects.`,
+          statement: `${artistResult.bridge.live.recentObjectCount} Recent Apple Objects were captured for this artist.`,
           sourceEvidenceIds: ["live_apple_music_warehouse"],
-          factType: "live-evidence",
+          factType: "recent-apple-evidence",
           source: "investigation_builder"
         }
       : null

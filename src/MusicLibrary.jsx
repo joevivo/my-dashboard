@@ -31,7 +31,6 @@ const defaultData = {
 const emptyArtist = {
   name: "",
   tags: "",
-  favoriteEra: "",
   notes: "",
 };
 
@@ -73,17 +72,6 @@ const emptyExplore = {
   tags: "",
   reason: "",
   link: "",
-  notes: "",
-};
-const emptyEra = {
-  title: "",
-  timeframe: "",
-  emotionalState: "",
-  keyArtists: "",
-  keyAlbums: "",
-  playlists: "",
-  locations: "",
-  season: "",
   notes: "",
 };
 function normalizeMusicData(data) {
@@ -207,8 +195,6 @@ export default function MusicLibrary() {
   const [playlist, setPlaylist] = useState(emptyPlaylist);
   const [show, setShow] = useState(emptyShow);
   const [explore, setExplore] = useState(emptyExplore);
-  const [era, setEra] = useState(emptyEra);
-  const [editingEraIndex, setEditingEraIndex] = useState(null);
   const [editingAlbumIndex, setEditingAlbumIndex] = useState(null);
   const [importMessage, setImportMessage] = useState("");
 const [openSections, setOpenSections] = useState(() => {
@@ -312,36 +298,6 @@ const addItem = (section, item, resetFn, emptyItem) => {
     setEditingAlbumIndex(null);
     setAlbum(emptyAlbum);
   };
-const saveEra = () => {
-  const hasValue = Object.values(era).some((value) =>
-    String(value || "").trim()
-  );
-
-  if (!hasValue) return;
-
-  if (editingEraIndex !== null) {
-    const updatedEras = [...musicData.eras];
-
-    updatedEras[editingEraIndex] = era;
-
-    setMusicData((prev) => ({
-      ...prev,
-      eras: updatedEras,
-    }));
-
-    setEditingEraIndex(null);
-    setEra(emptyEra);
-
-    return;
-  }
-
-  addItem("eras", era, setEra, emptyEra);
-};
-
-const cancelEraEdit = () => {
-  setEditingEraIndex(null);
-  setEra(emptyEra);
-};
   const exportMusicLibrary = () => {
     const payload = {
       exportedAt: new Date().toISOString(),
@@ -500,7 +456,7 @@ const cancelEraEdit = () => {
         ...item,
         section: "Artist",
         display: item.name || "Untitled Artist",
-        subdisplay: item.favoriteEra || "",
+        subdisplay: item.tags || "",
         key: `artist-${index}`,
       })),
       ...musicData.playlists.map((item, index) => ({
@@ -573,8 +529,7 @@ const cancelEraEdit = () => {
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-              Favorite artists, albums, playlists, shows attended, listening eras,
-              and future exploration notes.
+              Favorite artists, albums, playlists, shows attended, and future exploration notes.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2 text-xs">
@@ -666,7 +621,7 @@ const cancelEraEdit = () => {
               Music Administration
             </div>
             <p className="mt-1 text-sm text-slate-500">
-              Your manually maintained artists, albums, shows, playlists, eras, and notes.
+              Your manually maintained artists, albums, shows, playlists, and notes.
             </p>
           </div>
 
@@ -898,7 +853,7 @@ const cancelEraEdit = () => {
       <DashboardSection
   title="Favorite Artists" Icon={UserRoundSearch}
   color="purple"
-  summary="Core artists, genre tags, favorite eras, and spotlight links."
+  summary="Core artists, genre tags, notes, and spotlight links."
   isOpen={openSections.favoriteArtists}
   onToggle={() => toggleSection("favoriteArtists")}
 >
@@ -913,14 +868,7 @@ const cancelEraEdit = () => {
           value={artist.tags}
           onChange={(v) => setArtist({ ...artist, tags: v })}
         />
-
-        <Input
-          label="Favorite Era"
-          value={artist.favoriteEra}
-          onChange={(v) => setArtist({ ...artist, favoriteEra: v })}
-        />
-
-        <Input
+<Input
           label="Notes"
           value={artist.notes}
           onChange={(v) => setArtist({ ...artist, notes: v })}
@@ -1218,199 +1166,6 @@ const cancelEraEdit = () => {
         />
       </DashboardSection>
 
-<DashboardSection
-  title="Listening Eras"
-  Icon={Clock3}
-  color="purple"
-  summary="Experimental workspace for future listening-period notes. Kept low on the page until the model matures."
-  isOpen={openSections.eras}
-  onToggle={() => toggleSection("eras")}
->
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Input
-      label="Title"
-      value={era.title}
-      onChange={(v) => setEra({ ...era, title: v })}
-    />
-
-    <Input
-      label="Timeframe"
-      value={era.timeframe}
-      onChange={(v) => setEra({ ...era, timeframe: v })}
-    />
-
-    <Input
-      label="Emotional State"
-      value={era.emotionalState}
-      onChange={(v) => setEra({ ...era, emotionalState: v })}
-    />
-
-    <Input
-      label="Season"
-      value={era.season}
-      onChange={(v) => setEra({ ...era, season: v })}
-    />
-
-    <Input
-      label="Key Artists"
-      value={era.keyArtists}
-      onChange={(v) => setEra({ ...era, keyArtists: v })}
-    />
-
-    <Input
-      label="Key Albums"
-      value={era.keyAlbums}
-      onChange={(v) => setEra({ ...era, keyAlbums: v })}
-    />
-
-    <Input
-      label="Playlists"
-      value={era.playlists}
-      onChange={(v) => setEra({ ...era, playlists: v })}
-    />
-
-    <Input
-      label="Locations"
-      value={era.locations}
-      onChange={(v) => setEra({ ...era, locations: v })}
-    />
-
-    <div className="md:col-span-2">
-      <Input
-        label="Notes"
-        value={era.notes}
-        onChange={(v) => setEra({ ...era, notes: v })}
-      />
-    </div>
-  </div>
-
-  <div className="flex gap-2">
-  <AddButton
-    label={editingEraIndex !== null ? "Save Changes" : "Add Era"}
-    onClick={saveEra}
-  />
-
-  {editingEraIndex !== null && (
-    <button
-      onClick={cancelEraEdit}
-      className="bg-white border border-slate-200 hover:bg-slate-50 transition text-slate-700 px-4 py-2 rounded-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-    >
-      Cancel
-    </button>
-  )}
-</div>
-
-  {musicData.eras.length === 0 ? (
-    <p className="text-sm text-slate-500">
-      No listening eras yet. Add one to begin mapping music to emotional seasons.
-    </p>
-  ) : (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {musicData.eras.map((item, index) => (
-        <div
-          key={`${item.title}-${index}`}
-          className="bg-white border border-purple-100 rounded-2xl p-5 shadow-sm dark:border-purple-900/40 dark:bg-slate-800/80"
-        >
-          <div className="flex justify-between gap-4">
-            <div>
-              <div className="text-xs uppercase text-purple-400 font-bold">
-                {item.timeframe || "Untimed Era"}
-              </div>
-
-              <h3 className="text-xl font-bold text-slate-900 mt-1">
-                {item.title || "Untitled Era"}
-              </h3>
-
-              {item.emotionalState && (
-                <div className="text-sm text-purple-700 font-medium mt-1">
-                  {item.emotionalState}
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3">
-  <button
-    onClick={() => {
-      setEra({
-        title: item.title || "",
-        timeframe: item.timeframe || "",
-        emotionalState: item.emotionalState || "",
-        keyArtists: item.keyArtists || "",
-        keyAlbums: item.keyAlbums || "",
-        playlists: item.playlists || "",
-        locations: item.locations || "",
-        season: item.season || "",
-        notes: item.notes || "",
-      });
-
-      setEditingEraIndex(index);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }}
-    className="text-xs text-purple-700 hover:underline"
-  >
-    Edit
-  </button>
-
-  <button
-    onClick={() => removeItem("eras", index)}
-    className="text-xs text-slate-400 hover:text-red-500"
-  >
-    Delete
-  </button>
-</div>
-          </div>
-
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
-            {item.season && (
-              <div>
-                <span className="font-semibold">Season:</span> {item.season}
-              </div>
-            )}
-
-            {item.keyArtists && (
-              <div>
-                <span className="font-semibold">Key artists:</span>{" "}
-                {item.keyArtists}
-              </div>
-            )}
-
-            {item.keyAlbums && (
-              <div>
-                <span className="font-semibold">Key albums:</span>{" "}
-                {item.keyAlbums}
-              </div>
-            )}
-
-            {item.playlists && (
-              <div>
-                <span className="font-semibold">Playlists:</span>{" "}
-                {item.playlists}
-              </div>
-            )}
-
-            {item.locations && (
-              <div>
-                <span className="font-semibold">Locations:</span>{" "}
-                {item.locations}
-              </div>
-            )}
-
-            {item.notes && (
-              <p className="pt-2 text-slate-700 leading-relaxed">
-                {item.notes}
-              </p>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  )}
-
-</DashboardSection>
     </div>
   );
 }
@@ -1552,14 +1307,7 @@ function ArtistSpotlight({ artistName, artist, related, clearArtist }) {
           <h2 className="text-3xl font-bold text-slate-900">
             {artistName}
           </h2>
-
-          {artist?.favoriteEra && (
-            <div className="text-sm text-slate-500 mt-1">
-              Favorite era: {artist.favoriteEra}
-            </div>
-          )}
-
-          {artist?.tags && <TagPills value={artist.tags} />}
+{artist?.tags && <TagPills value={artist.tags} />}
 
           {artist?.notes && (
             <p className="text-sm text-slate-600 mt-3 max-w-3xl">

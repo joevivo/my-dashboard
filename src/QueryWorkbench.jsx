@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function QueryWorkbench({
   onOpenArtist,
@@ -457,11 +457,11 @@ export default function QueryWorkbench({
                   <p className="text-xl font-black">{result.duckdb_context_rows}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">First Seen</p>
+                  <p className="text-xs text-slate-500">First Event Evidence</p>
                   <p className="text-xl font-black">{result.first_seen}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Latest Seen</p>
+                  <p className="text-xs text-slate-500">Latest Event Evidence</p>
                   <p className="text-xl font-black">{result.latest_seen}</p>
                 </div>
               </div>
@@ -562,7 +562,7 @@ export default function QueryWorkbench({
 
               {result.topAlbums?.length ? (
                 <div>
-                  <h4 className="text-sm font-black">Top Albums</h4>
+                  <h4 className="text-sm font-black">Top Albums in Period</h4>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Source: current query result. Counts are result records.
                   </p>
@@ -673,7 +673,7 @@ export default function QueryWorkbench({
 
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
-                  Play Activity
+                  Historical Listening
                 </p>
                 <p className="mt-2 text-lg font-black">
                   {activity.actualPlays ?? result.actualPlays ?? "-"} actual plays
@@ -689,7 +689,7 @@ export default function QueryWorkbench({
 
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60">
                 <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
-                  Live Apple Music Evidence
+                  Recent Apple Evidence
                 </p>
                 <p className="mt-2 text-lg font-black">
                   {bridge.live?.recentObjectCount ?? 0} recent objects
@@ -721,7 +721,7 @@ export default function QueryWorkbench({
 
           {actualSongs.length ? (
             <div className="mt-6">
-              <h4 className="text-sm font-black">Actual Top Songs</h4>
+              <h4 className="text-sm font-black">Top Songs by Actual Plays</h4>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Source: Apple Music daily play activity. Counts are actual plays.
               </p>

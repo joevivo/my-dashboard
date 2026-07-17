@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 from pathlib import Path
 
@@ -108,22 +108,15 @@ def build_bridge_facts(historical, live):
     if has_historical and has_live:
         facts.append({
             "type": "continuity",
-            "statement": "Relationship continues beyond the historical archive.",
+            "statement": "Recent Apple evidence exists beyond the latest historical archive coverage.",
             "evidence": ["historical_artist_summary", "live_apple_music_warehouse"],
         })
 
-    if live.get("recentObjectCount", 0) > 1:
-        facts.append({
-            "type": "recent_activity",
-            "statement": "Multiple recent listening objects detected.",
-            "value": live.get("recentObjectCount"),
-            "evidence": ["apple_recent_objects"],
-        })
 
     if live.get("heavyRotationCount", 0) > 0:
         facts.append({
             "type": "heavy_rotation",
-            "statement": "Artist currently appears in heavy rotation.",
+            "statement": "The artist appears in the current Apple Heavy Rotation source objects.",
             "value": live.get("heavyRotationCount"),
             "evidence": ["apple_heavy_rotation_objects"],
         })

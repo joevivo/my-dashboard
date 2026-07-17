@@ -96,7 +96,7 @@ export default function ArtistDossierModal({ dossier, onClose }) {
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <h4 className="font-semibold text-slate-100">Top Albums</h4>
+            <h4 className="font-semibold text-slate-100">Top Albums in Selected Range</h4>
             {topAlbums.length ? (
               <ul className="mt-3 space-y-2 text-sm text-slate-300">
                 {topAlbums.map((album) => {
@@ -119,7 +119,7 @@ export default function ArtistDossierModal({ dossier, onClose }) {
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <h4 className="font-semibold text-slate-100">Top Tracks</h4>
+            <h4 className="font-semibold text-slate-100">Top Tracks in Selected Range</h4>
             {topTracks.length ? (
               <ul className="mt-3 space-y-2 text-sm text-slate-300">
                 {topTracks.map((track) => {
@@ -150,7 +150,7 @@ export default function ArtistDossierModal({ dossier, onClose }) {
 
           <div className="mt-3 grid gap-3 md:grid-cols-5">
             <Metric label="Journey Type" value={journeyType} />
-            <Metric label="First Seen" value={firstSeen} />
+            <Metric label="First Recorded Activity" value={firstSeen} />
             <Metric label="Peak Year" value={peakYear} />
             <Metric label="Latest Activity" value={latestActivity} />
             <Metric label="Total Plays" value={totalPlays} />
