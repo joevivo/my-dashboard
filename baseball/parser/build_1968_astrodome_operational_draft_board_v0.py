@@ -379,6 +379,8 @@ def render_contingencies(rows: list[dict[str, Any]]) -> list[list[Any]]:
                 row.get("manualBucket") or "",
                 row.get("draftBoardScore") or "",
                 row.get("manualRead") or "",
+                row.get("replacementClass") or "",
+                row.get("operationalNote") or "",
             ]
         )
 
@@ -911,6 +913,40 @@ def main() -> None:
         )
     ]
 
+    contingency_groups = {
+        "centerField": clean_cf,
+        "firstBase": first_base,
+        "catcher": catchers,
+        "shortstop": shortstops,
+        "starters": starter_contingencies,
+        "pureRelievers": bullpen_contingencies,
+    }
+
+    for category, rows in contingency_groups.items():
+        salary_limit = float(direct_replacement_limits[category])
+
+        for row in rows:
+            salary = float(row.get("salary") or 0)
+            direct_salary_compatible = salary <= salary_limit
+
+            row["directReplacementSalaryLimit"] = salary_limit
+            row["replacementClass"] = (
+                "direct_salary_compatible"
+                if direct_salary_compatible
+                else "broader_roster_pivot"
+            )
+            row["requiresBroaderRosterPivot"] = (
+                not direct_salary_compatible
+            )
+            row["operationalNote"] = (
+                "Direct salary-compatible contingency; revalidate roster "
+                "coverage and legality."
+                if direct_salary_compatible
+                else
+                "Premium roster pivot; offset salary and revalidate cap, "
+                "coverage, and roster legality."
+            )
+
     anchors = [
         row["playerName"]
         for row in roster_rows
@@ -975,6 +1011,7 @@ def main() -> None:
             "Protect five starter-endurance pitchers, four pure relievers, and at least one closer-endurance pitcher.",
             "Use minimum-salary, low-OB hitters only as late structural pieces.",
             "This plan assumes a DH league. Pitcher batting evaluation remains a non-DH backlog item.",
+            "Candidates above their direct-replacement salary limit are broader roster pivots, not one-for-one substitutions.",
             "After any contingency substitution, recheck salary, defensive coverage, and roster legality.",
         ],
     }
@@ -1099,6 +1136,8 @@ def main() -> None:
                     "Bucket",
                     "Board Score",
                     "Read",
+                    "Replacement Class",
+                    "Operational Note",
                 ],
                 render_contingencies(rows),
                 [
@@ -1110,6 +1149,8 @@ def main() -> None:
                     "---",
                     "---",
                     "---:",
+                    "---",
+                    "---",
                     "---",
                 ],
             )

@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 SEASON = "1968"
@@ -144,6 +144,7 @@ def render_md(sheet):
     lines.append("## Draft Posture")
     lines.append("")
     lines.append("- Early: prioritize Tiant/Gibson, clean CF, Freehan, Kaline/Rose/Alou/Flood, or high-leverage RP.")
+    lines.append("- Premium starters above the direct-replacement salary ceiling are broader roster pivots, not one-for-one substitutions; offset salary and revalidate the full roster.")
     lines.append("- Middle: lock SS, C2, bullpen leverage, and fifth usable starter.")
     lines.append("- Late: use value targets only after the roster structure is solved.")
     lines.append("- If the board collapses, preserve defense and pitcher flexibility before chasing corner bats.")

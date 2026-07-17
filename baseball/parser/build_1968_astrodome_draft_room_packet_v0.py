@@ -361,6 +361,7 @@ def main() -> None:
             "- If Santo is gone: preserve 3B coverage and avoid letting salary-fit infielders consume the build.",
             "- If Hoerner/Hamilton/Wilhelm are gone: use the reliever overlay to preserve closer-capable bullpen depth.",
             "- If the value-starter pool is depleted: rerun the scenario builder and check whether a premium-SP shell can survive under cap.",
+            "- A premium starter above the direct-replacement ceiling is a broader roster pivot, not a one-for-one fallback; offset salary and rerun cap, coverage, and pitching-legality checks.",
             "",
             "## Current Risks",
             "",
