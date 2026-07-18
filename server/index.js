@@ -1,4 +1,4 @@
-﻿import fetch from "node-fetch";
+import fetch from "node-fetch";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -1050,45 +1050,176 @@ app.post("/api/music/dashboard/refresh", (req, res) => {
   );
 });
 
-app.get("/api/music/time-machine", async (req, res) => {
-  const { start, end } = req.query;
+function sendPeriodError(res, status, code, message, details = {}) {
+  return res.status(status).json({
+    schemaVersion: "music.period-intelligence.error.v1",
+    error: {
+      code,
+      message,
+      details,
+    },
+  });
+}
 
-  if (!start || !end) {
-    return res.status(400).json({
-      error: "start and end query parameters are required",
-    });
+function isValidIsoDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+
+  if (!match) {
+    return false;
   }
 
-  const scriptPath =
-    "../data/music/scripts/period_intelligence.py";
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+
+  return (
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+  );
+}
+function runPeriodIntelligence(req, res) {
+  const start = String(req.query.start || "").trim();
+  const end = String(req.query.end || "").trim();
+  const timeZone =
+    String(req.query.timeZone || "America/Chicago").trim() ||
+    "America/Chicago";
+
+  if (!start) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_START_DATE",
+      "A start date in YYYY-MM-DD format is required."
+    );
+  }
+
+  if (!end) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_END_DATE",
+      "An end date in YYYY-MM-DD format is required."
+    );
+  }
+
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (!datePattern.test(start)) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_START_DATE",
+      "The start date must use YYYY-MM-DD format.",
+      { start }
+    );
+  }
+
+  if (!datePattern.test(end)) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_END_DATE",
+      "The end date must use YYYY-MM-DD format.",
+      { end }
+    );
+  }
+
+  const startTime = Date.parse(`${start}T00:00:00Z`);
+  const endTime = Date.parse(`${end}T00:00:00Z`);
+
+  if (!isValidIsoDate(start)) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_START_DATE",
+      "The start date is not a valid calendar date.",
+      { start }
+    );
+  }
+
+  if (!isValidIsoDate(end)) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_END_DATE",
+      "The end date is not a valid calendar date.",
+      { end }
+    );
+  }
+
+  if (endTime < startTime) {
+    return sendPeriodError(
+      res,
+      400,
+      "INVALID_PERIOD",
+      "The end date must be on or after the start date.",
+      { start, end }
+    );
+  }
+
+  const scriptPath = "../data/music/scripts/period_intelligence.py";
 
   execFile(
     "python",
     [scriptPath, start, end],
-    { cwd: __dirname },
+    {
+      cwd: __dirname,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        PYTHONUTF8: "1",
+      },
+    },
     (error, stdout, stderr) => {
       if (error) {
-        console.error(stderr);
-        return res.status(500).json({
-          error: "Failed to run time machine script",
-        });
+        console.error("Period Intelligence execution error:", stderr || error);
+
+        return sendPeriodError(
+          res,
+          500,
+          "SOURCE_EXECUTION_FAILED",
+          "Period Intelligence could not execute its source operation."
+        );
       }
 
       try {
-  const result = JSON.parse(stdout);
+        const result = JSON.parse(stdout);
 
+        result.request = {
+          ...result.request,
+          timeZone,
+        };
 
-  res.json(result);
-} catch (parseError) {
-  console.error(parseError);
+        result.period = {
+          ...result.period,
+          timeZone,
+          canonicalKey: `${start}_${end}_${timeZone.replace(/[^A-Za-z0-9]+/g, "-")}`,
+        };
 
-  res.status(500).json({
-    error: "Failed to parse time machine output",
-  });
-}    }
+        if (req.path === "/api/music/time-machine" && result.legacy) {
+          Object.assign(result, result.legacy);
+        }
+
+        return res.json(result);
+      } catch (parseError) {
+        console.error("Period Intelligence parse error:", parseError);
+
+        return sendPeriodError(
+          res,
+          500,
+          "PERIOD_INTELLIGENCE_FAILED",
+          "Period Intelligence returned an invalid response."
+        );
+      }
+    }
   );
-});
+}
 
+app.get("/api/music/query/period", runPeriodIntelligence);
+app.get("/api/music/time-machine", runPeriodIntelligence);
 app.get("/api/music/query/artist", async (req, res) => {
   const { name } = req.query;
 

@@ -138,35 +138,257 @@ for item in top_artists:
 memory_read = []
 
 if not matches:
-    memory_read.append("No library-track evidence found for this period.")
+    memory_read.append("No Library Evidence was found for this period.")
 elif artist_counts:
     top_artist, top_artist_count = artist_counts.most_common(1)[0]
-
-    memory_read.append(f"A possible anchor for this period is {top_artist}.")
-    memory_read.append(
-        f"{top_artist} appears on {top_artist_count} tracks with last-played dates in this range."
+    tied_artist_count = sum(
+        1
+        for count in artist_counts.values()
+        if count == top_artist_count
     )
+    track_word = "track" if top_artist_count == 1 else "tracks"
+
+    if tied_artist_count == 1:
+        memory_read.append(f"A possible anchor for this period is {top_artist}.")
+        memory_read.append(
+            f"{top_artist} appears on {top_artist_count} {track_word} "
+            "with last-played dates in this range."
+        )
+    else:
+        memory_read.append(
+            f"No single artist dominates this period; {tied_artist_count} artists "
+            f"share the highest Library Evidence count of "
+            f"{top_artist_count} {track_word}."
+        )
 
     if top_albums:
         album_anchor_text = ", ".join(
-            f"{item['album']} ({item['count']} tracks)"
+            f"{item['album']} ({item['count']} "
+            f"{'track' if item['count'] == 1 else 'tracks'})"
             for item in top_albums[:5]
         )
         memory_read.append(f"Possible album anchors: {album_anchor_text}.")
 
     memory_read.append(
-        "Caution: this is reconstruction from library Last Played Date, not complete play-count history."
+        "Caution: this is reconstruction from library Last Played Date, "
+        "not complete play-count history."
     )
 
+coverage_status = "searched_with_evidence" if matches else "searched_no_evidence"
+summary_status = "partial_coverage" if matches else "no_matching_evidence"
+top_artist_name = top_artists[0]["artist"] if top_artists else None
+top_artist_count = top_artists[0]["count"] if top_artists else 0
+top_artist_tied = (
+    len(top_artists) > 1
+    and top_artists[1]["count"] == top_artist_count
+)
+
+if top_artist_name and not top_artist_tied:
+    headline = f"{top_artist_name} led the available Library Evidence for this period."
+elif top_artist_name:
+    headline = "No single artist led the available Library Evidence for this period."
+else:
+    headline = "No matching Library Evidence was found for this period."
+
+facts = []
+if matches:
+    facts.append({
+        "factType": "library-evidence-count",
+        "statement": f"The period contains {len(matches)} Library Evidence records.",
+        "value": len(matches),
+        "evidenceRefs": ["library-track-last-played"],
+    })
+
+suggested_investigations = []
+if top_artist_name and not top_artist_tied:
+    suggested_investigations.append({
+        "investigationType": "artist",
+        "label": f"Investigate {top_artist_name}",
+        "parameters": {"artist": top_artist_name},
+        "reason": "The artist uniquely led Library Evidence during the selected period.",
+    })
+
 result = {
-    "startDate": str(start_date),
-    "endDate": str(end_date),
-    "tracksMatched": len(matches),
-    "topAlbums": top_albums,
-    "topArtists": top_artists,
-    "artistJourneys": artist_journeys,
-    "memoryRead": memory_read,
-    "sourceNote": "Reconstruction from Apple Music Library Tracks Last Played Date.",
+    "schemaVersion": "music.period-intelligence.v1",
+    "generatedAt": datetime.now().astimezone().isoformat(),
+    "request": {
+        "startDate": str(start_date),
+        "endDate": str(end_date),
+        "timeZone": "America/Chicago",
+    },
+    "period": {
+        "entityType": "period",
+        "canonicalKey": f"{start_date}_{end_date}_America-Chicago",
+        "startDate": str(start_date),
+        "endDate": str(end_date),
+        "timeZone": "America/Chicago",
+        "inclusiveDayCount": (end_date - start_date).days + 1,
+        "label": f"{start_date} to {end_date}",
+    },
+    "summary": {
+        "status": summary_status,
+        "headline": headline,
+        "narrative": (
+            "Library Evidence was searched. Actual listening, Recent Apple Objects, "
+            "and playback context were not searched in this implementation slice."
+        ),
+    },
+    "coverage": [
+        {
+            "sourceId": "apple_daily_track_summary",
+            "sourceType": "actual_listening",
+            "status": "not_searched",
+            "recordsExamined": None,
+            "recordsMatched": None,
+            "coverageStart": None,
+            "coverageEnd": None,
+            "capturedAt": None,
+            "freshness": "unknown",
+            "limitations": [
+                "Actual listening activity is not yet connected to Period Intelligence."
+            ],
+        },
+        {
+            "sourceId": "apple_library_tracks_last_played",
+            "sourceType": "library_evidence",
+            "status": coverage_status,
+            "recordsExamined": None,
+            "recordsMatched": len(matches),
+            "coverageStart": str(start_date),
+            "coverageEnd": str(end_date),
+            "capturedAt": None,
+            "freshness": "unknown",
+            "limitations": [
+                "Last Played Date reconstruction is not complete play-count history."
+            ],
+        },
+        {
+            "sourceId": "apple_live_snapshot_warehouse",
+            "sourceType": "recent_apple_observation",
+            "status": "not_searched",
+            "recordsExamined": None,
+            "recordsMatched": None,
+            "coverageStart": None,
+            "coverageEnd": None,
+            "capturedAt": None,
+            "freshness": "unknown",
+            "limitations": [
+                "Recent Apple snapshot history is not yet connected to this response."
+            ],
+        },
+        {
+            "sourceId": "music_playback_context",
+            "sourceType": "playback_context",
+            "status": "not_searched",
+            "recordsExamined": None,
+            "recordsMatched": None,
+            "coverageStart": None,
+            "coverageEnd": None,
+            "capturedAt": None,
+            "freshness": "unknown",
+            "limitations": [
+                "Playback context attribution is not yet connected to Period Intelligence."
+            ],
+        },
+    ],
+    "activity": {
+        "status": "not_searched",
+        "actualPlays": None,
+        "actualSkips": None,
+        "listeningSeconds": None,
+        "listeningHours": None,
+        "uniqueArtistCount": None,
+        "uniqueAlbumCount": None,
+        "uniqueTrackCount": None,
+        "topArtists": [],
+        "topAlbums": [],
+        "topTracks": [],
+    },
+    "libraryEvidence": {
+        "status": "available",
+        "recordCount": len(matches),
+        "uniqueArtistCount": None,
+        "uniqueAlbumCount": None,
+        "uniqueTrackCount": None,
+        "topArtists": top_artists,
+        "topAlbums": top_albums,
+        "topTracks": [],
+        "artistJourneys": artist_journeys,
+        "timeline": [],
+        "memoryRead": memory_read,
+        "sourceNote": "Reconstruction from Apple Music Library Tracks Last Played Date. This is not complete play-count history.",
+    },
+    "recentAppleObservations": {
+        "status": "not_searched",
+        "objectCount": None,
+        "capturedSnapshotCount": None,
+        "firstCapturedAt": None,
+        "latestCapturedAt": None,
+        "artists": [],
+        "albums": [],
+        "tracks": [],
+        "playlists": [],
+        "stations": [],
+        "sourceNote": "Recent Apple Objects are not yet connected to this period response.",
+    },
+    "playbackContexts": {
+        "status": "not_searched",
+        "knownEventCount": None,
+        "unknownEventCount": None,
+        "denominator": None,
+        "items": [],
+    },
+    "periodTags": [],
+    "facts": facts,
+    "insights": [],
+    "confidence": {
+        "level": "low",
+        "reasons": [
+            "Library Evidence was searched.",
+            "Actual listening and playback-context sources were not searched.",
+        ],
+    },
+    "warnings": [
+        {
+            "code": "ACTUAL_LISTENING_NOT_SEARCHED",
+            "message": "Actual listening history was not searched for this response.",
+            "sourceId": "apple_daily_track_summary",
+        },
+        {
+            "code": "RECENT_APPLE_NOT_SEARCHED",
+            "message": "Recent Apple snapshot history was not searched for this response.",
+            "sourceId": "apple_live_snapshot_warehouse",
+        },
+        {
+            "code": "PLAYBACK_CONTEXT_NOT_SEARCHED",
+            "message": "Playback context was not searched for this response.",
+            "sourceId": "music_playback_context",
+        },
+    ],
+    "provenance": [
+        {
+            "evidenceId": "library-track-last-played",
+            "sourceId": "apple_library_tracks_last_played",
+            "sourceLabel": "Apple Music Library Tracks Last Played Date",
+            "sourceType": "library_evidence",
+            "recordCount": len(matches),
+            "coverageStart": str(start_date),
+            "coverageEnd": str(end_date),
+            "capturedAt": None,
+            "notes": [
+                "Evidence records are not Actual Plays."
+            ],
+        },
+    ],
+    "suggestedInvestigations": suggested_investigations,
+    "legacy": {
+        "tracksMatched": len(matches),
+        "topAlbums": top_albums,
+        "topArtists": top_artists,
+        "artistJourneys": artist_journeys,
+        "memoryRead": memory_read,
+        "sourceNote": "Reconstruction from Apple Music Library Tracks Last Played Date.",
+    },
 }
 
 print(json.dumps(result, indent=2))

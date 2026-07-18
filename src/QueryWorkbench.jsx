@@ -159,13 +159,13 @@ export default function QueryWorkbench({
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/music/time-machine?start=${encodeURIComponent(dateStart)}&end=${encodeURIComponent(dateEnd)}`
+        `http://localhost:4000/api/music/query/period?start=${encodeURIComponent(dateStart)}&end=${encodeURIComponent(dateEnd)}`
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Date range query failed.");
+        throw new Error(data?.error?.message || data?.error || "Date range query failed.");
       }
 
       setResult({
@@ -431,7 +431,7 @@ export default function QueryWorkbench({
 
               {result.resultType === "date" ? (
                 <p className="mt-1 text-sm text-slate-500">
-                  {dateStart} → {dateEnd}
+                  {dateStart} to {dateEnd}
                 </p>
               ) : null}
             </div>
@@ -499,99 +499,225 @@ export default function QueryWorkbench({
             </div>
           ) : result.resultType === "date" ? (
             <div className="mt-5 space-y-5">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                  Period Intelligence
+                </p>
+                <h4 className="mt-2 text-lg font-black text-slate-900 dark:text-slate-100">
+                  {result.summary?.headline || "Period investigation complete."}
+                </h4>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  {result.summary?.narrative || "No period narrative was returned."}
+                </p>
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  {result.period?.label || `${dateStart} to ${dateEnd}`} ·{" "}
+                  {result.schemaVersion || "Unknown schema"}
+                </p>
+              </div>
 
-              <div className="grid gap-3 md:grid-cols-4">
-                <div>
-                  <p className="text-xs text-slate-500">Tracks Matched</p>
-                  <p className="text-xl font-black">{result.tracksMatched}</p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-slate-500">Anchor Artist</p>
-                  <p className="text-xl font-black">
-                    {result.topArtists?.[0]?.artist || "-"}
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                    Library Evidence
+                  </p>
+                  <p className="mt-2 text-xl font-black">
+                    {result.libraryEvidence?.recordCount ?? 0}{" "}{(result.libraryEvidence?.recordCount ?? 0) === 1 ? "record" : "records"}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {result.libraryEvidence?.status || "unknown"}
                   </p>
                 </div>
 
-                <div>
-                  <p className="text-xs text-slate-500">Anchor Album</p>
-                  <p className="text-xl font-black">
-                    {result.topAlbums?.[0]?.album || "-"}
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                    Actual Listening
+                  </p>
+                  <p className="mt-2 text-xl font-black">
+                    {result.activity?.status === "available"
+                      ? `${result.activity.actualPlays ?? 0} plays`
+                      : "Not searched"}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {result.activity?.status || "unknown"}
                   </p>
                 </div>
 
-                <div>
-                  <p className="text-xs text-slate-500">Source</p>
-                  <p className="text-xl font-black">Time Machine</p>
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                    Recent Apple Objects
+                  </p>
+                  <p className="mt-2 text-xl font-black">
+                    {result.recentAppleObservations?.status === "available"
+                      ? `${result.recentAppleObservations.objectCount ?? 0} objects`
+                      : "Not searched"}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {result.recentAppleObservations?.status || "unknown"}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                    Playback Context
+                  </p>
+                  <p className="mt-2 text-xl font-black">
+                    {result.playbackContexts?.status === "available"
+                      ? `${result.playbackContexts.knownEventCount ?? 0} known events`
+                      : "Not searched"}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {result.playbackContexts?.status || "unknown"}
+                  </p>
                 </div>
               </div>
 
-              {result.memoryRead?.length ? (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
-                    Memory Read
-                  </p>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                <h4 className="text-sm font-black">Evidence Coverage</h4>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  {(result.coverage || []).map((item) => (
+                    <div
+                      key={item.sourceId}
+                      className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60"
+                    >
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                        {(item.sourceType || item.sourceId || "source").replace(/_/g, " ")}
+                      </p>
+                      <p className="mt-2 text-sm font-bold text-slate-900 dark:text-slate-100">
+                        {(item.status || "unknown").replace(/_/g, " ")}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {item.recordsMatched == null
+                          ? "Matched records: not applicable"
+                          : `Matched records: ${item.recordsMatched}`}
+                      </p>
+                      {item.limitations?.length ? (
+                        <ul className="mt-2 list-disc pl-5 text-xs text-slate-600 dark:text-slate-300">
+                          {item.limitations.map((limitation) => (
+                            <li key={limitation}>{limitation}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-                  <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
-                    {result.memoryRead.map((item, index) => (
-                      <li key={index}>{item}</li>
+              {result.warnings?.length ? (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
+                  <h4 className="text-sm font-black text-amber-900 dark:text-amber-100">
+                    Coverage Warnings
+                  </h4>
+                  <ul className="mt-2 list-disc pl-5 text-sm text-amber-800 dark:text-amber-200">
+                    {result.warnings.map((warning) => (
+                      <li key={warning.code}>{warning.message}</li>
                     ))}
                   </ul>
                 </div>
               ) : null}
 
-              {result.topArtists?.length ? (
-                <div>
-                  <h4 className="text-sm font-black">Top Artists</h4>
+              {result.facts?.length ? (
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <h4 className="text-sm font-black">Investigation Facts</h4>
                   <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
-                    {result.topArtists.slice(0, 5).map((item) => (
-                      <li key={item.artist}>
-                        <button
-                          type="button"
-                          onClick={() => runArtistSearch(item.artist)}
-                          className="font-bold text-blue-700 hover:underline dark:text-blue-300"
-                        >
-                          {item.artist}
-                        </button>{" "}
-                        ({item.count})
+                    {result.facts.map((fact) => (
+                      <li key={`${fact.factType}-${fact.statement}`}>
+                        {fact.statement}
                       </li>
                     ))}
                   </ul>
                 </div>
               ) : null}
 
-              {result.topAlbums?.length ? (
-                <div>
-                  <h4 className="text-sm font-black">Top Albums in Period</h4>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Source: current query result. Counts are result records.
+              {result.libraryEvidence?.memoryRead?.length ? (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                    Library Evidence Read
                   </p>
                   <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
-                    {result.topAlbums.slice(0, 5).map((item) => (
-                      <li key={item.album}>
-  <span className="font-semibold">
-    {item.identityConfidence === "curated" ? "✓ " : "• "}
-    {item.album}
-  </span>{" "}
-  ({item.plays ?? item.count})
-  {item.identityConfidence === "curated" ? (
-    <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
-      Curated identity
-    </span>
-  ) : null}
-  {item.aliasesMerged > 1 ? (
-    <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
-      {item.aliasesMerged} aliases
-    </span>
-  ) : null}
-</li>
+                    {result.libraryEvidence.memoryRead.map((item, index) => (
+                      <li key={`${index}-${item}`}>{item}</li>
                     ))}
                   </ul>
                 </div>
               ) : null}
 
-            </div>
-          ) : (
+              <div className="grid gap-5 md:grid-cols-2">
+                <div>
+                  <h4 className="text-sm font-black">Top Artists by Library Evidence</h4>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Counts are Library Evidence records, not Actual Plays.
+                  </p>
+                  {result.libraryEvidence?.topArtists?.length ? (
+                    <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
+                      {result.libraryEvidence.topArtists.slice(0, 5).map((item) => (
+                        <li key={item.artist}>
+                          <button
+                            type="button"
+                            onClick={() => runArtistSearch(item.artist)}
+                            className="font-bold text-blue-700 hover:underline dark:text-blue-300"
+                          >
+                            {item.artist}
+                          </button>{" "}
+                          ({item.count} evidence {item.count === 1 ? "record" : "records"})
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-2 text-sm text-slate-500">
+                      No matching artist evidence.
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-black">Top Albums by Library Evidence</h4>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Counts are Library Evidence records, not Actual Plays.
+                  </p>
+                  {result.libraryEvidence?.topAlbums?.length ? (
+                    <ul className="mt-2 list-disc pl-5 text-sm text-slate-600 dark:text-slate-300">
+                      {result.libraryEvidence.topAlbums.slice(0, 5).map((item) => (
+                        <li key={item.album}>
+                          <span className="font-semibold">{item.album}</span>{" "}
+                          ({item.count} evidence {item.count === 1 ? "record" : "records"})
+                          {item.identityConfidence === "curated" ? (
+                            <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+                              Curated identity
+                            </span>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-2 text-sm text-slate-500">
+                      No matching album evidence.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {result.suggestedInvestigations?.length ? (
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <h4 className="text-sm font-black">Suggested Investigations</h4>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {result.suggestedInvestigations.map((item) => (
+                      <button
+                        key={`${item.investigationType}-${item.label}`}
+                        type="button"
+                        onClick={() => {
+                          if (item.investigationType === "artist" && item.parameters?.artist) {
+                            runArtistSearch(item.parameters.artist);
+                          }
+                        }}
+                        className="rounded-full border border-blue-300 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-950/40"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>          ) : (
             <>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
             Investigation dossier assembled from identity resolution, historical evidence, play activity, and live Apple Music bridge facts.
@@ -660,10 +786,10 @@ export default function QueryWorkbench({
                   {evidence.records ?? result.libraryEvidenceRecords ?? result.totalPlays ?? "-"} records
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  {evidence.firstPlayedDate || result.firstPlayedDate || result.firstSeen || "-"} →{" "}
+                  {evidence.firstPlayedDate || result.firstPlayedDate || result.firstSeen || "-"} to{" "}
                   {evidence.latestPlayedDate || result.latestPlayedDate || result.latestSeen || "-"}
                   {(evidence.latestPlayedDate || result.latestPlayedDate) ? (
-                    <span> · {daysSince(evidence.latestPlayedDate || result.latestPlayedDate)}</span>
+                    <span> | {daysSince(evidence.latestPlayedDate || result.latestPlayedDate)}</span>
                   ) : null}
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
@@ -679,7 +805,7 @@ export default function QueryWorkbench({
                   {activity.actualPlays ?? result.actualPlays ?? "-"} actual plays
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  {activity.hoursListened ?? result.hoursListened ?? "-"} hours ·{" "}
+                  {activity.hoursListened ?? result.hoursListened ?? "-"} hours |{" "}
                   {activity.actualSkips ?? result.actualSkips ?? "-"} skips
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
@@ -698,7 +824,7 @@ export default function QueryWorkbench({
                   Additional Apple source objects are retained as provenance only.
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Source: live warehouse · Apple classifications are not relationship labels
+                  Source: live warehouse | Apple classifications are not relationship labels
                 </p>
               </div>
             </div>
@@ -763,7 +889,7 @@ export default function QueryWorkbench({
                 {albums.map((item) => (
                   <li key={item.album}>
   <span className="font-semibold">
-    {item.identityConfidence === "curated" ? "✓ " : "• "}
+    {item.identityConfidence === "curated" ? " " : " "}
     {item.album}
   </span>
   {item.plays ? ` - ${item.plays}` : ""}
