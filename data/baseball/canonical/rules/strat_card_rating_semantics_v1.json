@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "bie.strat-card-rating-semantics.v1",
+  "domain": "Strat-O-Matic Baseball card rating directionality",
+  "seasonAgnostic": true,
+  "purpose": [
+    "Provide one canonical interpretation of Strat card ratings.",
+    "Prevent generated analysis from reversing rating directionality.",
+    "Support card comparison, transaction analysis, scouting, roster construction and validation."
+  ],
+  "numericMetrics": {
+    "pitcher_hold": {
+      "valueFormat": "signed_integer",
+      "comparison": "lower_is_better",
+      "bestDirection": "more_negative",
+      "examples": {
+        "better": "-4",
+        "worse": "+3"
+      },
+      "notes": [
+        "Negative pitcher hold ratings reduce a runner's stealing success range.",
+        "Positive pitcher hold ratings increase the runner's stealing success range.",
+        "A hold rating of +3 is a liability, not a strength."
+      ]
+    },
+    "throwing_arm": {
+      "valueFormat": "signed_integer",
+      "comparison": "lower_is_better",
+      "bestDirection": "more_negative",
+      "examples": {
+        "better": "-3",
+        "worse": "+2"
+      },
+      "notes": [
+        "Applies to catcher and outfielder throwing-arm adjustments.",
+        "Negative values are stronger; positive values are weaker."
+      ]
+    },
+    "running": {
+      "valueFormat": "one_to_upper_bound",
+      "comparison": "higher_is_better",
+      "bestDirection": "higher_upper_bound",
+      "examples": {
+        "better": "1-17",
+        "worse": "1-9"
+      },
+      "notes": [
+        "The upper bound is the runner's speed rating.",
+        "A larger upper bound indicates a faster runner."
+      ]
+    },
+    "defensive_range": {
+      "valueFormat": "integer",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "1",
+        "worse": "4"
+      },
+      "notes": [
+        "Range 1 is best.",
+        "Higher range values are progressively worse."
+      ]
+    },
+    "error_rating": {
+      "valueFormat": "prefixed_integer",
+      "prefix": "e",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "e0",
+        "worse": "e16"
+      }
+    },
+    "catcher_throwing_error": {
+      "valueFormat": "prefixed_integer",
+      "prefix": "T-",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "T-1",
+        "worse": "T-10"
+      },
+      "notes": [
+        "Lower T ratings mean fewer throwing-error chances."
+      ]
+    },
+    "passed_ball": {
+      "valueFormat": "prefixed_integer",
+      "prefix": "pb-",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "pb-1",
+        "worse": "pb-5"
+      },
+      "notes": [
+        "Lower passed-ball ratings are better."
+      ]
+    },
+    "wild_pitch": {
+      "valueFormat": "prefixed_integer",
+      "prefix": "wp-",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "wp-0",
+        "worse": "wp-13"
+      },
+      "notes": [
+        "Lower wild-pitch ratings are better."
+      ]
+    },
+    "balk": {
+      "valueFormat": "prefixed_integer",
+      "prefix": "bk-",
+      "comparison": "lower_is_better",
+      "examples": {
+        "better": "bk-0",
+        "worse": "bk-5"
+      },
+      "notes": [
+        "Lower balk ratings are better."
+      ]
+    }
+  },
+  "ordinalMetrics": {
+    "stealing_class": {
+      "bestToWorst": [
+        "AA",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "notes": [
+        "The stealing class alone is not sufficient for a full stealing evaluation.",
+        "Preserve lead range, pickoff range, safe range with a lead and safe range without a lead.",
+        "Apply pitcher hold and catcher arm adjustments in the correct direction."
+      ]
+    },
+    "bunting": {
+      "bestToWorst": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "hit_and_run": {
+      "bestToWorst": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    }
+  },
+  "requiredRegressionAssertions": [
+    "pitcher hold -4 is better than +3",
+    "throwing arm -3 is better than +2",
+    "running 1-17 is better than 1-9",
+    "range 1 is better than range 4",
+    "e0 is better than e16",
+    "T-1 is better than T-10",
+    "pb-1 is better than pb-5",
+    "wp-0 is better than wp-13",
+    "bk-0 is better than bk-5",
+    "stealing A is better than stealing E",
+    "bunting A is better than bunting D",
+    "hit-and-run A is better than hit-and-run D"
+  ]
+}
