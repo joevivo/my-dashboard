@@ -53,6 +53,12 @@ The Music product should support one continuous analytical path:
 - Music Library becomes an administration and curation surface.
 - It should not remain a primary analytical destination.
 - Embedded Dashboard and Time Machine behavior must migrate before removal.
+- Keep Library search visible.
+- Reduce the hero and header height while keeping album, artist, and show counts compact and inline.
+- Group Export Music Library, Restore JSON, Add Albums CSV, and Download Album Template inside a compact `Manage Library` menu or expandable administration panel.
+- Remove or consolidate the duplicate Music Administration explanation strip.
+- Reclaim vertical space for curated Library content.
+
 
 ### Listening Eras
 
@@ -310,7 +316,13 @@ Reusable components should render:
 
 ## Priority 2 — Music Library Reduction
 
-### P2.3 Inventory embedded functionality
+### P2.3 Compact Library administration and inventory embedded functionality
+
+- Keep Library search visible while reducing the oversized administration area.
+- Replace the exposed export, restore, CSV import, and template-download controls with a compact `Manage Library` menu or expandable administration panel.
+- Reduce the hero and header height and keep album, artist, and show counts inline.
+- Remove or consolidate the duplicate Music Administration explanation strip.
+- Reclaim vertical space for curated Library content.
 
 - Document all valid behavior currently provided by `MusicLibrary.jsx` and
   `MusicTimeMachine`.
