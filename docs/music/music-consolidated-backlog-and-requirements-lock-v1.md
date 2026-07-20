@@ -328,6 +328,17 @@ Reusable components should render:
   `MusicTimeMachine`.
 - Identify the destination surface for each behavior.
 
+### P2.3a Make Library search visible and actionable
+
+- Current `Search Library` behavior filters the lower curated Artists, Albums, Playlists, Shows, and Explore sections.
+- Music Dashboard, Tag Browser, Artist Spotlight, and Recently Added remain independent of the query.
+- When matching curated sections are collapsed, the interface provides little or no visible confirmation that filtering occurred.
+- Add immediate search feedback through a dedicated results panel or an equivalent clearly visible interaction.
+- Include total and per-category match counts, matching records, a clear-query action, and an explicit zero-result state.
+- Preserve Dashboard summary behavior unless a later product decision deliberately makes summaries query-responsive.
+- This is a known non-blocking usability follow-up and must not delay higher-priority Period Intelligence work.
+
+
 ### P2.4 Remove analytical duplication
 
 - Move Period Intelligence fully into Query Workbench.
