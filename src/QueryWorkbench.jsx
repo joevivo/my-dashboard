@@ -604,13 +604,19 @@ export default function QueryWorkbench({
                   Recent Apple Evidence
                 </p>
                 <p className="mt-2 text-lg font-black">
-                  {bridge.live?.recentObjectCount ?? 0} recent objects
+                  {bridge.live?.historicalObservationCount ?? 0} snapshot observations
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  Additional Apple source objects are retained as provenance only.
+                  Across {bridge.live?.historicalSnapshotCount ?? 0} snapshots |{" "}
+                  {bridge.live?.historicalUniqueObjectCount ?? 0} unique objects
+                </p>
+                <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                  Current objects: {bridge.live?.recentObjectCount ?? 0} recent |{" "}
+                  {bridge.live?.heavyRotationCount ?? 0} heavy rotation
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Source: live warehouse | Apple classifications are not relationship labels
+                  Snapshot observations are not confirmed plays. Current objects and historical
+                  snapshot evidence are reported separately.
                 </p>
               </div>
             </div>
