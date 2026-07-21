@@ -5,6 +5,11 @@ from datetime import datetime
 import json
 import sys
 
+from actual_listening.period_intelligence_adapter import (
+    apply_actual_listening_to_result,
+    load_actual_listening,
+)
+
 if len(sys.argv) != 3:
     print("Usage: python library_range_summary.py YYYY-MM-DD YYYY-MM-DD")
     sys.exit(1)
@@ -390,5 +395,16 @@ result = {
         "sourceNote": "Reconstruction from Apple Music Library Tracks Last Played Date.",
     },
 }
+
+actual_listening = load_actual_listening(
+    start_date,
+    end_date,
+)
+
+apply_actual_listening_to_result(
+    result,
+    actual_listening,
+)
+
 
 print(json.dumps(result, indent=2))

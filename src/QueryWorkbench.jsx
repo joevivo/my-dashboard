@@ -188,6 +188,11 @@ export default function QueryWorkbench({
   const bridge = result?.bridge || {};
   const investigation = result?.investigation || {};
 
+  const actualListeningCoverage =
+    result?.coverage?.find(
+      (item) => item.sourceId === "apple_daily_track_summary"
+    ) || null;
+
   const actualSongs = activity?.actualTopSongs || result?.actualTopSongs || [];
   const evidenceSongs = evidence?.topSongs || result?.topSongs || [];
   const albums = evidence?.topAlbums || result?.topAlbums || [];
@@ -534,11 +539,19 @@ export default function QueryWorkbench({
                   </p>
                   <p className="mt-2 text-xl font-black">
                     {result.activity?.status === "available"
-                      ? `${result.activity.actualPlays ?? 0} plays`
+                      ? `${result.activity.actualPlays ?? 0} ${
+                          (result.activity.actualPlays ?? 0) === 1
+                            ? "actual play"
+                            : "actual plays"
+                        }`
+                      : result.activity?.status === "unsupported_for_period"
+                      ? "Outside coverage"
+                      : result.activity?.status === "unavailable"
+                      ? "Unavailable"
                       : "Not searched"}
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    {result.activity?.status || "unknown"}
+                    {(result.activity?.status || "unknown").replace(/_/g, " ")}
                   </p>
                 </div>
 
@@ -638,6 +651,174 @@ export default function QueryWorkbench({
                       <li key={`${index}-${item}`}>{item}</li>
                     ))}
                   </ul>
+                </div>
+              ) : null}
+
+              {result.activity?.status === "available" ? (
+                <div className="rounded-xl border border-blue-200 bg-blue-50/60 p-4 dark:border-blue-900/60 dark:bg-blue-950/20">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <h4 className="text-sm font-black text-blue-950 dark:text-blue-100">
+                        Actual Listening Detail
+                      </h4>
+                      <p className="mt-1 text-xs text-blue-800 dark:text-blue-200">
+                        Confirmed playback outcomes from Apple Music Play Activity.
+                      </p>
+                    </div>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      Artist identity is unavailable in projection v1.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                    <div className="rounded-xl border border-blue-200 bg-white/80 p-3 dark:border-blue-900 dark:bg-slate-950/50">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        Actual Plays
+                      </p>
+                      <p className="mt-1 text-lg font-black">
+                        {result.activity.actualPlays ?? 0}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-blue-200 bg-white/80 p-3 dark:border-blue-900 dark:bg-slate-950/50">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        Forward Skips
+                      </p>
+                      <p className="mt-1 text-lg font-black">
+                        {result.activity.actualSkips ?? 0}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-blue-200 bg-white/80 p-3 dark:border-blue-900 dark:bg-slate-950/50">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        Listening Hours
+                      </p>
+                      <p className="mt-1 text-lg font-black">
+                        {result.activity.listeningHours == null
+                          ? "—"
+                          : result.activity.listeningHours}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-blue-200 bg-white/80 p-3 dark:border-blue-900 dark:bg-slate-950/50">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        Unique Albums
+                      </p>
+                      <p className="mt-1 text-lg font-black">
+                        {result.activity.uniqueAlbumCount == null
+                          ? "—"
+                          : result.activity.uniqueAlbumCount}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-blue-200 bg-white/80 p-3 dark:border-blue-900 dark:bg-slate-950/50">
+                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        Unique Tracks
+                      </p>
+                      <p className="mt-1 text-lg font-black">
+                        {result.activity.uniqueTrackCount == null
+                          ? "—"
+                          : result.activity.uniqueTrackCount}
+                      </p>
+                    </div>
+                  </div>
+
+                  {result.activity.playbackOutcomes ? (
+                    <div className="mt-4">
+                      <h5 className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                        Playback Outcomes
+                      </h5>
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                        <span className="rounded-full border border-blue-200 bg-white px-3 py-1 dark:border-blue-900 dark:bg-slate-950">
+                          Natural completions:{" "}
+                          {result.activity.playbackOutcomes.naturalCompletions ?? 0}
+                        </span>
+                        <span className="rounded-full border border-blue-200 bg-white px-3 py-1 dark:border-blue-900 dark:bg-slate-950">
+                          Recorded forward skips:{" "}
+                          {result.activity.playbackOutcomes.recordedForwardSkips ?? 0}
+                        </span>
+                        <span className="rounded-full border border-blue-200 bg-white px-3 py-1 dark:border-blue-900 dark:bg-slate-950">
+                          Manual track changes:{" "}
+                          {result.activity.playbackOutcomes.manualTrackChanges ?? 0}
+                        </span>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-4 grid gap-5 md:grid-cols-2">
+                    <div>
+                      <h5 className="text-sm font-black">
+                        Top Tracks by Actual Plays
+                      </h5>
+                      {result.activity.topTracks?.length ? (
+                        <ol className="mt-2 list-decimal pl-5 text-sm text-slate-700 dark:text-slate-200">
+                          {result.activity.topTracks.slice(0, 5).map((item, index) => (
+                            <li key={`${item.track || item.song}-${index}`}>
+                              <span className="font-semibold">
+                                {item.track || item.song}
+                              </span>{" "}
+                              ({item.actualPlays ?? item.plays ?? 0}{" "}
+                              {(item.actualPlays ?? item.plays ?? 0) === 1
+                                ? "play"
+                                : "plays"})
+                            </li>
+                          ))}
+                        </ol>
+                      ) : (
+                        <p className="mt-2 text-sm text-slate-500">
+                          No matching Actual Listening tracks.
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <h5 className="text-sm font-black">
+                        Top Albums by Actual Plays
+                      </h5>
+                      {result.activity.topAlbums?.length ? (
+                        <ol className="mt-2 list-decimal pl-5 text-sm text-slate-700 dark:text-slate-200">
+                          {result.activity.topAlbums.slice(0, 5).map((item, index) => (
+                            <li key={`${item.album}-${index}`}>
+                              <span className="font-semibold">
+                                {item.album}
+                              </span>{" "}
+                              ({item.actualPlays ?? item.plays ?? 0}{" "}
+                              {(item.actualPlays ?? item.plays ?? 0) === 1
+                                ? "play"
+                                : "plays"})
+                            </li>
+                          ))}
+                        </ol>
+                      ) : (
+                        <p className="mt-2 text-sm text-slate-500">
+                          No matching Actual Listening albums.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : result.activity?.status === "unsupported_for_period" ? (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
+                  <h4 className="text-sm font-black text-amber-900 dark:text-amber-100">
+                    Actual Listening Coverage
+                  </h4>
+                  <p className="mt-2 text-sm text-amber-800 dark:text-amber-200">
+                    The Actual Listening projection covers{" "}
+                    {actualListeningCoverage?.coverageStart || "an unknown start date"}{" "}
+                    through{" "}
+                    {actualListeningCoverage?.coverageEnd || "an unknown end date"}{" "}
+                    and does not cover the selected period.
+                  </p>
+                </div>
+              ) : result.activity?.status === "unavailable" ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/60 dark:bg-red-950/20">
+                  <h4 className="text-sm font-black text-red-900 dark:text-red-100">
+                    Actual Listening Unavailable
+                  </h4>
+                  <p className="mt-2 text-sm text-red-800 dark:text-red-200">
+                    The governed Actual Listening projection could not be queried.
+                    Review the coverage warning for details.
+                  </p>
                 </div>
               ) : null}
 

@@ -212,6 +212,37 @@ Required sections:
 9. Provenance
 10. Suggested investigations
 
+#### Deferred Period Intelligence presentation polish
+
+The Actual Listening v1 integration passed live and visual acceptance for:
+
+- a covered period with matching Actual Listening;
+- a covered period with zero matching evidence;
+- a period outside Actual Listening projection coverage.
+
+The following non-blocking presentation items remain:
+
+- Consolidate repeated `Period Intelligence` labels in the result header.
+- Render machine-readable statuses such as `not_searched` as human-readable
+  labels everywhere.
+- Rename `Library Evidence Read` to clearer investigation language.
+- Investigate source-title normalization for values such as
+  `20200816 She Want The Sandwich` without silently changing authoritative
+  source data.
+- Use a more compact detail state when all covered-period metrics are zero.
+- Suppress or reword low-value facts such as
+  `0 confirmed plays and 0 recorded forward skips`.
+- Avoid repeating the same source limitation in Evidence Coverage, Coverage
+  Warnings, and a dedicated coverage notice.
+- Do not display the missing-artist limitation when Actual Listening is
+  outside coverage because the projection was not searched.
+- Consider suppressing empty Library Evidence ranking sections when both
+  artist and album rankings are empty.
+- Preserve the distinction between zero evidence, an unsearched source,
+  an unavailable source, and a period outside source coverage.
+
+These items must not delay further multi-source Period Intelligence work.
+
 ### P1.4 Correct period terminology
 
 - Replace unqualified `Tracks Matched` with an evidence-specific label.
