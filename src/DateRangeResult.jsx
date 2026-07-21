@@ -68,7 +68,7 @@ function buildPresentation(result) {
     "the selected period";
 
   const findings = [];
-  let answer = "";
+  let answer;
 
   if (activity.status === "available" && plays > 0) {
     const sentences = [
@@ -262,6 +262,7 @@ function buildPresentation(result) {
 
   if (
     activity.status === "available" &&
+    plays > 0 &&
     activity.uniqueArtistCount == null
   ) {
     confidenceNotes.push(
