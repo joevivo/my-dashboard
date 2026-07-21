@@ -47,6 +47,7 @@ function plural(value, singular, pluralValue = `${singular}s`) {
 function buildPresentation(result) {
   const activity = result?.activity || {};
   const library = result?.libraryEvidence || {};
+  const recent = result?.recentAppleEvidence || {};
   const coverage = Array.isArray(result?.coverage) ? result.coverage : [];
 
   const actualCoverage = coverage.find(
@@ -59,6 +60,17 @@ function buildPresentation(result) {
   const tracks = numeric(activity.uniqueTrackCount);
   const albums = numeric(activity.uniqueAlbumCount);
   const libraryCount = numeric(library.recordCount) || 0;
+  const recentObservationCount =
+    numeric(recent.observationCount) || 0;
+  const recentSnapshotCount =
+    numeric(recent.snapshotCount) || 0;
+  const recentObservedDayCount =
+    numeric(recent.observedDayCount) || 0;
+  const recentUniqueEntityCount =
+    numeric(recent.uniqueEntityCount) || 0;
+  const recentTopItems = Array.isArray(recent.topItems)
+    ? recent.topItems
+    : [];
 
   const period =
     result?.period?.label ||
@@ -178,13 +190,14 @@ function buildPresentation(result) {
     }
   } else if (activity.status === "available" && plays === 0) {
     answer =
+      `Actual Listening was searched for ${period} and returned no confirmed plays.`;
+
+    answer +=
       libraryCount > 0
-        ? `Actual Listening was searched for ${period} and returned no confirmed plays. ` +
-          `Library Evidence returned ${formatNumber(
+        ? ` Library Evidence returned ${formatNumber(
             libraryCount
           )} ${plural(libraryCount, "record")}.`
-        : `Actual Listening and Library Evidence were searched for ${period}, ` +
-          "and neither returned matching evidence.";
+        : " Library Evidence was searched and returned no matching evidence.";
   } else if (activity.status === "unsupported_for_period") {
     const range =
       actualCoverage?.coverageStart && actualCoverage?.coverageEnd
@@ -216,6 +229,21 @@ function buildPresentation(result) {
       "The available evidence could not produce a supported answer.";
   }
 
+  if (
+    recentObservationCount > 0 &&
+    !answer.includes("Recent Apple Objects")
+  ) {
+    answer +=
+      ` Recent Apple Objects returned ${formatNumber(
+        recentObservationCount
+      )} observations across ${formatNumber(
+        recentSnapshotCount
+      )} ${plural(recentSnapshotCount, "snapshot")} on ${formatNumber(
+        recentObservedDayCount
+      )} observed calendar ${plural(recentObservedDayCount, "day")}. ` +
+      "These are snapshot observations, not confirmed plays.";
+  }
+
   if (!findings.length && libraryCount > 0) {
     findings.push(
       `${formatNumber(libraryCount)} Library Evidence ${plural(
@@ -243,6 +271,36 @@ function buildPresentation(result) {
             topAlbum.count,
             "record"
           )}.`
+      );
+    }
+  }
+
+  if (recentObservationCount > 0) {
+    findings.push(
+      `${formatNumber(recentObservationCount)} Recent Apple ` +
+        `${plural(recentObservationCount, "observation")} across ` +
+        `${formatNumber(recentSnapshotCount)} ${plural(
+          recentSnapshotCount,
+          "snapshot"
+        )} on ${formatNumber(recentObservedDayCount)} observed calendar ` +
+        `${plural(recentObservedDayCount, "day")}.`
+    );
+
+    if (recentUniqueEntityCount > 0) {
+      findings.push(
+        `${formatNumber(recentUniqueEntityCount)} unique Apple ` +
+          `${plural(recentUniqueEntityCount, "object")} appeared in ` +
+          "the snapshot evidence."
+      );
+    }
+
+    const leadRecentItem = recentTopItems[0];
+
+    if (leadRecentItem?.name) {
+      findings.push(
+        `${leadRecentItem.name} appeared in ${formatNumber(
+          leadRecentItem.snapshotCount
+        )} ${plural(leadRecentItem.snapshotCount, "snapshot")}.`
       );
     }
   }
@@ -286,6 +344,13 @@ export default function DateRangeResult({ result }) {
   const presentation = buildPresentation(result);
   const activity = result?.activity || {};
   const library = result?.libraryEvidence || {};
+  const recent = result?.recentAppleEvidence || {};
+  const recentTopItems = Array.isArray(recent.topItems)
+    ? recent.topItems
+    : [];
+  const recentObservedDays = Array.isArray(recent.observedDays)
+    ? recent.observedDays
+    : [];
   const coverage = Array.isArray(result?.coverage) ? result.coverage : [];
   const warnings = Array.isArray(result?.warnings) ? result.warnings : [];
   const provenance = Array.isArray(result?.provenance)
@@ -601,6 +666,82 @@ export default function DateRangeResult({ result }) {
               </div>
             ) : null}
           </section>
+
+          {recent.status === "available" ? (
+            <section>
+              <h4 className="text-sm font-black">
+                Recent Apple Evidence
+              </h4>
+
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                These are captured Apple snapshot observations, not confirmed
+                plays or complete listening history.
+              </p>
+
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {[
+                  ["Source Observations", recent.observationCount],
+                  ["Snapshots", recent.snapshotCount],
+                  ["Observed Days", recent.observedDayCount],
+                  ["Unique Objects", recent.uniqueEntityCount],
+                ].map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                      {label}
+                    </p>
+                    <p className="mt-1 text-lg font-black">
+                      {formatNumber(value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {numeric(recent.entitySnapshotObservationCount) !== null ? (
+                <p className="mt-3 text-xs text-slate-500">
+                  Distinct entity-snapshot observations:{" "}
+                  {formatNumber(recent.entitySnapshotObservationCount)}
+                </p>
+              ) : null}
+
+              {recentObservedDays.length ? (
+                <p className="mt-2 text-xs text-slate-500">
+                  Observed calendar days: {recentObservedDays.join(", ")}
+                </p>
+              ) : null}
+
+              {recentTopItems.length ? (
+                <div className="mt-4">
+                  <h5 className="text-sm font-black">
+                    Leading Observed Objects
+                  </h5>
+
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    {recentTopItems.slice(0, 5).map((item, index) => (
+                      <li
+                        key={`${item.entityType}-${item.name}-${index}`}
+                      >
+                        {item.artist ? `${item.artist} — ` : ""}
+                        {item.name} appeared in{" "}
+                        {formatNumber(item.snapshotCount)}{" "}
+                        {plural(item.snapshotCount, "snapshot")} (
+                        {formatNumber(item.observationCount)} source{" "}
+                        {plural(item.observationCount, "observation")})
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {recent.sourceNote ? (
+                <p className="mt-3 text-xs leading-5 text-slate-500">
+                  {recent.sourceNote}
+                </p>
+              ) : null}
+            </section>
+          ) : null}
 
           {facts.length ? (
             <section>

@@ -9,6 +9,10 @@ from actual_listening.period_intelligence_adapter import (
     apply_actual_listening_to_result,
     load_actual_listening,
 )
+from recent_apple.period_intelligence_adapter import (
+    apply_recent_apple_to_result,
+    load_recent_apple,
+)
 
 if len(sys.argv) != 3:
     print("Usage: python library_range_summary.py YYYY-MM-DD YYYY-MM-DD")
@@ -406,5 +410,15 @@ apply_actual_listening_to_result(
     actual_listening,
 )
 
+
+recent_apple = load_recent_apple(
+    start_date,
+    end_date,
+)
+
+apply_recent_apple_to_result(
+    result,
+    recent_apple,
+)
 
 print(json.dumps(result, indent=2))
