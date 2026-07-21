@@ -210,9 +210,9 @@ export default function QueryWorkbench({
     "Elvis Costello & The Attractions",
     "Tom Petty",
     "Robyn Hitchcock",
-    "Hüsker Dü",
-    "Björk",
-    "Sinéad O'Connor",
+    "HÃ¼sker DÃ¼",
+    "BjÃ¶rk",
+    "SinÃ©ad O'Connor",
   ];
 
   return (
@@ -373,7 +373,7 @@ export default function QueryWorkbench({
               "Billie Holiday",
               "Neil Young",
               "Tom Petty",
-              "Hüsker Dü"
+              "HÃ¼sker DÃ¼"
             ].map((artist) => (
               <button
                 key={artist}
@@ -395,8 +395,8 @@ export default function QueryWorkbench({
               "Neil Young & Crazy Horse",
               "Elvis Costello & The Attractions",
               "Robyn Hitchcock",
-              "Björk",
-              "Sinéad O'Connor"
+              "BjÃ¶rk",
+              "SinÃ©ad O'Connor"
             ].map((artist) => (
               <button
                 key={artist}
@@ -522,12 +522,6 @@ export default function QueryWorkbench({
                 </p>
               </div>
 
-              <div>
-                <p className="text-xs text-slate-500">Canonical Key</p>
-                <p className="text-sm font-black text-slate-900 dark:text-slate-100">
-                  {identity.canonicalKey || result.canonicalKey || "-"}
-                </p>
-              </div>
 
             </div>
 

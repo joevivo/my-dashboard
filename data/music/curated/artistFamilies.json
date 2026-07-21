@@ -160,5 +160,15 @@
     ],
     "notes": "Preserve Bob Mould solo, H?sker D?, and Sugar identities as a career relationship.",
     "relationshipType": "career"
+  },
+  {
+    "familyName": "Steve Miller Band Family",
+    "primaryArtist": "Steve Miller Band",
+    "members": [
+      "Steve Miller Band",
+      "Steve Miller"
+    ],
+    "notes": "Preserve Steve Miller Band and Steve Miller identities as one artist family.",
+    "relationshipType": "career"
   }
 ]
