@@ -1,0 +1,151 @@
+{
+  "canonicalTarget": "data/baseball/canonical/strat365/1968/season-ingestion/league-479336/2026-07-24",
+  "counts": {
+    "games": 18,
+    "packageFiles": 21,
+    "payloadFiles": 20
+  },
+  "leagueDate": "2026-07-24",
+  "leagueId": "479336",
+  "overwritePolicy": {
+    "conflictingExistingTarget": "REJECT",
+    "identicalExistingTarget": "ACCEPT_IDEMPOTENTLY"
+  },
+  "payloadFiles": [
+    {
+      "byteCount": 2597,
+      "canonicalPath": "complete-night-validation-v0.json",
+      "sha256": "F29DA9CC6735DB9EFE0EE83B23040834D4F85E8BF4FBE34D31BF3F2C3CBCE11A",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/complete-night-validation-v0.json"
+    },
+    {
+      "byteCount": 81447,
+      "canonicalPath": "games/game-55-v0.json",
+      "sha256": "F2234B2557450C954C185FB033B4820D459EDEBA183464FFE24629749C5184AC",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-55-v0.json"
+    },
+    {
+      "byteCount": 93590,
+      "canonicalPath": "games/game-56-v0.json",
+      "sha256": "34464E579CED0CE9218D57007FA4AC81A72C3F766F8A7A4DDEBDB113963E0527",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-56-v0.json"
+    },
+    {
+      "byteCount": 110956,
+      "canonicalPath": "games/game-57-v0.json",
+      "sha256": "51180031180C8ADE099F624D45FF44C870F44676993BA1EC7AA77563A4003252",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-57-v0.json"
+    },
+    {
+      "byteCount": 91844,
+      "canonicalPath": "games/game-58-v0.json",
+      "sha256": "1555322A5FE59949C40D2D72EC9D177468E1557C4AD66145A88851C43734AF0E",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-58-v0.json"
+    },
+    {
+      "byteCount": 106658,
+      "canonicalPath": "games/game-59-v0.json",
+      "sha256": "4A59EF6CEF00D44E17793614EBA85ABABD6DD25A9ED7E7C0BB8F52D4C6D2752B",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-59-v0.json"
+    },
+    {
+      "byteCount": 101086,
+      "canonicalPath": "games/game-60-v0.json",
+      "sha256": "10E5D9851578DA019D0CB44EB68BA669FAF34DADAE75AF48CB01E76B969D2AC5",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-60-v0.json"
+    },
+    {
+      "byteCount": 82196,
+      "canonicalPath": "games/game-61-v0.json",
+      "sha256": "3CAE8486E23E8BF49040FF28C9CDE85FB840522020B6EA170683BA62895FD420",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-61-v0.json"
+    },
+    {
+      "byteCount": 77233,
+      "canonicalPath": "games/game-62-v0.json",
+      "sha256": "F5D41F89DB109A4E93871E506F3EF580208F1935267AA13A8DE05B8810A83186",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-62-v0.json"
+    },
+    {
+      "byteCount": 91961,
+      "canonicalPath": "games/game-63-v0.json",
+      "sha256": "982D9AC5342B22C32AE3F04EDE606008C729C636D46B1986691480830C3B226C",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-63-v0.json"
+    },
+    {
+      "byteCount": 82136,
+      "canonicalPath": "games/game-64-v0.json",
+      "sha256": "D72D5E840B95463B126CBF7927EFFFF5F302222673F6305C7672F2725BFEB17E",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-64-v0.json"
+    },
+    {
+      "byteCount": 94334,
+      "canonicalPath": "games/game-65-v0.json",
+      "sha256": "4C6D07E274A781610950D6EC4EC2E99427E1B37F08C44FEF39BB29623DE1ED9E",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-65-v0.json"
+    },
+    {
+      "byteCount": 100468,
+      "canonicalPath": "games/game-66-v0.json",
+      "sha256": "013E9DCBABB4E0EB3B2A9734C37387AD791821960EDF26E5285D2A2A1B57806B",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-66-v0.json"
+    },
+    {
+      "byteCount": 88796,
+      "canonicalPath": "games/game-67-v0.json",
+      "sha256": "7B4E3642FBB7E6CFAE8315F0D395EDE68E4A066E4DF5C9375CB8B48D9CB50C45",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-67-v0.json"
+    },
+    {
+      "byteCount": 97491,
+      "canonicalPath": "games/game-68-v0.json",
+      "sha256": "20D3ECCB9DF87CE01F50D02948144741187EC257A214A697B082404C7338EDF2",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-68-v0.json"
+    },
+    {
+      "byteCount": 92770,
+      "canonicalPath": "games/game-69-v0.json",
+      "sha256": "CADA2F0D2718C9887B74C82B7847F23DC85E1A7F860FC37DF83561ED7B99AA99",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-69-v0.json"
+    },
+    {
+      "byteCount": 95381,
+      "canonicalPath": "games/game-70-v0.json",
+      "sha256": "F5A8198308DB9EC551D7F7018ED562DF8DA382E102F9DA21CE9441851AC245B4",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-70-v0.json"
+    },
+    {
+      "byteCount": 81926,
+      "canonicalPath": "games/game-71-v0.json",
+      "sha256": "893A8A216A007B79D65778D5EEB0354B508D3E7B967F37B1FBFB61438C83D07E",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-71-v0.json"
+    },
+    {
+      "byteCount": 84308,
+      "canonicalPath": "games/game-72-v0.json",
+      "sha256": "241D8B1C1D762395FF30D0FDD6BEFE9CCF79E5842FED9A4BE4795168E5B638A6",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-72-v0.json"
+    },
+    {
+      "byteCount": 12312,
+      "canonicalPath": "league-night-v0.json",
+      "sha256": "02062F9888EFA342C101768EAEBF3605826F8BAA155BF5206EB2C70C3E0CE322",
+      "sourcePath": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/league-night-v0.json"
+    }
+  ],
+  "promotionAuthority": {
+    "decision": "AUTHORIZED_FOR_ATOMIC_CANONICAL_PROMOTION",
+    "requiresAtomicWrite": true,
+    "validationReport": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/complete-night-validation-v0.json",
+    "validationReportSha256": "F29DA9CC6735DB9EFE0EE83B23040834D4F85E8BF4FBE34D31BF3F2C3CBCE11A"
+  },
+  "promotionStatus": "PROMOTED",
+  "schemaVersion": "strat365-canonical-league-night-manifest-v0",
+  "season": "1968",
+  "sourceAuthority": {
+    "gameSetSignature": "E090883F19010B54D1BF4FE7973E7CBE5F5E0AABF65C65F96B45EDEAEFF23358",
+    "leagueNightSha256": "02062F9888EFA342C101768EAEBF3605826F8BAA155BF5206EB2C70C3E0CE322",
+    "parserSha256": "C3316D46B36FD2BFD5773DF24AD4CE21A355E5104ED8BD07528EA78DD787AD05",
+    "validatorSha256": "6E3DA98B2D1E53ECB0BE316583609138C27A19F073344A3C20C11C91C0A8ADAF"
+  }
+}

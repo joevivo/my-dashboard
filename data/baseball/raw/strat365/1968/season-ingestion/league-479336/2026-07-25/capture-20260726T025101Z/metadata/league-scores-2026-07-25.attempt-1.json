@@ -1,0 +1,43 @@
+{
+    "schemaVersion": "strat365-raw-response-metadata-v0",
+    "sourceFamily": "leagueScores",
+    "sourceRouteClassification": "leagueScoresDated",
+    "requestedUrl": "https://365.strat-o-matic.com/league/scores/479336/2026-07-25",
+    "effectiveUrl": "https://365.strat-o-matic.com/league/scores/479336/2026-07-25",
+    "leagueId": "479336",
+    "leagueDate": "2026-07-25",
+    "teamId": null,
+    "gameId": null,
+    "attemptNumber": 1,
+    "capturedAtUtc": "2026-07-26T03:02:43.672253Z",
+    "httpStatus": 200,
+    "contentType": "text/html; charset=UTF-8",
+    "byteCount": 224020,
+    "sha256": "080F380D13D98CB873E47DCBA01832C579E1B83385B8C650002116D83CBE3BB9",
+    "rawResponsePath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-25/capture-20260726T025101Z/responses/league/league-scores-2026-07-25.html",
+    "responseHeadersPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-25/capture-20260726T025101Z/responses/league/league-scores-2026-07-25.headers.txt",
+    "transportResult": "PASS",
+    "validation": {
+        "helperExitCode": 0,
+        "helperByteCount": "224020",
+        "helperSha256": "080F380D13D98CB873E47DCBA01832C579E1B83385B8C650002116D83CBE3BB9",
+        "rawBodyPresent": true,
+        "responseHeadersPresent": true,
+        "rawBodyHashMatch": true,
+        "gameLinkCount": 18,
+        "uniqueGameCount": 18,
+        "expectedGameCount": 18,
+        "duplicateGameLinkCount": 0,
+        "finalIndicatorCount": 18,
+        "expectedFinalIndicatorCount": 18,
+        "finalIndicatorMethod": "game_result_hidden",
+        "sourceValidation": "PASS",
+        "nightCandidateSignal": "GAME_AND_FINAL_COUNTS_PASS_SERIES_PENDING"
+    },
+    "provenance": {
+        "runManifest": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-25/capture-20260726T025101Z/run-manifest.json",
+        "runSpec": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-25/capture-20260726T025101Z/run-spec.json",
+        "transportHelper": "baseball/harvester/invoke_strat365_raw_get_v0.ps1",
+        "governingContract": "docs/baseball/strat365-league-season-ingestion-source-contract-v0.md"
+    }
+}

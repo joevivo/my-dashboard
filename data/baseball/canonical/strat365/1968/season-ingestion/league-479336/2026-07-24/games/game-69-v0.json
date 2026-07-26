@@ -1,0 +1,4266 @@
+{
+  "awayHitters": [
+    {
+      "atBats": 2,
+      "displayName": "Brock, Lou",
+      "displayedBattingAverage": ".250",
+      "hits": 0,
+      "position": "LF",
+      "rawCells": [
+        "Brock, Lou",
+        "LF",
+        "2",
+        "2",
+        "0",
+        "0",
+        ".250"
+      ],
+      "rawIdentity": "Brock, Lou",
+      "runs": 2,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 2,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 5,
+      "displayName": "Flood, Curt",
+      "displayedBattingAverage": ".208",
+      "hits": 1,
+      "position": "CF",
+      "rawCells": [
+        "Flood, Curt",
+        "CF",
+        "5",
+        "0",
+        "1",
+        "0",
+        ".208"
+      ],
+      "rawIdentity": "Flood, Curt",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 3,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Holman, Gary",
+      "displayedBattingAverage": ".321",
+      "hits": 2,
+      "position": "1B",
+      "rawCells": [
+        "Holman, Gary",
+        "1B",
+        "4",
+        "0",
+        "2",
+        "2",
+        ".321"
+      ],
+      "rawIdentity": "Holman, Gary",
+      "runs": 0,
+      "runsBattedIn": 2,
+      "sourceRowIndex": 4,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Shannon, Mike",
+      "displayedBattingAverage": ".196",
+      "hits": 0,
+      "position": "3B",
+      "rawCells": [
+        "Shannon, Mike",
+        "3B",
+        "4",
+        "0",
+        "0",
+        "0",
+        ".196"
+      ],
+      "rawIdentity": "Shannon, Mike",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 5,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Maris, Roger",
+      "displayedBattingAverage": ".244",
+      "hits": 0,
+      "position": "RF",
+      "rawCells": [
+        "Maris, Roger",
+        "RF",
+        "4",
+        "0",
+        "0",
+        "0",
+        ".244"
+      ],
+      "rawIdentity": "Maris, Roger",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 6,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Azcue, Joe",
+      "displayedBattingAverage": ".244",
+      "hits": 1,
+      "position": "C",
+      "rawCells": [
+        "Azcue, Joe",
+        "C",
+        "4",
+        "0",
+        "1",
+        "0",
+        ".244"
+      ],
+      "rawIdentity": "Azcue, Joe",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 7,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 3,
+      "displayName": "Knoop, Bobby",
+      "displayedBattingAverage": ".273",
+      "hits": 1,
+      "position": "2B",
+      "rawCells": [
+        "Knoop, Bobby",
+        "2B",
+        "3",
+        "0",
+        "1",
+        "0",
+        ".273"
+      ],
+      "rawIdentity": "Knoop, Bobby",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 8,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 1,
+      "displayName": "Cepeda, Orlando",
+      "displayedBattingAverage": ".087",
+      "hits": 0,
+      "position": "PH",
+      "rawCells": [
+        "B - Cepeda, Orlando",
+        "PH",
+        "1",
+        "0",
+        "0",
+        "0",
+        ".087"
+      ],
+      "rawIdentity": "B - Cepeda, Orlando",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 9,
+      "substitutionPrefix": "B"
+    },
+    {
+      "atBats": 0,
+      "displayName": "Schofield, Dick",
+      "displayedBattingAverage": ".222",
+      "hits": 0,
+      "position": "2B",
+      "rawCells": [
+        "C - Schofield, Dick",
+        "2B",
+        "0",
+        "0",
+        "0",
+        "0",
+        ".222"
+      ],
+      "rawIdentity": "C - Schofield, Dick",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 10,
+      "substitutionPrefix": "C"
+    },
+    {
+      "atBats": 2,
+      "displayName": "Maxvill, Dal",
+      "displayedBattingAverage": ".125",
+      "hits": 0,
+      "position": "SS",
+      "rawCells": [
+        "Maxvill, Dal",
+        "SS",
+        "2",
+        "0",
+        "0",
+        "0",
+        ".125"
+      ],
+      "rawIdentity": "Maxvill, Dal",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 11,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 1,
+      "displayName": "Kirkpatrick, Ed",
+      "displayedBattingAverage": ".500",
+      "hits": 1,
+      "position": "PH",
+      "rawCells": [
+        "E - Kirkpatrick, Ed",
+        "PH",
+        "1",
+        "1",
+        "1",
+        "0",
+        ".500"
+      ],
+      "rawIdentity": "E - Kirkpatrick, Ed",
+      "runs": 1,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 12,
+      "substitutionPrefix": "E"
+    },
+    {
+      "atBats": 2,
+      "displayName": "Reed, Ron",
+      "displayedBattingAverage": ".200",
+      "hits": 1,
+      "position": "P",
+      "rawCells": [
+        "Reed, Ron",
+        "P",
+        "2",
+        "1",
+        "1",
+        "0",
+        ".200"
+      ],
+      "rawIdentity": "Reed, Ron",
+      "runs": 1,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 13,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 1,
+      "displayName": "Unser, Del",
+      "displayedBattingAverage": ".000",
+      "hits": 0,
+      "position": "PH",
+      "rawCells": [
+        "A - Unser, Del",
+        "PH",
+        "1",
+        "0",
+        "0",
+        "0",
+        ".000"
+      ],
+      "rawIdentity": "A - Unser, Del",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 14,
+      "substitutionPrefix": "A"
+    },
+    {
+      "atBats": 0,
+      "displayName": "Abernathy, Ted",
+      "displayedBattingAverage": "----",
+      "hits": 0,
+      "position": "P",
+      "rawCells": [
+        "Abernathy, Ted",
+        "P",
+        "0",
+        "0",
+        "0",
+        "0",
+        "----"
+      ],
+      "rawIdentity": "Abernathy, Ted",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 15,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 1,
+      "displayName": "Gagliano, Phil",
+      "displayedBattingAverage": ".286",
+      "hits": 0,
+      "position": "PH",
+      "rawCells": [
+        "F - Gagliano, Phil",
+        "PH",
+        "1",
+        "0",
+        "0",
+        "1",
+        ".286"
+      ],
+      "rawIdentity": "F - Gagliano, Phil",
+      "runs": 0,
+      "runsBattedIn": 1,
+      "sourceRowIndex": 16,
+      "substitutionPrefix": "F"
+    }
+  ],
+  "awayPitchers": [
+    {
+      "decision": "L, 1-1",
+      "displayName": "Reed, Ron",
+      "displayedEarnedRunAverage": "2.45",
+      "earnedRuns": 3,
+      "hitsAllowed": 6,
+      "homeRunsAllowed": 0,
+      "inningsPitched": "6",
+      "inningsPitchedOuts": 18,
+      "pitchCount": 99,
+      "rawCells": [
+        "Reed, Ron",
+        "L, 1-1",
+        "6",
+        "6",
+        "4",
+        "3",
+        "3",
+        "2",
+        "0",
+        "99",
+        "2.45"
+      ],
+      "rawIdentity": "Reed, Ron",
+      "runsAllowed": 4,
+      "sourceRowIndex": 2,
+      "strikeouts": 2,
+      "substitutionPrefix": null,
+      "walks": 3
+    },
+    {
+      "decision": null,
+      "displayName": "Abernathy, Ted",
+      "displayedEarnedRunAverage": "2.08",
+      "earnedRuns": 1,
+      "hitsAllowed": 2,
+      "homeRunsAllowed": 1,
+      "inningsPitched": "2",
+      "inningsPitchedOuts": 6,
+      "pitchCount": 36,
+      "rawCells": [
+        "Abernathy, Ted",
+        "",
+        "2",
+        "2",
+        "1",
+        "1",
+        "1",
+        "0",
+        "1",
+        "36",
+        "2.08"
+      ],
+      "rawIdentity": "Abernathy, Ted",
+      "runsAllowed": 1,
+      "sourceRowIndex": 3,
+      "strikeouts": 0,
+      "substitutionPrefix": null,
+      "walks": 1
+    }
+  ],
+  "awayTeam": {
+    "errors": 1,
+    "hits": 7,
+    "inningRuns": [
+      0,
+      0,
+      1,
+      0,
+      2,
+      0,
+      0,
+      0,
+      1
+    ],
+    "name": "Busch League Arkinals™",
+    "rawCells": [
+      "Arkinals™",
+      "0",
+      "0",
+      "1",
+      "0",
+      "2",
+      "0",
+      "0",
+      "0",
+      "1",
+      "4 ?",
+      "7 ?",
+      "1 ?"
+    ],
+    "rawInningCells": [
+      "0",
+      "0",
+      "1",
+      "0",
+      "2",
+      "0",
+      "0",
+      "0",
+      "1"
+    ],
+    "rawTotalsCells": [
+      "4 ?",
+      "7 ?",
+      "1 ?"
+    ],
+    "runs": 4,
+    "shortLabel": "Arkinals™"
+  },
+  "decisionSummaryText": "W: Krausse, L. (1-1) L: Reed, R. (1-1) S: Ellis, D. (1) HR: B.Bonds(1st)",
+  "extraInnings": false,
+  "gameId": 69,
+  "homeHitters": [
+    {
+      "atBats": 3,
+      "displayName": "Bonds, Bobby",
+      "displayedBattingAverage": ".304",
+      "hits": 1,
+      "position": "CF",
+      "rawCells": [
+        "Bonds, Bobby",
+        "CF",
+        "3",
+        "2",
+        "1",
+        "1",
+        ".304"
+      ],
+      "rawIdentity": "Bonds, Bobby",
+      "runs": 2,
+      "runsBattedIn": 1,
+      "sourceRowIndex": 2,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 0,
+      "displayName": "Agee, Tommie",
+      "displayedBattingAverage": ".308",
+      "hits": 0,
+      "position": "CF",
+      "rawCells": [
+        "D - Agee, Tommie",
+        "CF",
+        "0",
+        "0",
+        "0",
+        "0",
+        ".308"
+      ],
+      "rawIdentity": "D - Agee, Tommie",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 3,
+      "substitutionPrefix": "D"
+    },
+    {
+      "atBats": 4,
+      "displayName": "Wills, Maury",
+      "displayedBattingAverage": ".298",
+      "hits": 2,
+      "position": "3B",
+      "rawCells": [
+        "Wills, Maury",
+        "3B",
+        "4",
+        "1",
+        "2",
+        "0",
+        ".298"
+      ],
+      "rawIdentity": "Wills, Maury",
+      "runs": 1,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 4,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 1,
+      "displayName": "Staub, Rusty",
+      "displayedBattingAverage": ".213",
+      "hits": 0,
+      "position": "1B",
+      "rawCells": [
+        "Staub, Rusty",
+        "1B",
+        "1",
+        "0",
+        "0",
+        "0",
+        ".213"
+      ],
+      "rawIdentity": "Staub, Rusty",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 5,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Mota, Manny",
+      "displayedBattingAverage": ".242",
+      "hits": 1,
+      "position": "LF",
+      "rawCells": [
+        "Mota, Manny",
+        "LF",
+        "4",
+        "0",
+        "1",
+        "2",
+        ".242"
+      ],
+      "rawIdentity": "Mota, Manny",
+      "runs": 0,
+      "runsBattedIn": 2,
+      "sourceRowIndex": 6,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 3,
+      "displayName": "Kaline, Al",
+      "displayedBattingAverage": ".159",
+      "hits": 0,
+      "position": "RF",
+      "rawCells": [
+        "Kaline, Al",
+        "RF",
+        "3",
+        "1",
+        "0",
+        "0",
+        ".159"
+      ],
+      "rawIdentity": "Kaline, Al",
+      "runs": 1,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 7,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Cardenas, Leo",
+      "displayedBattingAverage": ".283",
+      "hits": 1,
+      "position": "SS",
+      "rawCells": [
+        "Cardenas, Leo",
+        "SS",
+        "4",
+        "1",
+        "1",
+        "0",
+        ".283"
+      ],
+      "rawIdentity": "Cardenas, Leo",
+      "runs": 1,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 8,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 3,
+      "displayName": "Hunt, Ron",
+      "displayedBattingAverage": ".244",
+      "hits": 2,
+      "position": "2B",
+      "rawCells": [
+        "Hunt, Ron",
+        "2B",
+        "3",
+        "0",
+        "2",
+        "1",
+        ".244"
+      ],
+      "rawIdentity": "Hunt, Ron",
+      "runs": 0,
+      "runsBattedIn": 1,
+      "sourceRowIndex": 9,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Sims, Duke",
+      "displayedBattingAverage": ".289",
+      "hits": 0,
+      "position": "C",
+      "rawCells": [
+        "Sims, Duke",
+        "C",
+        "4",
+        "0",
+        "0",
+        "1",
+        ".289"
+      ],
+      "rawIdentity": "Sims, Duke",
+      "runs": 0,
+      "runsBattedIn": 1,
+      "sourceRowIndex": 10,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 4,
+      "displayName": "Krausse, Lew",
+      "displayedBattingAverage": ".333",
+      "hits": 1,
+      "position": "P",
+      "rawCells": [
+        "Krausse, Lew",
+        "P",
+        "4",
+        "0",
+        "1",
+        "0",
+        ".333"
+      ],
+      "rawIdentity": "Krausse, Lew",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 11,
+      "substitutionPrefix": null
+    },
+    {
+      "atBats": 0,
+      "displayName": "Ellis, Dock",
+      "displayedBattingAverage": "----",
+      "hits": 0,
+      "position": "P",
+      "rawCells": [
+        "Ellis, Dock",
+        "P",
+        "0",
+        "0",
+        "0",
+        "0",
+        "----"
+      ],
+      "rawIdentity": "Ellis, Dock",
+      "runs": 0,
+      "runsBattedIn": 0,
+      "sourceRowIndex": 12,
+      "substitutionPrefix": null
+    }
+  ],
+  "homePitchers": [
+    {
+      "decision": "W, 1-1",
+      "displayName": "Krausse, Lew",
+      "displayedEarnedRunAverage": "4.40",
+      "earnedRuns": 3,
+      "hitsAllowed": 7,
+      "homeRunsAllowed": 0,
+      "inningsPitched": "8",
+      "inningsPitchedOuts": 24,
+      "pitchCount": 124,
+      "rawCells": [
+        "Krausse, Lew",
+        "W, 1-1",
+        "8",
+        "7",
+        "4",
+        "3",
+        "4",
+        "1",
+        "0",
+        "124",
+        "4.40"
+      ],
+      "rawIdentity": "Krausse, Lew",
+      "runsAllowed": 4,
+      "sourceRowIndex": 2,
+      "strikeouts": 1,
+      "substitutionPrefix": null,
+      "walks": 4
+    },
+    {
+      "decision": "S, 1",
+      "displayName": "Ellis, Dock",
+      "displayedEarnedRunAverage": "0.00",
+      "earnedRuns": 0,
+      "hitsAllowed": 0,
+      "homeRunsAllowed": 0,
+      "inningsPitched": "1",
+      "inningsPitchedOuts": 3,
+      "pitchCount": 18,
+      "rawCells": [
+        "Ellis, Dock",
+        "S, 1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "18",
+        "0.00"
+      ],
+      "rawIdentity": "Ellis, Dock",
+      "runsAllowed": 0,
+      "sourceRowIndex": 3,
+      "strikeouts": 0,
+      "substitutionPrefix": null,
+      "walks": 1
+    }
+  ],
+  "homeTeam": {
+    "errors": 0,
+    "hits": 8,
+    "inningRuns": [
+      2,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      null
+    ],
+    "name": "Norwich Not Flatlanders",
+    "rawCells": [
+      "Not Flatlanders",
+      "2",
+      "0",
+      "0",
+      "1",
+      "0",
+      "1",
+      "1",
+      "0",
+      "-",
+      "5 ?",
+      "8 ?",
+      "0 ?"
+    ],
+    "rawInningCells": [
+      "2",
+      "0",
+      "0",
+      "1",
+      "0",
+      "1",
+      "1",
+      "0",
+      "-"
+    ],
+    "rawTotalsCells": [
+      "5 ?",
+      "8 ?",
+      "0 ?"
+    ],
+    "runs": 5,
+    "shortLabel": "Not Flatlanders"
+  },
+  "innings": 9,
+  "leagueDate": "2026-07-24",
+  "leagueId": "479336",
+  "leagueInventory": {
+    "blockIndex": 6,
+    "gameId": 69,
+    "resultText": "Norwich Not Flatlanders defeat Busch League Arkinals™ 5-4 W: Krausse, L. (1-1) L: Reed, R. (1-1) S: Ellis, D. (1) HR: B.Bonds(1st)",
+    "seriesGameLabel": "Game 12",
+    "seriesGameNumber": 3,
+    "seriesIndex": 2
+  },
+  "loserTeam": "Busch League Arkinals™",
+  "playByPlay": {
+    "boundaryHeaderCount": 2,
+    "controlCount": 8,
+    "decisionSummaryText": "W: Krausse, L. (1-1) L: Reed, R. (1-1) S: Ellis, D. (1) HR: B.Bonds(1st)",
+    "eventCount": 83,
+    "expectedInnings": 9,
+    "expectedInningsMatch": true,
+    "finalHalfInning": {
+      "half": "TOP",
+      "inning": 9
+    },
+    "finalRows": [
+      [
+        "FINAL",
+        "1 2 3 4 5 6 7 8 9 R",
+        "H",
+        "E"
+      ],
+      [
+        "Arkinals™",
+        "0",
+        "0",
+        "1",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "1",
+        "4 ?",
+        "7 ?",
+        "1 ?"
+      ],
+      [
+        "Not Flatlanders",
+        "2",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "1",
+        "0",
+        "-",
+        "5 ?",
+        "8 ?",
+        "0 ?"
+      ]
+    ],
+    "header": [
+      "O,B",
+      "Batter",
+      "Roll",
+      "Result",
+      "Baserunners",
+      "Misc.",
+      "PCF"
+    ],
+    "inningMarkerCount": 17,
+    "maximumInning": 9,
+    "orderedRecordCount": 108,
+    "orderedRecords": [
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 1,
+        "rawText": "TOP OF INNING 1",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 1,
+        "sourceRowIndex": 2
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Brock, Lou",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Brock, Lou",
+          "5-9",
+          "Strike Out",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Strike Out",
+        "roll": "5-9",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 2,
+        "sourceRowIndex": 3
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Flood, Curt",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Flood, Curt",
+          "2-8",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "2-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 3,
+        "sourceRowIndex": 4
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Holman, Gary",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Holman, Gary",
+          "3-10",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "3-10",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 4,
+        "sourceRowIndex": 5
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Shannon, Mike",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Shannon, Mike",
+          "1-8",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "1-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 5,
+        "sourceRowIndex": 6
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "rawText": "BOTTOM OF INNING 1",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 6,
+        "sourceRowIndex": 7
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Bonds, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Bonds, Bobby",
+          "5-2",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "5-2",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 7,
+        "sourceRowIndex": 8
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 8,
+        "sourceRowIndex": 9
+      },
+      {
+        "baserunners": "2-3 b-1",
+        "batter": "Wills, Maury",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "0 2",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 2",
+          "Wills, Maury",
+          "3-5",
+          "Single (CF)",
+          "2-3 b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "3-5",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 9,
+        "sourceRowIndex": 10
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 10,
+        "sourceRowIndex": 11
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Staub, Rusty",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": "bpSI 1",
+        "occupiedBasesBefore": [
+          2,
+          3
+        ],
+        "outsBasesBefore": "0 23",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 23",
+          "Staub, Rusty",
+          "3-4",
+          "Line Out (2B)",
+          "b-0",
+          "bpSI 1",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Line Out (2B)",
+        "roll": "3-4",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 11,
+        "sourceRowIndex": 12
+      },
+      {
+        "baserunners": "3-H 2-H b-1",
+        "batter": "Mota, Manny",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2,
+          3
+        ],
+        "outsBasesBefore": "1 23",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 23",
+          "Mota, Manny",
+          "1-8",
+          "Single (CF)",
+          "3-H 2-H b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "1-8",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 12,
+        "sourceRowIndex": 13
+      },
+      {
+        "baserunners": "1-o b-0",
+        "batter": "Kaline, Al",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 1,
+        "miscellaneous": "gb(2B)x",
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "1 1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1",
+          "Kaline, Al",
+          "6-7",
+          "Ground Out (2B) Double Play",
+          "1-o b-0",
+          "gb(2B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (2B) Double Play",
+        "roll": "6-7",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 13,
+        "sourceRowIndex": 14
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "rawText": "TOP OF INNING 2",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 14,
+        "sourceRowIndex": 15
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maris, Roger",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Maris, Roger",
+          "2-4",
+          "Ground Out (P)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (P)",
+        "roll": "2-4",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 15,
+        "sourceRowIndex": 16
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Azcue, Joe",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Azcue, Joe",
+          "4-10",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "4-10",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 16,
+        "sourceRowIndex": 17
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Knoop, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "miscellaneous": "gb(1B)x",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Knoop, Bobby",
+          "6-12",
+          "Single (1B)",
+          "b-1",
+          "gb(1B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (1B)",
+        "roll": "6-12",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 17,
+        "sourceRowIndex": 18
+      },
+      {
+        "baserunners": "1-2 b-1",
+        "batter": "Maxvill, Dal",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Maxvill, Dal",
+          "4-12",
+          "Walk",
+          "1-2 b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "4-12",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 18,
+        "sourceRowIndex": 19
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Reed, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1,
+          2
+        ],
+        "outsBasesBefore": "2 12",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 12",
+          "Reed, Ron",
+          "3-6",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "3-6",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 19,
+        "sourceRowIndex": 20
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 2,
+        "rawText": "BOTTOM OF INNING 2",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 20,
+        "sourceRowIndex": 21
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Cardenas, Leo",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Cardenas, Leo",
+          "1-10",
+          "Ground Out (P)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (P)",
+        "roll": "1-10",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 21,
+        "sourceRowIndex": 22
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Hunt, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Hunt, Ron",
+          "5-5",
+          "Fly Out (RF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (RF)",
+        "roll": "5-5",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 22,
+        "sourceRowIndex": 23
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Sims, Duke",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 2,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Sims, Duke",
+          "2-7",
+          "Ground Out (1B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (1B)",
+        "roll": "2-7",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 23,
+        "sourceRowIndex": 24
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "rawText": "TOP OF INNING 3",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 24,
+        "sourceRowIndex": 25
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Brock, Lou",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Brock, Lou",
+          "1-8",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "1-8",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 25,
+        "sourceRowIndex": 26
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Flood, Curt",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "0 1",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 1",
+          "Flood, Curt",
+          "4-9",
+          "Fly Out (CF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "4-9",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 26,
+        "sourceRowIndex": 27
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 27,
+        "sourceRowIndex": 28
+      },
+      {
+        "baserunners": "2-H b-2",
+        "batter": "Holman, Gary",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "1 2",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 2",
+          "Holman, Gary",
+          "1-5",
+          "Double (LF)",
+          "2-H b-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Double (LF)",
+        "roll": "1-5",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 28,
+        "sourceRowIndex": 29
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Shannon, Mike",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "1 2",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 2",
+          "Shannon, Mike",
+          "1-6",
+          "Fly Out (CF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "1-6",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 29,
+        "sourceRowIndex": 30
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maris, Roger",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 3,
+        "miscellaneous": "gb(1B)x",
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "2 2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 2",
+          "Maris, Roger",
+          "5-12",
+          "Ground Out (1B)",
+          "b-0",
+          "gb(1B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (1B)",
+        "roll": "5-12",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 30,
+        "sourceRowIndex": 31
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "rawText": "BOTTOM OF INNING 3",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 31,
+        "sourceRowIndex": 32
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Krausse, Lew",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Krausse, Lew",
+          "1-3",
+          "Ground Out (2B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (2B)",
+        "roll": "1-3",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 32,
+        "sourceRowIndex": 33
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Bonds, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Bonds, Bobby",
+          "6-8",
+          "Fly Out (LF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (LF)",
+        "roll": "6-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 33,
+        "sourceRowIndex": 34
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Wills, Maury",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Wills, Maury",
+          "2-5",
+          "Single (CF)",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "2-5",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 34,
+        "sourceRowIndex": 35
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 35,
+        "sourceRowIndex": 36
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Staub, Rusty",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "2 2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 2",
+          "Staub, Rusty",
+          "",
+          "Int Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Int Walk",
+        "roll": null,
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 36,
+        "sourceRowIndex": 37
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Mota, Manny",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 3,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1,
+          2
+        ],
+        "outsBasesBefore": "2 12",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 12",
+          "Mota, Manny",
+          "2-4",
+          "Ground Out (2B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (2B)",
+        "roll": "2-4",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 37,
+        "sourceRowIndex": 38
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 4,
+        "rawText": "TOP OF INNING 4",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 38,
+        "sourceRowIndex": 39
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Azcue, Joe",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Azcue, Joe",
+          "4-8",
+          "Pop Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Pop Out (SS)",
+        "roll": "4-8",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 39,
+        "sourceRowIndex": 40
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Knoop, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Knoop, Bobby",
+          "1-8",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "1-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 40,
+        "sourceRowIndex": 41
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maxvill, Dal",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Maxvill, Dal",
+          "1-12",
+          "Pop Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Pop Out (SS)",
+        "roll": "1-12",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 41,
+        "sourceRowIndex": 42
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "rawText": "BOTTOM OF INNING 4",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 42,
+        "sourceRowIndex": 43
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Kaline, Al",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Kaline, Al",
+          "2-3",
+          "HBP",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "HBP",
+        "roll": "2-3",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 43,
+        "sourceRowIndex": 44
+      },
+      {
+        "baserunners": "1-3",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "SB & Error - C",
+          "1-3",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "SB & Error - C",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 44,
+        "sourceRowIndex": 45
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Cardenas, Leo",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          3
+        ],
+        "outsBasesBefore": "0 3",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 3",
+          "Cardenas, Leo",
+          "1-7",
+          "Ground Out (3B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (3B)",
+        "roll": "1-7",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 45,
+        "sourceRowIndex": 46
+      },
+      {
+        "baserunners": "3-H b-0",
+        "batter": "Hunt, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          3
+        ],
+        "outsBasesBefore": "1 3",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 3",
+          "Hunt, Ron",
+          "2-7",
+          "Sac Fly (CF)",
+          "3-H b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Sac Fly (CF)",
+        "roll": "2-7",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 46,
+        "sourceRowIndex": 47
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Sims, Duke",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 4,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Sims, Duke",
+          "3-4",
+          "Strike Out",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Strike Out",
+        "roll": "3-4",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 47,
+        "sourceRowIndex": 48
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "rawText": "TOP OF INNING 5",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 48,
+        "sourceRowIndex": 49
+      },
+      {
+        "baserunners": "b-2",
+        "batter": "Reed, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Reed, Ron",
+          "6-9",
+          "Double (CF)",
+          "b-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Double (CF)",
+        "roll": "6-9",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 49,
+        "sourceRowIndex": 50
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Brock, Lou",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "0 2",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 2",
+          "Brock, Lou",
+          "1-8",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "1-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 50,
+        "sourceRowIndex": 51
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Flood, Curt",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1,
+          2
+        ],
+        "outsBasesBefore": "0 12",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 12",
+          "Flood, Curt",
+          "5-5",
+          "Line Out (2B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Line Out (2B)",
+        "roll": "5-5",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 51,
+        "sourceRowIndex": 52
+      },
+      {
+        "baserunners": "2-H 1-3 b-1",
+        "batter": "Holman, Gary",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1,
+          2
+        ],
+        "outsBasesBefore": "1 12",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 12",
+          "Holman, Gary",
+          "1-8",
+          "Single (CF)",
+          "2-H 1-3 b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "1-8",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 52,
+        "sourceRowIndex": 53
+      },
+      {
+        "baserunners": "3-H 1-2",
+        "batter": "Shannon, Mike",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1 1 3",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1 3",
+          "Shannon, Mike",
+          "",
+          "Passed Ball",
+          "3-H 1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Passed Ball",
+        "roll": null,
+        "rowAttributes": "class=\"odd b green\"",
+        "sequence": 53,
+        "sourceRowIndex": 54
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Shannon, Mike",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "1 2",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 2",
+          "Shannon, Mike",
+          "4-10",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "4-10",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 54,
+        "sourceRowIndex": 55
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maris, Roger",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 5,
+        "miscellaneous": "fly(CF)x",
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "2 2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 2",
+          "Maris, Roger",
+          "6-10",
+          "Fly Out (CF)",
+          "b-0",
+          "fly(CF)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "6-10",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 55,
+        "sourceRowIndex": 56
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "rawText": "BOTTOM OF INNING 5",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 56,
+        "sourceRowIndex": 57
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Krausse, Lew",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Krausse, Lew",
+          "4-8",
+          "Single (CF)",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "4-8",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 57,
+        "sourceRowIndex": 58
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Bonds, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "0 1",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 1",
+          "Bonds, Bobby",
+          "3-9",
+          "Strike Out",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Strike Out",
+        "roll": "3-9",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 58,
+        "sourceRowIndex": 59
+      },
+      {
+        "baserunners": "1-o b-1",
+        "batter": "Wills, Maury",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "1 1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1",
+          "Wills, Maury",
+          "6-2",
+          "Force Play (2B)",
+          "1-o b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Force Play (2B)",
+        "roll": "6-2",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 59,
+        "sourceRowIndex": 60
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 60,
+        "sourceRowIndex": 61
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Staub, Rusty",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "2 2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 2",
+          "Staub, Rusty",
+          "",
+          "Int Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Int Walk",
+        "roll": null,
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 61,
+        "sourceRowIndex": 62
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Mota, Manny",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 5,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1,
+          2
+        ],
+        "outsBasesBefore": "2 12",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 12",
+          "Mota, Manny",
+          "6-6",
+          "Fly Out (CF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "6-6",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 62,
+        "sourceRowIndex": 63
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 6,
+        "rawText": "TOP OF INNING 6",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 63,
+        "sourceRowIndex": 64
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Azcue, Joe",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 6,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Azcue, Joe",
+          "3-4",
+          "Fly Out (LF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (LF)",
+        "roll": "3-4",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 64,
+        "sourceRowIndex": 65
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Knoop, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 6,
+        "miscellaneous": "fly(CF)x",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Knoop, Bobby",
+          "6-10",
+          "Fly Out (CF)",
+          "b-0",
+          "fly(CF)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "6-10",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 65,
+        "sourceRowIndex": 66
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maxvill, Dal",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 6,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Maxvill, Dal",
+          "2-8",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "2-8",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 66,
+        "sourceRowIndex": 67
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "rawText": "BOTTOM OF INNING 6",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 67,
+        "sourceRowIndex": 68
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Kaline, Al",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "miscellaneous": "bpSI 1",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Kaline, Al",
+          "2-11",
+          "Ground Out (3B)",
+          "b-0",
+          "bpSI 1",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (3B)",
+        "roll": "2-11",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 68,
+        "sourceRowIndex": 69
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Cardenas, Leo",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "miscellaneous": "gb(3B)x",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Cardenas, Leo",
+          "4-4",
+          "Single (3B)",
+          "b-1",
+          "gb(3B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (3B)",
+        "roll": "4-4",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 69,
+        "sourceRowIndex": 70
+      },
+      {
+        "baserunners": "1-3 b-1",
+        "batter": "Hunt, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "1 1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1",
+          "Hunt, Ron",
+          "h&r",
+          "Single (CF)",
+          "1-3 b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "h&r",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 70,
+        "sourceRowIndex": 71
+      },
+      {
+        "baserunners": "3-H 1-o b-1",
+        "batter": "Sims, Duke",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1 1 3",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1 3",
+          "Sims, Duke",
+          "6-6",
+          "Force Play (1B)",
+          "3-H 1-o b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Force Play (1B)",
+        "roll": "6-6",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 71,
+        "sourceRowIndex": 72
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Krausse, Lew",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 6,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Krausse, Lew",
+          "3-7",
+          "Ground Out (2B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (2B)",
+        "roll": "3-7",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 72,
+        "sourceRowIndex": 73
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 7,
+        "rawText": "TOP OF INNING 7",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 73,
+        "sourceRowIndex": 74
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Del Unser (L)",
+          "position": "PH"
+        },
+        "half": "TOP",
+        "inning": 7,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at PH: Del Unser (L)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"odd b\"",
+        "sequence": 74,
+        "sourceRowIndex": 75,
+        "text": "SUBSTITUTION at PH: Del Unser (L)"
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Unser, Del",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Unser, Del",
+          "2-11",
+          "Fly Out (RF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (RF)",
+        "roll": "2-11",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 75,
+        "sourceRowIndex": 76
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Brock, Lou",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Brock, Lou",
+          "5-10",
+          "Fly Out (RF)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (RF)",
+        "roll": "5-10",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 76,
+        "sourceRowIndex": 77
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Flood, Curt",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 7,
+        "miscellaneous": "bpSI 1",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2",
+          "Flood, Curt",
+          "5-10",
+          "Single (CF)",
+          "b-1",
+          "bpSI 1",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "5-10",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 77,
+        "sourceRowIndex": 78
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Holman, Gary",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Holman, Gary",
+          "4-11",
+          "Ground Out (1B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (1B)",
+        "roll": "4-11",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 78,
+        "sourceRowIndex": 79
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "rawText": "BOTTOM OF INNING 7",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 79,
+        "sourceRowIndex": 80
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Ted Abernathy (R)",
+          "position": "P"
+        },
+        "half": "BOTTOM",
+        "inning": 7,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at P: Ted Abernathy (R)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"odd b\"",
+        "sequence": 80,
+        "sourceRowIndex": 81,
+        "text": "SUBSTITUTION at P: Ted Abernathy (R)"
+      },
+      {
+        "baserunners": "b-H",
+        "batter": "Bonds, Bobby",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Bonds, Bobby",
+          "2-6",
+          "Home Run (CF)",
+          "b-H",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Home Run (CF)",
+        "roll": "2-6",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 81,
+        "sourceRowIndex": 82
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Wills, Maury",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Wills, Maury",
+          "3-11",
+          "Ground Out (1B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (1B)",
+        "roll": "3-11",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 82,
+        "sourceRowIndex": 83
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Staub, Rusty",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Staub, Rusty",
+          "6-8",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "6-8",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 83,
+        "sourceRowIndex": 84
+      },
+      {
+        "baserunners": "1-o b-1",
+        "batter": "Mota, Manny",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "miscellaneous": "gb(3B)x",
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "1 1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1",
+          "Mota, Manny",
+          "5-10",
+          "Force Play (3B)",
+          "1-o b-1",
+          "gb(3B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Force Play (3B)",
+        "roll": "5-10",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 84,
+        "sourceRowIndex": 85
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Kaline, Al",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 7,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Kaline, Al",
+          "5-5",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "5-5",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 85,
+        "sourceRowIndex": 86
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 8,
+        "rawText": "TOP OF INNING 8",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 86,
+        "sourceRowIndex": 87
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Shannon, Mike",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 8,
+        "miscellaneous": "bpSI 1",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Shannon, Mike",
+          "1-3",
+          "Ground Out (3B)",
+          "b-0",
+          "bpSI 1",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (3B)",
+        "roll": "1-3",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 87,
+        "sourceRowIndex": 88
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Maris, Roger",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 8,
+        "miscellaneous": "gb(P)x",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Maris, Roger",
+          "5-3",
+          "Ground Out (P)",
+          "b-0",
+          "gb(P)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (P)",
+        "roll": "5-3",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 88,
+        "sourceRowIndex": 89
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Azcue, Joe",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 8,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "2",
+        "outsBefore": 2,
+        "pcf": "F8",
+        "rawCells": [
+          "2",
+          "Azcue, Joe",
+          "1-6",
+          "Single (CF)",
+          "b-1",
+          "",
+          "F8"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (CF)",
+        "roll": "1-6",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 89,
+        "sourceRowIndex": 90
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Orlando Cepeda (R)",
+          "position": "PH"
+        },
+        "half": "TOP",
+        "inning": 8,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at PH: Orlando Cepeda (R)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"even b\"",
+        "sequence": 90,
+        "sourceRowIndex": 91,
+        "text": "SUBSTITUTION at PH: Orlando Cepeda (R)"
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Cepeda, Orlando",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 8,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F7",
+        "rawCells": [
+          "2 1",
+          "Cepeda, Orlando",
+          "6-5",
+          "Fly Out (RF)",
+          "b-0",
+          "",
+          "F7"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (RF)",
+        "roll": "6-5",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 91,
+        "sourceRowIndex": 92
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "BOTTOM",
+        "inning": 8,
+        "rawText": "BOTTOM OF INNING 8",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 92,
+        "sourceRowIndex": 93
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Dick Schofield",
+          "position": "2B"
+        },
+        "half": "BOTTOM",
+        "inning": 8,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at 2B: Dick Schofield"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"odd b\"",
+        "sequence": 93,
+        "sourceRowIndex": 94,
+        "text": "SUBSTITUTION at 2B: Dick Schofield"
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Cardenas, Leo",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 8,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0",
+          "Cardenas, Leo",
+          "5-5",
+          "Ground Out (SS)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (SS)",
+        "roll": "5-5",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 94,
+        "sourceRowIndex": 95
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Hunt, Ron",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 8,
+        "miscellaneous": "bpHR 1-14",
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Hunt, Ron",
+          "6-3",
+          "Single (LF)",
+          "b-1",
+          "bpHR 1-14",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Single (LF)",
+        "roll": "6-3",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 95,
+        "sourceRowIndex": 96
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Sims, Duke",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 8,
+        "miscellaneous": "fly(CF)x",
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "1 1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 1",
+          "Sims, Duke",
+          "h&r",
+          "Fly Out (CF)",
+          "b-0",
+          "fly(CF)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (CF)",
+        "roll": "h&r",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 96,
+        "sourceRowIndex": 97
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Krausse, Lew",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "BOTTOM",
+        "inning": 8,
+        "miscellaneous": "fly(LF)x",
+        "occupiedBasesBefore": [
+          1
+        ],
+        "outsBasesBefore": "2 1",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 1",
+          "Krausse, Lew",
+          "6-2",
+          "Fly Out (LF)",
+          "b-0",
+          "fly(LF)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Fly Out (LF)",
+        "roll": "6-2",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 97,
+        "sourceRowIndex": 98
+      },
+      {
+        "cellAttributes": [
+          "colspan=\"7\""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "rawText": "TOP OF INNING 9",
+        "recordType": "INNING_MARKER",
+        "rowAttributes": "class=\"ui-widget-header\"",
+        "sequence": 98,
+        "sourceRowIndex": 99
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Tommie Agee",
+          "position": "CF"
+        },
+        "half": "TOP",
+        "inning": 9,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at CF: Tommie Agee"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"odd b\"",
+        "sequence": 99,
+        "sourceRowIndex": 100,
+        "text": "SUBSTITUTION at CF: Tommie Agee"
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Ed Kirkpatrick (L)",
+          "position": "PH"
+        },
+        "half": "TOP",
+        "inning": 9,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at PH: Ed Kirkpatrick (L)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"even b\"",
+        "sequence": 100,
+        "sourceRowIndex": 101,
+        "text": "SUBSTITUTION at PH: Ed Kirkpatrick (L)"
+      },
+      {
+        "baserunners": "b-3",
+        "batter": "Kirkpatrick, Ed",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "0",
+        "outsBefore": 0,
+        "pcf": "F4",
+        "rawCells": [
+          "0",
+          "Kirkpatrick, Ed",
+          "6-9",
+          "Triple (CF)",
+          "b-3",
+          "",
+          "F4"
+        ],
+        "recordType": "EVENT",
+        "result": "Triple (CF)",
+        "roll": "6-9",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 101,
+        "sourceRowIndex": 102
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Dock Ellis (R)",
+          "position": "P"
+        },
+        "half": "TOP",
+        "inning": 9,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at P: Dock Ellis (R)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"even b\"",
+        "sequence": 102,
+        "sourceRowIndex": 103,
+        "text": "SUBSTITUTION at P: Dock Ellis (R)"
+      },
+      {
+        "cellAttributes": [
+          "",
+          "colspan=\"6\""
+        ],
+        "controlType": "SUBSTITUTION",
+        "details": {
+          "participantText": "Phil Gagliano (R)",
+          "position": "PH"
+        },
+        "half": "TOP",
+        "inning": 9,
+        "rawCells": [
+          "",
+          "SUBSTITUTION at PH: Phil Gagliano (R)"
+        ],
+        "recordType": "CONTROL",
+        "rowAttributes": "class=\"odd b\"",
+        "sequence": 103,
+        "sourceRowIndex": 104,
+        "text": "SUBSTITUTION at PH: Phil Gagliano (R)"
+      },
+      {
+        "baserunners": "3-H b-0",
+        "batter": "Gagliano, Phil",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": "gb(3B)x",
+        "occupiedBasesBefore": [
+          3
+        ],
+        "outsBasesBefore": "0 3",
+        "outsBefore": 0,
+        "pcf": "F9",
+        "rawCells": [
+          "0 3",
+          "Gagliano, Phil",
+          "5-12",
+          "Ground Out (3B)",
+          "3-H b-0",
+          "gb(3B)x",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (3B)",
+        "roll": "5-12",
+        "rowAttributes": "class=\"even b green\"",
+        "sequence": 104,
+        "sourceRowIndex": 105
+      },
+      {
+        "baserunners": "b-1",
+        "batter": "Brock, Lou",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "1",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1",
+          "Brock, Lou",
+          "4-11",
+          "Walk",
+          "b-1",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Walk",
+        "roll": "4-11",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 105,
+        "sourceRowIndex": 106
+      },
+      {
+        "baserunners": "1-2",
+        "batter": null,
+        "cellAttributes": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [],
+        "outsBasesBefore": "",
+        "outsBefore": null,
+        "pcf": "F9",
+        "rawCells": [
+          "",
+          "",
+          "",
+          "Stolen Base",
+          "1-2",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Stolen Base",
+        "roll": null,
+        "rowAttributes": "class=\"even \"",
+        "sequence": 106,
+        "sourceRowIndex": 107
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Flood, Curt",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "1 2",
+        "outsBefore": 1,
+        "pcf": "F9",
+        "rawCells": [
+          "1 2",
+          "Flood, Curt",
+          "2-11",
+          "Ground Out (3B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (3B)",
+        "roll": "2-11",
+        "rowAttributes": "class=\"odd \"",
+        "sequence": 107,
+        "sourceRowIndex": 108
+      },
+      {
+        "baserunners": "b-0",
+        "batter": "Holman, Gary",
+        "cellAttributes": [
+          "",
+          "",
+          "nowrap",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "half": "TOP",
+        "inning": 9,
+        "miscellaneous": null,
+        "occupiedBasesBefore": [
+          2
+        ],
+        "outsBasesBefore": "2 2",
+        "outsBefore": 2,
+        "pcf": "F9",
+        "rawCells": [
+          "2 2",
+          "Holman, Gary",
+          "5-7",
+          "Ground Out (1B)",
+          "b-0",
+          "",
+          "F9"
+        ],
+        "recordType": "EVENT",
+        "result": "Ground Out (1B)",
+        "roll": "5-7",
+        "rowAttributes": "class=\"even \"",
+        "sequence": 108,
+        "sourceRowIndex": 109
+      }
+    ],
+    "schemaVersion": "strat365-play-by-play-v0",
+    "sourceRowCount": 110,
+    "unknownControlCount": 0
+  },
+  "reconciliation": {
+    "awayTeamLineMatch": true,
+    "canonicalPromotionAuthorized": false,
+    "decisionSummaryExactMatch": true,
+    "finalHeaderMatch": true,
+    "homeTeamLineMatch": true,
+    "leagueLoserMention": true,
+    "leagueLoserOmissionAccepted": false,
+    "leagueNarrativeRole": "NON_AUTHORITATIVE_PRESENTATION_TEXT",
+    "leagueNarrativeTextAuthoritative": false,
+    "leagueResultOutcomeMatch": true,
+    "leagueScoreMatch": true,
+    "leagueWinnerMention": true,
+    "leagueWinnerOmissionAccepted": false,
+    "leagueWinnerOmissionReason": null,
+    "playByPlayAttached": true,
+    "playByPlayInningsMatch": true,
+    "recapReplayOrientationMatch": true,
+    "status": "RECONCILED",
+    "teamOrderMatch": true,
+    "unknownControlFree": true
+  },
+  "replayOrientation": {
+    "awayTeam": "Busch League Arkinals™",
+    "homeTeam": "Norwich Not Flatlanders",
+    "match": true
+  },
+  "schemaVersion": "strat365-game-v0",
+  "season": "1968",
+  "sources": {
+    "gamePlayByPlay": {
+      "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-24/capture-20260726T003531Z/responses/games/game-69/play-by-play.html",
+      "bodySha256": "A5820FEF136591612DA17129B12BE2836B3E3FFD249EA51B04BA4796E4294418",
+      "metadataFile": "game-69-play-by-play.attempt-1.json"
+    },
+    "gameRecap": {
+      "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-24/capture-20260726T003531Z/responses/games/game-69/recap.html",
+      "bodySha256": "9EA511E6C9535A7B03D58104F33596A2843B61CDE7A90B830C09E5D19435A3D5",
+      "metadataFile": "game-69-recap.attempt-1.json"
+    },
+    "gameReplay": {
+      "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-24/capture-20260726T003531Z/responses/games/game-69/replay.html",
+      "bodySha256": "4A964A038454B3006DCBAF3806DC03D0C67C2C884599E55B9E4C68461725F842",
+      "metadataFile": "game-69-replay.attempt-1.json"
+    }
+  },
+  "warnings": [],
+  "winnerTeam": "Norwich Not Flatlanders"
+}

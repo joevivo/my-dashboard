@@ -1,0 +1,363 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 18,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-56-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-62-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-68-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-57-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-63-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-69-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-59-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-65-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-71-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-60-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-66-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-72-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-55-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-61-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-67-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-58-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-64-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-07-24/games/game-70-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 3,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 56,
+      "homeRuns": 6,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 1,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 62,
+      "homeRuns": 2,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 4,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 68,
+      "homeRuns": 6,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 17,
+      "awayTeam": "Busch League Arkinals™",
+      "gameId": 57,
+      "homeRuns": 1,
+      "homeTeam": "Norwich Not Flatlanders",
+      "innings": 9,
+      "winnerTeam": "Busch League Arkinals™"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Busch League Arkinals™",
+      "gameId": 63,
+      "homeRuns": 1,
+      "homeTeam": "Norwich Not Flatlanders",
+      "innings": 9,
+      "winnerTeam": "Busch League Arkinals™"
+    },
+    {
+      "awayRuns": 4,
+      "awayTeam": "Busch League Arkinals™",
+      "gameId": 69,
+      "homeRuns": 5,
+      "homeTeam": "Norwich Not Flatlanders",
+      "innings": 9,
+      "winnerTeam": "Norwich Not Flatlanders"
+    },
+    {
+      "awayRuns": 9,
+      "awayTeam": "Mighty Yankees",
+      "gameId": 59,
+      "homeRuns": 8,
+      "homeTeam": "Northside Hogs",
+      "innings": 9,
+      "winnerTeam": "Mighty Yankees"
+    },
+    {
+      "awayRuns": 6,
+      "awayTeam": "Mighty Yankees",
+      "gameId": 65,
+      "homeRuns": 3,
+      "homeTeam": "Northside Hogs",
+      "innings": 9,
+      "winnerTeam": "Mighty Yankees"
+    },
+    {
+      "awayRuns": 4,
+      "awayTeam": "Mighty Yankees",
+      "gameId": 71,
+      "homeRuns": 0,
+      "homeTeam": "Northside Hogs",
+      "innings": 9,
+      "winnerTeam": "Mighty Yankees"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Iowa bombers",
+      "gameId": 60,
+      "homeRuns": 6,
+      "homeTeam": "Classic City Crazy Eights",
+      "innings": 11,
+      "winnerTeam": "Classic City Crazy Eights"
+    },
+    {
+      "awayRuns": 10,
+      "awayTeam": "Iowa bombers",
+      "gameId": 66,
+      "homeRuns": 4,
+      "homeTeam": "Classic City Crazy Eights",
+      "innings": 9,
+      "winnerTeam": "Iowa bombers"
+    },
+    {
+      "awayRuns": 1,
+      "awayTeam": "Iowa bombers",
+      "gameId": 72,
+      "homeRuns": 2,
+      "homeTeam": "Classic City Crazy Eights",
+      "innings": 9,
+      "winnerTeam": "Classic City Crazy Eights"
+    },
+    {
+      "awayRuns": 1,
+      "awayTeam": "Boquete Bombers",
+      "gameId": 55,
+      "homeRuns": 7,
+      "homeTeam": "Funk Brothers",
+      "innings": 9,
+      "winnerTeam": "Funk Brothers"
+    },
+    {
+      "awayRuns": 2,
+      "awayTeam": "Boquete Bombers",
+      "gameId": 61,
+      "homeRuns": 0,
+      "homeTeam": "Funk Brothers",
+      "innings": 9,
+      "winnerTeam": "Boquete Bombers"
+    },
+    {
+      "awayRuns": 2,
+      "awayTeam": "Boquete Bombers",
+      "gameId": 67,
+      "homeRuns": 3,
+      "homeTeam": "Funk Brothers",
+      "innings": 9,
+      "winnerTeam": "Funk Brothers"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "RainRain 80's Mustache",
+      "gameId": 58,
+      "homeRuns": 1,
+      "homeTeam": "New York Highlanders",
+      "innings": 9,
+      "winnerTeam": "RainRain 80's Mustache"
+    },
+    {
+      "awayRuns": 0,
+      "awayTeam": "RainRain 80's Mustache",
+      "gameId": 64,
+      "homeRuns": 3,
+      "homeTeam": "New York Highlanders",
+      "innings": 9,
+      "winnerTeam": "New York Highlanders"
+    },
+    {
+      "awayRuns": 9,
+      "awayTeam": "RainRain 80's Mustache",
+      "gameId": 70,
+      "homeRuns": 3,
+      "homeTeam": "New York Highlanders",
+      "innings": 9,
+      "winnerTeam": "RainRain 80's Mustache"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 56,
+      "resultText": "Dean Chance and Drinkers beat Raisin Eaters, 6-3 W: Chance, D. (3-0) L: Hannan, J. (0-2) S: Knowles, D. (7) HR: none",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 62,
+      "resultText": "Aquarium Drinkers beat Fresno Raisin Eaters 2-1 W: Washburn, R. (3-0) L: Nash, J. (0-2) S: Knowles, D. (8) HR: D.Dietz(2nd), B.Freehan(1st)",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 68,
+      "resultText": "Aquarium Drinkers beat Fresno Raisin Eaters 6-4 W: Singer, B. (2-1) L: Ellsworth, D. (1-1) S: Shea, S. (1) HR: M.Mantle(2nd), B.Robinson(3rd)",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 4,
+      "gameId": 57,
+      "resultText": "Busch League Arkinals™ blow out Norwich Not Flatlanders, 17-1 W: Seaver, T. (2-1) L: Niekro, P. (1-2) HR: none",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 2
+    },
+    {
+      "blockIndex": 5,
+      "gameId": 63,
+      "resultText": "Steve Carlton pitches Arkinals™ past Not Flatlanders, 5-1 W: Carlton, S. (2-0) L: Wilson, D. (1-1) HR: none",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 2
+    },
+    {
+      "blockIndex": 6,
+      "gameId": 69,
+      "resultText": "Norwich Not Flatlanders defeat Busch League Arkinals™ 5-4 W: Krausse, L. (1-1) L: Reed, R. (1-1) S: Ellis, D. (1) HR: B.Bonds(1st)",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 2
+    },
+    {
+      "blockIndex": 7,
+      "gameId": 59,
+      "resultText": "Merv Rettenmund hits 2 HRs in 9-8 victory over Hogs W: Richert, P. (1-0) L: Stange, L. (0-1) S: McDaniel, L. (5) HR: M.Rettenmund-2(2nd), J.Wynn-2(5th), B.Sudakis(1st)",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 3
+    },
+    {
+      "blockIndex": 8,
+      "gameId": 65,
+      "resultText": "Reggie Smith homers twice in 6-3 victory over Hogs W: Giusti, D. (3-0) L: Ray, J. (2-1) S: McDaniel, L. (6) HR: G.Beckert(1st), R.Smith-2(2nd), J.Wynn(6th), B.Sudakis(2nd)",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 3
+    },
+    {
+      "blockIndex": 9,
+      "gameId": 71,
+      "resultText": "Claude Osteen (MIG) shuts out Hogs, 4-0 W: Osteen, C. (1-1) L: Cuellar, M. (1-2) HR: none",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 3
+    },
+    {
+      "blockIndex": 10,
+      "gameId": 60,
+      "resultText": "Classic City Crazy Eights beat Iowa bombers 6-5 W: Taylor, R. (1-0) L: Kurtz, H. (0-1) HR: F.Fernandez(2nd)",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 4
+    },
+    {
+      "blockIndex": 11,
+      "gameId": 66,
+      "resultText": "Iowa bombers defeat Classic City Crazy Eights 10-4 W: Culp, R. (2-0) L: Upshaw, C. (0-1) HR: F.Robinson(3rd), P.Rose(1st)",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 4
+    },
+    {
+      "blockIndex": 12,
+      "gameId": 72,
+      "resultText": "Sonny Siebert and Crazy Eights beat bombers, 2-1 W: Siebert, S. (3-0) L: Blass, S. (0-2) S: Talbot, F. (4) HR: none",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 4
+    },
+    {
+      "blockIndex": 13,
+      "gameId": 55,
+      "resultText": "Juan Marichal and Brothers beat Bombers, 7-1 W: Marichal, J. (1-1) L: Pascual, C. (0-2) HR: W.Stargell(2nd), F.Howard(2nd)",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 5
+    },
+    {
+      "blockIndex": 14,
+      "gameId": 61,
+      "resultText": "Boquete Bombers beat Funk Brothers 2-0 W: Lemaster, D. (1-1) L: Lolich, M. (0-1) S: Drabowsky, M. (4) HR: D.Allen(1st)",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 5
+    },
+    {
+      "blockIndex": 15,
+      "gameId": 67,
+      "resultText": "Funk Brothers defeat Boquete Bombers 3-2 W: Aguirre, H. (2-0) L: Bunker, W. (0-1) S: Segui, D. (4) HR: W.Mays(2nd), W.Stargell(3rd)",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 5
+    },
+    {
+      "blockIndex": 16,
+      "gameId": 58,
+      "resultText": "RainRain 80's Mustache defeat New York Highlanders 5-1 W: Walker, L. (2-1) L: Perry, J. (0-2) HR: B.Williams(1st)",
+      "seriesGameLabel": "Game 10",
+      "seriesGameNumber": 1,
+      "seriesIndex": 6
+    },
+    {
+      "blockIndex": 17,
+      "gameId": 64,
+      "resultText": "Tom Murphy leads Highlanders past 80's Mustache, 3-0 W: Murphy, T. (1-1) L: Bosman, D. (0-2) S: Wilhelm, H. (1) HR: B.Powell(3rd)",
+      "seriesGameLabel": "Game 11",
+      "seriesGameNumber": 2,
+      "seriesIndex": 6
+    },
+    {
+      "blockIndex": 18,
+      "gameId": 70,
+      "resultText": "RainRain 80's Mustache beat New York Highlanders 9-3 W: Walker, L. (3-1) L: Wood, W. (1-3) S: Regan, P. (1) HR: B.Williams(2nd), G.Nettles(4th), C.Jones(1st), T.Tresh(1st)",
+      "seriesGameLabel": "Game 12",
+      "seriesGameNumber": 3,
+      "seriesIndex": 6
+    }
+  ],
+  "leagueDate": "2026-07-24",
+  "leagueId": "479336",
+  "playByPlaySummary": {
+    "controlCount": 167,
+    "eventCount": 1414,
+    "inningMarkerCount": 320,
+    "orderedRecordCount": 1901,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 18,
+    "leagueLoserMentionCount": 18,
+    "leagueScoreMatchCount": 18,
+    "leagueWinnerMentionCount": 15,
+    "leagueWinnerOmissionAcceptedCount": 3,
+    "reconciledGameCount": 18
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-24/capture-20260726T003531Z/responses/league/league-scores-2026-07-24.html",
+    "bodySha256": "BF9B5F0F98BB0B50E98B4867251EC035695ADB7A720FA45781E965BF04FF6B65",
+    "metadataFile": "league-scores-2026-07-24.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 18,
+  "warnings": []
+}

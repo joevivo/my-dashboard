@@ -1,0 +1,56 @@
+{
+    "canonicalPromotionDecision":  {
+                                       "authorized":  false,
+                                       "reason":  "Raw capture is complete and valid, but canonical parsing and complete-night promotion gates have not yet passed.",
+                                       "status":  "BLOCKED_PENDING_PARSER_VALIDATION"
+                                   },
+    "captureLock":  {
+                        "authorized":  true,
+                        "basis":  "Schema-aware final capture gate passed; 54 planned game requests plus one filesystem-verified league-scores capture.",
+                        "liveRecaptureAuthorized":  false,
+                        "rawEvidenceImmutable":  true,
+                        "status":  "LOCKED"
+                    },
+    "createdAtUtc":  "2026-07-26T02:25:53.8341554Z",
+    "evidence":  {
+                     "artifactFailureCount":  0,
+                     "capturedResponseCount":  55,
+                     "completeGameCount":  18,
+                     "executorSha256":  "91D036BA5342D4D6F3523AFA4D314E16CCD1FD0D793CDB33287E54A2E9E11E5B",
+                     "gameCoverageFailureCount":  0,
+                     "manifestGameRequestCount":  54,
+                     "manifestLeagueRequestCount":  1,
+                     "manifestSha256":  "3B275DDF79B237BEB1F88352A9E5427A7ED146278BD3F24998E50397DA0B68EE",
+                     "manifestTotalRequestCount":  55,
+                     "metadataFileCount":  55,
+                     "parserSha256":  "C3316D46B36FD2BFD5773DF24AD4CE21A355E5104ED8BD07528EA78DD787AD05",
+                     "planGameRequestCount":  54,
+                     "planSha256":  "D050C15DE79D40AB365F1DFFB3AB3ABFEB95D1D1F48FB70B1102F9AED5FD1E3A",
+                     "rawHtmlFileCount":  55,
+                     "responseHeaderFileCount":  55,
+                     "uniqueResponseArtifactCount":  165,
+                     "validationFailureCount":  0,
+                     "validatorSha256":  "6E3DA98B2D1E53ECB0BE316583609138C27A19F073344A3C20C11C91C0A8ADAF"
+                 },
+    "nextAuthorizedPhase":  {
+                                "canonicalWritesAuthorized":  false,
+                                "liveHttpRequestsAuthorized":  false,
+                                "phase":  "PARSE_AND_CANONICAL_PROMOTION_GATE",
+                                "rawArtifactModificationAuthorized":  false,
+                                "requirement":  "Parser output, reconciliation, and complete-night gate must pass before canonical promotion."
+                            },
+    "runIdentity":  {
+                        "leagueDate":  "2026-07-24",
+                        "leagueId":  479336,
+                        "runDirectory":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-24/capture-20260726T003531Z",
+                        "season":  1968
+                    },
+    "schemaNotes":  {
+                        "gameManifestAttemptField":  "attemptCount",
+                        "leagueEffectiveRouteMatchMayBeNull":  true,
+                        "leagueManifestAttemptField":  "attemptNumber",
+                        "leagueSemanticValidationMayBeNull":  true,
+                        "leagueTransportAndSourceValidationRequired":  true
+                    },
+    "schemaVersion":  "bie.capture-lock-and-promotion-decision.v1"
+}
