@@ -641,6 +641,25 @@ The following remain later or deferred unless explicitly reprioritized:
 - compact Recently Active Albums density refinements;
 - additional identity entity types without documented identity rules.
 
+### 8.4 Deferred artist-family identity candidates
+
+Status: Later. Do not implement during the Artist Comparative Standing slice.
+
+Add these curated artist-family candidates for later identity review:
+
+- Yaz and Alison Moyet.
+- Blind Faith, Traffic, and Steve Winwood.
+
+Eventual review requirements:
+
+- preserve every artist and band as a distinct member identity;
+- define the canonical family label and aliases before enabling family rollup;
+- aggregate family evidence without double-counting shared or aliased records;
+- retain artist-only and artist-family comparative populations separately;
+- preserve member-level provenance when family evidence is displayed;
+- require explicit review and acceptance before changing
+  data/music/curated/artistFamilies.json.
+
 ## 9. Blocked pending governance
 
 ### 9.1 Composite relationship scoring
