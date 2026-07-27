@@ -1,129 +1,202 @@
 # Music Consolidated Backlog and Requirements Lock v1
 
-## Status
+## Document control
 
-Music Sprint 1 requirements lock and prioritized implementation backlog.
+- Product: Defending Sisyphus Music
+- Repository branch: `main`
+- Repository baseline: `752550c`
+- Reconciliation date: 2026-07-27
+- Review state: proposed reconciled revision awaiting Ginto approval
+- Governing rule: no new Music feature implementation begins until this revision
+  and its priority order are reviewed and approved.
 
-This document consolidates the current Music architecture, product decisions,
-period requirements, surface responsibilities, semantic corrections, and
-deferred intelligence concepts into one execution sequence.
+This document is the governing Music backlog, requirements lock, and
+implementation sequence. It replaces historical sprint assumptions and stale
+descriptions with the functionality now present in the repository and the work
+that remains.
 
-## Product North Star
+## 1. Status model
 
-The Music product should support one continuous analytical path:
+Every backlog item must use one of these states.
 
-`Observe -> Investigate -> Understand -> Navigate`
+### Completed for v1
 
-- Music Dashboard observes and triages the present.
-- Query Workbench investigates evidence and explains why it matters.
-- Artist Intelligence presents a concise canonical artist or family profile.
-- Playlist Intelligence analyzes playlists and cohorts.
-- Music Library supports administration, curation, and data hygiene.
+The capability is implemented and accepted for the current product contract.
+Follow-up refinement may remain, but the core capability is no longer active
+feature work.
 
-## Locked Product Decisions
+### Active
 
-### Dashboard
+The capability is part of the current approved implementation sequence.
 
-- The Dashboard observes current state.
-- It shows recent Apple objects, heavy rotation, playlists, stations, changes,
-  freshness, and investigation candidates.
-- It does not present complete play history or full reasoning traces.
+### Near-term
 
-### Query Workbench
+The capability should follow the active work after its dependencies are met.
 
-- The Workbench is the evidence and investigation cockpit.
-- It owns identity resolution, evidence, facts, insights, provenance,
-  confidence, uncertainty, open questions, and next investigations.
-- It supports artist, song, period, album, playlist, and comparison questions.
+### Later
 
-### Artist Intelligence
+The capability remains valid but does not belong in the immediate sequence.
 
-- Artist Intelligence is the concise canonical artist or family profile.
-- The same canonical summary model should be reusable by Dashboard and
-  Workbench.
-- Full evidence and derivation remain in Query Workbench.
+### Blocked pending governance
 
-### Playlist Intelligence
+Implementation or production presentation is prohibited until formulas,
+semantics, missing-data rules, confidence gates, or other governing decisions
+are reviewed and approved.
 
-- Playlists are first-class musical artifacts.
-- Playlist placement is evidence of curation or context, not actual-play truth.
+### Explicitly deferred
 
-### Music Library
+The capability is intentionally outside the current plan. It must not re-enter
+the implementation sequence without an explicit product decision.
 
-- Music Library becomes an administration and curation surface.
-- It should not remain a primary analytical destination.
-- Embedded Dashboard and Time Machine behavior must migrate before removal.
-- Keep Library search visible.
-- Reduce the hero and header height while keeping album, artist, and show counts compact and inline.
-- Group Export Music Library, Restore JSON, Add Albums CSV, and Download Album Template inside a compact `Manage Library` menu or expandable administration panel.
-- Remove or consolidate the duplicate Music Administration explanation strip.
-- Reclaim vertical space for curated Library content.
+## 2. Product analytical path
 
+The Music product supports one continuous analytical path:
 
-### Listening Eras
+1. Music Dashboard observes and triages the present.
+2. Query Workbench investigates evidence and explains what the evidence means.
+3. Artist Intelligence presents a concise canonical artist or artist-family
+   profile.
+4. Playlist Intelligence analyzes playlists, cohorts, and curation evidence.
+5. Music Library supports administration, curation, discovery, and data
+   hygiene.
 
-- Listening Eras are removed from the product.
-- They must not return to navigation, requirements, reports, or backlog unless
-  explicitly reconsidered.
+Transitions among these surfaces must preserve the originating signal, source,
+timestamp, entity identity, investigation state, and a usable return path.
 
-## Locked Evidence Rules
+## 3. Surface responsibilities
 
-### Actual Plays
+### 3.1 Music Dashboard
 
-- Actual Plays come from Apple Music daily track-summary evidence.
-- Library records and live Apple objects must never be labeled as Actual Plays.
+The Dashboard observes current state.
 
-### Actual Skips
+It may present:
 
-- Actual Skips come from Apple Music daily track-summary evidence.
-- Skip definitions and source limitations must remain visible.
+- current and recent Apple objects;
+- heavy rotation;
+- playlists;
+- stations;
+- current changes;
+- concise canonical summaries;
+- source-health and freshness indicators.
 
-### Library Evidence
+It must not present itself as complete listening history or expose full
+reasoning traces.
 
-- Library Evidence comes from Apple Music Library Tracks.
-- Library presence or Last Played Date reconstruction is not total play count.
+### 3.2 Query Workbench
 
-### Recent Apple Objects
+Query Workbench is the evidence and investigation cockpit.
 
-- Recent Apple Objects are timestamped observations from current Apple
-  endpoints.
-- They indicate current or fresh state, not complete historical listening.
+It owns:
 
-### Source Coverage
+- identity resolution;
+- evidence retrieval;
+- evidence coverage;
+- facts;
+- interpretations;
+- confidence;
+- limitations;
+- provenance;
+- suggested investigations.
+
+Supported investigation types should include:
+
+- artist;
+- song;
+- period;
+- album;
+- playlist;
+- current-versus-historical comparison;
+- evidence inspection.
+
+### 3.3 Artist Intelligence
+
+Artist Intelligence is the concise canonical artist or artist-family profile.
+
+It must use the shared canonical Artist summary contract rather than
+independently rederive source semantics. Full evidence and derivation remain in
+Query Workbench.
+
+### 3.4 Playlist Intelligence
+
+Playlists are first-class musical artifacts.
+
+Playlist placement is evidence of curation, organization, or listening
+context. Playlist placement is not confirmed Actual Play evidence.
+
+### 3.5 Music Library
+
+Music Library supports:
+
+- search;
+- curation;
+- administration;
+- import and export;
+- data hygiene;
+- access to curated artists, albums, playlists, shows, and related records.
+
+It should not remain a primary analytical destination after valid analytical
+behavior has been inventoried and migrated to its intended surface.
+
+Music Library must not be removed from primary navigation until administration,
+curation, search, and data-hygiene workflows remain clearly accessible.
+
+## 4. Locked evidence semantics
+
+### 4.1 Actual Plays
+
+Actual Plays come from Apple Music daily track-summary evidence.
+
+Library records, recent Apple objects, snapshot observations, and reconstructed
+Last Played Date evidence must never be labeled as Actual Plays.
+
+### 4.2 Actual Skips
+
+Actual Skips come from Apple Music daily track-summary evidence.
+
+Skip definitions, source limitations, and coverage boundaries must remain
+visible. Skip counts must not be inferred from unrelated evidence families.
+
+### 4.3 Library Evidence
+
+Library Evidence comes from Apple Music Library Tracks and related canonical
+library records.
+
+Library presence and Last Played Date reconstruction are evidence of library
+relationship and historical observation. They are not total play counts or a
+complete listening history.
+
+### 4.4 Recent Apple Objects
+
+Recent Apple Objects are timestamped observations from current Apple Music
+surfaces and stored Apple snapshots.
+
+They indicate current or recently observed state. Historical snapshot
+observations are not confirmed plays.
+
+Current Recent Apple evidence and historical snapshot evidence must remain
+separate.
+
+### 4.5 Evidence coverage states
 
 Every investigation must distinguish:
 
 - searched with evidence;
-- searched with no evidence;
-- not searched;
+- searched with zero evidence;
+- outside source coverage;
 - unavailable;
+- not searched;
 - stale;
 - unsupported for the requested period.
 
-Unavailable, unsearched, and genuinely empty evidence must not be collapsed
-into one zero-result message.
+Unavailable, unsearched, stale, unsupported, and genuinely empty evidence must
+not be collapsed into one zero state.
 
-## Priority 0 — Contract and Trust Foundation
+Backend unavailability is an operational error. Source unavailability is an
+evidence-coverage condition.
 
-These items block substantial Music UI implementation.
+### 4.6 Context
 
-### P0.1 Freeze the Period Intelligence response contract
-
-- Define field-level schemas for period identity, coverage, activity, library
-  evidence, recent observations, playback context, tags, warnings, and
-  investigation output.
-- Treat the period itself as the investigated entity.
-- Align period output with the investigation packet contract.
-
-### P0.2 Implement explicit evidence coverage
-
-- Report every relevant evidence source and its status.
-- Include record counts, timestamp coverage, freshness, and limitations.
-- Generate diagnostic zero states from the coverage model.
-
-### P0.3 Define playback-context classification
-
-Supported context types should include:
+Supported context values may include:
 
 - playlist;
 - radio station;
@@ -138,201 +211,193 @@ Supported context types should include:
 
 Context must not be fabricated when source data does not establish it.
 
-### P0.4 Correct ambiguous semantic fields
+## 5. Completed for v1
 
-- Replace or clarify `yearsActive`.
-- Distinguish active-year count from relationship span.
-- Separate evidence-source classification from relationship classification.
-- Separate relationship classification from investigation conclusion.
+### 5.1 Period Intelligence
 
-### P0.5 Move domain reasoning out of React
+The following are complete for v1:
 
-- React components should render backend contracts.
-- Relationship classifications, evidence interpretation, and confidence rules
-  should not be independently recreated in UI components.
+- Period Intelligence response contract.
+- The period is treated as the investigated entity.
+- Period output aligns with the investigation packet contract.
+- Every relevant evidence source reports an explicit coverage state.
+- Diagnostic zero states distinguish searched-zero, unavailable, not searched,
+  outside coverage, stale, and unsupported periods.
+- Actual Listening v1 is integrated.
+- Library Evidence remains separate from Actual Listening.
+- Historical Recent Apple snapshot evidence is connected to Date Range
+  investigation.
+- Snapshot observations are explicitly identified as observations rather than
+  confirmed plays.
+- Date Range uses an answer-first interface.
+- Representative Date Range API and visual acceptance scenarios have passed.
 
-### P0.6 Establish regression fixtures
+The following Period Intelligence scenarios are part of the maintained v1
+contract:
 
-Required scenarios:
-
-- period with actual-play evidence;
-- period with library evidence only;
-- period with recent Apple observations only;
-- period with mixed evidence;
+- covered period with Actual Listening evidence;
+- covered period with zero matching Actual Listening evidence;
+- Library Evidence only;
+- Recent Apple observations only;
+- mixed evidence;
 - searched source with zero evidence;
 - unsearched source;
 - unavailable source;
 - unsupported historical period;
 - ambiguous artist identity;
-- artist-family identity;
-- playlist and radio playback context;
-- unknown playback context.
+- artist-family identity.
 
-## Priority 1 — Period Intelligence Vertical Slice
+The maintained Period Intelligence response structure includes:
 
-This is the first major end-to-end implementation target.
+1. period summary;
+2. evidence coverage;
+3. what played or appeared;
+4. artists, albums, and tracks;
+5. context and evidence-backed tags;
+6. facts and interpretation;
+7. confidence and limitations;
+8. provenance;
+9. suggested investigations.
 
-### P1.1 Expand the period backend
+### 5.2 Artist Investigation
 
-- Join actual-play activity where available.
-- Preserve Library Tracks reconstruction as a separate evidence family.
-- Search snapshot warehouse history for recent Apple observations.
-- Include playlists, stations, albums, tracks, and source context where known.
-- Generate facts, insights, confidence, warnings, and suggested investigations.
+The following are complete for v1:
 
-### P1.2 Add evidence-backed period tags
+- Actual Listening evidence.
+- Library Evidence.
+- Current Recent Apple objects.
+- Historical Recent Apple snapshot observations.
+- Snapshot-observation count.
+- Unique logical-object count.
+- Separation of current and historical Recent Apple evidence.
+- Sugar and Bob Mould artist-family mapping.
+- Steve Miller and Steve Miller Band artist-family mapping.
+- Removal of Canonical Key from the visible Artist Investigation interface.
 
-Period tags should include available context such as:
+Recent accepted repository work includes:
 
-- artists present;
-- albums present;
-- tracks present;
-- dominant artist, album, and track;
-- playlists and radio stations;
-- album-centered listening;
-- concentration versus exploration;
-- returning versus newly observed artists;
-- catalog depth versus isolated tracks;
-- unknown or incomplete context.
+- `195c455 Add historical Recent Apple artist evidence`
+- `07d9062 Refine artist family identity presentation`
 
-Every tag must carry provenance.
+## 6. Active implementation priority order
 
-### P1.3 Redesign the Period Intelligence UI
+### Priority 1 - Complete backlog reconciliation and approval
 
-Required sections:
+Status: Active until this document is reviewed and approved.
 
-1. Period summary
-2. Evidence coverage
-3. What played or appeared
-4. Artists, albums, and tracks
-5. Playback contexts
-6. Period tags
-7. Facts and interpretation
-8. Confidence and limitations
-9. Provenance
-10. Suggested investigations
+Acceptance requires:
 
-#### Deferred Period Intelligence presentation polish
+- completed work is accurately recorded;
+- stale sprint and working-tree statements are removed;
+- remaining work is assigned an explicit status;
+- Artist Comparative Standing is defined;
+- implementation dependencies are explicit;
+- the revised priority order is approved by Ginto;
+- only this backlog document is committed and pushed in the reconciliation
+  checkpoint.
 
-The Actual Listening v1 integration passed live and visual acceptance for:
+No feature implementation begins before this acceptance.
 
-- a covered period with matching Actual Listening;
-- a covered period with zero matching evidence;
-- a period outside Actual Listening projection coverage.
+### Priority 2 - Define Artist Comparative Standing
 
-The following non-blocking presentation items remain:
+Status: Active after backlog approval.
 
-- Consolidate repeated `Period Intelligence` labels in the result header.
-- Render machine-readable statuses such as `not_searched` as human-readable
-  labels everywhere.
-- Rename `Library Evidence Read` to clearer investigation language.
-- Investigate source-title normalization for values such as
-  `20200816 She Want The Sandwich` without silently changing authoritative
-  source data.
-- Use a more compact detail state when all covered-period metrics are zero.
-- Suppress or reword low-value facts such as
-  `0 confirmed plays and 0 recorded forward skips`.
-- Avoid repeating the same source limitation in Evidence Coverage, Coverage
-  Warnings, and a dedicated coverage notice.
-- Do not display the missing-artist limitation when Actual Listening is
-  outside coverage because the projection was not searched.
-- Consider suppressing empty Library Evidence ranking sections when both
-  artist and album rankings are empty.
-- Preserve the distinction between zero evidence, an unsearched source,
-  an unavailable source, and a period outside source coverage.
+The first implementation must explain what an artist's evidence means relative
+to other eligible artists.
 
-These items must not delay further multi-source Period Intelligence work.
+Each source-specific comparative statement must disclose:
 
-### P1.4 Correct period terminology
+- the measured dimension;
+- the artist's value;
+- percentile;
+- numeric rank;
+- eligible comparison-population size;
+- comparison-population eligibility rule;
+- evidence source;
+- coverage basis;
+- concise interpretation.
 
-- Replace unqualified `Tracks Matched` with an evidence-specific label.
-- Do not use `Time Machine` as the only visible source description.
-- Correct the malformed date-range arrow encoding.
-- Replace generic zero states with diagnostic source-coverage messages.
+Example:
 
-## Priority 1 — Cross-Surface Integration
+`97 confirmed plays - 84th percentile, rank 296 of 1,846 artists with Actual Listening evidence.`
 
-### P1.5 Dashboard to Workbench
+Initial candidate dimensions:
 
-- Launch preconfigured artist, album, song, playlist, station, or period
-  investigations from Dashboard signals.
-- Preserve the originating signal and capture timestamp.
+- confirmed Actual Plays;
+- confirmed listening duration;
+- Library Evidence record count;
+- historical relationship span;
+- Recent Apple observation volume;
+- snapshot persistence;
+- unique observed objects.
 
-### P1.6 Workbench to Artist Intelligence
+Requirements:
 
-- Open the canonical artist profile from an investigation.
-- Preserve enough state to return to the active investigation.
+- Missing source coverage must not be treated as zero activity.
+- Artist-only comparisons and artist-family comparisons must remain distinct.
+- Comparison populations must be source-specific.
+- The eligible population must always be disclosed.
+- Rankings must use deterministic and documented tie handling.
+- A source with insufficient coverage must return an explicit coverage state
+  rather than a misleading rank.
+- The initial interface must not present one unexplained overall percentage.
+- Source-specific comparative facts may be presented before any composite
+  relationship model exists.
 
-### P1.7 Artist Intelligence to Workbench
+Implementation stages:
 
-- Link evidence, uncertainty, and questions to targeted investigations.
-- Do not reproduce full reasoning traces in the profile.
+1. approve dimensions, populations, tie handling, and missing-data behavior;
+2. implement backend comparative calculations and contract fields;
+3. add shared presentation components;
+4. validate representative artist and artist-family scenarios.
 
-### P1.8 Playlist Intelligence integration
+### Priority 3 - Define the canonical Artist summary contract
 
-- Link playlist artists, tracks, and claims to Workbench investigations.
-- Link material playlist evidence from Artist Intelligence.
+Status: Active.
 
-## Priority 1 — Shared Artist Profile
-
-### P1.9 Consolidate the canonical profile model
-
-The shared profile should summarize:
+The shared Artist summary must support:
 
 - canonical artist identity;
-- artist family and aliases;
+- known aliases and artist-family identity;
+- artist-only and artist-family scope;
 - Actual Plays;
 - Actual Skips;
 - listening duration;
-- historical span;
-- library representation;
+- historical relationship span;
+- Library Evidence representation;
 - catalog depth;
-- recent Apple signals;
-- relationship shape when governed and supported;
-- evidence coverage and confidence.
+- current Recent Apple signals;
+- historical snapshot observations;
+- comparative standing when supported;
+- evidence coverage;
+- confidence;
+- limitations;
+- provenance;
+- suggested investigations.
 
-### P1.10 Remove duplicate profile logic
+Relationship shape may appear only after its governing model is approved.
 
-- Dashboard and Workbench should consume the same canonical summary.
-- Artist Intelligence should not independently rederive source semantics.
+Dashboard, Query Workbench, and Artist Intelligence must consume this shared
+contract rather than independently deriving artist semantics.
 
-## Priority 1 — System Health and Trust
+### Priority 4 - Extract Artist Investigation from QueryWorkbench
 
-### P1.11 Add visible Music source health
+Status: Active after the canonical Artist summary contract is stable.
 
-Expose:
+Requirements:
 
-- backend availability;
-- last Apple refresh;
-- snapshot identifier;
-- objects captured;
-- archive availability;
-- actual-play source availability;
-- identity mapping health;
-- stale or partial data warnings.
+- extract the Artist Investigation result from oversized inline logic in
+  `src/QueryWorkbench.jsx`;
+- preserve current accepted behavior;
+- preserve current and historical Recent Apple separation;
+- preserve artist-family handling;
+- render backend contracts rather than reimplement domain reasoning;
+- avoid moving the same oversized logic into a differently named component;
+- add focused acceptance coverage before removing the inline implementation.
 
-### P1.12 Separate operational failure from empty evidence
+### Priority 5 - Build reusable evidence components
 
-- Backend unavailable is an error.
-- Source unavailable is a coverage condition.
-- Source searched with zero results is a valid analytical outcome.
-- Source not searched must be disclosed.
-
-## Priority 2 — Workbench UX Architecture
-
-### P2.1 Replace filter-first navigation with investigation types
-
-Supported investigation types should include:
-
-- artist investigation;
-- period investigation;
-- song investigation;
-- album investigation;
-- playlist investigation;
-- current versus historical comparison;
-- evidence inspection.
-
-### P2.2 Build shared evidence components
+Status: Active after the shared contract is defined.
 
 Reusable components should render:
 
@@ -341,159 +406,368 @@ Reusable components should render:
 - facts;
 - insights;
 - confidence;
+- warnings;
 - limitations;
 - provenance;
-- next investigations.
+- suggested investigations;
+- comparative standing.
 
-## Priority 2 — Music Library Reduction
+Components must render shared contracts. Source semantics and analytical
+classification logic must not be independently recreated in React components.
 
-### P2.3 Compact Library administration and inventory embedded functionality
+## 7. Near-term work
 
-- Keep Library search visible while reducing the oversized administration area.
-- Replace the exposed export, restore, CSV import, and template-download controls with a compact `Manage Library` menu or expandable administration panel.
-- Reduce the hero and header height and keep album, artist, and show counts inline.
-- Remove or consolidate the duplicate Music Administration explanation strip.
-- Reclaim vertical space for curated Library content.
+### 7.1 Period Intelligence regression fixtures
 
-- Document all valid behavior currently provided by `MusicLibrary.jsx` and
-  `MusicTimeMachine`.
-- Identify the destination surface for each behavior.
+Create reusable regression fixtures for:
 
-### P2.3a Make Library search visible and actionable
+- Actual Listening evidence;
+- Library-only evidence;
+- Recent Apple-only evidence;
+- mixed evidence;
+- searched-zero evidence;
+- unsearched source;
+- unavailable source;
+- unsupported historical period;
+- ambiguous artist identity;
+- artist-family identity;
+- timezone boundaries.
 
-- Current `Search Library` behavior filters the lower curated Artists, Albums, Playlists, Shows, and Explore sections.
-- Music Dashboard, Tag Browser, Artist Spotlight, and Recently Added remain independent of the query.
-- When matching curated sections are collapsed, the interface provides little or no visible confirmation that filtering occurred.
-- Add immediate search feedback through a dedicated results panel or an equivalent clearly visible interaction.
-- Include total and per-category match counts, matching records, a clear-query action, and an explicit zero-result state.
-- Preserve Dashboard summary behavior unless a later product decision deliberately makes summaries query-responsive.
-- This is a known non-blocking usability follow-up and must not delay higher-priority Period Intelligence work.
+Fixtures must validate both API contracts and user-facing diagnostic behavior.
 
+### 7.2 Evidence-backed period tags
 
-### P2.4 Remove analytical duplication
+Complete tags for:
 
-- Move Period Intelligence fully into Query Workbench.
-- Remove the embedded Music Dashboard section.
-- Remove duplicate artist and playlist analysis after migration.
+- artists present;
+- albums present;
+- tracks present;
+- dominant artist;
+- dominant album;
+- dominant track;
+- playlists;
+- radio stations;
+- album-centered listening;
+- concentration versus exploration;
+- returning versus newly observed artists;
+- catalog depth versus isolated tracks;
+- unknown or incomplete context.
 
-### P2.5 Change navigation status
+Every tag must carry provenance. A tag must not be produced when the source
+evidence does not support it.
 
-- Hide Music Library from primary navigation only after administration and
-  curation workflows remain accessible.
+### 7.3 Actual Listening artist identity
 
-## Priority 2 — Album Intelligence
+Add canonical artist identity to the Actual Listening projection.
 
-### P2.6 Enforce canonical Album Entities
+Requirements:
 
-- Live Apple data, historical activity, playlists, and album intelligence should
-  join through canonical Album Entities rather than raw titles.
+- preserve source artist text;
+- add canonical artist identity where resolved;
+- retain ambiguity explicitly;
+- support artist-family rollup without erasing artist-only evidence;
+- prevent duplicate counting across aliases or family members;
+- retain season-independent, source-independent identity rules.
 
-### P2.7 Develop album-depth measures
+### 7.4 Period terminology and presentation cleanup
 
-- Distinguish concentrated album relationships from shallow relationships.
-- Measure album depth independently of ecosystem concentration.
-- Separate studio, live, compilation, and other album forms where supported.
+Remaining non-blocking cleanup includes:
 
-### P2.8 Integrate live album observations
+- clarify or replace `yearsActive`;
+- distinguish active-year count from relationship span;
+- rename unclear Library Evidence labels;
+- replace unqualified `Tracks Matched` language with evidence-specific labels;
+- avoid using `Time Machine` as the only visible source description;
+- normalize malformed date-range arrow presentation;
+- use compact detail presentation when covered metrics are all zero;
+- suppress or reword low-value repeated facts;
+- avoid repeating the same source limitation in multiple sections;
+- suppress empty ranking sections when no evidence supports them;
+- preserve diagnostic distinctions among zero, unsearched, unavailable, stale,
+  and unsupported states;
+- harden the timezone contract.
 
-- Normalize live Apple album objects before persistence.
-- Connect current album signals to historical album evidence.
+### 7.5 Cross-surface integration
 
-## Priority 3 — Governed Relationship Intelligence
+Implement:
 
-These concepts remain blocked until formulas and gates are reviewed and accepted.
+- Dashboard to preconfigured Workbench investigations;
+- Workbench to canonical Artist Intelligence profiles;
+- Artist Intelligence back to the originating Workbench investigation;
+- Playlist Intelligence to artist, track, album, and claim investigations;
+- Artist Intelligence links to material playlist evidence.
 
-- Permanent Companion
-- Hidden Pillar
-- Quiet Persistence
-- Established Companion
-- Catalog Relationship
-- Album-Centered Relationship
-- Song-Centered Relationship
-- Emerging Core Artist
-- Dormant Core
-- Resurgent Core
-- Friction
-- Relationship shape
+Each transition must preserve:
 
-The UI must not present blocked concepts as production classifications.
+- originating signal;
+- source;
+- timestamp;
+- canonical entity identity;
+- active filters;
+- investigation parameters;
+- return state.
 
-## Deferred Research and Product Concepts
+Artist Intelligence must not reproduce the full Workbench reasoning trace.
 
-The following remain outside the first implementation sequence:
+### 7.6 Visible Music source health and freshness
+
+Expose:
+
+- backend availability;
+- latest successful Apple refresh;
+- latest snapshot identifier;
+- latest snapshot timestamp;
+- objects captured;
+- snapshot archive availability;
+- Actual Listening source availability and coverage;
+- Library source availability;
+- identity-mapping health;
+- stale or partial-data warnings.
+
+Create a standard source-provenance registry used by Music surfaces.
+
+Operational errors and valid evidence states must remain visually and
+semantically distinct.
+
+### 7.7 Compact Music Library administration and curation
+
+Keep Library search visible.
+
+Collapse these controls into a compact `Manage Library` panel or menu:
+
+- Export Music Library;
+- Restore JSON;
+- Add Albums CSV;
+- Download Album Template.
+
+Also:
+
+- reduce the oversized hero and header;
+- keep album, artist, and show counts compact and inline;
+- remove or consolidate duplicate Music Administration explanations;
+- reclaim vertical space for curated Library content;
+- inventory all valid analytical behavior before removing duplication;
+- identify the destination surface for every migrated behavior;
+- remove embedded Dashboard or duplicate analysis only after migration;
+- preserve accessible administration and curation before changing navigation.
+
+#### Library search follow-up
+
+Current Library search filters lower curated Artists, Albums, Playlists, Shows,
+and Explore sections. Dashboard summaries, Tag Browser, Artist Spotlight, and
+Recently Added remain independent of the query.
+
+When matching sections are collapsed, filtering may provide insufficient
+visible confirmation.
+
+Add:
+
+- immediate search feedback;
+- a dedicated results panel or equivalent visible interaction;
+- total match count;
+- per-category match counts;
+- matching records;
+- clear-query action;
+- explicit zero-result state.
+
+Preserve Dashboard summary behavior unless a later product decision deliberately
+makes summaries query-responsive.
+
+### 7.8 Song Investigation shared evidence contract
+
+Rebuild Song Investigation on the shared evidence contract.
+
+It must distinguish:
+
+- Actual Plays;
+- Actual Skips;
+- listening duration;
+- Library Evidence;
+- current Recent Apple observations;
+- historical snapshot observations;
+- playlist-placement evidence;
+- source coverage;
+- provenance;
+- confidence and limitations.
+
+Song Investigation must not infer total history from library presence or recent
+observations.
+
+### 7.9 Canonical Album Intelligence
+
+Continue canonical Album Intelligence with:
+
+- canonical Album Entities;
+- album identity resolution;
+- album-depth measures;
+- concentrated versus shallow album relationships;
+- studio, live, compilation, and other release distinctions where supported;
+- normalized live Apple album objects before persistence;
+- current Recent Apple album signals joined to historical album evidence;
+- source coverage and provenance.
+
+## 8. Later work
+
+### 8.1 Playlist Intelligence expansion
+
+Later Playlist Intelligence work includes:
+
+- canonical playlist identity;
+- playlist navigation;
+- curation evidence;
+- historical playlist observations;
+- governed cohort comparisons;
+- playlist-to-artist and playlist-to-track relationships;
+- broad playlist comparisons after comparison rules are approved.
+
+### 8.2 Additional Album Intelligence
+
+Later Album work includes:
+
+- deeper album-family and edition handling;
+- release-history relationships;
+- governed album comparative standing;
+- additional depth and persistence measures.
+
+### 8.3 Specialty concepts
+
+The following remain later or deferred unless explicitly reprioritized:
 
 - Desert Island 25;
 - Albums I Lived With;
-- Permanent Companions dedicated UI;
-- album family above canonical album;
-- broad playlist comparison;
-- fixture candidate queue;
-- compact Recently Active Albums card density;
-- additional identity entity types without documented identity rules;
-- unsupported emotional or autobiographical conclusions.
+- Permanent Companions dedicated interface;
+- broad specialty collection experiences;
+- fixture-candidate queue;
+- compact Recently Active Albums density refinements;
+- additional identity entity types without documented identity rules.
 
-## Protected Existing Work
+## 9. Blocked pending governance
 
-The following uncommitted implementation files must remain protected until their
-intent is classified and reviewed:
+### 9.1 Composite relationship scoring
 
-- `data/music/scripts/bridge/artist_bridge.py`
-- `server/lib/investigationBuilder.js`
-- `src/App.jsx`
-- `src/ArtistIntelligence.jsx`
-- `src/MusicLibrary.jsx`
-- `src/QueryWorkbench.jsx`
-- `src/music/components/ArtistDossierModal.jsx`
+A composite relationship percentage or score remains blocked.
 
-These changes appear to improve terminology and remove presentation-side
-classification logic. They should not be overwritten by new sprint work.
+Governance must define:
 
-## Recommended Implementation Sequence
+- source weighting;
+- missing-data behavior;
+- artist-family rollups;
+- recency;
+- skips;
+- confidence gates;
+- minimum source coverage;
+- normalization populations;
+- tie handling;
+- contradictory evidence;
+- explanation requirements.
 
-1. Review and preserve the seven existing uncommitted changes.
-2. Freeze the Period Intelligence field-level API contract.
-3. Implement source coverage and diagnostic zero states.
-4. Add actual activity and snapshot evidence to period investigations.
-5. Build Period Intelligence regression fixtures.
-6. Implement the Period Intelligence UI vertical slice.
-7. Connect Dashboard signals to Workbench investigations.
-8. Consolidate the shared artist profile.
-9. Integrate Playlist Intelligence transitions.
-10. Add source-health and freshness reporting.
-11. Reduce Music Library to administration and curation.
-12. Continue Album Intelligence and governed classification work.
+No unexplained overall percentage may be presented.
 
-## Music Sprint 1 Exit Criteria
+### 9.2 Relationship classifications
 
-Music Sprint 1 is complete when:
+These concepts remain blocked until formulas, evidence requirements, and
+confidence gates are reviewed and approved:
 
-- the current architecture and API paths are documented;
-- the Period Intelligence requirements are documented;
-- the surface responsibility matrix is documented;
-- the consolidated backlog is prioritized;
-- obsolete Listening Eras remnants are absent;
-- existing uncommitted implementation work is identified and protected;
-- the next implementation vertical slice is selected;
-- dependencies and risks are explicit;
-- the scoped documentation diff passes validation;
-- the requirements documents are committed before implementation begins.
+- Permanent Companion;
+- Hidden Pillar;
+- Quiet Persistence;
+- Established Companion;
+- Catalog Relationship;
+- Album-Centered Relationship;
+- Song-Centered Relationship;
+- Emerging Core Artist;
+- Dormant Core;
+- Resurgent Core;
+- Friction;
+- Relationship Shape.
 
-## Dependencies
+The production interface must not present blocked concepts as accepted
+classifications.
 
-- Apple daily track-summary historical data;
+### 9.3 Unsupported interpretation
+
+Emotional, autobiographical, psychological, or life-event conclusions remain
+unsupported unless explicit user-authored evidence and a governed product
+decision establish them.
+
+## 10. Explicitly deferred
+
+The following are explicitly deferred:
+
+- playback-context ingestion as an immediate sprint requirement;
+- unattended automated Apple snapshot capture;
+- daily snapshot-health monitoring;
+- Listening Eras;
+- reintroduction of Listening Eras into navigation or requirements;
+- broad playlist comparisons;
+- specialty collection interfaces not selected for implementation.
+
+Existing intermittent timestamped snapshots are sufficient for current
+exploratory use. Snapshot automation is optional and non-blocking.
+
+Listening Eras remain removed and must not return without an explicit product
+decision.
+
+## 11. Source inventory
+
+Current and planned Music intelligence may use:
+
+- Apple Music daily track-summary historical data;
+- Apple Music Library Tracks;
+- current Apple Music objects;
 - Apple snapshot warehouse history;
-- source provenance registry;
-- canonical artist, album, song, playlist, station, and period identity;
-- investigation packet support for period entities;
-- playback-context classification rules;
-- regression fixtures and representative source scenarios.
+- canonical artist identity;
+- canonical artist-family identity;
+- canonical album identity;
+- canonical song identity;
+- canonical playlist identity;
+- canonical station identity;
+- canonical period identity;
+- investigation packet contracts.
 
-## Primary Risks
+Every exposed fact, interpretation, tag, comparison, and warning must identify
+its supporting evidence family or explicitly state that the source was
+unavailable, unsearched, stale, unsupported, or empty.
 
-- overstating recent observations as confirmed plays;
-- presenting Library Tracks reconstruction as complete history;
-- styling the UI before stabilizing backend contracts;
-- duplicating analytical logic across React components;
-- deleting valid Music Library functionality before migration;
-- treating unavailable and empty evidence as the same condition;
-- exposing blocked relationship classifications as production truth.
+## 12. Implementation guardrails
+
+Do not:
+
+- overstate recent observations as confirmed plays;
+- present Library Tracks reconstruction as complete history;
+- treat missing source coverage as zero activity;
+- combine artist-only and artist-family evidence without disclosure;
+- style major interfaces before stabilizing backend contracts;
+- duplicate analytical logic across React components;
+- delete valid Music Library functionality before migration;
+- treat unavailable and empty evidence as the same condition;
+- fabricate playback context;
+- expose blocked classifications as production truth;
+- introduce a composite score without approved governance;
+- reintroduce Listening Eras without an explicit decision.
+
+## 13. Approval and next-slice gate
+
+This reconciled backlog becomes the requirements lock only after Ginto reviews
+and approves:
+
+- the completed-for-v1 record;
+- the active implementation order;
+- Artist Comparative Standing requirements;
+- the canonical Artist summary contract;
+- the near-term workstreams;
+- blocked and deferred decisions.
+
+After approval:
+
+1. commit and push only this reconciled backlog document;
+2. confirm the repository is clean and synchronized;
+3. begin the next approved vertical slice;
+4. do not broaden the slice without updating this backlog.
+
+The recommended next implementation slice is:
+
+`Artist Comparative Standing contract and comparison-population design`
+
+Feature implementation remains prohibited until the backlog checkpoint is
+approved, committed, and pushed.
