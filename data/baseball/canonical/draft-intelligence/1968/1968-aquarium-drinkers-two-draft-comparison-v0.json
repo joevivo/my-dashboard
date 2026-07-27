@@ -1,0 +1,41 @@
+{
+    "schemaVersion":  "v0",
+    "recordType":  "strat365-cross-draft-comparison",
+    "playerSet":  1968,
+    "events":  [
+                   {
+                       "eventId":  "1968-league-479336-aquarium-drinkers-auto-draft",
+                       "teamSequence":  1,
+                       "leagueId":  479336,
+                       "submittedCount":  25,
+                       "securedCount":  13,
+                       "replacementCount":  12,
+                       "retentionRate":  0.52,
+                       "topSevenSecured":  5,
+                       "submittedSalary":  79730000,
+                       "actualSalary":  71900000
+                   },
+                   {
+                       "eventId":  "1968-league-479431-aquarium-drinkers-comiskey-auto-draft",
+                       "teamSequence":  2,
+                       "leagueId":  479431,
+                       "submittedCount":  24,
+                       "securedCount":  19,
+                       "replacementCount":  5,
+                       "retentionRate":  0.7917,
+                       "topSevenSecured":  7,
+                       "submittedSalary":  76170000,
+                       "actualSalary":  73460000
+                   }
+               ],
+    "observedDifferences":  {
+                                "retentionRateDeltaPercentagePoints":  27.17,
+                                "replacementCountReduction":  7,
+                                "topSevenSecuredIncrease":  2
+                            },
+    "interpretation":  [
+                           "The second draft retained a materially larger share of submitted targets.",
+                           "The second draft protected all seven highest-priority targets.",
+                           "The observed improvement must not be attributed solely to draft-order quality without controlling for target mix and opponent demand."
+                       ]
+}

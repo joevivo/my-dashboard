@@ -1,0 +1,666 @@
+{
+    "schemaVersion":  "v0",
+    "recordType":  "strat365-auto-draft-learning-event",
+    "eventId":  "1968-league-479336-aquarium-drinkers-auto-draft",
+    "authorityStatus":  "authoritative-user-captured",
+    "draftOrderPreserved":  true,
+    "team":  {
+                 "name":  "Aquarium Drinkers",
+                 "teamSequence":  1,
+                 "leagueId":  479336,
+                 "playerSet":  1968,
+                 "ballpark":  "Astrodome 1968",
+                 "payrollLimit":  80000000
+             },
+    "draftOutcomeSummary":  {
+                                "submittedPlayerCount":  25,
+                                "directSelectionCount":  13,
+                                "replacementCount":  12,
+                                "directSelectionRate":  0.52,
+                                "topSevenSubmitted":  7,
+                                "topSevenSecured":  5,
+                                "submittedSalary":  79730000,
+                                "actualSalary":  71900000,
+                                "salaryReduction":  7830000
+                            },
+    "submittedOrderAndResults":  [
+                                     {
+                                         "submittedRank":  1,
+                                         "target":  {
+                                                        "player":  "Freehan, B.",
+                                                        "position":  "C",
+                                                        "salary":  8210000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Freehan, B.",
+                                                        "actualPosition":  "C",
+                                                        "actualSalary":  8210000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  2,
+                                         "target":  {
+                                                        "player":  "Alou, F.",
+                                                        "position":  "CF",
+                                                        "salary":  8170000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Alou, F.",
+                                                        "actualPosition":  "CF",
+                                                        "actualSalary":  8170000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  3,
+                                         "target":  {
+                                                        "player":  "Chance, D.",
+                                                        "position":  "P (S7*/R3)",
+                                                        "salary":  6180000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Chance, D.",
+                                                        "actualPosition":  "P (S7*/R3)",
+                                                        "actualSalary":  6180000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  4,
+                                         "target":  {
+                                                        "player":  "Fregosi, J.",
+                                                        "position":  "SS",
+                                                        "salary":  5430000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Fregosi, J.",
+                                                        "actualPosition":  "SS",
+                                                        "actualSalary":  5430000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  5,
+                                         "target":  {
+                                                        "player":  "Santo, R.",
+                                                        "position":  "3B",
+                                                        "salary":  7460000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Robinson, Brooks",
+                                                        "actualPosition":  "3B",
+                                                        "actualSalary":  6730000,
+                                                        "salaryDelta":  -730000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Iowa bombers",
+                                                                     "opponentDisplayedRank":  1
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  6,
+                                         "target":  {
+                                                        "player":  "Niekro, P.",
+                                                        "position":  "P (S8*/R3)",
+                                                        "salary":  3220000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Bunker, Wally",
+                                                        "actualPosition":  "P (S5/R3)",
+                                                        "actualSalary":  3020000,
+                                                        "salaryDelta":  -200000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Norwich Not Flatlanders",
+                                                                     "opponentDisplayedRank":  1
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  7,
+                                         "target":  {
+                                                        "player":  "McAuliffe, D.",
+                                                        "position":  "2B",
+                                                        "salary":  7340000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "McAuliffe, D.",
+                                                        "actualPosition":  "2B",
+                                                        "actualSalary":  7340000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  8,
+                                         "target":  {
+                                                        "player":  "Parker, W.",
+                                                        "position":  "1B",
+                                                        "salary":  2820000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Parker, W.",
+                                                        "actualPosition":  "1B",
+                                                        "actualSalary":  2820000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  9,
+                                         "target":  {
+                                                        "player":  "Moose, B.",
+                                                        "position":  "P (S7/R3)",
+                                                        "salary":  2600000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Moose, B.",
+                                                        "actualPosition":  "P (S7/R3)",
+                                                        "actualSalary":  2600000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  10,
+                                         "target":  {
+                                                        "player":  "Singer, B.",
+                                                        "position":  "P (S7*)",
+                                                        "salary":  2250000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Singer, B.",
+                                                        "actualPosition":  "P (S7*)",
+                                                        "actualSalary":  2250000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  11,
+                                         "target":  {
+                                                        "player":  "Washburn, R.",
+                                                        "position":  "P (S7*)",
+                                                        "salary":  3580000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Washburn, R.",
+                                                        "actualPosition":  "P (S7*)",
+                                                        "actualSalary":  3580000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  12,
+                                         "target":  {
+                                                        "player":  "McDaniel, L.",
+                                                        "position":  "P (R3)",
+                                                        "salary":  2700000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Wills, Ron",
+                                                        "actualPosition":  "P (R3)",
+                                                        "actualSalary":  660000,
+                                                        "salaryDelta":  -2040000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Mighty Yankees",
+                                                                     "opponentDisplayedRank":  5
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  13,
+                                         "target":  {
+                                                        "player":  "Hoerner, J.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  1710000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Baldwin, Dave",
+                                                        "actualPosition":  "P (R2)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  -1210000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Boquete Bombers",
+                                                                     "opponentDisplayedRank":  3
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  14,
+                                         "target":  {
+                                                        "player":  "Wilhelm, H.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  1620000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Fisher, Eddie",
+                                                        "actualPosition":  "P (R3)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  -1120000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "New York Highlanders",
+                                                                     "opponentDisplayedRank":  7
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  15,
+                                         "target":  {
+                                                        "player":  "Hamilton, S.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  1530000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Hamilton, S.",
+                                                        "actualPosition":  "P (R2)",
+                                                        "actualSalary":  1530000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  16,
+                                         "target":  {
+                                                        "player":  "Mota, M.",
+                                                        "position":  "LF",
+                                                        "salary":  1940000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Harper, Tommy",
+                                                        "actualPosition":  "LF,RF,CF,2B",
+                                                        "actualSalary":  1850000,
+                                                        "salaryDelta":  -90000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Norwich Not Flatlanders",
+                                                                     "opponentDisplayedRank":  14
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  17,
+                                         "target":  {
+                                                        "player":  "Fernandez, F.",
+                                                        "position":  "C",
+                                                        "salary":  1960000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Tillman, Bob",
+                                                        "actualPosition":  "C",
+                                                        "actualSalary":  1560000,
+                                                        "salaryDelta":  -400000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Classic City Crazy Eights",
+                                                                     "opponentDisplayedRank":  11
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  18,
+                                         "target":  {
+                                                        "player":  "Knowles, D.",
+                                                        "position":  "P (R3)",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Knowles, D.",
+                                                        "actualPosition":  "P (R3)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  19,
+                                         "target":  {
+                                                        "player":  "Aguirre, H.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  1350000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Lasher, Fred",
+                                                        "actualPosition":  "P (R3)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  -850000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Funk Brothers",
+                                                                     "opponentDisplayedRank":  9
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  20,
+                                         "target":  {
+                                                        "player":  "Jimenez, M.",
+                                                        "position":  "LF",
+                                                        "salary":  3310000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Shamsky, Art",
+                                                        "actualPosition":  "LF,1B,RF",
+                                                        "actualSalary":  2420000,
+                                                        "salaryDelta":  -890000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Funk Brothers",
+                                                                     "opponentDisplayedRank":  17
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  21,
+                                         "target":  {
+                                                        "player":  "Tartabull, J.",
+                                                        "position":  "RF",
+                                                        "salary":  2380000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Tartabull, J.",
+                                                        "actualPosition":  "RF",
+                                                        "actualSalary":  2380000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  22,
+                                         "target":  {
+                                                        "player":  "Schaal, P.",
+                                                        "position":  "3B",
+                                                        "salary":  1970000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Bailey, Bob",
+                                                        "actualPosition":  "3B,SS",
+                                                        "actualSalary":  1670000,
+                                                        "salaryDelta":  -300000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Fresno Raisin Eaters",
+                                                                     "opponentDisplayedRank":  14
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  23,
+                                         "target":  {
+                                                        "player":  "Gosger, J.",
+                                                        "position":  "LF",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Gosger, J.",
+                                                        "actualPosition":  "LF",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  24,
+                                         "target":  {
+                                                        "player":  "Brinkman, E.",
+                                                        "position":  "SS",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Harrelson, Bud",
+                                                        "actualPosition":  "SS",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "RainRain 80\u0027s Mustache",
+                                                                     "opponentDisplayedRank":  15
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  25,
+                                         "target":  {
+                                                        "player":  "Torres, H.",
+                                                        "position":  "SS",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Matchick, Tommy",
+                                                        "actualPosition":  "SS,2B,1B",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Norwich Not Flatlanders",
+                                                                     "opponentDisplayedRank":  23
+                                                                 }
+                                     }
+                                 ],
+    "contestedTargets":  [
+                             {
+                                 "submittedRank":  5,
+                                 "targetedPlayer":  "Santo, R.",
+                                 "takenBy":  "Iowa bombers",
+                                 "opponentDisplayedRank":  1,
+                                 "replacementPlayer":  "Robinson, Brooks",
+                                 "replacementSalaryDelta":  -730000
+                             },
+                             {
+                                 "submittedRank":  6,
+                                 "targetedPlayer":  "Niekro, P.",
+                                 "takenBy":  "Norwich Not Flatlanders",
+                                 "opponentDisplayedRank":  1,
+                                 "replacementPlayer":  "Bunker, Wally",
+                                 "replacementSalaryDelta":  -200000
+                             },
+                             {
+                                 "submittedRank":  12,
+                                 "targetedPlayer":  "McDaniel, L.",
+                                 "takenBy":  "Mighty Yankees",
+                                 "opponentDisplayedRank":  5,
+                                 "replacementPlayer":  "Wills, Ron",
+                                 "replacementSalaryDelta":  -2040000
+                             },
+                             {
+                                 "submittedRank":  13,
+                                 "targetedPlayer":  "Hoerner, J.",
+                                 "takenBy":  "Boquete Bombers",
+                                 "opponentDisplayedRank":  3,
+                                 "replacementPlayer":  "Baldwin, Dave",
+                                 "replacementSalaryDelta":  -1210000
+                             },
+                             {
+                                 "submittedRank":  14,
+                                 "targetedPlayer":  "Wilhelm, H.",
+                                 "takenBy":  "New York Highlanders",
+                                 "opponentDisplayedRank":  7,
+                                 "replacementPlayer":  "Fisher, Eddie",
+                                 "replacementSalaryDelta":  -1120000
+                             },
+                             {
+                                 "submittedRank":  16,
+                                 "targetedPlayer":  "Mota, M.",
+                                 "takenBy":  "Norwich Not Flatlanders",
+                                 "opponentDisplayedRank":  14,
+                                 "replacementPlayer":  "Harper, Tommy",
+                                 "replacementSalaryDelta":  -90000
+                             },
+                             {
+                                 "submittedRank":  17,
+                                 "targetedPlayer":  "Fernandez, F.",
+                                 "takenBy":  "Classic City Crazy Eights",
+                                 "opponentDisplayedRank":  11,
+                                 "replacementPlayer":  "Tillman, Bob",
+                                 "replacementSalaryDelta":  -400000
+                             },
+                             {
+                                 "submittedRank":  19,
+                                 "targetedPlayer":  "Aguirre, H.",
+                                 "takenBy":  "Funk Brothers",
+                                 "opponentDisplayedRank":  9,
+                                 "replacementPlayer":  "Lasher, Fred",
+                                 "replacementSalaryDelta":  -850000
+                             },
+                             {
+                                 "submittedRank":  20,
+                                 "targetedPlayer":  "Jimenez, M.",
+                                 "takenBy":  "Funk Brothers",
+                                 "opponentDisplayedRank":  17,
+                                 "replacementPlayer":  "Shamsky, Art",
+                                 "replacementSalaryDelta":  -890000
+                             },
+                             {
+                                 "submittedRank":  22,
+                                 "targetedPlayer":  "Schaal, P.",
+                                 "takenBy":  "Fresno Raisin Eaters",
+                                 "opponentDisplayedRank":  14,
+                                 "replacementPlayer":  "Bailey, Bob",
+                                 "replacementSalaryDelta":  -300000
+                             },
+                             {
+                                 "submittedRank":  24,
+                                 "targetedPlayer":  "Brinkman, E.",
+                                 "takenBy":  "RainRain 80\u0027s Mustache",
+                                 "opponentDisplayedRank":  15,
+                                 "replacementPlayer":  "Harrelson, Bud",
+                                 "replacementSalaryDelta":  0
+                             },
+                             {
+                                 "submittedRank":  25,
+                                 "targetedPlayer":  "Torres, H.",
+                                 "takenBy":  "Norwich Not Flatlanders",
+                                 "opponentDisplayedRank":  23,
+                                 "replacementPlayer":  "Matchick, Tommy",
+                                 "replacementSalaryDelta":  0
+                             }
+                         ],
+    "waiverEvidence":  [
+                           {
+                               "priority":  1,
+                               "claimedPlayer":  "Perry, G.",
+                               "claimedPosition":  "P (S8*/R3)",
+                               "claimedSalary":  6880000,
+                               "droppedPlayer":  "Fisher, Eddie",
+                               "droppedPosition":  "P (R3)",
+                               "droppedSalary":  500000,
+                               "result":  "picked_up",
+                               "reason":  null
+                           },
+                           {
+                               "priority":  2,
+                               "claimedPlayer":  "Nyman, J.",
+                               "claimedPosition":  "P (S5/R3)",
+                               "claimedSalary":  990000,
+                               "droppedPlayer":  "Lasher, Fred",
+                               "droppedPosition":  "P (R3)",
+                               "droppedSalary":  500000,
+                               "result":  "picked_up",
+                               "reason":  null
+                           },
+                           {
+                               "priority":  3,
+                               "claimedPlayer":  "Stahl, L.",
+                               "claimedPosition":  "CF",
+                               "claimedSalary":  1180000,
+                               "droppedPlayer":  "Baldwin, Dave",
+                               "droppedPosition":  "P (R2)",
+                               "droppedSalary":  500000,
+                               "result":  "picked_up",
+                               "reason":  null
+                           },
+                           {
+                               "priority":  4,
+                               "claimedPlayer":  "Hamilton, J.",
+                               "claimedPosition":  "P (S5/R3)",
+                               "claimedSalary":  660000,
+                               "droppedPlayer":  null,
+                               "droppedPosition":  null,
+                               "droppedSalary":  null,
+                               "result":  "rejected",
+                               "reason":  "Too few pure relievers"
+                           }
+                       ],
+    "intendedIntelligenceUses":  [
+                                     "target-survival analysis by submitted rank",
+                                     "player-demand and positional-scarcity analysis",
+                                     "replacement-chain quality analysis",
+                                     "salary-delta analysis",
+                                     "opponent draft-behavior analysis",
+                                     "future draft-priority calibration",
+                                     "post-draft waiver recovery analysis"
+                                 ],
+    "interpretationConstraints":  [
+                                      "One draft event is evidence, not a stable probability model.",
+                                      "Cross-draft comparisons must account for target mix and opponent differences.",
+                                      "Opponent displayed rank is evidence about the contested player, not the opponent\u0027s complete submitted order."
+                                  ],
+    "provenance":  {
+                       "sourceArtifact":  "data/baseball/parsed/strat365/1968/post-draft/1968.aquarium-drinkers.league-479336.auto-draft-results-v0.json",
+                       "sourceArtifactSha256":  "319250BABB0A9A36399CC4AF73FC01C605A7C92AD47862E00D4479373B113D0E",
+                       "canonicalizedUtc":  "2026-07-27T18:02:10.1282713Z"
+                   }
+}

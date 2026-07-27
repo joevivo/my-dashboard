@@ -1,0 +1,548 @@
+{
+    "schemaVersion":  "v0",
+    "recordType":  "strat365-auto-draft-learning-event",
+    "eventId":  "1968-league-479431-aquarium-drinkers-comiskey-auto-draft",
+    "authorityStatus":  "authoritative-user-captured",
+    "draftOrderPreserved":  true,
+    "team":  {
+                 "name":  "Aquarium Drinkers",
+                 "teamSequence":  2,
+                 "leagueId":  479431,
+                 "playerSet":  1968,
+                 "ballpark":  "Comiskey Park 1968",
+                 "payrollLimit":  80000000
+             },
+    "draftOutcomeSummary":  {
+                                "submittedPlayerCount":  24,
+                                "directSelectionCount":  19,
+                                "replacementCount":  5,
+                                "directSelectionRate":  0.7917,
+                                "topSevenSubmitted":  7,
+                                "topSevenSecured":  7,
+                                "submittedSalary":  76170000,
+                                "actualSalary":  73460000,
+                                "salaryReduction":  2710000
+                            },
+    "submittedOrderAndResults":  [
+                                     {
+                                         "submittedRank":  1,
+                                         "target":  {
+                                                        "player":  "Mantle, M.",
+                                                        "position":  "1B",
+                                                        "salary":  7460000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Mantle, M.",
+                                                        "actualPosition":  "1B",
+                                                        "actualSalary":  7460000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  2,
+                                         "target":  {
+                                                        "player":  "McNally, D.",
+                                                        "position":  "P (S9*)",
+                                                        "salary":  9160000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "McNally, D.",
+                                                        "actualPosition":  "P (S9*)",
+                                                        "actualSalary":  9160000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  3,
+                                         "target":  {
+                                                        "player":  "White, R.",
+                                                        "position":  "LF",
+                                                        "salary":  7060000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "White, R.",
+                                                        "actualPosition":  "LF",
+                                                        "actualSalary":  7060000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  4,
+                                         "target":  {
+                                                        "player":  "Stanley, M.",
+                                                        "position":  "CF",
+                                                        "salary":  6580000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Stanley, M.",
+                                                        "actualPosition":  "CF",
+                                                        "actualSalary":  6580000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  5,
+                                         "target":  {
+                                                        "player":  "Sims, D.",
+                                                        "position":  "C",
+                                                        "salary":  5220000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Sims, D.",
+                                                        "actualPosition":  "C",
+                                                        "actualSalary":  5220000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  6,
+                                         "target":  {
+                                                        "player":  "Northrup, J.",
+                                                        "position":  "RF",
+                                                        "salary":  6230000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Northrup, J.",
+                                                        "actualPosition":  "RF",
+                                                        "actualSalary":  6230000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  7,
+                                         "target":  {
+                                                        "player":  "Nash, J.",
+                                                        "position":  "P (S7*)",
+                                                        "salary":  5070000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Nash, J.",
+                                                        "actualPosition":  "P (S7*)",
+                                                        "actualSalary":  5070000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  8,
+                                         "target":  {
+                                                        "player":  "Johnson, D.",
+                                                        "position":  "2B",
+                                                        "salary":  3050000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Nelson, Dave",
+                                                        "actualPosition":  "2B,SS",
+                                                        "actualSalary":  2780000,
+                                                        "salaryDelta":  -270000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Ukrainian Drones",
+                                                                     "opponentDisplayedRank":  7
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  9,
+                                         "target":  {
+                                                        "player":  "Wills, M.",
+                                                        "position":  "3B",
+                                                        "salary":  2420000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Rodriguez, Aurelio",
+                                                        "actualPosition":  "3B,2B",
+                                                        "actualSalary":  1400000,
+                                                        "salaryDelta":  -1020000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Milan Azzurri",
+                                                                     "opponentDisplayedRank":  4
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  10,
+                                         "target":  {
+                                                        "player":  "Alley, G.",
+                                                        "position":  "SS",
+                                                        "salary":  2410000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Alley, G.",
+                                                        "actualPosition":  "SS",
+                                                        "actualSalary":  2410000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  11,
+                                         "target":  {
+                                                        "player":  "Carlton, S.",
+                                                        "position":  "P (S7*)",
+                                                        "salary":  3520000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Arrigo, Gerry",
+                                                        "actualPosition":  "P (S7*/R3)",
+                                                        "actualSalary":  3460000,
+                                                        "salaryDelta":  -60000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Arkansas ArkinalsÃ¢â€žÂ¢",
+                                                                     "opponentDisplayedRank":  8
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  12,
+                                         "target":  {
+                                                        "player":  "Giusti, D.",
+                                                        "position":  "P (S8*/R3)",
+                                                        "salary":  3580000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Giusti, D.",
+                                                        "actualPosition":  "P (S8*/R3)",
+                                                        "actualSalary":  3580000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  13,
+                                         "target":  {
+                                                        "player":  "Corrales, P.",
+                                                        "position":  "C",
+                                                        "salary":  2390000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Corrales, P.",
+                                                        "actualPosition":  "C",
+                                                        "actualSalary":  2390000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  14,
+                                         "target":  {
+                                                        "player":  "Bunker, W.",
+                                                        "position":  "P (S5/R3)",
+                                                        "salary":  3020000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Bunker, W.",
+                                                        "actualPosition":  "P (S5/R3)",
+                                                        "actualSalary":  3020000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  15,
+                                         "target":  {
+                                                        "player":  "Maloney, J.",
+                                                        "position":  "P (S6*)",
+                                                        "salary":  1800000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Maloney, J.",
+                                                        "actualPosition":  "P (S6*)",
+                                                        "actualSalary":  1800000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  16,
+                                         "target":  {
+                                                        "player":  "Upshaw, C.",
+                                                        "position":  "P (R4)",
+                                                        "salary":  1230000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Upshaw, C.",
+                                                        "actualPosition":  "P (R4)",
+                                                        "actualSalary":  1230000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  17,
+                                         "target":  {
+                                                        "player":  "Kline, R.",
+                                                        "position":  "P (R3)",
+                                                        "salary":  1360000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Kurtz, Hal",
+                                                        "actualPosition":  "P (R2)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  -860000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Ukrainian Drones",
+                                                                     "opponentDisplayedRank":  14
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  18,
+                                         "target":  {
+                                                        "player":  "Face, R.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  1000000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "replacement",
+                                                        "actualPlayer":  "Lamabe, Jack",
+                                                        "actualPosition":  "P (R3)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  -500000
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  "Ohio Players",
+                                                                     "opponentDisplayedRank":  11
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  19,
+                                         "target":  {
+                                                        "player":  "Lindblad, P.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Lindblad, P.",
+                                                        "actualPosition":  "P (R2)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  20,
+                                         "target":  {
+                                                        "player":  "Howser, D.",
+                                                        "position":  "2B",
+                                                        "salary":  1070000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Howser, D.",
+                                                        "actualPosition":  "2B",
+                                                        "actualSalary":  1070000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  21,
+                                         "target":  {
+                                                        "player":  "May, D.",
+                                                        "position":  "RF",
+                                                        "salary":  540000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "May, D.",
+                                                        "actualPosition":  "RF",
+                                                        "actualSalary":  540000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  22,
+                                         "target":  {
+                                                        "player":  "Michael, G.",
+                                                        "position":  "SS",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Michael, G.",
+                                                        "actualPosition":  "SS",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  23,
+                                         "target":  {
+                                                        "player":  "King, H.",
+                                                        "position":  "C",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "King, H.",
+                                                        "actualPosition":  "C",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     },
+                                     {
+                                         "submittedRank":  24,
+                                         "target":  {
+                                                        "player":  "Locke, B.",
+                                                        "position":  "P (R2)",
+                                                        "salary":  500000
+                                                    },
+                                         "result":  {
+                                                        "outcome":  "selected",
+                                                        "actualPlayer":  "Locke, B.",
+                                                        "actualPosition":  "P (R2)",
+                                                        "actualSalary":  500000,
+                                                        "salaryDelta":  0
+                                                    },
+                                         "competitionEvidence":  {
+                                                                     "takenBy":  null,
+                                                                     "opponentDisplayedRank":  null
+                                                                 }
+                                     }
+                                 ],
+    "contestedTargets":  [
+                             {
+                                 "submittedRank":  8,
+                                 "targetedPlayer":  "Johnson, D.",
+                                 "takenBy":  "Ukrainian Drones",
+                                 "opponentDisplayedRank":  7,
+                                 "replacementPlayer":  "Nelson, Dave",
+                                 "replacementSalaryDelta":  -270000
+                             },
+                             {
+                                 "submittedRank":  9,
+                                 "targetedPlayer":  "Wills, M.",
+                                 "takenBy":  "Milan Azzurri",
+                                 "opponentDisplayedRank":  4,
+                                 "replacementPlayer":  "Rodriguez, Aurelio",
+                                 "replacementSalaryDelta":  -1020000
+                             },
+                             {
+                                 "submittedRank":  11,
+                                 "targetedPlayer":  "Carlton, S.",
+                                 "takenBy":  "Arkansas ArkinalsÃ¢â€žÂ¢",
+                                 "opponentDisplayedRank":  8,
+                                 "replacementPlayer":  "Arrigo, Gerry",
+                                 "replacementSalaryDelta":  -60000
+                             },
+                             {
+                                 "submittedRank":  17,
+                                 "targetedPlayer":  "Kline, R.",
+                                 "takenBy":  "Ukrainian Drones",
+                                 "opponentDisplayedRank":  14,
+                                 "replacementPlayer":  "Kurtz, Hal",
+                                 "replacementSalaryDelta":  -860000
+                             },
+                             {
+                                 "submittedRank":  18,
+                                 "targetedPlayer":  "Face, R.",
+                                 "takenBy":  "Ohio Players",
+                                 "opponentDisplayedRank":  11,
+                                 "replacementPlayer":  "Lamabe, Jack",
+                                 "replacementSalaryDelta":  -500000
+                             }
+                         ],
+    "waiverEvidence":  [
+
+                       ],
+    "intendedIntelligenceUses":  [
+                                     "target-survival analysis by submitted rank",
+                                     "player-demand and positional-scarcity analysis",
+                                     "replacement-chain quality analysis",
+                                     "salary-delta analysis",
+                                     "opponent draft-behavior analysis",
+                                     "future draft-priority calibration",
+                                     "post-draft waiver recovery analysis"
+                                 ],
+    "interpretationConstraints":  [
+                                      "One draft event is evidence, not a stable probability model.",
+                                      "Cross-draft comparisons must account for target mix and opponent differences.",
+                                      "Opponent displayed rank is evidence about the contested player, not the opponent\u0027s complete submitted order."
+                                  ],
+    "provenance":  {
+                       "sourceArtifact":  "data/baseball/parsed/strat365/1968/post-draft/1968.aquarium-drinkers-comiskey.auto-draft-results-v0.json",
+                       "sourceArtifactSha256":  "E3E9D32DC458F39C882825476C25FE1637262B51A7D71531AD67DBE6DC79BF22",
+                       "canonicalizedUtc":  "2026-07-27T18:02:10.1617880Z"
+                   }
+}
