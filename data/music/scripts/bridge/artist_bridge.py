@@ -17,6 +17,18 @@ if str(ARTIST_DIR) not in sys.path:
 
 from artist_query_core import ArtistQueryEngine, canonical_key
 
+ARTIST_SCRIPT_DIR = (
+    Path(__file__).resolve().parent.parent / "artist"
+)
+
+if str(ARTIST_SCRIPT_DIR) not in sys.path:
+    sys.path.append(str(ARTIST_SCRIPT_DIR))
+
+from artist_comparative_standing_runtime import (
+    load_default_artist_comparative_standing,
+)
+
+
 
 ENGINE = ArtistQueryEngine()
 
@@ -100,6 +112,7 @@ def load_live_artist(name):
         "historicalUniqueObjectCount": (
             snapshot_history.get("uniqueObjectCount", 0)
         ),
+        "comparativeStanding": load_default_artist_comparative_standing(name),
     }
 
 

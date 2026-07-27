@@ -462,3 +462,224 @@ def load_and_build_runtime_snapshot(
             families_path
         ),
     )
+
+from functools import lru_cache
+
+
+RESPONSE_SCHEMA_VERSION = (
+    "music.artist-comparative-standing.response.v0"
+)
+
+SUPPORTED_METRIC_DEFINITIONS = (
+    {
+        "metricKey": "library_evidence_records",
+        "unit": "records",
+        "source": "apple-music-library-tracks",
+    },
+    {
+        "metricKey": "historical_years_represented",
+        "unit": "years",
+        "source": "apple-music-library-tracks",
+    },
+    {
+        "metricKey": "recent_apple_observations",
+        "unit": "observations",
+        "source": "apple-snapshot-warehouse",
+    },
+    {
+        "metricKey": "historical_unique_object_count",
+        "unit": "objects",
+        "source": "apple-snapshot-warehouse",
+    },
+)
+
+
+def select_artist_comparative_standing(
+    runtime_snapshot: Mapping[str, Any],
+    artist_name: Any,
+) -> dict[str, Any]:
+    """
+    Select one governed standalone-artist response.
+
+    Ranking values are copied from runtime_snapshot. This function never
+    recalculates ranks or combines artist and family populations.
+    """
+
+    identity = resolve_artist_identity(artist_name)
+
+    if identity is None:
+        return {
+            "schemaVersion": RESPONSE_SCHEMA_VERSION,
+            "status": "identity_unresolved",
+            "entityType": "artist",
+            "canonicalKey": None,
+            "displayName": str(artist_name or "").strip() or None,
+            "reviewedFamilyIds": [],
+            "metrics": [],
+        }
+
+    canonical_key = identity["canonicalKey"]
+    display_name = (
+        runtime_snapshot.get("artistDisplayNames", {}).get(
+            canonical_key
+        )
+        or identity["displayName"]
+    )
+
+    metrics: list[dict[str, Any]] = []
+
+    for definition in SUPPORTED_METRIC_DEFINITIONS:
+        metric_key = definition["metricKey"]
+
+        rankings = runtime_snapshot.get(
+            "artistRankings",
+            {},
+        ).get(
+            metric_key,
+            {},
+        )
+
+        ranking = rankings.get(canonical_key)
+
+        if ranking is None:
+            metrics.append(
+                {
+                    "metricKey": metric_key,
+                    "status": "searched_no_evidence",
+                    "value": None,
+                    "unit": definition["unit"],
+                    "rank": None,
+                    "percentile": None,
+                    "populationSize": len(rankings),
+                    "entityType": "artist",
+                    "source": definition["source"],
+                    "sourceLimitation": None,
+                    "calculationVersion": (
+                        "music.artist-comparative-standing.v0"
+                    ),
+                }
+            )
+
+            continue
+
+        metrics.append(
+            {
+                "metricKey": metric_key,
+                "status": ranking["status"],
+                "value": ranking["value"],
+                "unit": definition["unit"],
+                "rank": ranking["rank"],
+                "percentile": ranking["percentile"],
+                "populationSize": ranking["populationSize"],
+                "entityType": "artist",
+                "source": definition["source"],
+                "sourceLimitation": None,
+                "calculationVersion": (
+                    "music.artist-comparative-standing.v0"
+                ),
+            }
+        )
+
+    unavailable_metrics = runtime_snapshot.get(
+        "unavailableMetrics",
+        {},
+    )
+
+    for metric_key in (
+        "actual_plays",
+        "listening_duration_ms",
+    ):
+        unavailable = unavailable_metrics.get(metric_key)
+
+        if unavailable is None:
+            raise ValueError(
+                f"Unavailable metric is missing: {metric_key}"
+            )
+
+        metrics.append(dict(unavailable))
+
+    reviewed_family_ids = sorted(
+        str(family.get("familyId") or "").strip()
+        for family in runtime_snapshot.get(
+            "familyDefinitions",
+            [],
+        )
+        if canonical_key in (
+            family.get("members") or []
+        )
+        and str(family.get("familyId") or "").strip()
+    )
+
+    supported_statuses = {
+        metric["status"]
+        for metric in metrics
+        if metric["metricKey"]
+        not in {
+            "actual_plays",
+            "listening_duration_ms",
+        }
+    }
+
+    response_status = (
+        "searched_no_evidence"
+        if supported_statuses == {"searched_no_evidence"}
+        else "available"
+    )
+
+    return {
+        "schemaVersion": RESPONSE_SCHEMA_VERSION,
+        "status": response_status,
+        "entityType": "artist",
+        "canonicalKey": canonical_key,
+        "displayName": display_name,
+        "reviewedFamilyIds": reviewed_family_ids,
+        "metrics": metrics,
+    }
+
+
+DEFAULT_REPO_ROOT = SCRIPT_DIR.parents[3]
+DEFAULT_LIBRARY_TRACKS_PATH = (
+    Path.home()
+    / "Downloads"
+    / "apple-music-working"
+    / "Apple_Media_Services_python"
+    / "Apple_Media_Services"
+    / "Apple Music Activity"
+    / "Apple Music Library Tracks.json.zip"
+)
+DEFAULT_SNAPSHOT_PATH = (
+    DEFAULT_REPO_ROOT
+    / "data"
+    / "music"
+    / "live"
+    / "apple_snapshot_warehouse.csv"
+)
+DEFAULT_FAMILIES_PATH = (
+    DEFAULT_REPO_ROOT
+    / "data"
+    / "music"
+    / "curated"
+    / "artistFamilies.json"
+)
+
+
+@lru_cache(maxsize=1)
+def load_default_runtime_snapshot() -> dict[str, Any]:
+    """Build and cache the governed runtime snapshot for one process."""
+
+    return load_and_build_runtime_snapshot(
+        library_tracks_path=DEFAULT_LIBRARY_TRACKS_PATH,
+        snapshot_path=DEFAULT_SNAPSHOT_PATH,
+        families_path=DEFAULT_FAMILIES_PATH,
+    )
+
+
+def load_default_artist_comparative_standing(
+    artist_name: Any,
+) -> dict[str, Any]:
+    """Select one artist response from the cached runtime snapshot."""
+
+    return select_artist_comparative_standing(
+        load_default_runtime_snapshot(),
+        artist_name,
+    )
