@@ -616,6 +616,107 @@ export default function QueryWorkbench({
             </div>
           </div>
 
+          {bridge.live?.comparativeStanding ? (
+            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                    Comparative Standing
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                    Governed standalone-artist rankings across each eligible evidence population.
+                  </p>
+                </div>
+
+                <div className="text-xs text-slate-500 sm:text-right">
+                  <p>
+                    Identity: {bridge.live.comparativeStanding.displayName || "-"}
+                  </p>
+                  <p>
+                    Canonical key: {bridge.live.comparativeStanding.canonicalKey || "unresolved"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {Array.isArray(bridge.live.comparativeStanding.metrics)
+                  ? bridge.live.comparativeStanding.metrics.map((metric) => {
+                      const metricLabels = {
+                        library_evidence_records: "Library Evidence",
+                        historical_years_represented: "Years Represented",
+                        recent_apple_observations: "Apple Observations",
+                        historical_unique_object_count: "Unique Apple Objects",
+                        actual_plays: "Actual Plays",
+                        listening_duration_ms: "Listening Duration",
+                      };
+
+                      const label =
+                        metricLabels[metric.metricKey] || metric.metricKey;
+
+                      const hasValue = metric.value != null;
+                      const hasRank =
+                        metric.rank != null && metric.populationSize != null;
+
+                      const valueText = hasValue
+                        ? `${metric.value} ${metric.unit || ""}`.trim()
+                        : metric.status === "unavailable"
+                          ? "Unavailable"
+                          : "No qualifying evidence";
+
+                      const explanation = hasRank
+                        ? `Rank #${metric.rank} of ${metric.populationSize}`
+                        : metric.status === "unavailable"
+                          ? "Not available from the governed artist-level sources."
+                          : "Not included in this metric's positive-evidence population.";
+
+                      return (
+                        <div
+                          key={metric.metricKey}
+                          className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60"
+                        >
+                          <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">
+                            {label}
+                          </p>
+
+                          <p className="mt-2 text-lg font-black">
+                            {valueText}
+                          </p>
+
+                          <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                            {explanation}
+                            {hasRank && metric.percentile != null ? (
+                              <span>
+                                {" "}
+                                | {Number(metric.percentile).toFixed(1)}th percentile
+                              </span>
+                            ) : null}
+                          </p>
+
+                          <p className="mt-2 text-xs text-slate-500">
+                            Status: {metric.status}
+                            {metric.source ? (
+                              <span> | Source: {metric.source}</span>
+                            ) : null}
+                          </p>
+                        </div>
+                      );
+                    })
+                  : null}
+              </div>
+
+              {bridge.live.comparativeStanding.reviewedFamilyIds?.length ? (
+                <p className="mt-3 text-xs text-slate-500">
+                  Reviewed family membership:{" "}
+                  {bridge.live.comparativeStanding.reviewedFamilyIds.join(", ")}.
+                  Family rankings remain separate from this artist population.
+                </p>
+              ) : (
+                <p className="mt-3 text-xs text-slate-500">
+                  Artist and reviewed-family ranking populations remain separate.
+                </p>
+              )}
+            </div>
+          ) : null}
           {result.investigation?.facts?.length ? (
             <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-900 dark:bg-blue-950/30">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
