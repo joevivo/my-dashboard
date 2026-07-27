@@ -1,0 +1,144 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:19:41.7491011Z",
+    "leagueId":  "479336",
+    "sourceJoinSpec":  "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-owner-game-join-spec-v0.json",
+    "probeStatus":  "PARTIAL",
+    "targetCount":  8,
+    "httpRequestCount":  8,
+    "httpSuccessCount":  8,
+    "resolvedCount":  2,
+    "ambiguousCount":  0,
+    "unresolvedCount":  6,
+    "results":  [
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "Iowa bombers",
+                        "ownerHandle":  "cubjim",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "RainRain 80\u0027s Mustache",
+                        "ownerHandle":  "Lambdaddy",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "Mighty Yankees",
+                        "ownerHandle":  "maestro1",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "Norwich Not Flatlanders",
+                        "ownerHandle":  "rknorthvt",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "1853667",
+                        "teamName":  "Fresno Raisin Eaters",
+                        "ownerHandle":  "rmmbaseball",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/1853667",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-owner-handle-anchor",
+                        "resolvedMemberId":  "11750138",
+                        "candidateMemberIds":  [
+                                                   "11750138"
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "Northside Hogs",
+                        "ownerHandle":  "Skaks22",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "1853550",
+                        "teamName":  "Boquete Bombers",
+                        "ownerHandle":  "SteveWeiss",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/1853550",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-owner-handle-anchor",
+                        "resolvedMemberId":  "11759456",
+                        "candidateMemberIds":  [
+                                                   "11759456"
+                                               ],
+                        "errorMessage":  null
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "teamId":  "",
+                        "teamName":  "Classic City Crazy Eights",
+                        "ownerHandle":  "the splinter",
+                        "teamUrl":  "https://365.strat-o-matic.com/team/",
+                        "httpStatus":  200,
+                        "requestStatus":  "PASS",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "no-member-link",
+                        "resolvedMemberId":  null,
+                        "candidateMemberIds":  [
+
+                                               ],
+                        "errorMessage":  null
+                    }
+                ],
+    "canonicalRegistryUpdated":  false
+}

@@ -1,0 +1,551 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:18:36.6078358Z",
+    "leagueId":  "479336",
+    "purpose":  "Spoiler-safe owner/team-to-game join specification.",
+    "identityPolicy":  {
+                           "preferredCanonicalKey":  "memberId",
+                           "interimLeague479336Key":  "ownerHandle",
+                           "provisionalKeysAllowed":  true,
+                           "teamNameIsNotOwnerIdentity":  true,
+                           "managerPersonaIsNotOwnerIdentity":  true
+                       },
+    "teams":  [
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "1851052",
+                      "teamName":  "Aquarium Drinkers",
+                      "division":  "East",
+                      "ownerHandle":  "JoeGinto",
+                      "ownerKey":  "strat365-member-11725454",
+                      "memberId":  "11725454",
+                      "ownerIdentityStatus":  "resolved-by-existing-member-registry",
+                      "relationshipToSubject":  "self",
+                      "scheduleAliases":  [
+                                              "Aquarium Drinkers"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "1853550",
+                      "teamName":  "Boquete Bombers",
+                      "division":  "East",
+                      "ownerHandle":  "SteveWeiss",
+                      "ownerKey":  "strat365-handle-steveweiss",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Bombers",
+                                              "bombers",
+                                              "Boquete Bombers"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "1853594",
+                      "teamName":  "Funk Brothers",
+                      "division":  "East",
+                      "ownerHandle":  "John Unrein",
+                      "ownerKey":  "strat365-member-4805192",
+                      "memberId":  "4805192",
+                      "ownerIdentityStatus":  "resolved-by-existing-member-registry",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Brothers",
+                                              "Funk Brothers"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "1853667",
+                      "teamName":  "Fresno Raisin Eaters",
+                      "division":  "East",
+                      "ownerHandle":  "rmmbaseball",
+                      "ownerKey":  "strat365-handle-rmmbaseball",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Raisin Eaters",
+                                              "Fresno Raisin Eaters"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Arkansas Arkinalsâ„¢",
+                      "division":  "Central",
+                      "ownerHandle":  "divad",
+                      "ownerKey":  "strat365-member-7905385",
+                      "memberId":  "7905385",
+                      "ownerIdentityStatus":  "resolved-by-existing-member-registry",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Arkinalsâ„¢",
+                                              "Arkansas Arkinalsâ„¢"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "RainRain 80\u0027s Mustache",
+                      "division":  "Central",
+                      "ownerHandle":  "Lambdaddy",
+                      "ownerKey":  "strat365-handle-lambdaddy",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "frequent_prior_opponent",
+                      "scheduleAliases":  [
+                                              "80\u0027s Mustache",
+                                              "RainRain 80\u0027s Mustache"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Norwich Not Flatlanders",
+                      "division":  "Central",
+                      "ownerHandle":  "rknorthvt",
+                      "ownerKey":  "strat365-handle-rknorthvt",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Not Flatlanders",
+                                              "Norwich Not Flatlanders"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "New York Highlanders",
+                      "division":  "Central",
+                      "ownerHandle":  "GDP",
+                      "ownerKey":  "strat365-member-6231206",
+                      "memberId":  "6231206",
+                      "ownerIdentityStatus":  "resolved-by-existing-member-registry",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Highlanders",
+                                              "New York Highlanders"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Iowa bombers",
+                      "division":  "West",
+                      "ownerHandle":  "cubjim",
+                      "ownerKey":  "strat365-handle-cubjim",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Iowa bombers"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Classic City Crazy Eights",
+                      "division":  "West",
+                      "ownerHandle":  "the splinter",
+                      "ownerKey":  "strat365-handle-the-splinter",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Crazy Eights",
+                                              "Classic City Crazy Eights"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Mighty Yankees",
+                      "division":  "West",
+                      "ownerHandle":  "maestro1",
+                      "ownerKey":  "strat365-handle-maestro1",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Yankees",
+                                              "Mighty Yankees"
+                                          ]
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "teamId":  "",
+                      "teamName":  "Northside Hogs",
+                      "division":  "West",
+                      "ownerHandle":  "Skaks22",
+                      "ownerKey":  "strat365-handle-skaks22",
+                      "memberId":  null,
+                      "ownerIdentityStatus":  "provisional-handle-identity",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Hogs",
+                                              "Northside Hogs"
+                                          ]
+                  }
+              ],
+    "ownerResolution":  {
+                            "resolvedTeamCount":  4,
+                            "provisionalTeamCount":  8,
+                            "unresolvedOwnerHandles":  [
+                                                           "cubjim",
+                                                           "Lambdaddy",
+                                                           "maestro1",
+                                                           "rknorthvt",
+                                                           "rmmbaseball",
+                                                           "Skaks22",
+                                                           "SteveWeiss",
+                                                           "the splinter"
+                                                       ]
+                        },
+    "canonicalGames":  {
+                           "gameFileCount":  18,
+                           "selectedRootNames":  [
+                                                     "gameId",
+                                                     "leagueDate",
+                                                     "awayTeam",
+                                                     "homeTeam",
+                                                     "winnerTeam",
+                                                     "loserTeam",
+                                                     "innings",
+                                                     "extraInnings",
+                                                     "leagueInventory",
+                                                     "reconciliation"
+                                                 ],
+                           "uniqueSelectedShapeCount":  3,
+                           "schemaPaths":  [
+                                               {
+                                                   "path":  "$.awayTeam.errors",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.hits",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.inningRuns[]",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.name",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.rawCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.rawInningCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.rawTotalsCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.runs",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.awayTeam.shortLabel",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.extraInnings",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.gameId",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.errors",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.hits",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.inningRuns[]",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.inningRuns[]",
+                                                   "type":  "null",
+                                                   "occurrenceCount":  8
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.name",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.rawCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.rawInningCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.rawTotalsCells[]",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.runs",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.homeTeam.shortLabel",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.innings",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueDate",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.blockIndex",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.gameId",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.resultText",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.seriesGameLabel",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.seriesGameNumber",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.leagueInventory.seriesIndex",
+                                                   "type":  "Int32",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.loserTeam",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.awayTeamLineMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.canonicalPromotionAuthorized",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.decisionSummaryExactMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.finalHeaderMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.homeTeamLineMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueLoserMention",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueResultOutcomeMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueScoreMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueWinnerMention",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueWinnerOmissionAccepted",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueWinnerOmissionReason",
+                                                   "type":  "null",
+                                                   "occurrenceCount":  16
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.leagueWinnerOmissionReason",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  2
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.playByPlayAttached",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.playByPlayInningsMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.recapReplayOrientationMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.status",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.teamOrderMatch",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.reconciliation.unknownControlFree",
+                                                   "type":  "Boolean",
+                                                   "occurrenceCount":  18
+                                               },
+                                               {
+                                                   "path":  "$.winnerTeam",
+                                                   "type":  "String",
+                                                   "occurrenceCount":  18
+                                               }
+                                           ],
+                           "fileShapeHashes":  [
+                                                   {
+                                                       "file":  "game-1-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-2-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-3-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-4-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-5-v0.json",
+                                                       "schemaHash":  "84562a3402571365a66bf78eb6e61adedab4e7efb69897bd7c97a05a43ec89e3"
+                                                   },
+                                                   {
+                                                       "file":  "game-6-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-7-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-8-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-9-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-10-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-11-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-12-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-13-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-14-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-15-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   },
+                                                   {
+                                                       "file":  "game-16-v0.json",
+                                                       "schemaHash":  "84562a3402571365a66bf78eb6e61adedab4e7efb69897bd7c97a05a43ec89e3"
+                                                   },
+                                                   {
+                                                       "file":  "game-17-v0.json",
+                                                       "schemaHash":  "456a8b631519d405570355f7121c3998e84d7b6a69bec0a7de22da98a8aeef68"
+                                                   },
+                                                   {
+                                                       "file":  "game-18-v0.json",
+                                                       "schemaHash":  "3e783cdc6d8871058ec670f3f5188a76bf46f29a3641dfbd248ffe7aa00141dd"
+                                                   }
+                                               ]
+                       },
+    "implementationStatus":  {
+                                 "ownerTeamBaselineReady":  true,
+                                 "spoilerSafeGameSchemaReady":  true,
+                                 "gameResultsJoinedToOwners":  false,
+                                 "memberIdBackfillComplete":  false
+                             }
+}

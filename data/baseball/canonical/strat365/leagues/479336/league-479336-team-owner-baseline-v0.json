@@ -1,0 +1,232 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:30:31.1791503Z",
+    "leagueId":  "479336",
+    "playerSet":  "1968",
+    "snapshotType":  "canonical-team-owner-baseline",
+    "identityPolicy":  {
+                           "canonicalOwnerKey":  "memberId",
+                           "canonicalTeamKey":  "teamId",
+                           "teamNameIsDisplayOnly":  true,
+                           "ownerHandleIsAlias":  true,
+                           "managerPersonaIsSeparate":  true
+                       },
+    "sourceFiles":  [
+                        "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-owner-game-join-spec-v0.json",
+                        "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-member-id-backfill-complete-v0.json",
+                        "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-all-team-id-recovery-v1.json"
+                    ],
+    "teamCount":  12,
+    "teams":  [
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "Central",
+                      "teamId":  "1853519",
+                      "teamName":  "Arkansas ArkinalsÃ¢â€žÂ¢",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853519",
+                      "ownerKey":  "strat365-member-7905385",
+                      "ownerMemberId":  "7905385",
+                      "ownerHandle":  "divad",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "ArkinalsÃ¢â€žÂ¢",
+                                              "Arkansas ArkinalsÃ¢â€žÂ¢"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "Central",
+                      "teamId":  "1853598",
+                      "teamName":  "New York Highlanders",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853598",
+                      "ownerKey":  "strat365-member-6231206",
+                      "ownerMemberId":  "6231206",
+                      "ownerHandle":  "GDP",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Highlanders",
+                                              "New York Highlanders"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "Central",
+                      "teamId":  "1853506",
+                      "teamName":  "Norwich Not Flatlanders",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853506",
+                      "ownerKey":  "strat365-member-11746364",
+                      "ownerMemberId":  "11746364",
+                      "ownerHandle":  "rknorthvt",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Not Flatlanders",
+                                              "Norwich Not Flatlanders"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "Central",
+                      "teamId":  "1853674",
+                      "teamName":  "RainRain 80\u0027s Mustache",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853674",
+                      "ownerKey":  "strat365-member-11752014",
+                      "ownerMemberId":  "11752014",
+                      "ownerHandle":  "Lambdaddy",
+                      "relationshipToSubject":  "frequent_prior_opponent",
+                      "scheduleAliases":  [
+                                              "80\u0027s Mustache",
+                                              "RainRain 80\u0027s Mustache"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "East",
+                      "teamId":  "1851052",
+                      "teamName":  "Aquarium Drinkers",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1851052",
+                      "ownerKey":  "strat365-member-11725454",
+                      "ownerMemberId":  "11725454",
+                      "ownerHandle":  "JoeGinto",
+                      "relationshipToSubject":  "self",
+                      "scheduleAliases":  [
+                                              "Aquarium Drinkers"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "East",
+                      "teamId":  "1853550",
+                      "teamName":  "Boquete Bombers",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853550",
+                      "ownerKey":  "strat365-member-11759456",
+                      "ownerMemberId":  "11759456",
+                      "ownerHandle":  "SteveWeiss",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Bombers",
+                                              "bombers",
+                                              "Boquete Bombers"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "East",
+                      "teamId":  "1853667",
+                      "teamName":  "Fresno Raisin Eaters",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853667",
+                      "ownerKey":  "strat365-member-11750138",
+                      "ownerMemberId":  "11750138",
+                      "ownerHandle":  "rmmbaseball",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Raisin Eaters",
+                                              "Fresno Raisin Eaters"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "East",
+                      "teamId":  "1853594",
+                      "teamName":  "Funk Brothers",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853594",
+                      "ownerKey":  "strat365-member-4805192",
+                      "ownerMemberId":  "4805192",
+                      "ownerHandle":  "John Unrein",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Brothers",
+                                              "Funk Brothers"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "West",
+                      "teamId":  "1853540",
+                      "teamName":  "Classic City Crazy Eights",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853540",
+                      "ownerKey":  "strat365-member-4479591",
+                      "ownerMemberId":  "4479591",
+                      "ownerHandle":  "the splinter",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Crazy Eights",
+                                              "Classic City Crazy Eights"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "West",
+                      "teamId":  "1853382",
+                      "teamName":  "Iowa bombers",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853382",
+                      "ownerKey":  "strat365-member-5274600",
+                      "ownerMemberId":  "5274600",
+                      "ownerHandle":  "cubjim",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Iowa bombers"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "West",
+                      "teamId":  "1853443",
+                      "teamName":  "Mighty Yankees",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853443",
+                      "ownerKey":  "strat365-member-11745341",
+                      "ownerMemberId":  "11745341",
+                      "ownerHandle":  "maestro1",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Yankees",
+                                              "Mighty Yankees"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  },
+                  {
+                      "leagueId":  "479336",
+                      "playerSet":  "1968",
+                      "division":  "West",
+                      "teamId":  "1853534",
+                      "teamName":  "Northside Hogs",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1853534",
+                      "ownerKey":  "strat365-member-11713862",
+                      "ownerMemberId":  "11713862",
+                      "ownerHandle":  "Skaks22",
+                      "relationshipToSubject":  "current_league_opponent",
+                      "scheduleAliases":  [
+                                              "Hogs",
+                                              "Northside Hogs"
+                                          ],
+                      "identityStatus":  "canonical-member-and-team-id-resolved"
+                  }
+              ],
+    "validation":  {
+                       "allTeamIdsResolved":  true,
+                       "allMemberIdsResolved":  true,
+                       "uniqueTeamIdCount":  12,
+                       "uniqueMemberIdCount":  12,
+                       "canonicalOwnerRegistryCount":  20
+                   }
+}

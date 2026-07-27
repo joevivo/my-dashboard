@@ -1,0 +1,354 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:11:43.0925582Z",
+    "sourceDiscoveryReport":  "data\\baseball\\parsed\\strat365\\owner-history\\owner-history-source-discovery-v0.json",
+    "ownerCandidateCount":  4,
+    "inspectedOwnerCandidateCount":  4,
+    "discoveredMemberIds":  [
+                                "11172941",
+                                "11704579",
+                                "11709274",
+                                "11712766",
+                                "11713357",
+                                "11716542",
+                                "11725454",
+                                "4517397",
+                                "4805192",
+                                "5488160",
+                                "6231206",
+                                "7905385"
+                            ],
+    "discoveredOwnerHandles":  [
+                                   "cubjim",
+                                   "divad",
+                                   "Frogmouth",
+                                   "GDP",
+                                   "JoeGinto",
+                                   "John Unrein",
+                                   "johnlaw1564",
+                                   "l.strether",
+                                   "Lambdaddy",
+                                   "maestro1",
+                                   "MARKRAFFA",
+                                   "MarlinGene",
+                                   "mr_herzog",
+                                   "rknorthvt",
+                                   "rmmbaseball",
+                                   "searly66",
+                                   "Skaks22",
+                                   "SteveWeiss",
+                                   "the splinter",
+                                   "TIMOTHYCLINE"
+                               ],
+    "ownerCandidates":  [
+                            {
+                                "path":  "data\\baseball\\canonical\\strat365\\owners\\strat365-owner-registry-v0.json",
+                                "exists":  true,
+                                "sizeBytes":  5049,
+                                "inspectionStatus":  "INSPECTED",
+                                "referencesLeague479336":  false,
+                                "memberIds":  [
+                                                  "11172941",
+                                                  "11704579",
+                                                  "11709274",
+                                                  "11712766",
+                                                  "11713357",
+                                                  "11716542",
+                                                  "11725454",
+                                                  "4517397",
+                                                  "4805192",
+                                                  "5488160",
+                                                  "6231206",
+                                                  "7905385"
+                                              ],
+                                "ownerHandles":  [
+                                                     "divad",
+                                                     "Frogmouth",
+                                                     "GDP",
+                                                     "JoeGinto",
+                                                     "John Unrein",
+                                                     "johnlaw1564",
+                                                     "l.strether",
+                                                     "MARKRAFFA",
+                                                     "MarlinGene",
+                                                     "mr_herzog",
+                                                     "searly66",
+                                                     "TIMOTHYCLINE"
+                                                 ]
+                            },
+                            {
+                                "path":  "data\\baseball\\observed\\strat365\\1968\\league-snapshots\\1968.auto-league-479336.manager-context-v0.json",
+                                "exists":  true,
+                                "sizeBytes":  16182,
+                                "inspectionStatus":  "INSPECTED",
+                                "referencesLeague479336":  true,
+                                "memberIds":  [
+
+                                              ],
+                                "ownerHandles":  [
+                                                     "cubjim",
+                                                     "divad",
+                                                     "GDP",
+                                                     "JoeGinto",
+                                                     "John Unrein",
+                                                     "Lambdaddy",
+                                                     "maestro1",
+                                                     "rknorthvt",
+                                                     "rmmbaseball",
+                                                     "Skaks22",
+                                                     "SteveWeiss",
+                                                     "the splinter"
+                                                 ]
+                            },
+                            {
+                                "path":  "data\\baseball\\parsed\\strat365\\1968\\post-draft\\1968.auto-league-479336.ownership-source-shape-probe-v0.json",
+                                "exists":  true,
+                                "sizeBytes":  91926,
+                                "inspectionStatus":  "INSPECTED",
+                                "referencesLeague479336":  false,
+                                "memberIds":  [
+
+                                              ],
+                                "ownerHandles":  [
+
+                                                 ]
+                            },
+                            {
+                                "path":  "docs\\baseball\\observed-results-ingestion-design-v0.md",
+                                "exists":  true,
+                                "sizeBytes":  4094,
+                                "inspectionStatus":  "INSPECTED",
+                                "referencesLeague479336":  false,
+                                "memberIds":  [
+
+                                              ],
+                                "ownerHandles":  [
+
+                                                 ]
+                            }
+                        ],
+    "gameFactCandidateCount":  717,
+    "gameFactShortlistCount":  20,
+    "gameFactShortlist":  [
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-10-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-11-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-12-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-13-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-14-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-15-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-16-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-17-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-18-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-1-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-2-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-3-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-4-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-5-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-6-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-7-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-8-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\games\\game-9-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-21\\league-night-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              },
+                              {
+                                  "path":  "data\\baseball\\canonical\\strat365\\1968\\season-ingestion\\league-479336\\2026-07-22\\games\\game-19-v0.json",
+                                  "score":  215,
+                                  "reasons":  [
+                                                  "canonical",
+                                                  "league-specific",
+                                                  "season-ingestion",
+                                                  "exists"
+                                              ],
+                                  "hasOwnerIdentity":  false
+                              }
+                          ]
+}

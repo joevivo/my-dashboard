@@ -1,0 +1,104 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:21:13.1668503Z",
+    "leagueId":  "479336",
+    "status":  "PASS",
+    "sourceJoinSpec":  "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-owner-game-join-spec-v0.json",
+    "sourceMemberIdProbe":  "data\\baseball\\parsed\\strat365\\owner-history\\league-479336-member-id-backfill-probe-v0.json",
+    "targetCount":  6,
+    "httpRequestCount":  2,
+    "httpSuccessCount":  2,
+    "parsedTeamAnchorCount":  12,
+    "resolvedCount":  6,
+    "ambiguousCount":  0,
+    "unresolvedCount":  0,
+    "requestResults":  [
+                           {
+                               "url":  "https://365.strat-o-matic.com/league/479336",
+                               "status":  "PASS",
+                               "httpStatus":  200,
+                               "errorMessage":  null
+                           },
+                           {
+                               "url":  "https://365.strat-o-matic.com/league/rosters/479336",
+                               "status":  "PASS",
+                               "httpStatus":  200,
+                               "errorMessage":  null
+                           }
+                       ],
+    "recoveryResults":  [
+                            {
+                                "ownerHandle":  "cubjim",
+                                "teamName":  "Iowa bombers",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853382",
+                                "candidateTeamIds":  [
+                                                         "1853382"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "Iowa bombers"
+                                                       ]
+                            },
+                            {
+                                "ownerHandle":  "Lambdaddy",
+                                "teamName":  "RainRain 80\u0027s Mustache",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853674",
+                                "candidateTeamIds":  [
+                                                         "1853674"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "RainRain 80\u0027s Mustache"
+                                                       ]
+                            },
+                            {
+                                "ownerHandle":  "maestro1",
+                                "teamName":  "Mighty Yankees",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853443",
+                                "candidateTeamIds":  [
+                                                         "1853443"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "Mighty Yankees"
+                                                       ]
+                            },
+                            {
+                                "ownerHandle":  "rknorthvt",
+                                "teamName":  "Norwich Not Flatlanders",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853506",
+                                "candidateTeamIds":  [
+                                                         "1853506"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "Norwich Not Flatlanders"
+                                                       ]
+                            },
+                            {
+                                "ownerHandle":  "Skaks22",
+                                "teamName":  "Northside Hogs",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853534",
+                                "candidateTeamIds":  [
+                                                         "1853534"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "Northside Hogs"
+                                                       ]
+                            },
+                            {
+                                "ownerHandle":  "the splinter",
+                                "teamName":  "Classic City Crazy Eights",
+                                "resolutionStatus":  "RESOLVED",
+                                "recoveredTeamId":  "1853540",
+                                "candidateTeamIds":  [
+                                                         "1853540"
+                                                     ],
+                                "matchedAnchorTexts":  [
+                                                           "Classic City Crazy Eights"
+                                                       ]
+                            }
+                        ],
+    "canonicalFilesUpdated":  false
+}

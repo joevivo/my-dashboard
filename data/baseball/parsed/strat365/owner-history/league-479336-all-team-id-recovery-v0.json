@@ -1,0 +1,175 @@
+{
+    "schemaVersion":  0,
+    "generatedAtUtc":  "2026-07-27T20:27:02.0895825Z",
+    "leagueId":  "479336",
+    "status":  "PARTIAL",
+    "targetCount":  12,
+    "httpRequestCount":  2,
+    "httpSuccessCount":  2,
+    "parsedTeamAnchorCount":  12,
+    "resolvedCount":  11,
+    "ambiguousCount":  0,
+    "unresolvedCount":  1,
+    "uniqueTeamIdCount":  11,
+    "requestResults":  [
+                           {
+                               "url":  "https://365.strat-o-matic.com/league/479336",
+                               "requestStatus":  "PASS",
+                               "httpStatus":  200,
+                               "errorMessage":  null
+                           },
+                           {
+                               "url":  "https://365.strat-o-matic.com/league/rosters/479336",
+                               "requestStatus":  "PASS",
+                               "httpStatus":  200,
+                               "errorMessage":  null
+                           }
+                       ],
+    "results":  [
+                    {
+                        "leagueId":  "479336",
+                        "division":  "East",
+                        "teamName":  "Aquarium Drinkers",
+                        "ownerHandle":  "JoeGinto",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1851052",
+                        "candidateTeamIds":  [
+                                                 "1851052"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "East",
+                        "teamName":  "Boquete Bombers",
+                        "ownerHandle":  "SteveWeiss",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853550",
+                        "candidateTeamIds":  [
+                                                 "1853550"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "East",
+                        "teamName":  "Funk Brothers",
+                        "ownerHandle":  "John Unrein",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853594",
+                        "candidateTeamIds":  [
+                                                 "1853594"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "East",
+                        "teamName":  "Fresno Raisin Eaters",
+                        "ownerHandle":  "rmmbaseball",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853667",
+                        "candidateTeamIds":  [
+                                                 "1853667"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "Central",
+                        "teamName":  "Arkansas Arkinalsâ„¢",
+                        "ownerHandle":  "divad",
+                        "resolutionStatus":  "UNRESOLVED",
+                        "resolutionMethod":  "schedule-alias-fallback",
+                        "recoveredTeamId":  null,
+                        "candidateTeamIds":  [
+
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "Central",
+                        "teamName":  "RainRain 80\u0027s Mustache",
+                        "ownerHandle":  "Lambdaddy",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853674",
+                        "candidateTeamIds":  [
+                                                 "1853674"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "Central",
+                        "teamName":  "Norwich Not Flatlanders",
+                        "ownerHandle":  "rknorthvt",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853506",
+                        "candidateTeamIds":  [
+                                                 "1853506"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "Central",
+                        "teamName":  "New York Highlanders",
+                        "ownerHandle":  "GDP",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853598",
+                        "candidateTeamIds":  [
+                                                 "1853598"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "West",
+                        "teamName":  "Iowa bombers",
+                        "ownerHandle":  "cubjim",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853382",
+                        "candidateTeamIds":  [
+                                                 "1853382"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "West",
+                        "teamName":  "Classic City Crazy Eights",
+                        "ownerHandle":  "the splinter",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853540",
+                        "candidateTeamIds":  [
+                                                 "1853540"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "West",
+                        "teamName":  "Mighty Yankees",
+                        "ownerHandle":  "maestro1",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853443",
+                        "candidateTeamIds":  [
+                                                 "1853443"
+                                             ]
+                    },
+                    {
+                        "leagueId":  "479336",
+                        "division":  "West",
+                        "teamName":  "Northside Hogs",
+                        "ownerHandle":  "Skaks22",
+                        "resolutionStatus":  "RESOLVED",
+                        "resolutionMethod":  "exact-team-name",
+                        "recoveredTeamId":  "1853534",
+                        "candidateTeamIds":  [
+                                                 "1853534"
+                                             ]
+                    }
+                ],
+    "canonicalFilesUpdated":  false
+}

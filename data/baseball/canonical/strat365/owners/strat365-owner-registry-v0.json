@@ -1,0 +1,174 @@
+{
+    "schemaVersion":  0,
+    "sourceSystem":  "strat365",
+    "coverage":  {
+                     "seededLeagueIds":  [
+                                             "479336",
+                                             "479431"
+                                         ],
+                     "historicalBackfillComplete":  false
+                 },
+    "generatedAtUtc":  "2026-07-27T20:30:31.1736070Z",
+    "owners":  [
+                   {
+                       "ownerKey":  "strat365-member-5274600",
+                       "platform":  "strat365",
+                       "memberId":  "5274600",
+                       "ownerHandle":  "cubjim",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/5274600"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-7905385",
+                       "platform":  "strat365",
+                       "memberId":  "7905385",
+                       "ownerHandle":  "divad",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/7905385"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11713357",
+                       "platform":  "strat365",
+                       "memberId":  "11713357",
+                       "ownerHandle":  "Frogmouth",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11713357"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-6231206",
+                       "platform":  "strat365",
+                       "memberId":  "6231206",
+                       "ownerHandle":  "GDP",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/6231206"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11725454",
+                       "platform":  "strat365",
+                       "memberId":  "11725454",
+                       "ownerHandle":  "JoeGinto",
+                       "isUser":  true,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11725454"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-4805192",
+                       "platform":  "strat365",
+                       "memberId":  "4805192",
+                       "ownerHandle":  "John Unrein",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/4805192"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-5488160",
+                       "platform":  "strat365",
+                       "memberId":  "5488160",
+                       "ownerHandle":  "johnlaw1564",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/5488160"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-4517397",
+                       "platform":  "strat365",
+                       "memberId":  "4517397",
+                       "ownerHandle":  "l.strether",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/4517397"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11752014",
+                       "platform":  "strat365",
+                       "memberId":  "11752014",
+                       "ownerHandle":  "Lambdaddy",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11752014"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11745341",
+                       "platform":  "strat365",
+                       "memberId":  "11745341",
+                       "ownerHandle":  "maestro1",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11745341"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11709274",
+                       "platform":  "strat365",
+                       "memberId":  "11709274",
+                       "ownerHandle":  "MARKRAFFA",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11709274"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11704579",
+                       "platform":  "strat365",
+                       "memberId":  "11704579",
+                       "ownerHandle":  "MarlinGene",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11704579"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11712766",
+                       "platform":  "strat365",
+                       "memberId":  "11712766",
+                       "ownerHandle":  "mr_herzog",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11712766"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11746364",
+                       "platform":  "strat365",
+                       "memberId":  "11746364",
+                       "ownerHandle":  "rknorthvt",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11746364"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11750138",
+                       "platform":  "strat365",
+                       "memberId":  "11750138",
+                       "ownerHandle":  "rmmbaseball",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11750138"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11172941",
+                       "platform":  "strat365",
+                       "memberId":  "11172941",
+                       "ownerHandle":  "searly66",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11172941"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11713862",
+                       "platform":  "strat365",
+                       "memberId":  "11713862",
+                       "ownerHandle":  "Skaks22",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11713862"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11759456",
+                       "platform":  "strat365",
+                       "memberId":  "11759456",
+                       "ownerHandle":  "SteveWeiss",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11759456"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-4479591",
+                       "platform":  "strat365",
+                       "memberId":  "4479591",
+                       "ownerHandle":  "the splinter",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/4479591"
+                   },
+                   {
+                       "ownerKey":  "strat365-member-11716542",
+                       "platform":  "strat365",
+                       "memberId":  "11716542",
+                       "ownerHandle":  "TIMOTHYCLINE",
+                       "isUser":  false,
+                       "memberUrl":  "https://365.strat-o-matic.com/member/11716542"
+                   }
+               ]
+}
