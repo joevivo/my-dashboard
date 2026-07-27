@@ -1,0 +1,475 @@
+{
+  "schemaVersion": "music.artist-comparative-standing.fixture.v0",
+  "fixtureId": "artist-comparative-standing-v0",
+  "state": "deterministic-test-fixture",
+  "approvedContracts": {
+    "comparativeStanding": "docs/music/music-artist-comparative-standing-contract-v0.md",
+    "sourceAvailability": "docs/music/music-artist-comparative-standing-source-availability-amendment-v0.md",
+    "fixtureContract": "docs/music/music-artist-comparative-standing-fixture-contract-v0.md"
+  },
+  "sourceSemantics": {
+    "libraryEvidenceRecords": {
+      "source": "Apple Music Library Tracks.json",
+      "artistField": "Artist",
+      "valueDefinition": "count of canonical artist library-track records",
+      "positiveEvidenceRequired": true
+    },
+    "historicalYearsRepresented": {
+      "source": "Apple Music Library Tracks.json",
+      "canonicalDateField": "Last Played Date",
+      "valueDefinition": "count of distinct calendar years represented by parseable Last Played Date values",
+      "prohibitedSubstituteFields": [
+        "Track Year",
+        "Release Date",
+        "Date Added To Library",
+        "Date Added To iCloud Music Library",
+        "Last Modified Date",
+        "Purchase Date"
+      ],
+      "positiveEvidenceRequired": true
+    },
+    "recentAppleObservations": {
+      "source": "data/music/live/apple_snapshot_warehouse.csv",
+      "valueDefinition": "count of artist-bearing snapshot rows",
+      "positiveEvidenceRequired": true
+    },
+    "historicalUniqueObjectCount": {
+      "source": "data/music/live/apple_snapshot_warehouse.csv",
+      "logicalObjectKey": [
+        "entity_type",
+        "entity_id"
+      ],
+      "sourceChangesCreateNewObject": false,
+      "blankEntityIdAllowed": false,
+      "typedKeyArtistConflictAllowed": false,
+      "positiveEvidenceRequired": true
+    },
+    "unavailableMetrics": {
+      "metricKeys": [
+        "actual_plays",
+        "listening_duration_ms"
+      ],
+      "status": "unavailable",
+      "sourceLimitation": "Artist-level governed Actual Listening is unavailable because the current event projection does not contain artist identity.",
+      "legacyDailyAggregateFallbackAllowed": false
+    }
+  },
+  "identityFixture": {
+    "aliases": {
+      "the alpha": "alpha",
+      "alpha!": "alpha",
+      "beta ensemble": "beta"
+    },
+    "reviewedFamilies": [
+      {
+        "familyId": "alpha-beta-family",
+        "members": [
+          "alpha",
+          "beta"
+        ]
+      },
+      {
+        "familyId": "gamma-family",
+        "members": [
+          "gamma"
+        ]
+      }
+    ]
+  },
+  "rankingCases": [
+    {
+      "caseId": "competition-ranking-with-tie",
+      "entries": [
+        {
+          "entityId": "artist-a",
+          "status": "ranked",
+          "value": 100
+        },
+        {
+          "entityId": "artist-b",
+          "status": "ranked",
+          "value": 80
+        },
+        {
+          "entityId": "artist-c",
+          "status": "ranked",
+          "value": 80
+        },
+        {
+          "entityId": "artist-d",
+          "status": "ranked",
+          "value": 20
+        }
+      ],
+      "expected": {
+        "artist-a": {
+          "status": "ranked",
+          "value": 100,
+          "rank": 1,
+          "percentile": 100.0,
+          "populationSize": 4
+        },
+        "artist-b": {
+          "status": "ranked",
+          "value": 80,
+          "rank": 2,
+          "percentile": 50.0,
+          "populationSize": 4
+        },
+        "artist-c": {
+          "status": "ranked",
+          "value": 80,
+          "rank": 2,
+          "percentile": 50.0,
+          "populationSize": 4
+        },
+        "artist-d": {
+          "status": "ranked",
+          "value": 20,
+          "rank": 4,
+          "percentile": 0.0,
+          "populationSize": 4
+        }
+      }
+    },
+    {
+      "caseId": "single-member-population",
+      "entries": [
+        {
+          "entityId": "artist-only",
+          "status": "ranked",
+          "value": 7
+        }
+      ],
+      "expected": {
+        "artist-only": {
+          "status": "insufficient_population",
+          "value": 7,
+          "rank": 1,
+          "percentile": null,
+          "populationSize": 1
+        }
+      }
+    },
+    {
+      "caseId": "nonpositive-and-unavailable-exclusion",
+      "entries": [
+        {
+          "entityId": "positive-a",
+          "status": "ranked",
+          "value": 9
+        },
+        {
+          "entityId": "positive-b",
+          "status": "ranked",
+          "value": 3
+        },
+        {
+          "entityId": "zero",
+          "status": "ranked",
+          "value": 0
+        },
+        {
+          "entityId": "missing",
+          "status": "not_searched",
+          "value": null
+        },
+        {
+          "entityId": "unavailable",
+          "status": "unavailable",
+          "value": null
+        },
+        {
+          "entityId": "outside",
+          "status": "outside_coverage",
+          "value": 8
+        },
+        {
+          "entityId": "unresolved",
+          "status": "identity_unresolved",
+          "value": 6
+        }
+      ],
+      "expectedEligibleEntityIds": [
+        "positive-a",
+        "positive-b"
+      ],
+      "expectedPopulationSize": 2
+    }
+  ],
+  "aggregationCases": [
+    {
+      "caseId": "library-evidence-record-count",
+      "metricKey": "library_evidence_records",
+      "records": [
+        {
+          "Artist": "Alpha"
+        },
+        {
+          "Artist": " alpha "
+        },
+        {
+          "Artist": "The Alpha"
+        },
+        {
+          "Artist": "Beta"
+        },
+        {
+          "Artist": ""
+        },
+        {
+          "Artist": null
+        }
+      ],
+      "expectedCanonicalValues": {
+        "alpha": 3,
+        "beta": 1
+      }
+    },
+    {
+      "caseId": "years-represented-last-played-date-only",
+      "metricKey": "historical_years_represented",
+      "records": [
+        {
+          "Artist": "Alpha",
+          "Last Played Date": "2022-01-03T10:00:00Z",
+          "Track Year": "1981",
+          "Release Date": "1981-01-01T00:00:00Z"
+        },
+        {
+          "Artist": "The Alpha",
+          "Last Played Date": "2022-11-18T20:00:00Z",
+          "Track Year": "1995",
+          "Release Date": "1995-01-01T00:00:00Z"
+        },
+        {
+          "Artist": "Alpha!",
+          "Last Played Date": "2024-06-09T12:30:00Z",
+          "Track Year": "2007",
+          "Release Date": "2007-01-01T00:00:00Z"
+        },
+        {
+          "Artist": "Beta",
+          "Last Played Date": "",
+          "Track Year": "1977",
+          "Release Date": "1977-01-01T00:00:00Z"
+        },
+        {
+          "Artist": "Beta Ensemble",
+          "Last Played Date": "not-a-date",
+          "Track Year": "1988",
+          "Release Date": "1988-01-01T00:00:00Z"
+        }
+      ],
+      "expectedCanonicalYearSets": {
+        "alpha": [
+          2022,
+          2024
+        ]
+      },
+      "expectedCanonicalValues": {
+        "alpha": 2
+      },
+      "expectedExcludedCanonicalArtists": [
+        "beta"
+      ]
+    },
+    {
+      "caseId": "recent-apple-observation-count",
+      "metricKey": "recent_apple_observations",
+      "rows": [
+        {
+          "snapshot_folder": "snapshot-1",
+          "artist": "Alpha",
+          "entity_type": "album",
+          "entity_id": "entity-1"
+        },
+        {
+          "snapshot_folder": "snapshot-2",
+          "artist": "The Alpha",
+          "entity_type": "album",
+          "entity_id": "entity-1"
+        },
+        {
+          "snapshot_folder": "snapshot-3",
+          "artist": "Alpha!",
+          "entity_type": "album",
+          "entity_id": "entity-1"
+        },
+        {
+          "snapshot_folder": "snapshot-1",
+          "artist": "Beta",
+          "entity_type": "song",
+          "entity_id": "entity-2"
+        },
+        {
+          "snapshot_folder": "snapshot-1",
+          "artist": "",
+          "entity_type": "song",
+          "entity_id": "entity-3"
+        }
+      ],
+      "expectedCanonicalValues": {
+        "alpha": 3,
+        "beta": 1
+      }
+    },
+    {
+      "caseId": "historical-unique-object-count",
+      "metricKey": "historical_unique_object_count",
+      "rows": [
+        {
+          "source": "recently-played",
+          "artist": "Alpha",
+          "entity_type": "album",
+          "entity_id": "entity-1"
+        },
+        {
+          "source": "heavy-rotation",
+          "artist": "The Alpha",
+          "entity_type": "album",
+          "entity_id": "entity-1"
+        },
+        {
+          "source": "recently-played",
+          "artist": "Alpha!",
+          "entity_type": "song",
+          "entity_id": "entity-1"
+        },
+        {
+          "source": "recently-played",
+          "artist": "Beta",
+          "entity_type": "album",
+          "entity_id": "entity-2"
+        }
+      ],
+      "expectedCanonicalObjectKeys": {
+        "alpha": [
+          "album::entity-1",
+          "song::entity-1"
+        ],
+        "beta": [
+          "album::entity-2"
+        ]
+      },
+      "expectedCanonicalValues": {
+        "alpha": 2,
+        "beta": 1
+      }
+    }
+  ],
+  "validationCases": [
+    {
+      "caseId": "blank-entity-id-is-invalid",
+      "metricKey": "historical_unique_object_count",
+      "rows": [
+        {
+          "artist": "Alpha",
+          "entity_type": "album",
+          "entity_id": ""
+        }
+      ],
+      "expectedErrorCode": "missing_entity_id"
+    },
+    {
+      "caseId": "typed-key-artist-conflict-is-invalid",
+      "metricKey": "historical_unique_object_count",
+      "rows": [
+        {
+          "artist": "Alpha",
+          "entity_type": "album",
+          "entity_id": "conflict-1"
+        },
+        {
+          "artist": "Beta",
+          "entity_type": "album",
+          "entity_id": "conflict-1"
+        }
+      ],
+      "expectedErrorCode": "typed_key_artist_conflict"
+    }
+  ],
+  "responseCases": [
+    {
+      "caseId": "governed-actual-listening-metrics-unavailable",
+      "metrics": [
+        {
+          "metricKey": "actual_plays",
+          "status": "unavailable",
+          "value": null,
+          "unit": "plays",
+          "rank": null,
+          "percentile": null,
+          "populationSize": null,
+          "entityType": "artist",
+          "source": "actual-listening-event-projection-v1",
+          "sourceLimitation": "Artist-level governed Actual Listening is unavailable because the current event projection does not contain artist identity.",
+          "calculationVersion": "music.artist-comparative-standing.v0"
+        },
+        {
+          "metricKey": "listening_duration_ms",
+          "status": "unavailable",
+          "value": null,
+          "unit": "milliseconds",
+          "rank": null,
+          "percentile": null,
+          "populationSize": null,
+          "entityType": "artist",
+          "source": "actual-listening-event-projection-v1",
+          "sourceLimitation": "Artist-level governed Actual Listening is unavailable because the current event projection does not contain artist identity.",
+          "calculationVersion": "music.artist-comparative-standing.v0"
+        }
+      ]
+    }
+  ],
+  "populationSeparationCases": [
+    {
+      "caseId": "artist-and-reviewed-family-populations-remain-separate",
+      "metricKey": "library_evidence_records",
+      "standaloneArtistValues": {
+        "alpha": 4,
+        "beta": 2,
+        "gamma": 1
+      },
+      "reviewedFamilies": [
+        {
+          "familyId": "alpha-beta-family",
+          "members": [
+            "alpha",
+            "beta"
+          ]
+        },
+        {
+          "familyId": "gamma-family",
+          "members": [
+            "gamma"
+          ]
+        }
+      ],
+      "expectedArtistPopulation": {
+        "alpha": 4,
+        "beta": 2,
+        "gamma": 1
+      },
+      "expectedFamilyPopulation": {
+        "alpha-beta-family": 6,
+        "gamma-family": 1
+      },
+      "expectedFamilyRanks": {
+        "alpha-beta-family": 1,
+        "gamma-family": 2
+      },
+      "familyIdentifiersAllowedInArtistPopulation": false
+    }
+  ],
+  "sourceBaseline": {
+    "libraryTracksArchiveSha256": "50087BC1B14475D37865914F4BDB4BE53A52126A750F99D89661F953BBFC0510",
+    "snapshotWarehouseSha256": "F2DFD2E893BDAB78FA63B1452C1A96FC4BE0E043DD28CFA3FDA61802499F687D",
+    "libraryRowCount": 34643,
+    "normalizedLibraryArtistCount": 5186,
+    "artistBearingSnapshotRowCount": 11567,
+    "normalizedSnapshotArtistCount": 2653,
+    "combinedPreAliasIdentityCount": 5305,
+    "baselineIsImmutableProductConstant": false
+  }
+}
