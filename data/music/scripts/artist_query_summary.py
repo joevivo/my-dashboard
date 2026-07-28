@@ -11,7 +11,10 @@ if str(ARTIST_MODULE_DIR) not in sys.path:
     sys.path.insert(0, str(ARTIST_MODULE_DIR))
 
 from artist_query_core import ArtistQueryEngine
-from canonical_artist_summary import assemble_canonical_artist_summary
+from canonical_artist_summary import (
+    assemble_canonical_artist_summary,
+    validate_canonical_artist_summary,
+)
 from artist_family_runtime import (
     build_family_metrics,
     resolve_artist_family,
@@ -19,6 +22,10 @@ from artist_family_runtime import (
 from artist_bridge_runtime import (
     build_artist_bridge,
     comparative_standing_from_bridge,
+)
+from artist_investigation_runtime import (
+    apply_investigation_projection,
+    build_artist_investigation,
 )
 
 
@@ -57,6 +64,26 @@ def main() -> int:
             comparative_standing=comparative_standing,
             family=family,
             family_metrics=family_metrics,
+        )
+
+        route_style_result = {
+            **legacy_result,
+            "family": family,
+            "familyMetrics": family_metrics,
+            "bridge": bridge,
+        }
+
+        investigation = build_artist_investigation(
+            route_style_result
+        )
+
+        canonical_result = apply_investigation_projection(
+            canonical_result,
+            investigation,
+        )
+
+        validate_canonical_artist_summary(
+            canonical_result
         )
 
         result = {
