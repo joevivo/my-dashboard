@@ -175,4 +175,9 @@ These classifications must not appear as production truth until governance is ac
 
 ## Current Focus
 
-The next implementation vertical slice is Period Intelligence.
+The next implementation vertical slice is the Canonical Artist Summary Contract
+v1.
+
+Period Intelligence and Artist Comparative Standing are complete for their
+current v1 scopes. The reconciled backlog is the governing source for this
+slice's scope, exclusions, dependencies, risks, and acceptance criteria.
