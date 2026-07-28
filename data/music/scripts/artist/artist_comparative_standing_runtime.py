@@ -636,7 +636,6 @@ def select_artist_comparative_standing(
         "metrics": metrics,
     }
 
-
 DEFAULT_REPO_ROOT = SCRIPT_DIR.parents[3]
 DEFAULT_LIBRARY_TRACKS_PATH = (
     Path.home()
@@ -661,11 +660,343 @@ DEFAULT_FAMILIES_PATH = (
     / "curated"
     / "artistFamilies.json"
 )
+DEFAULT_RANKING_MODULE_PATH = (
+    SCRIPT_DIR
+    / "artist_comparative_standing.py"
+)
+DEFAULT_IDENTITY_MODULE_PATH = (
+    IDENTITY_DIR
+    / "music_identity.py"
+)
+DEFAULT_CACHE_DIRECTORY = (
+    DEFAULT_REPO_ROOT
+    / "data"
+    / "music"
+    / "generated"
+    / "comparative-standing"
+)
+DEFAULT_CACHE_PATH = (
+    DEFAULT_CACHE_DIRECTORY
+    / "artist-comparative-standing-cache-v0.sqlite3"
+)
+DEFAULT_CACHE_MANIFEST_PATH = (
+    DEFAULT_CACHE_DIRECTORY
+    / "artist-comparative-standing-cache-manifest-v0.json"
+)
+
+SQLITE_CACHE_MANIFEST_SCHEMA_VERSION = (
+    "music.artist-comparative-standing.sqlite-cache-manifest.v0"
+)
+
+
+class ComparativeStandingCacheError(RuntimeError):
+    """Raised when the governed SQLite cache is unavailable or stale."""
+
+
+def sha256_file(path: Path) -> str:
+    """Return an uppercase SHA-256 fingerprint for one file."""
+
+    import hashlib
+
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest().upper()
+
+
+def _validate_cache_input(
+    record: Mapping[str, Any],
+    *,
+    path: Path,
+    label: str,
+) -> None:
+    if not path.exists():
+        raise ComparativeStandingCacheError(
+            f"Governed cache input is missing: {label}"
+        )
+
+    stat = path.stat()
+
+    if record.get("sizeBytes") != stat.st_size:
+        raise ComparativeStandingCacheError(
+            f"Governed cache input size changed: {label}"
+        )
+
+    if record.get("modifiedTimeNs") != stat.st_mtime_ns:
+        raise ComparativeStandingCacheError(
+            f"Governed cache input timestamp changed: {label}"
+        )
+
+    expected_hash = str(
+        record.get("sha256") or ""
+    ).upper()
+
+    if expected_hash != sha256_file(path):
+        raise ComparativeStandingCacheError(
+            f"Governed cache input hash changed: {label}"
+        )
+
+
+def _load_validated_cache_manifest(
+    *,
+    cache_path: Path,
+    manifest_path: Path,
+    library_tracks_path: Path,
+    snapshot_path: Path,
+    families_path: Path,
+    runtime_path: Path,
+    ranking_path: Path,
+    identity_path: Path,
+) -> dict[str, Any]:
+    if not manifest_path.exists():
+        raise ComparativeStandingCacheError(
+            "Comparative Standing SQLite cache manifest was not found."
+        )
+
+    if not cache_path.exists():
+        raise ComparativeStandingCacheError(
+            "Comparative Standing SQLite cache was not found."
+        )
+
+    manifest = json.loads(
+        manifest_path.read_text(
+            encoding="utf-8-sig"
+        )
+    )
+
+    if not isinstance(manifest, Mapping):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing cache manifest must be an object."
+        )
+
+    if (
+        manifest.get("schemaVersion")
+        != SQLITE_CACHE_MANIFEST_SCHEMA_VERSION
+    ):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing SQLite cache manifest schema changed."
+        )
+
+    if (
+        manifest.get("runtimeSchemaVersion")
+        != RUNTIME_SCHEMA_VERSION
+    ):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing runtime schema changed."
+        )
+
+    if (
+        manifest.get("responseSchemaVersion")
+        != RESPONSE_SCHEMA_VERSION
+    ):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing response schema changed."
+        )
+
+    sources = manifest.get("sources")
+
+    if not isinstance(sources, Mapping):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing cache source records are missing."
+        )
+
+    source_inputs = (
+        (
+            "libraryTracks",
+            library_tracks_path,
+        ),
+        (
+            "snapshotWarehouse",
+            snapshot_path,
+        ),
+        (
+            "artistFamilies",
+            families_path,
+        ),
+    )
+
+    for source_key, source_path in source_inputs:
+        record = sources.get(source_key)
+
+        if not isinstance(record, Mapping):
+            raise ComparativeStandingCacheError(
+                f"Cache source record is missing: {source_key}"
+            )
+
+        _validate_cache_input(
+            record,
+            path=source_path,
+            label=source_key,
+        )
+
+    code = manifest.get("code")
+
+    if not isinstance(code, Mapping):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing cache code records are missing."
+        )
+
+    code_inputs = (
+        (
+            "runtime",
+            runtime_path,
+        ),
+        (
+            "ranking",
+            ranking_path,
+        ),
+        (
+            "identity",
+            identity_path,
+        ),
+    )
+
+    for code_key, code_path in code_inputs:
+        record = code.get(code_key)
+
+        if not isinstance(record, Mapping):
+            raise ComparativeStandingCacheError(
+                f"Cache code record is missing: {code_key}"
+            )
+
+        _validate_cache_input(
+            record,
+            path=code_path,
+            label=code_key,
+        )
+
+    cache_record = manifest.get("cache")
+
+    if not isinstance(cache_record, Mapping):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing cache record is missing."
+        )
+
+    cache_stat = cache_path.stat()
+
+    if cache_record.get("sizeBytes") != cache_stat.st_size:
+        raise ComparativeStandingCacheError(
+            "Comparative Standing SQLite cache size changed."
+        )
+
+    expected_cache_hash = str(
+        cache_record.get("sha256") or ""
+    ).upper()
+
+    if expected_cache_hash != sha256_file(cache_path):
+        raise ComparativeStandingCacheError(
+            "Comparative Standing SQLite cache hash changed."
+        )
+
+    return dict(manifest)
+
+
+def load_cached_artist_comparative_standing(
+    artist_name: Any,
+    *,
+    cache_path: Path = DEFAULT_CACHE_PATH,
+    manifest_path: Path = DEFAULT_CACHE_MANIFEST_PATH,
+    library_tracks_path: Path = DEFAULT_LIBRARY_TRACKS_PATH,
+    snapshot_path: Path = DEFAULT_SNAPSHOT_PATH,
+    families_path: Path = DEFAULT_FAMILIES_PATH,
+    runtime_path: Path = Path(__file__).resolve(),
+    ranking_path: Path = DEFAULT_RANKING_MODULE_PATH,
+    identity_path: Path = DEFAULT_IDENTITY_MODULE_PATH,
+) -> dict[str, Any]:
+    """Load one response from the fingerprint-validated SQLite cache."""
+
+    identity = resolve_artist_identity(artist_name)
+
+    if identity is None:
+        return {
+            "schemaVersion": RESPONSE_SCHEMA_VERSION,
+            "status": "identity_unresolved",
+            "entityType": "artist",
+            "canonicalKey": None,
+            "displayName": str(artist_name or "").strip() or None,
+            "reviewedFamilyIds": [],
+            "metrics": [],
+        }
+
+    _load_validated_cache_manifest(
+        cache_path=cache_path,
+        manifest_path=manifest_path,
+        library_tracks_path=library_tracks_path,
+        snapshot_path=snapshot_path,
+        families_path=families_path,
+        runtime_path=runtime_path,
+        ranking_path=ranking_path,
+        identity_path=identity_path,
+    )
+
+    import sqlite3
+
+    cache_uri = (
+        f"file:{cache_path.resolve().as_posix()}?mode=ro"
+    )
+
+    with sqlite3.connect(
+        cache_uri,
+        uri=True,
+    ) as connection:
+        response_row = connection.execute(
+            """
+            SELECT response_json
+            FROM artist_responses
+            WHERE canonical_key = ?
+            """,
+            (
+                identity["canonicalKey"],
+            ),
+        ).fetchone()
+
+        if response_row is not None:
+            response = json.loads(
+                response_row[0]
+            )
+
+            if (
+                response.get("schemaVersion")
+                != RESPONSE_SCHEMA_VERSION
+            ):
+                raise ComparativeStandingCacheError(
+                    "Cached artist response schema changed."
+                )
+
+            return response
+
+        template_row = connection.execute(
+            """
+            SELECT value_json
+            FROM cache_metadata
+            WHERE key = 'noEvidenceTemplate'
+            """
+        ).fetchone()
+
+    if template_row is None:
+        raise ComparativeStandingCacheError(
+            "No-evidence response template is missing."
+        )
+
+    response = json.loads(
+        template_row[0]
+    )
+    response["canonicalKey"] = identity["canonicalKey"]
+    response["displayName"] = identity["displayName"]
+    response["reviewedFamilyIds"] = []
+
+    return response
 
 
 @lru_cache(maxsize=1)
 def load_default_runtime_snapshot() -> dict[str, Any]:
-    """Build and cache the governed runtime snapshot for one process."""
+    """Build the full governed snapshot for validation and regeneration."""
 
     return load_and_build_runtime_snapshot(
         library_tracks_path=DEFAULT_LIBRARY_TRACKS_PATH,
@@ -677,9 +1008,8 @@ def load_default_runtime_snapshot() -> dict[str, Any]:
 def load_default_artist_comparative_standing(
     artist_name: Any,
 ) -> dict[str, Any]:
-    """Select one artist response from the cached runtime snapshot."""
+    """Select one artist response from the governed SQLite cache."""
 
-    return select_artist_comparative_standing(
-        load_default_runtime_snapshot(),
+    return load_cached_artist_comparative_standing(
         artist_name,
     )
