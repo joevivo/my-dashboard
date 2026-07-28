@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import sys
@@ -11,6 +11,7 @@ if str(ARTIST_MODULE_DIR) not in sys.path:
     sys.path.insert(0, str(ARTIST_MODULE_DIR))
 
 from artist_query_core import ArtistQueryEngine
+from canonical_artist_summary import assemble_canonical_artist_summary
 
 
 def main() -> int:
@@ -22,7 +23,17 @@ def main() -> int:
 
     try:
         engine = ArtistQueryEngine()
-        result = engine.query_artist(query)
+        legacy_result = engine.query_artist(query)
+
+        canonical_result = assemble_canonical_artist_summary(
+            legacy_result,
+            query=query,
+        )
+
+        result = {
+            **legacy_result,
+            "canonicalArtistSummary": canonical_result,
+        }
     except Exception as error:
         print(json.dumps({"error": str(error), "query": query}, ensure_ascii=False))
         return 1
