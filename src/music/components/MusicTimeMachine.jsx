@@ -1,23 +1,44 @@
 import { useState } from "react";
 import ArtistDossierModal from "./ArtistDossierModal";
 import MusicIntelligenceErrorBoundary from "./MusicIntelligenceErrorBoundary";
-import FeaturedMemoryCard from "./FeaturedMemoryCard";
+
+const API_ROOT = "http://localhost:4000";
+
 const quickRanges = [
   ["Spring 2020", "2020-03-01", "2020-04-30"],
   ["Summer 2021", "2021-06-01", "2021-08-31"],
   ["2015", "2015-01-01", "2015-12-31"],
   ["2016", "2016-01-01", "2016-12-31"],
-  
 ];
-const historicalMoments = [
-  ["COVID Lockdown", "2020-03-01", "2020-05-31"],
-  ["Pandemic Era", "2020-03-01", "2021-05-31"],
-  ["Reopening Era", "2021-06-01", "2021-12-31"],
-  ["2016 H1", "2016-01-01", "2016-06-30"],
-  ["2016 H2", "2016-07-01", "2016-12-31"],
-  ["2020 H1", "2020-01-01", "2020-06-30"],
-  ["2020 H2", "2020-07-01", "2020-12-31"],
-];
+
+const statusLabels = {
+  available: "Available",
+  searched_with_evidence: "Evidence found",
+  searched_no_evidence: "Searched — no evidence",
+  not_searched: "Not searched",
+  unavailable: "Unavailable",
+  stale: "Stale",
+  unsupported_for_period: "Unsupported for period",
+  partial_coverage: "Partial coverage",
+  evidence_found: "Evidence found",
+  no_matching_evidence: "No matching evidence",
+  unsupported_period: "Unsupported period",
+  operational_error: "Operational error",
+};
+
+const statusMessages = {
+  searched_no_evidence:
+    "The source was searched successfully, but no matching evidence was found.",
+  not_searched:
+    "This source was not searched for the selected period.",
+  unavailable:
+    "This source is currently unavailable.",
+  stale:
+    "This source is available, but its evidence is stale.",
+  unsupported_for_period:
+    "This source does not cover the selected period.",
+};
+
 function parseDate(dateString) {
   return new Date(`${dateString}T00:00:00`);
 }
@@ -37,7 +58,6 @@ function getRangeLengthDays(startDate, endDate) {
 function shiftDateRange(startDate, endDate, direction) {
   const rangeLengthDays = getRangeLengthDays(startDate, endDate);
   const shiftDays = rangeLengthDays * direction;
-
   const nextStart = parseDate(startDate);
   const nextEnd = parseDate(endDate);
 
@@ -48,6 +68,365 @@ function shiftDateRange(startDate, endDate, direction) {
     startDate: formatDate(nextStart),
     endDate: formatDate(nextEnd),
   };
+}
+
+function formatMetric(value, suffix = "") {
+  if (value === null || value === undefined) {
+    return "Unavailable";
+  }
+
+  return `${value.toLocaleString()}${suffix}`;
+}
+
+function formatStatus(status) {
+  if (!status) {
+    return "Unknown";
+  }
+
+  return (
+    statusLabels[status] ||
+    status
+      .split("_")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ")
+  );
+}
+
+function getErrorMessage(payload) {
+  if (typeof payload?.error === "string") {
+    return payload.error;
+  }
+
+  if (payload?.error?.message) {
+    return payload.error.message;
+  }
+
+  return "Period Intelligence could not complete the request.";
+}
+
+function normalizeListItem(item, index) {
+  if (typeof item === "string") {
+    return {
+      key: `${item}-${index}`,
+      label: item,
+      count: null,
+      raw: item,
+    };
+  }
+
+  const label =
+    item?.artist ||
+    item?.album ||
+    item?.track ||
+    item?.name ||
+    item?.label ||
+    "Unknown";
+
+  const count =
+    item?.actualPlays ??
+    item?.count ??
+    item?.plays ??
+    item?.total ??
+    item?.objectCount ??
+    null;
+
+  return {
+    key: `${label}-${index}`,
+    label,
+    count,
+    raw: item,
+  };
+}
+
+function Metric({ label, value, detail }) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+      {detail && <p className="mt-1 text-xs text-slate-400">{detail}</p>}
+    </div>
+  );
+}
+
+function StatusBadge({ status }) {
+  return (
+    <span className="inline-flex rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold text-sky-200">
+      {formatStatus(status)}
+    </span>
+  );
+}
+
+function EmptySourceState({ status, fallback }) {
+  return (
+    <p className="mt-3 text-sm leading-relaxed text-slate-400">
+      {statusMessages[status] || fallback}
+    </p>
+  );
+}
+
+function StructuredListCard({
+  title,
+  items = [],
+  status,
+  countLabel,
+  onItemClick,
+}) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <h5 className="font-semibold text-white">{title}</h5>
+        {status && <StatusBadge status={status} />}
+      </div>
+
+      {items.length === 0 ? (
+        <EmptySourceState
+          status={status}
+          fallback="No matching items were returned."
+        />
+      ) : (
+        <ol className="mt-3 space-y-2 text-sm">
+          {items.map((item, index) => {
+            const normalized = normalizeListItem(item, index);
+            const labelContent = onItemClick ? (
+              <button
+                type="button"
+                onClick={() =>
+                  onItemClick({
+                    ...normalized.raw,
+                    label: normalized.label,
+                    count: normalized.count,
+                  })
+                }
+                className="text-left font-semibold text-sky-200 underline-offset-4 hover:text-sky-100 hover:underline"
+              >
+                {normalized.label}
+              </button>
+            ) : (
+              <span className="font-semibold text-slate-200">
+                {normalized.label}
+              </span>
+            );
+
+            return (
+              <li
+                key={normalized.key}
+                className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2"
+              >
+                {labelContent}
+
+                {normalized.count !== null && (
+                  <span className="text-right text-xs font-semibold text-sky-300">
+                    {normalized.count.toLocaleString()}
+                    {countLabel ? ` ${countLabel}` : ""}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
+  );
+}
+
+function TextEvidenceCard({ title, items = [], emptyMessage }) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+      <h5 className="font-semibold text-white">{title}</h5>
+
+      {items.length === 0 ? (
+        <p className="mt-3 text-sm text-slate-400">{emptyMessage}</p>
+      ) : (
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-300">
+          {items.map((item, index) => (
+            <li key={`${String(item)}-${index}`}>
+              {typeof item === "string"
+                ? item
+                : item?.message || item?.statement || item?.label || "Unspecified"}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function CoverageCard({ coverage }) {
+  const limitations = coverage?.limitations ?? [];
+  const recordsMatched = coverage?.recordsMatched;
+
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-slate-500">
+            {coverage?.sourceType || "Evidence source"}
+          </p>
+          <h5 className="mt-1 font-semibold text-white">
+            {coverage?.sourceId || "Unknown source"}
+          </h5>
+        </div>
+
+        <StatusBadge status={coverage?.status} />
+      </div>
+
+      <p className="mt-3 text-sm text-slate-300">
+        Records matched:{" "}
+        <span className="font-semibold text-white">
+          {recordsMatched === null || recordsMatched === undefined
+            ? "Unavailable"
+            : recordsMatched.toLocaleString()}
+        </span>
+      </p>
+
+      {coverage?.coverageStart && coverage?.coverageEnd && (
+        <p className="mt-1 text-xs text-slate-400">
+          Coverage: {coverage.coverageStart} to {coverage.coverageEnd}
+        </p>
+      )}
+
+      {limitations.length > 0 && (
+        <ul className="mt-3 list-disc space-y-1 pl-5 text-xs leading-relaxed text-amber-200">
+          {limitations.map((limitation, index) => (
+            <li key={`${limitation}-${index}`}>{limitation}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function SourceSection({ title, status, note, children }) {
+  return (
+    <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h4 className="text-lg font-semibold text-white">{title}</h4>
+          {note && (
+            <p className="mt-1 max-w-4xl text-sm leading-relaxed text-slate-400">
+              {note}
+            </p>
+          )}
+        </div>
+
+        <StatusBadge status={status} />
+      </div>
+
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+function ArtistJourneyCard({ artist, journey, onOpenDossier }) {
+  const timeline = journey?.timeline ?? [];
+  const maxTimelineCount = timeline.length
+    ? Math.max(...timeline.map((item) => item.count ?? 0))
+    : 0;
+
+  return (
+    <section className="rounded-2xl border border-sky-500/40 bg-sky-950/20 p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-sky-300">
+            Backend Artist Journey
+          </p>
+          <h4 className="mt-1 text-xl font-semibold text-white">
+            {artist.label}
+          </h4>
+        </div>
+
+        <StatusBadge status={journey?.status || "unavailable"} />
+      </div>
+
+      {!journey ? (
+        <p className="mt-4 text-sm text-slate-300">
+          No governed artist-journey record was returned for this artist.
+        </p>
+      ) : (
+        <>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <Metric
+              label="Evidence in Range"
+              value={formatMetric(artist.count)}
+              detail="Library Evidence records, not Actual Plays"
+            />
+            <Metric
+              label="First Seen"
+              value={journey.firstSeen || "Unavailable"}
+            />
+            <Metric
+              label="Most Active Period"
+              value={journey.mostActivePeriod || "Unavailable"}
+            />
+          </div>
+
+          <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+            <h5 className="font-semibold text-white">Yearly Evidence</h5>
+
+            {timeline.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-400">
+                Timeline evidence is unavailable.
+              </p>
+            ) : (
+              <div className="mt-3 space-y-2">
+                {timeline.map((item) => {
+                  const percent = maxTimelineCount
+                    ? Math.max(
+                        4,
+                        Math.round(((item.count ?? 0) / maxTimelineCount) * 100)
+                      )
+                    : 4;
+
+                  return (
+                    <div
+                      key={item.year}
+                      className="grid grid-cols-[3rem_1fr_4rem] items-center gap-3"
+                    >
+                      <span className="text-xs font-semibold text-slate-500">
+                        {item.year}
+                      </span>
+                      <div className="h-2 rounded-full bg-slate-800">
+                        <div
+                          className="h-2 rounded-full bg-sky-400"
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                      <span className="text-right text-xs font-semibold text-slate-300">
+                        {item.count}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <StructuredListCard
+              title="Journey Albums"
+              items={journey.topAlbums ?? []}
+              status="available"
+              countLabel="records"
+            />
+            <StructuredListCard
+              title="Journey Tracks"
+              items={journey.topTracks ?? []}
+              status="available"
+              countLabel="records"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={onOpenDossier}
+            className="mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-500/20"
+          >
+            Open Artist Dossier
+          </button>
+        </>
+      )}
+    </section>
+  );
 }
 
 function MusicTimeMachineContent() {
@@ -64,6 +443,8 @@ function MusicTimeMachineContent() {
     setEndDate(nextEndDate);
     setRangeRead(null);
     setRangeError("");
+    setSelectedArtist(null);
+    setSelectedDossierArtist(null);
   }
 
   function movePeriod(direction) {
@@ -75,16 +456,24 @@ function MusicTimeMachineContent() {
     setRangeLoading(true);
     setRangeError("");
     setRangeRead(null);
+    setSelectedArtist(null);
+    setSelectedDossierArtist(null);
 
     try {
+      const query = new URLSearchParams({
+        start: startDate,
+        end: endDate,
+        timeZone: "America/Chicago",
+      });
+
       const response = await fetch(
-        `http://localhost:4000/api/music/time-machine?start=${startDate}&end=${endDate}`
+        `${API_ROOT}/api/music/query/period?${query.toString()}`
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to generate Time Machine read");
+        throw new Error(getErrorMessage(data));
       }
 
       setRangeRead(data);
@@ -95,448 +484,336 @@ function MusicTimeMachineContent() {
     }
   }
 
+  const summary = rangeRead?.summary ?? {};
+  const period = rangeRead?.period ?? {};
+  const activity = rangeRead?.activity ?? {};
+  const libraryEvidence = rangeRead?.libraryEvidence ?? {};
+  const recentApple = rangeRead?.recentAppleObservations ?? {};
+  const coverage = rangeRead?.coverage ?? [];
+  const warnings = rangeRead?.warnings ?? [];
+  const confidence = rangeRead?.confidence ?? {};
+  const artistJourneys = libraryEvidence.artistJourneys ?? {};
+  const selectedJourney = selectedArtist
+    ? artistJourneys[selectedArtist.label]
+    : null;
+
   return (
     <div className="mb-4 rounded-2xl border border-sky-500/30 bg-slate-950/70 p-5 shadow-lg">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
-            Curated Time Machine
-          </p>
-          <h3 className="mt-1 text-xl font-semibold text-white">
-            {month.label}
-          </h3>
-          <p className="mt-2 text-base italic text-slate-200">
-            {month.headline}
-          </p>
-          <p className="mt-1 text-sm text-slate-400">{month.context}</p>
-        </div>
+      <div>
+        <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
+          Music Time Machine
+        </p>
+        <h3 className="mt-1 text-xl font-semibold text-white">
+          Investigate a listening period
+        </h3>
+        <p className="mt-2 max-w-4xl text-sm leading-relaxed text-slate-400">
+          Actual Listening, Library Evidence, Recent Apple Objects, and playback
+          context remain separate. Unavailable evidence is never converted into
+          a zero.
+        </p>
+      </div>
 
-        <select
-          className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200"
-          value={selectedMonthKey}
-          aria-label="Select Time Machine month"
-          onChange={(event) => setSelectedMonthKey(event.target.value)}
+      <div className="mt-5 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <label className="text-sm text-slate-300">
+          Start Date
+          <input
+            type="date"
+            className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
+            value={startDate}
+            onChange={(event) =>
+              updateDateRange(event.target.value, endDate)
+            }
+          />
+        </label>
+
+        <label className="text-sm text-slate-300">
+          End Date
+          <input
+            type="date"
+            className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
+            value={endDate}
+            onChange={(event) =>
+              updateDateRange(startDate, event.target.value)
+            }
+          />
+        </label>
+
+        <button
+          type="button"
+          className="self-end rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
+          onClick={generateRangeRead}
+          disabled={rangeLoading}
         >
-          {musicTimeMachineMonthOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          {rangeLoading ? "Investigating..." : "Investigate"}
+        </button>
       </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-3">
-        <Metric label="Evidence Found" value={month.totalPlays} />
-        <Metric label="Source Type" value="Library Last Played" />
-        <Metric label="Confidence" value="Directional" />
-      </div>
-
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <ListCard title="Top Artists" items={month.topArtists} />
-        <ListCard title="Top Albums" items={month.topAlbums} />
-      </div>
-
-      <div className="mt-5">
-        <ListCard title="Behavior Read" items={month.behaviorRead} />
-      </div>
-
-      <div className="mt-5 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-        <h4 className="font-semibold text-white">Memory Anchors</h4>
-        <p className="mt-2 text-sm text-slate-300">{month.memoryPrompt}</p>
-      </div>
-
-      <FeaturedMemoryCard />
-
-      <div className="mt-6 rounded-2xl border border-sky-500/40 bg-slate-900/80 p-5">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
-            Live Time Machine Query
-          </p>
-          <h4 className="mt-1 text-lg font-semibold text-white">
-            Explore any date range
-          </h4>
-          <p className="mt-1 text-sm text-slate-400">
-            Query the live Apple Music rollup without reading raw JSON.
-          </p>
-        </div>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
-          <label className="text-sm text-slate-300">
-            Start Date
-            <input
-              type="date"
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
-              value={startDate}
-              onChange={(event) =>
-                updateDateRange(event.target.value, endDate)
-              }
-            />
-          </label>
-
-          <label className="text-sm text-slate-300">
-            End Date
-            <input
-              type="date"
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200"
-              value={endDate}
-              onChange={(event) =>
-                updateDateRange(startDate, event.target.value)
-              }
-            />
-          </label>
-
+      <div className="mt-3 flex flex-wrap gap-2">
+        {quickRanges.map(([label, start, end]) => (
           <button
+            key={label}
             type="button"
-            className="self-end rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
-            onClick={generateRangeRead}
-            disabled={rangeLoading}
+            className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-sky-400 hover:text-sky-200"
+            onClick={() => updateDateRange(start, end)}
           >
-            {rangeLoading ? "Generating..." : "Generate"}
+            {label}
           </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {quickRanges.map(([label, start, end]) => (
-            <button
-              key={label}
-              type="button"
-              className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-sky-400 hover:text-sky-200"
-              onClick={() => updateDateRange(start, end)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-<div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-    Historical Moments
-  </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
+          onClick={() => movePeriod(-1)}
+        >
+          Previous Period
+        </button>
 
-  <div className="mt-3 flex flex-wrap gap-2">
-    {historicalMoments.map(([label, start, end]) => (
-      <button
-        key={label}
-        type="button"
-        className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300 hover:border-sky-400 hover:text-sky-200"
-        onClick={() => updateDateRange(start, end)}
-      >
-        {label}
-      </button>
-    ))}
-  </div>
-</div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
-            onClick={() => movePeriod(-1)}
-          >
-            Previous Period
-          </button>
+        <button
+          type="button"
+          className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
+          onClick={() => movePeriod(1)}
+        >
+          Next Period
+        </button>
+      </div>
 
-          <button
-            type="button"
-            className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:border-sky-400 hover:text-sky-200"
-            onClick={() => movePeriod(1)}
-          >
-            Next Period
-          </button>
-        </div>
+      {rangeError && (
+        <p className="mt-4 rounded-xl border border-rose-500/30 bg-rose-950/30 p-3 text-sm text-rose-200">
+          {rangeError}
+        </p>
+      )}
 
-        {rangeError && (
-          <p className="mt-3 text-sm text-rose-300">{rangeError}</p>
-        )}
+      {rangeRead && (
+        <div className="mt-6 space-y-5">
+          <section className="rounded-2xl border border-sky-500/40 bg-sky-950/20 p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-sky-300">
+                  Period Intelligence
+                </p>
+                <h4 className="mt-1 text-xl font-semibold text-white">
+                  {summary.headline || period.label || "Period result"}
+                </h4>
+              </div>
 
-        {rangeRead && (
-          <div className="mt-5 space-y-4">
-            <div className="grid gap-3 md:grid-cols-3">
-              <Metric
-                label="Date Range"
-                value={`${rangeRead.startDate} to ${rangeRead.endDate}`}
-              />
-              <Metric
-                label="Tracks Matched"
-                value={`${rangeRead.tracksMatched ?? 0} tracks`}
-              />
-              <Metric label="Source" value="Live Query" />
+              <StatusBadge status={summary.status} />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-  <LiveJsonList
-    title="Top Albums"
-    items={rangeRead.topAlbums}
-  />
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-300">
+              {summary.narrative || "No summary narrative was returned."}
+            </p>
 
-  <LiveJsonList
-    title="Top Artists"
-    items={rangeRead.topArtists}
-    onItemClick={setSelectedArtist}
-  />
-</div>
-
-            <LiveTextCard title="Memory Read" items={rangeRead.memoryRead} />
-            {selectedArtist && (
-              <ArtistJourneyCard
-                artist={selectedArtist}
-                journey={rangeRead.artistJourneys?.[selectedArtist.label]}
-                onOpenDossier={() =>
-                  {
-                    const journey =
-                      rangeRead.artistJourneys?.[selectedArtist.label];
-
-                    const years = (journey?.timeline ?? [])
-                      .map((item) => Number(item.year))
-                      .filter(Boolean);
-
-                    setSelectedDossierArtist({
-                      artist: selectedArtist,
-                      journey: {
-                        ...journey,
-                        journeyType: getArtistJourneyType(years),
-                      },
-                    });
-                  }
-                }
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <Metric
+                label="Date Range"
+                value={period.label || `${startDate} to ${endDate}`}
               />
-            )}
-
-            {selectedDossierArtist && (
-              <ArtistDossierModal
-                dossier={selectedDossierArtist}
-                onClose={() => setSelectedDossierArtist(null)}
+              <Metric
+                label="Inclusive Days"
+                value={formatMetric(period.inclusiveDayCount)}
               />
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+              <Metric
+                label="Confidence"
+                value={formatStatus(confidence.level)}
+                detail={(confidence.reasons ?? []).join(" · ")}
+              />
+            </div>
+          </section>
 
-function Metric({ label, value }) {
-  return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
-    </div>
-  );
-}
+          <SourceSection
+            title="Actual Listening"
+            status={activity.status}
+            note="Confirmed listening metrics remain separate from reconstructed Library Evidence."
+          >
+            <div className="grid gap-3 md:grid-cols-4">
+              <Metric
+                label="Actual Plays"
+                value={formatMetric(activity.actualPlays)}
+              />
+              <Metric
+                label="Actual Skips"
+                value={formatMetric(activity.actualSkips)}
+              />
+              <Metric
+                label="Listening Hours"
+                value={formatMetric(activity.listeningHours)}
+              />
+              <Metric
+                label="Unique Artists"
+                value={formatMetric(activity.uniqueArtistCount)}
+              />
+            </div>
 
+            <div className="mt-4 grid gap-4 lg:grid-cols-3">
+              <StructuredListCard
+                title="Top Artists by Actual Plays"
+                items={activity.topArtists ?? []}
+                status={activity.status}
+                countLabel="plays"
+              />
+              <StructuredListCard
+                title="Top Albums by Actual Plays"
+                items={activity.topAlbums ?? []}
+                status={activity.status}
+                countLabel="plays"
+              />
+              <StructuredListCard
+                title="Top Tracks by Actual Plays"
+                items={activity.topTracks ?? []}
+                status={activity.status}
+                countLabel="plays"
+              />
+            </div>
+          </SourceSection>
 
-function getArtistJourneyType(years = []) {
-  if (!years.length) return "Needs Timeline";
+          <SourceSection
+            title="Library Evidence"
+            status={libraryEvidence.status}
+            note={
+              libraryEvidence.sourceNote ||
+              "Library Last Played Date reconstruction is not complete listening history."
+            }
+          >
+            <div className="grid gap-3 md:grid-cols-4">
+              <Metric
+                label="Evidence Records"
+                value={formatMetric(libraryEvidence.recordCount)}
+              />
+              <Metric
+                label="Unique Artists"
+                value={formatMetric(libraryEvidence.uniqueArtistCount)}
+              />
+              <Metric
+                label="Unique Albums"
+                value={formatMetric(libraryEvidence.uniqueAlbumCount)}
+              />
+              <Metric
+                label="Unique Tracks"
+                value={formatMetric(libraryEvidence.uniqueTrackCount)}
+              />
+            </div>
 
-  const sortedYears = [...years].sort((a, b) => a - b);
-  const latest = sortedYears[sortedYears.length - 1];
-  const previous = sortedYears[sortedYears.length - 2];
-  const gapBeforeLatest = previous ? latest - previous : 0;
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <StructuredListCard
+                title="Top Artists by Library Evidence"
+                items={libraryEvidence.topArtists ?? []}
+                status={libraryEvidence.status}
+                countLabel="records"
+                onItemClick={setSelectedArtist}
+              />
+              <StructuredListCard
+                title="Top Albums by Library Evidence"
+                items={libraryEvidence.topAlbums ?? []}
+                status={libraryEvidence.status}
+                countLabel="records"
+              />
+            </div>
 
-  if (latest < 2024) return "Dormant";
-  if (gapBeforeLatest >= 3) return "Returning";
-  if (sortedYears.length >= 6 && latest >= 2024) return "Persistence";
+            <div className="mt-4">
+              <TextEvidenceCard
+                title="Memory Read"
+                items={libraryEvidence.memoryRead ?? []}
+                emptyMessage="No Library Evidence memory read was returned."
+              />
+            </div>
+          </SourceSection>
 
-  return "Developing";
-}
+          {selectedArtist && (
+            <ArtistJourneyCard
+              artist={selectedArtist}
+              journey={selectedJourney}
+              onOpenDossier={() =>
+                setSelectedDossierArtist({
+                  artist: selectedArtist,
+                  journey: selectedJourney
+                    ? {
+                        ...selectedJourney,
+                        journeyType: selectedJourney.status,
+                      }
+                    : null,
+                })
+              }
+            />
+          )}
 
-function ListCard({ title, items }) {
-  return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-      <h4 className="font-semibold text-white">{title}</h4>
-      <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-function ArtistJourneyCard({ artist, journey, onOpenDossier }) {
-  const count = artist?.count ?? 0;
-  const timeline = journey?.timeline ?? [];
-  const maxTimelineCount = timeline.length
-    ? Math.max(...timeline.map((item) => item.count))
-    : 0;
+          <SourceSection
+            title="Recent Apple Observations"
+            status={recentApple.status}
+            note={
+              recentApple.sourceNote ||
+              "Recent Apple Objects are observations and are not confirmed plays."
+            }
+          >
+            <div className="grid gap-3 md:grid-cols-3">
+              <Metric
+                label="Observed Objects"
+                value={formatMetric(recentApple.objectCount)}
+              />
+              <Metric
+                label="Captured Snapshots"
+                value={formatMetric(recentApple.capturedSnapshotCount)}
+              />
+              <Metric
+                label="Latest Capture"
+                value={recentApple.latestCapturedAt || "Unavailable"}
+              />
+            </div>
 
-  const years = timeline.map((item) => Number(item.year)).filter(Boolean);
-  const yearsActive = years.length || "Pending";
-  const latestYear = years.length ? Math.max(...years) : "Pending";
-  const peakYears = timeline
-    .filter((item) => maxTimelineCount && item.count === maxTimelineCount)
-    .map((item) => item.year);
-  const peakYearLabel = peakYears.length ? peakYears.join(", ") : "Pending";
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <StructuredListCard
+                title="Observed Artists"
+                items={recentApple.artists ?? []}
+                status={recentApple.status}
+                countLabel="observations"
+              />
+              <StructuredListCard
+                title="Observed Albums"
+                items={recentApple.albums ?? []}
+                status={recentApple.status}
+                countLabel="observations"
+              />
+            </div>
+          </SourceSection>
 
-  const journeyType = getArtistJourneyType(years);
+          <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h4 className="text-lg font-semibold text-white">
+              Source Coverage
+            </h4>
+            <p className="mt-1 text-sm text-slate-400">
+              Each evidence family reports its own search and availability state.
+            </p>
 
-  function getNarrative() {
-    if (!journey || timeline.length === 0) {
-      return `${artist.label} appears in this selected range, but there is not enough timeline data yet to describe the longer journey.`;
-    }
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {coverage.map((entry) => (
+                <CoverageCard
+                  key={`${entry.sourceId}-${entry.sourceType}`}
+                  coverage={entry}
+                />
+              ))}
+            </div>
+          </section>
 
-    const firstSeen = journey.firstSeen ?? years[0] ?? "an earlier period";
-    const peakYear = peakYears[0] ?? journey.mostActivePeriod ?? "one period";
+          {warnings.length > 0 && (
+            <TextEvidenceCard
+              title="Warnings"
+              items={warnings}
+              emptyMessage="No warnings were returned."
+            />
+          )}
 
-    if (latestYear !== "Pending" && latestYear !== Number(peakYear)) {
-      return `${artist.label} appears across ${years.length} listening years, first showing up in ${firstSeen}, peaking in ${peakYear}, and remaining active through ${latestYear}.`;
-    }
-
-    return `${artist.label} appears across ${years.length} listening years, first showing up in ${firstSeen} and peaking in ${peakYear}.`;
-  }
-
-  return (
-    <div className="rounded-xl border border-sky-500/40 bg-slate-900/80 p-4">
-      <h4 className="font-semibold text-white">Artist Journey</h4>
-
-      <p className="mt-2 text-lg font-semibold text-sky-100">
-        {artist.label}
-      </p>
-
-      <div className="mt-2 inline-flex rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200">
-        {journeyType}
-      </div>
-
-      <p className="mt-3 rounded-lg border border-sky-500/20 bg-sky-950/30 p-3 text-sm leading-relaxed text-sky-100">
-        {getNarrative()}
-      </p>
-
-      <Metric
-  label="Activity in Range"
-  value={`${count} ${count === 1 ? "play" : "plays"}`}
-/>
-
-      <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/60 p-3">
-        <p className="text-xs uppercase tracking-wide text-slate-500">
-          Yearly Activity
-        </p>
-
-        {timeline.length === 0 ? (
-          <p className="mt-2 text-sm text-slate-300">
-            Timeline data is not available for this artist yet.
-          </p>
-        ) : (
-          <div className="mt-3 space-y-2 text-sm">
-            {timeline.map((item) => {
-              const percent = maxTimelineCount
-                ? Math.max(
-                    4,
-                    Math.round((item.count / maxTimelineCount) * 100)
-                  )
-                : 4;
-              const isPeak =
-                maxTimelineCount && item.count === maxTimelineCount;
-
-              return (
-                <div
-                  key={item.year}
-                  className="grid grid-cols-[3rem_1fr_4rem] items-center gap-3 text-slate-300"
-                >
-                  <span className="text-xs font-semibold text-slate-500">
-                    {item.year}
-                  </span>
-
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 flex-1 rounded-full bg-slate-800">
-                      <div
-                        className="h-2 rounded-full bg-sky-400"
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-
-                    {isPeak && (
-                      <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
-                        Peak
-                      </span>
-                    )}
-                  </div>
-
-                  <span className="text-right text-xs font-semibold text-slate-400">
-                    {item.count}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      <button
-        type="button"
-        onClick={onOpenDossier}
-        className="mt-4 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-500/20"
-      >
-        Open Artist Dossier
-      </button>
-    </div>
-  );
-}
-function LiveJsonList({ title, items = [], onItemClick }) {
-  return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
-      <h4 className="font-semibold text-white">{title}</h4>
-
-      {items.length === 0 ? (
-        <p className="mt-3 text-sm text-slate-500">No results found.</p>
-      ) : (
-        <ol className="mt-3 space-y-2 text-sm text-slate-300">
-          {items.map((item, index) => {
-            const label = item.album || item.artist || item.name || "Unknown";
-            const count = item.count ?? item.plays ?? item.total ?? null;
-
-            return (
-              <li
-                key={`${label}-${index}`}
-                className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2"
-              >
-                <button
-  type="button"
-  onClick={() => onItemClick?.({ ...item, label, count })}
-  className="text-left font-semibold text-sky-200 underline-offset-4 hover:text-sky-100 hover:underline"
->
-  {label}
-</button>
-                {count !== null && (
-                  <span className="text-xs font-semibold text-sky-300">
-                    {count}
-                  </span>
-                )}
-              </li>
-            );
-          })}
-        </ol>
+          {selectedDossierArtist && (
+            <ArtistDossierModal
+              dossier={selectedDossierArtist}
+              onClose={() => setSelectedDossierArtist(null)}
+            />
+          )}
+        </div>
       )}
     </div>
   );
 }
-
-function LiveTextCard({ title, items = [] }) {
-  return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4">
-      <h4 className="font-semibold text-white">{title}</h4>
-
-      {items.length === 0 ? (
-        <p className="mt-3 text-sm text-slate-500">No memory read available.</p>
-      ) : (
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
-          {items.map((item, index) => (
-            <li key={`${item}-${index}`}>{item}</li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default function MusicTimeMachine() {
   return (

@@ -13,6 +13,7 @@ import WeatherBug from "./WeatherBug";
 import NewsView from "./NewsView";
 import CardImporter from "./CardImporter";
 import MusicLibrary from "./MusicLibrary";
+import MusicTimeMachine from "./music/components/MusicTimeMachine";
 import MusicDashboard from "./MusicDashboard";
 import BooksView from "./BooksView";
 import NotesView from "./NotesView";
@@ -49,7 +50,8 @@ export default function App() {
             ["IntelligenceHome", "Intelligence Home"],
             ["MusicDashboard", "Music Dashboard"],
             ["QueryWorkbench", "Query Workbench"],
-            ["Music", "Music Intelligence"],
+            ["Music", "Music Library"],
+            ["MusicTimeMachine", "Music Time Machine"],
             ["PlaylistIntelligence", "Playlist Intelligence"],
             ["Books", "Books"],
             ["Notes", "Notes"],
@@ -150,12 +152,12 @@ export default function App() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveView("Music")}
+            onClick={() => setActiveView("MusicTimeMachine")}
             className="rounded-xl border border-slate-300 px-4 py-3 text-left text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
           >
-            Music Intelligence
+            Music Time Machine
             <span className="block pt-1 text-xs font-medium text-slate-500">
-              Open the current music intelligence workspace.
+              Investigate listening evidence across a selected period.
             </span>
           </button>
           <button
@@ -291,6 +293,8 @@ export default function App() {
 
             ) : activeView === "PlaylistIntelligence" ? (
               <PlaylistIntelligence />
+            ) : activeView === "MusicTimeMachine" ? (
+              <MusicTimeMachine />
             ) : activeView === "Music" ? (
               <MusicLibrary />
             ) : activeView === "MusicAnalytics" ? (
