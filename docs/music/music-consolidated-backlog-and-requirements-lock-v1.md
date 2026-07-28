@@ -279,6 +279,27 @@ Recent accepted repository work includes:
 - `195c455 Add historical Recent Apple artist evidence`
 - `07d9062 Refine artist family identity presentation`
 
+### 5.3 Verified implementation checkpoints
+
+The following implementation checkpoints are present at repository state
+`b0c82c6`:
+
+- Artist Comparative Standing v1 is implemented end to end:
+  - `f43606a Implement Comparative Standing runtime adapters`
+  - `a3f247b Expose Comparative Standing artist responses`
+  - `8ce6cf9 Regenerate Comparative Standing during Music refresh`
+  - `7a9c912 Present Comparative Standing in Query Workbench`
+  - `3e89912 Add indexed Comparative Standing cache`
+- Music Time Machine structured v1 is mounted at `e661fb8`.
+- Artist Dossier contract alignment is complete at `b0c82c6`.
+- Period Intelligence remains complete for v1 as recorded in section 5.1.
+- Artist Investigation remains complete for its current v1 behavior as recorded
+  in section 5.2.
+
+These checkpoints supersede backlog or roadmap language that describes Period
+Intelligence or Artist Comparative Standing as the next unimplemented vertical
+slice.
+
 ## 6. Active implementation priority order
 
 ### Priority 1 - Complete backlog reconciliation and approval
@@ -288,9 +309,11 @@ Status: Active until this document is reviewed and approved.
 Acceptance requires:
 
 - completed work is accurately recorded;
-- stale sprint and working-tree statements are removed;
+- stale sprint, working-tree, and implementation-priority statements are
+  identified;
 - remaining work is assigned an explicit status;
-- Artist Comparative Standing is defined;
+- the roadmap statement naming Period Intelligence as the next vertical slice is
+  recorded as stale and queued for a separate documentation correction;
 - implementation dependencies are explicit;
 - the revised priority order is approved by Ginto;
 - only this backlog document is committed and pushed in the reconciliation
@@ -298,12 +321,10 @@ Acceptance requires:
 
 No feature implementation begins before this acceptance.
 
-### Priority 2 - Define Artist Comparative Standing
+### Implemented contract lock - Artist Comparative Standing
 
-Status: Active after backlog approval.
-
-The first implementation must explain what an artist's evidence means relative
-to other eligible artists.
+Status: Implemented for the current v1 scope. The following requirements remain
+the governing regression and extension contract.
 
 Each source-specific comparative statement must disclose:
 
@@ -321,7 +342,7 @@ Example:
 
 `97 confirmed plays - 84th percentile, rank 296 of 1,846 artists with Actual Listening evidence.`
 
-Initial candidate dimensions:
+Implemented candidate dimensions include:
 
 - confirmed Actual Plays;
 - confirmed listening duration;
@@ -340,20 +361,26 @@ Requirements:
 - Rankings must use deterministic and documented tie handling.
 - A source with insufficient coverage must return an explicit coverage state
   rather than a misleading rank.
-- The initial interface must not present one unexplained overall percentage.
-- Source-specific comparative facts may be presented before any composite
-  relationship model exists.
+- The interface must not present one unexplained overall percentage.
+- Source-specific comparative facts may appear without a composite relationship
+  model.
 
-Implementation stages:
+Remaining Comparative Standing work is limited to regression coverage,
+representative artist and artist-family validation, and explicitly approved
+extensions. It is not the next feature vertical slice.
 
-1. approve dimensions, populations, tie handling, and missing-data behavior;
-2. implement backend comparative calculations and contract fields;
-3. add shared presentation components;
-4. validate representative artist and artist-family scenarios.
+### Priority 2 - Define the canonical Artist summary contract
 
-### Priority 3 - Define the canonical Artist summary contract
+Status: Proposed next implementation vertical slice after backlog approval.
 
-Status: Active.
+Why this is next:
+
+- Artist Dossier already consumes backend-owned artist and journey semantics.
+- Artist Investigation extraction depends on a stable shared Artist contract.
+- Reusable evidence components must render shared contracts rather than recreate
+  source semantics in React.
+- Comparative Standing must enter the shared Artist summary without becoming an
+  unexplained composite score.
 
 The shared Artist summary must support:
 
@@ -377,12 +404,62 @@ The shared Artist summary must support:
 
 Relationship shape may appear only after its governing model is approved.
 
-Dashboard, Query Workbench, and Artist Intelligence must consume this shared
-contract rather than independently deriving artist semantics.
+Dashboard, Query Workbench, Artist Intelligence, and Artist Dossier must consume
+the shared contract rather than independently deriving artist semantics.
 
-### Priority 4 - Extract Artist Investigation from QueryWorkbench
+Exact slice scope:
 
-Status: Active after the canonical Artist summary contract is stable.
+1. document the canonical backend-owned Artist summary schema;
+2. define identity, scope, evidence, coverage, comparative, confidence,
+   limitation, provenance, and investigation fields;
+3. preserve explicit distinctions among missing, unsearched, unavailable,
+   unsupported, searched-zero, and observed evidence;
+4. define the concise canonical profile boundary versus full Query Workbench
+   evidence and derivation;
+5. validate representative individual-artist and artist-family scenarios;
+6. align existing consumers without adding frontend semantic reclassification.
+
+Exclusions:
+
+- Music Time Machine quick-range cleanup;
+- new Music evidence sources or ingestion;
+- Comparative Standing expansion;
+- Playlist Intelligence work;
+- broad visual redesign;
+- relationship-model invention;
+- React-only relabeling that changes backend meaning.
+
+Dependencies:
+
+- approval of this reconciled backlog;
+- maintained Period Intelligence coverage semantics;
+- existing backend `artist` and `journey` objects;
+- existing Artist Comparative Standing responses;
+- surface-responsibility boundaries.
+
+Primary risks:
+
+- creating another surface-specific wrapper instead of a shared contract;
+- converting missing evidence into zero;
+- moving backend classification into React;
+- duplicating Query Workbench evidence in concise Artist surfaces;
+- combining artist-only and artist-family evidence without disclosure.
+
+Acceptance criteria:
+
+- one documented canonical Artist summary schema exists;
+- representative artist and artist-family fixtures pass;
+- Artist Intelligence and Artist Dossier consume the same canonical summary;
+- Query Workbench remains the owner of full evidence, provenance, and
+  derivation;
+- frontend relationship-classification logic remains absent;
+- missing and unsearched evidence remain distinct from zero;
+- Comparative Standing retains its disclosed population and coverage basis;
+- structured validation and frontend build pass.
+
+### Priority 3 - Extract Artist Investigation from QueryWorkbench
+
+Status: Blocked until the canonical Artist summary contract is stable.
 
 Requirements:
 
@@ -395,9 +472,10 @@ Requirements:
 - avoid moving the same oversized logic into a differently named component;
 - add focused acceptance coverage before removing the inline implementation.
 
-### Priority 5 - Build reusable evidence components
+### Priority 4 - Build reusable evidence components
 
-Status: Active after the shared contract is defined.
+Status: Blocked until the shared Artist contract is defined and its first
+consumer boundary is validated.
 
 Reusable components should render:
 
@@ -771,18 +849,22 @@ This reconciled backlog becomes the requirements lock only after Ginto reviews
 and approves:
 
 - the completed-for-v1 record;
+- the verified implementation checkpoints;
 - the active implementation order;
-- Artist Comparative Standing requirements;
-- the canonical Artist summary contract;
+- the retained Artist Comparative Standing contract;
+- the canonical Artist summary contract slice;
 - the near-term workstreams;
 - blocked and deferred decisions.
 
 After approval:
 
 1. commit and push only this reconciled backlog document;
-2. confirm the repository is clean and synchronized;
-3. begin the next approved vertical slice;
-4. do not broaden the slice without updating this backlog.
+2. confirm the Music scope and staging area are clean and synchronized while
+   preserving explicitly unrelated repository changes;
+3. correct the stale roadmap Current Focus statement in a separate
+   documentation-only checkpoint;
+4. begin the canonical Artist summary contract v1 vertical slice;
+5. do not broaden the slice without updating this backlog.
 
 The recommended next implementation slice is:
 
