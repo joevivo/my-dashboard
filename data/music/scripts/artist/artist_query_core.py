@@ -1,4 +1,6 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
+from functools import lru_cache
 
 import csv
 import json
@@ -41,25 +43,45 @@ LIBRARY_TRACKS_ZIP = (
 )
 
 
-def norm(value: object) -> str:
-    text = str(value or "").strip().lower()
+@lru_cache(maxsize=None)
+def _norm_text(text: str) -> str:
+    text = text.strip().lower()
     text = unicodedata.normalize("NFD", text)
-    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
+    text = "".join(
+        ch
+        for ch in text
+        if unicodedata.category(ch) != "Mn"
+    )
     text = text.replace("&", " and ")
     text = re.sub(r"[^a-z0-9]+", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
+def norm(value: object) -> str:
+    return _norm_text(str(value or ""))
+
+
 def strip_leading_article(value: str) -> str:
     return re.sub(r"^the\s+", "", value).strip()
 
 
-def canonical_key(value: object) -> str:
-    normalized = norm(value)
-    aliased = ARTIST_ALIASES.get(normalized, normalized)
+@lru_cache(maxsize=None)
+def _canonical_key_text(text: str) -> str:
+    normalized = _norm_text(text)
+    aliased = ARTIST_ALIASES.get(
+        normalized,
+        normalized,
+    )
     stripped = strip_leading_article(aliased)
-    return ARTIST_ALIASES.get(stripped, stripped)
+    return ARTIST_ALIASES.get(
+        stripped,
+        stripped,
+    )
+
+
+def canonical_key(value: object) -> str:
+    return _canonical_key_text(str(value or ""))
 
 
 def match_rank(query: str, artist: str) -> int | None:
