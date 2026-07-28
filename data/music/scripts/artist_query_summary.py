@@ -12,6 +12,10 @@ if str(ARTIST_MODULE_DIR) not in sys.path:
 
 from artist_query_core import ArtistQueryEngine
 from canonical_artist_summary import assemble_canonical_artist_summary
+from artist_family_runtime import (
+    build_family_metrics,
+    resolve_artist_family,
+)
 
 
 def main() -> int:
@@ -25,9 +29,20 @@ def main() -> int:
         engine = ArtistQueryEngine()
         legacy_result = engine.query_artist(query)
 
+        family = resolve_artist_family(
+            legacy_result.get("artist") or query
+        )
+
+        family_metrics = build_family_metrics(
+            family,
+            engine.query_artist,
+        )
+
         canonical_result = assemble_canonical_artist_summary(
             legacy_result,
             query=query,
+            family=family,
+            family_metrics=family_metrics,
         )
 
         result = {
