@@ -16,6 +16,10 @@ from artist_family_runtime import (
     build_family_metrics,
     resolve_artist_family,
 )
+from artist_bridge_runtime import (
+    build_artist_bridge,
+    comparative_standing_from_bridge,
+)
 
 
 def main() -> int:
@@ -38,9 +42,19 @@ def main() -> int:
             engine.query_artist,
         )
 
+        bridge = build_artist_bridge(
+            legacy_result.get("artist") or query
+        )
+
+        comparative_standing = (
+            comparative_standing_from_bridge(bridge)
+        )
+
         canonical_result = assemble_canonical_artist_summary(
             legacy_result,
             query=query,
+            bridge=bridge,
+            comparative_standing=comparative_standing,
             family=family,
             family_metrics=family_metrics,
         )
