@@ -431,7 +431,7 @@ function ArtistJourneyCard({ artist, journey, onOpenDossier }) {
 
 function MusicTimeMachineContent() {
   const [selectedArtist, setSelectedArtist] = useState(null);
-  const [selectedDossierArtist, setSelectedDossierArtist] = useState(null);
+  const [isDossierOpen, setIsDossierOpen] = useState(false);
   const [startDate, setStartDate] = useState("2020-03-01");
   const [endDate, setEndDate] = useState("2020-04-30");
   const [rangeRead, setRangeRead] = useState(null);
@@ -444,7 +444,7 @@ function MusicTimeMachineContent() {
     setRangeRead(null);
     setRangeError("");
     setSelectedArtist(null);
-    setSelectedDossierArtist(null);
+    setIsDossierOpen(false);
   }
 
   function movePeriod(direction) {
@@ -457,7 +457,7 @@ function MusicTimeMachineContent() {
     setRangeError("");
     setRangeRead(null);
     setSelectedArtist(null);
-    setSelectedDossierArtist(null);
+    setIsDossierOpen(false);
 
     try {
       const query = new URLSearchParams({
@@ -724,17 +724,7 @@ function MusicTimeMachineContent() {
             <ArtistJourneyCard
               artist={selectedArtist}
               journey={selectedJourney}
-              onOpenDossier={() =>
-                setSelectedDossierArtist({
-                  artist: selectedArtist,
-                  journey: selectedJourney
-                    ? {
-                        ...selectedJourney,
-                        journeyType: selectedJourney.status,
-                      }
-                    : null,
-                })
-              }
+              onOpenDossier={() => setIsDossierOpen(true)}
             />
           )}
 
@@ -803,10 +793,11 @@ function MusicTimeMachineContent() {
             />
           )}
 
-          {selectedDossierArtist && (
+          {isDossierOpen && (
             <ArtistDossierModal
-              dossier={selectedDossierArtist}
-              onClose={() => setSelectedDossierArtist(null)}
+              artist={selectedArtist}
+              journey={selectedJourney}
+              onClose={() => setIsDossierOpen(false)}
             />
           )}
         </div>

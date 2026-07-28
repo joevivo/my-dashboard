@@ -19,6 +19,14 @@ COMPONENT_PATH = (
 APP_PATH = REPO_ROOT / "src" / "App.jsx"
 MUSIC_LIBRARY_PATH = REPO_ROOT / "src" / "MusicLibrary.jsx"
 
+DOSSIER_PATH = (
+    REPO_ROOT
+    / "src"
+    / "music"
+    / "components"
+    / "ArtistDossierModal.jsx"
+)
+
 PERIOD_SCRIPT = (
     REPO_ROOT
     / "data"
@@ -46,6 +54,10 @@ def main() -> int:
     )
 
     music_library_source = MUSIC_LIBRARY_PATH.read_text(
+        encoding="utf-8"
+    )
+
+    dossier_source = DOSSIER_PATH.read_text(
         encoding="utf-8"
     )
 
@@ -104,10 +116,78 @@ def main() -> int:
             f"Prohibited legacy or inferred fragment remains: {fragment}",
         )
 
-    check(
-        "journeyType: selectedJourney.status" in source,
-        "Artist dossier compatibility must use backend status.",
+    caller_required = (
+        "const [isDossierOpen, setIsDossierOpen] = useState(false);",
+        "onOpenDossier={() => setIsDossierOpen(true)}",
+        "{isDossierOpen && (",
+        "artist={selectedArtist}",
+        "journey={selectedJourney}",
+        "onClose={() => setIsDossierOpen(false)}",
     )
+
+    for fragment in caller_required:
+        check(
+            fragment in source,
+            f"Required direct dossier caller fragment is missing: {fragment}",
+        )
+
+    caller_prohibited = (
+        "selectedDossierArtist",
+        "setSelectedDossierArtist",
+        "journeyType: selectedJourney.status",
+        "dossier={",
+    )
+
+    for fragment in caller_prohibited:
+        check(
+            fragment not in source,
+            f"Dossier compatibility fragment remains: {fragment}",
+        )
+
+    dossier_required = (
+        "ArtistDossierModal({",
+        "artist,",
+        "journey,",
+        "journey?.status",
+        "journey?.firstSeen",
+        "journey?.mostActivePeriod",
+        "Library Evidence in Selected Range",
+        "Evidence Records",
+        "Library Evidence Journey",
+        "Reconstructed Library Evidence, not confirmed Actual Plays",
+        "Yearly Library Evidence",
+        "formatEvidenceCount",
+    )
+
+    for fragment in dossier_required:
+        check(
+            fragment in dossier_source,
+            f"Required dossier contract fragment is missing: {fragment}",
+        )
+
+    dossier_prohibited = (
+        "dossier.",
+        "journeyType",
+        "totalPlays",
+        "activityInRange",
+        "latestActivity",
+        "peakYears",
+        "yearsActive",
+        "Math.min",
+        "Math.max",
+        "?? 0",
+        '"play"',
+        '"plays"',
+        "Total Plays",
+        "Activity in Range",
+        '"Pending"',
+    )
+
+    for fragment in dossier_prohibited:
+        check(
+            fragment not in dossier_source,
+            f"Prohibited dossier compatibility fragment remains: {fragment}",
+        )
 
     check(
         "value === null || value === undefined" in source,
@@ -216,6 +296,11 @@ def main() -> int:
     print("STRUCTURED_V1_FIELDS: PASS")
     print("LEGACY_FLAT_FIELD_REFERENCES: 0")
     print("FRONTEND_RELATIONSHIP_CLASSIFICATIONS: 0")
+    print("ARTIST_DOSSIER_DIRECT_BACKEND_INPUT: PASS")
+    print("DOSSIER_WRAPPER_REMOVED: PASS")
+    print("CALLER_STATUS_TRANSLATION_REMOVED: PASS")
+    print("MISSING_EVIDENCE_ZERO_DEFAULT_COUNT: 0")
+    print("LIBRARY_EVIDENCE_MISLABELED_AS_PLAYS_COUNT: 0")
     print("UNDEFINED_CURATED_MONTH_REFERENCES: 0")
     print("HISTORICAL_MOMENTS_REMOVED: PASS")
     print("DEDICATED_NAVIGATION_DESTINATION: PASS")

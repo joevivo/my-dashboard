@@ -1,61 +1,86 @@
-function Metric({ label, value }) {
+function Metric({ label, value, detail }) {
   return (
     <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
       <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-slate-100">{value ?? "Pending"}</p>
+      <p className="mt-1 text-sm font-semibold text-slate-100">
+        {value ?? "Unavailable"}
+      </p>
+      {detail && <p className="mt-1 text-xs text-slate-500">{detail}</p>}
     </div>
   );
 }
 
-function normalizeList(items) {
-  if (!Array.isArray(items)) return [];
+function formatEvidenceCount(value) {
+  if (value === null || value === undefined) {
+    return "Unavailable";
+  }
 
-  return items
-    .map((item) => {
-      if (typeof item === "string") return item;
-      return item?.label ?? item?.album ?? item?.playlist ?? item?.name ?? null;
-    })
-    .filter(Boolean);
+  return `${value.toLocaleString()} ${
+    value === 1 ? "evidence record" : "evidence records"
+  }`;
 }
 
-export default function ArtistDossierModal({ dossier, onClose }) {
-  if (!dossier) return null;
+function EvidenceList({ title, items = [], itemField }) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+      <h4 className="font-semibold text-slate-100">{title}</h4>
 
-  const artist = dossier.artist ?? {};
-  const journey = dossier.journey ?? {};
-  const timeline = journey.timeline ?? [];
+      {items.length === 0 ? (
+        <p className="mt-3 text-sm text-slate-500">
+          No matching Library Evidence was returned.
+        </p>
+      ) : (
+        <ul className="mt-3 space-y-2 text-sm text-slate-300">
+          {items.map((item, index) => {
+            const label =
+              typeof item === "string"
+                ? item
+                : item?.[itemField] ?? item?.label ?? "Unknown";
 
-  const years = timeline.map((item) => Number(item.year)).filter(Boolean);
-  const firstSeen = journey.firstSeen ?? (years.length ? Math.min(...years) : "Pending");
-  const latestActivity = years.length ? Math.max(...years) : "Pending";
+            const count =
+              typeof item === "string" ? null : item?.count ?? null;
 
-  const maxTimelineCount = timeline.length
-    ? Math.max(...timeline.map((item) => item.count))
-    : 0;
+            return (
+              <li
+                key={`${label}-${index}`}
+                className="flex items-center justify-between gap-3"
+              >
+                <span>{label}</span>
 
-  const peakYears = timeline
-    .filter((item) => maxTimelineCount && item.count === maxTimelineCount)
-    .map((item) => item.year);
-
-  const peakYear = peakYears.length
-    ? peakYears.join(", ")
-    : journey.mostActivePeriod ?? "Pending";
-
-  const yearsActive = years.length || "Pending";
-  const activityInRange = artist.count ?? 0;
-  const totalPlays = journey.totalPlays ?? artist.totalPlays ?? activityInRange;
-
-  const topAlbums = Array.isArray(journey.topAlbums ?? artist.topAlbums)
-  ? journey.topAlbums ?? artist.topAlbums
-  : [];
-  const topTracks = Array.isArray(journey.topTracks ?? artist.topTracks)
-    ? journey.topTracks ?? artist.topTracks
-    : [];
-  const playlistAppearances = normalizeList(
-    journey.playlistAppearances ?? artist.playlistAppearances ?? artist.playlists
+                {count !== null && (
+                  <span className="text-xs font-semibold text-sky-300">
+                    {formatEvidenceCount(count)}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
   );
+}
 
-  const journeyType = journey.journeyType ?? artist.journeyType ?? "Pending";
+export default function ArtistDossierModal({
+  artist,
+  journey,
+  onClose,
+}) {
+  if (!artist) {
+    return null;
+  }
+
+  const timeline = Array.isArray(journey?.timeline)
+    ? journey.timeline
+    : [];
+
+  const topAlbums = Array.isArray(journey?.topAlbums)
+    ? journey.topAlbums
+    : [];
+
+  const topTracks = Array.isArray(journey?.topTracks)
+    ? journey.topTracks
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
@@ -65,11 +90,13 @@ export default function ArtistDossierModal({ dossier, onClose }) {
             <p className="text-xs uppercase tracking-wide text-slate-500">
               Artist Dossier
             </p>
+
             <h3 className="mt-1 text-2xl font-bold text-white">
               {artist.label ?? "Unknown Artist"}
             </h3>
+
             <div className="mt-3 inline-flex rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200">
-              {journeyType}
+              {journey?.status ?? "Unavailable"}
             </div>
           </div>
 
@@ -84,76 +111,84 @@ export default function ArtistDossierModal({ dossier, onClose }) {
 
         <section className="mt-5 rounded-2xl border border-sky-500/30 bg-sky-950/20 p-4">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-sky-300">
-            Selected Range Snapshot
+            Library Evidence in Selected Range
           </h3>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-1">
+          <div className="mt-3">
             <Metric
-              label="Activity in Range"
-              value={`${activityInRange} ${activityInRange === 1 ? "play" : "plays"}`}
+              label="Evidence Records"
+              value={formatEvidenceCount(artist.count)}
+              detail="Reconstructed Library Evidence, not confirmed Actual Plays"
             />
           </div>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <h4 className="font-semibold text-slate-100">Top Albums in Selected Range</h4>
-            {topAlbums.length ? (
-              <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                {topAlbums.map((album) => {
-                  const albumName =
-                    typeof album === "string" ? album : album.album;
-                  const albumCount =
-                    typeof album === "string" ? null : album.count;
+            <EvidenceList
+              title="Top Albums in Selected Range"
+              items={topAlbums}
+              itemField="album"
+            />
 
-                  return (
-                    <li key={albumName}>
-                      {albumName}
-                      {albumCount ? ` (${albumCount})` : ""}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="mt-3 text-sm text-slate-500">Pending</p>
-            )}
-          </div>
-
-          <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-            <h4 className="font-semibold text-slate-100">Top Tracks in Selected Range</h4>
-            {topTracks.length ? (
-              <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                {topTracks.map((track) => {
-                  const trackName =
-                    typeof track === "string" ? track : track.track;
-                  const trackCount =
-                    typeof track === "string" ? null : track.count;
-
-                  return (
-                    <li key={trackName}>
-                      {trackName}
-                      {trackCount ? ` (${trackCount})` : ""}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="mt-3 text-sm text-slate-500">Pending</p>
-            )}
-          </div>
+            <EvidenceList
+              title="Top Tracks in Selected Range"
+              items={topTracks}
+              itemField="track"
+            />
           </div>
         </section>
 
         <section className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
-            Lifetime Journey
+            Library Evidence Journey
           </h3>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-5">
-            <Metric label="Journey Type" value={journeyType} />
-            <Metric label="First Recorded Activity" value={firstSeen} />
-            <Metric label="Peak Year" value={peakYear} />
-            <Metric label="Latest Activity" value={latestActivity} />
-            <Metric label="Total Plays" value={totalPlays} />
+          <p className="mt-2 text-sm leading-relaxed text-slate-400">
+            These fields come directly from the Period Intelligence backend.
+            The interface does not recreate or reinterpret the journey
+            classification.
+          </p>
+
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            <Metric
+              label="Backend Journey Status"
+              value={journey?.status ?? "Unavailable"}
+            />
+
+            <Metric
+              label="First Seen"
+              value={journey?.firstSeen ?? "Unavailable"}
+            />
+
+            <Metric
+              label="Most Active Period"
+              value={journey?.mostActivePeriod ?? "Unavailable"}
+            />
+          </div>
+
+          <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+            <h4 className="font-semibold text-slate-100">
+              Yearly Library Evidence
+            </h4>
+
+            {timeline.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-500">
+                No yearly Library Evidence timeline was returned.
+              </p>
+            ) : (
+              <ul className="mt-3 space-y-2 text-sm text-slate-300">
+                {timeline.map((item, index) => (
+                  <li
+                    key={`${item.year}-${index}`}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <span>{item.year}</span>
+                    <span className="text-xs font-semibold text-sky-300">
+                      {formatEvidenceCount(item.count)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       </div>
