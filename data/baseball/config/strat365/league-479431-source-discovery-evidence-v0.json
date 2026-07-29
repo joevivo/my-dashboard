@@ -1,0 +1,108 @@
+{
+    "schemaVersion":  "strat365-source-discovery-evidence-v0",
+    "evidenceStatus":  "validated",
+    "evidenceRecordedAtUtc":  "2026-07-29T16:23:50.907Z",
+    "league":  {
+                   "leagueId":  "479431",
+                   "playerSetYear":  1968,
+                   "openingDate":  "2026-07-30",
+                   "teamCount":  12,
+                   "designatedHitter":  false,
+                   "salaryCapMillions":  80
+               },
+    "priorityTeam":  {
+                         "teamId":  "1853975",
+                         "teamName":  "Aquarium Drinkers",
+                         "owner":  "JoeGinto",
+                         "manager":  "Joe Ginto",
+                         "ballpark":  "Comiskey Park 1968"
+                     },
+    "transportPolicy":  {
+                            "client":  "curl.exe",
+                            "sslNoRevoke":  true,
+                            "followRedirects":  true,
+                            "useAuthenticationCookies":  false,
+                            "useRefererHeader":  false,
+                            "requestTimeoutSeconds":  60
+                        },
+    "validatedSources":  [
+                             {
+                                 "sourceFamily":  "teamLanding",
+                                 "requestedUrl":  "https://365.strat-o-matic.com/team/1853975",
+                                 "effectiveUrl":  "https://365.strat-o-matic.com/team/1853975",
+                                 "httpStatus":  200,
+                                 "contentType":  "text/html; charset=UTF-8",
+                                 "bodyBytes":  50736,
+                                 "bodySha256":  "50E5717D6C005A93874AA4A5FC3B3538AB8A9609C0C9676764396D975C482644",
+                                 "validation":  {
+                                                    "htmlMarker":  "PASS",
+                                                    "teamNameMarker":  "PASS",
+                                                    "teamIdentityMarker":  "PASS",
+                                                    "leagueIdentityMarker":  "PASS",
+                                                    "effectiveUrlIsAuthenticationPage":  false,
+                                                    "titleIsAuthenticationPage":  false,
+                                                    "authenticationChallenge":  false,
+                                                    "errorPageMarker":  false
+                                                },
+                                 "passwordInputInterpretation":  "BENIGN_WHEN_ROUTE_AND_IDENTITY_MARKERS_PASS",
+                                 "rawResponsePersisted":  false,
+                                 "probeStatus":  "PASS"
+                             },
+                             {
+                                 "sourceFamily":  "leagueScores",
+                                 "requestedUrl":  "https://365.strat-o-matic.com/league/scores/479431/2026-07-30",
+                                 "effectiveUrl":  "https://365.strat-o-matic.com/league/scores/479431/2026-07-30",
+                                 "httpStatus":  200,
+                                 "contentType":  "text/html; charset=UTF-8",
+                                 "bodyBytes":  55688,
+                                 "bodySha256":  "6059776BD5CA0EE20BF9D55D08794CE57AF159AC0ABE78CE481ADA3D075F6DB9",
+                                 "validation":  {
+                                                    "htmlMarker":  "PASS",
+                                                    "siteIdentityMarker":  "PASS",
+                                                    "leagueRouteMarker":  "PASS",
+                                                    "scoresSurfaceMarker":  "PASS",
+                                                    "dateContextMarker":  "PASS",
+                                                    "effectiveUrlIsAuthenticationPage":  false,
+                                                    "titleIsAuthenticationPage":  false,
+                                                    "authenticationChallenge":  false,
+                                                    "errorPageMarker":  false
+                                                },
+                                 "passwordInputInterpretation":  "BENIGN_WHEN_ROUTE_AND_IDENTITY_MARKERS_PASS",
+                                 "rawResponsePersisted":  false,
+                                 "probeStatus":  "PASS"
+                             }
+                         ],
+    "authenticationDecision":  {
+                                   "publicAccessValidated":  true,
+                                   "authenticationCookiesRequired":  false,
+                                   "embeddedPasswordFieldAloneIsFailure":  false,
+                                   "failureRequiresAuthenticationRouteOrMissingIdentity":  true
+                               },
+    "validatedScope":  [
+                           "teamLanding",
+                           "leagueScores"
+                       ],
+    "unresolvedScope":  [
+                            "leagueTeamEnumeration",
+                            "completedGameDiscovery",
+                            "gameRecap",
+                            "gamePlayByPlay",
+                            "gameReplay",
+                            "detailedGameContentMarkers"
+                        ],
+    "governance":  {
+                       "evidenceClassification":  "configurationEvidence",
+                       "rawEvidenceClassification":  false,
+                       "spoilerSafe":  true,
+                       "rawResponseContentPersisted":  false,
+                       "immutableCapturePlanCreated":  false,
+                       "canonicalPromotionEligibility":  "NO",
+                       "liveGameCaptureAuthorization":  "NOT_GRANTED"
+                   },
+    "repositoryCheckpoint":  {
+                                 "commit":  "6503af83ac4ae227e78625f7c115c9116bea6d84",
+                                 "branch":  "main",
+                                 "localRemoteMatch":  true
+                             },
+    "nextRequiredGate":  "VALIDATE_TEAM_ENUMERATION_AND_COMPLETED_GAME_ROUTES"
+}
