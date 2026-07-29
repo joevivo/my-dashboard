@@ -1,0 +1,129 @@
+{
+    "schemaVersion":  "v0",
+    "artifactType":  "strat365LeagueTeamIdentitySet",
+    "leagueId":  "479431",
+    "season":  "1968",
+    "priorityTeam":  {
+                         "teamId":  "1853975",
+                         "canonicalName":  "Aquarium Drinkers"
+                     },
+    "source":  {
+                   "sourceFamily":  "leagueScores",
+                   "sourceDate":  "2026-07-30",
+                   "sourceUrl":  "https://365.strat-o-matic.com/league/scores/479431/2026-07-30",
+                   "sourceDiscoveryEvidencePath":  "data/baseball/config/strat365/league-479431-source-discovery-evidence-v0.json",
+                   "sourceDiscoveryEvidenceSha256":  "377D178F7C4F1B24D2FC9B30AF4897C9C763223C2734CF37B2181EFD4B3B5BF7",
+                   "repositoryCheckpointReference":  "0a0ebfb83d2744f0474f955cefcec00dd176875b",
+                   "rawResponseContentPersisted":  false
+               },
+    "identitySelection":  {
+                              "rule":  "Select the longest safe nonnumeric team-link label observed for each unique team ID after source-identity and authentication validation.",
+                              "expectedTeamCount":  12,
+                              "recoveredTeamCount":  12,
+                              "teamIdentitySha256":  "C28FB10195010926782743D0C14C9ACAFF47343E95B8B5C82FAB09A2E66CDF51"
+                          },
+    "teams":  [
+                  {
+                      "teamId":  "1853975",
+                      "canonicalName":  "Aquarium Drinkers",
+                      "observedSafeLabels":  [
+                                                 "Drinkers",
+                                                 "Aquarium Drinkers"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854055",
+                      "canonicalName":  "Gashouse Gorillas",
+                      "observedSafeLabels":  [
+                                                 "Gorillas",
+                                                 "Gashouse Gorillas"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854297",
+                      "canonicalName":  "Milan Azzurri",
+                      "observedSafeLabels":  [
+                                                 "Azzurri",
+                                                 "Milan Azzurri"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854324",
+                      "canonicalName":  "Toledo Knights",
+                      "observedSafeLabels":  [
+                                                 "Knights",
+                                                 "Toledo Knights"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854355",
+                      "canonicalName":  "Ohio Players",
+                      "observedSafeLabels":  [
+                                                 "Players",
+                                                 "Ohio Players"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854376",
+                      "canonicalName":  "Ukrainian Drones",
+                      "observedSafeLabels":  [
+                                                 "Drones",
+                                                 "Ukrainian Drones"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854378",
+                      "canonicalName":  "MemorialCardnal Arkinals™",
+                      "observedSafeLabels":  [
+                                                 "Arkinals™",
+                                                 "MemorialCardnal Arkinals™"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854429",
+                      "canonicalName":  "Crystal Sky Chanticleers",
+                      "observedSafeLabels":  [
+                                                 "Chanticleers",
+                                                 "Crystal Sky Chanticleers"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854461",
+                      "canonicalName":  "Willis Towers",
+                      "observedSafeLabels":  [
+                                                 "Towers",
+                                                 "Willis Towers"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854468",
+                      "canonicalName":  "Hey Jude",
+                      "observedSafeLabels":  [
+                                                 "Jude",
+                                                 "Hey Jude"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854491",
+                      "canonicalName":  "Atlanta Crew",
+                      "observedSafeLabels":  [
+                                                 "Crew",
+                                                 "Atlanta Crew"
+                                             ]
+                  },
+                  {
+                      "teamId":  "1854501",
+                      "canonicalName":  "Brooklyn Bombers",
+                      "observedSafeLabels":  [
+                                                 "Bombers",
+                                                 "Brooklyn Bombers"
+                                             ]
+                  }
+              ],
+    "governance":  {
+                       "spoilerSafe":  true,
+                       "canonicalPromotionEligibility":  "NO",
+                       "liveGameCaptureAuthorization":  "NOT_GRANTED",
+                       "detailedGameRouteValidationStatus":  "NOT_STARTED"
+                   }
+}
