@@ -1,0 +1,357 @@
+{
+    "$schema":  "https://json-schema.org/draft/2020-12/schema",
+    "$id":  "https://defending-sisyphus.local/schemas/baseball/strat365-capture-run-schema-v0.json",
+    "title":  "Strat365 League Raw-Capture Run Specification v0",
+    "description":  "Configuration contract for one manual, league-date-scoped immutable raw-capture run.",
+    "type":  "object",
+    "additionalProperties":  false,
+    "required":  [
+                     "schemaVersion",
+                     "baseUri",
+                     "playerSetYear",
+                     "leagueId",
+                     "leagueDate",
+                     "expectedCounts",
+                     "teamIds",
+                     "requiredSourceFamilies",
+                     "routeSeeds",
+                     "captureRootPolicy",
+                     "transportPolicy",
+                     "capturePlanPolicy",
+                     "safetyLimits"
+                 ],
+    "properties":  {
+                       "schemaVersion":  {
+                                             "const":  "strat365-league-capture-run-v0"
+                                         },
+                       "baseUri":  {
+                                       "type":  "string",
+                                       "format":  "uri",
+                                       "pattern":  "^https://"
+                                   },
+                       "playerSetYear":  {
+                                             "type":  "string",
+                                             "pattern":  "^\\d{4}$"
+                                         },
+                       "leagueId":  {
+                                        "type":  "string",
+                                        "pattern":  "^\\d+$"
+                                    },
+                       "leagueDate":  {
+                                          "type":  "string",
+                                          "format":  "date"
+                                      },
+                       "expectedCounts":  {
+                                              "type":  "object",
+                                              "additionalProperties":  false,
+                                              "required":  [
+                                                               "teamCount",
+                                                               "gameCount",
+                                                               "seriesCount"
+                                                           ],
+                                              "properties":  {
+                                                                 "teamCount":  {
+                                                                                   "type":  "integer",
+                                                                                   "minimum":  1
+                                                                               },
+                                                                 "gameCount":  {
+                                                                                   "type":  "integer",
+                                                                                   "minimum":  1
+                                                                               },
+                                                                 "seriesCount":  {
+                                                                                     "type":  "integer",
+                                                                                     "minimum":  1
+                                                                                 }
+                                                             }
+                                          },
+                       "teamIds":  {
+                                       "type":  "array",
+                                       "minItems":  1,
+                                       "uniqueItems":  true,
+                                       "items":  {
+                                                     "type":  "string",
+                                                     "pattern":  "^\\d+$"
+                                                 }
+                                   },
+                       "requiredSourceFamilies":  {
+                                                      "type":  "array",
+                                                      "minItems":  1,
+                                                      "uniqueItems":  true,
+                                                      "items":  {
+                                                                    "type":  "string",
+                                                                    "enum":  [
+                                                                                 "leagueScores",
+                                                                                 "gameRecap",
+                                                                                 "gamePlayByPlay",
+                                                                                 "gameReplay",
+                                                                                 "standings",
+                                                                                 "leagueSchedule",
+                                                                                 "battingStatistics",
+                                                                                 "pitchingStatistics",
+                                                                                 "leagueLeaders",
+                                                                                 "transactionsMain",
+                                                                                 "transactionsAdds",
+                                                                                 "transactionsDrops",
+                                                                                 "transactionsTrades",
+                                                                                 "waivers",
+                                                                                 "teamTransactions",
+                                                                                 "teamReal",
+                                                                                 "teamSim",
+                                                                                 "teamLeftRight",
+                                                                                 "teamHomeRoad",
+                                                                                 "teamFielding",
+                                                                                 "teamMisc",
+                                                                                 "teamSchedule"
+                                                                             ]
+                                                                }
+                                                  },
+                       "routeSeeds":  {
+                                          "type":  "object",
+                                          "additionalProperties":  false,
+                                          "required":  [
+                                                           "batting",
+                                                           "pitching",
+                                                           "transactions"
+                                                       ],
+                                          "properties":  {
+                                                             "batting":  {
+                                                                             "type":  "array",
+                                                                             "minItems":  1,
+                                                                             "items":  {
+                                                                                           "type":  "object",
+                                                                                           "additionalProperties":  false,
+                                                                                           "required":  [
+                                                                                                            "positionFilter",
+                                                                                                            "sortField",
+                                                                                                            "startPage",
+                                                                                                            "pathTemplate"
+                                                                                                        ],
+                                                                                           "properties":  {
+                                                                                                              "positionFilter":  {
+                                                                                                                                     "type":  "string",
+                                                                                                                                     "minLength":  1
+                                                                                                                                 },
+                                                                                                              "sortField":  {
+                                                                                                                                "type":  "string",
+                                                                                                                                "minLength":  1
+                                                                                                                            },
+                                                                                                              "startPage":  {
+                                                                                                                                "type":  "integer",
+                                                                                                                                "minimum":  0
+                                                                                                                            },
+                                                                                                              "pathTemplate":  {
+                                                                                                                                   "type":  "string",
+                                                                                                                                   "pattern":  "^/league/stats/players/batting/\\{leagueId\\}/\\{positionFilter\\}/\\{sortField\\}/\\{page\\}$"
+                                                                                                                               }
+                                                                                                          }
+                                                                                       }
+                                                                         },
+                                                             "pitching":  {
+                                                                              "type":  "array",
+                                                                              "minItems":  1,
+                                                                              "items":  {
+                                                                                            "type":  "object",
+                                                                                            "additionalProperties":  false,
+                                                                                            "required":  [
+                                                                                                             "roleFilter",
+                                                                                                             "sortField",
+                                                                                                             "startPage",
+                                                                                                             "pathTemplate"
+                                                                                                         ],
+                                                                                            "properties":  {
+                                                                                                               "roleFilter":  {
+                                                                                                                                  "type":  "string",
+                                                                                                                                  "minLength":  1
+                                                                                                                              },
+                                                                                                               "sortField":  {
+                                                                                                                                 "type":  "string",
+                                                                                                                                 "minLength":  1
+                                                                                                                             },
+                                                                                                               "startPage":  {
+                                                                                                                                 "type":  "integer",
+                                                                                                                                 "minimum":  0
+                                                                                                                             },
+                                                                                                               "pathTemplate":  {
+                                                                                                                                    "type":  "string",
+                                                                                                                                    "pattern":  "^/league/stats/players/pitching/\\{leagueId\\}/\\{roleFilter\\}/\\{sortField\\}/\\{page\\}$"
+                                                                                                                                }
+                                                                                                           }
+                                                                                        }
+                                                                          },
+                                                             "transactions":  {
+                                                                                  "type":  "array",
+                                                                                  "minItems":  1,
+                                                                                  "uniqueItems":  true,
+                                                                                  "items":  {
+                                                                                                "type":  "object",
+                                                                                                "additionalProperties":  false,
+                                                                                                "required":  [
+                                                                                                                 "sourceFamily",
+                                                                                                                 "pathTemplate",
+                                                                                                                 "paginationMode",
+                                                                                                                 "startOffset",
+                                                                                                                 "pageSize",
+                                                                                                                 "maxPages"
+                                                                                                             ],
+                                                                                                "properties":  {
+                                                                                                                   "sourceFamily":  {
+                                                                                                                                        "type":  "string",
+                                                                                                                                        "enum":  [
+                                                                                                                                                     "transactionsMain",
+                                                                                                                                                     "transactionsAdds",
+                                                                                                                                                     "transactionsDrops",
+                                                                                                                                                     "transactionsTrades",
+                                                                                                                                                     "waivers",
+                                                                                                                                                     "teamTransactions"
+                                                                                                                                                 ]
+                                                                                                                                    },
+                                                                                                                   "pathTemplate":  {
+                                                                                                                                        "type":  "string",
+                                                                                                                                        "pattern":  "^/"
+                                                                                                                                    },
+                                                                                                                   "paginationMode":  {
+                                                                                                                                          "type":  "string",
+                                                                                                                                          "enum":  [
+                                                                                                                                                       "none",
+                                                                                                                                                       "offset"
+                                                                                                                                                   ]
+                                                                                                                                      },
+                                                                                                                   "startOffset":  {
+                                                                                                                                       "type":  "integer",
+                                                                                                                                       "minimum":  0
+                                                                                                                                   },
+                                                                                                                   "pageSize":  {
+                                                                                                                                    "type":  "integer",
+                                                                                                                                    "minimum":  1
+                                                                                                                                },
+                                                                                                                   "maxPages":  {
+                                                                                                                                    "type":  "integer",
+                                                                                                                                    "minimum":  1
+                                                                                                                                }
+                                                                                                               }
+                                                                                            }
+                                                                              }
+                                                         }
+                                      },
+                       "captureRootPolicy":  {
+                                                 "type":  "object",
+                                                 "additionalProperties":  false,
+                                                 "required":  [
+                                                                  "relativeRootTemplate",
+                                                                  "requireRepositoryContainment",
+                                                                  "allowOverwrite",
+                                                                  "timestampFormat"
+                                                              ],
+                                                 "properties":  {
+                                                                    "relativeRootTemplate":  {
+                                                                                                 "const":  "data/baseball/raw/strat365/{playerSetYear}/season-ingestion"
+                                                                                             },
+                                                                    "requireRepositoryContainment":  {
+                                                                                                         "const":  true
+                                                                                                     },
+                                                                    "allowOverwrite":  {
+                                                                                           "const":  false
+                                                                                       },
+                                                                    "timestampFormat":  {
+                                                                                            "const":  "yyyyMMddTHHmmssZ"
+                                                                                        }
+                                                                }
+                                             },
+                       "transportPolicy":  {
+                                               "type":  "object",
+                                               "additionalProperties":  false,
+                                               "required":  [
+                                                                "client",
+                                                                "sslNoRevoke",
+                                                                "followRedirects",
+                                                                "useAuthenticationCookies",
+                                                                "useRefererHeader"
+                                                            ],
+                                               "properties":  {
+                                                                  "client":  {
+                                                                                 "const":  "curl.exe"
+                                                                             },
+                                                                  "sslNoRevoke":  {
+                                                                                      "const":  true
+                                                                                  },
+                                                                  "followRedirects":  {
+                                                                                          "const":  true
+                                                                                      },
+                                                                  "useAuthenticationCookies":  {
+                                                                                                   "const":  false
+                                                                                               },
+                                                                  "useRefererHeader":  {
+                                                                                           "const":  false
+                                                                                       }
+                                                              }
+                                           },
+                       "capturePlanPolicy":  {
+                                                 "type":  "object",
+                                                 "additionalProperties":  false,
+                                                 "required":  [
+                                                                  "freezeBeforeBulkCapture",
+                                                                  "deduplicateUrls",
+                                                                  "rejectCrossLeagueLinks",
+                                                                  "rejectUnknownTeamIds",
+                                                                  "rejectUnplannedExpansion"
+                                                              ],
+                                                 "properties":  {
+                                                                    "freezeBeforeBulkCapture":  {
+                                                                                                    "const":  true
+                                                                                                },
+                                                                    "deduplicateUrls":  {
+                                                                                            "const":  true
+                                                                                        },
+                                                                    "rejectCrossLeagueLinks":  {
+                                                                                                   "const":  true
+                                                                                               },
+                                                                    "rejectUnknownTeamIds":  {
+                                                                                                 "const":  true
+                                                                                             },
+                                                                    "rejectUnplannedExpansion":  {
+                                                                                                     "const":  true
+                                                                                                 }
+                                                                }
+                                             },
+                       "safetyLimits":  {
+                                            "type":  "object",
+                                            "additionalProperties":  false,
+                                            "required":  [
+                                                             "maxDiscoveredGames",
+                                                             "maxDiscoveredTeams",
+                                                             "maxPaginationPagesPerSeed",
+                                                             "maxPlannedRequests",
+                                                             "maxAttemptsPerRequest",
+                                                             "requestTimeoutSeconds"
+                                                         ],
+                                            "properties":  {
+                                                               "maxDiscoveredGames":  {
+                                                                                          "type":  "integer",
+                                                                                          "minimum":  1
+                                                                                      },
+                                                               "maxDiscoveredTeams":  {
+                                                                                          "type":  "integer",
+                                                                                          "minimum":  1
+                                                                                      },
+                                                               "maxPaginationPagesPerSeed":  {
+                                                                                                 "type":  "integer",
+                                                                                                 "minimum":  1
+                                                                                             },
+                                                               "maxPlannedRequests":  {
+                                                                                          "type":  "integer",
+                                                                                          "minimum":  1
+                                                                                      },
+                                                               "maxAttemptsPerRequest":  {
+                                                                                             "type":  "integer",
+                                                                                             "minimum":  1,
+                                                                                             "maximum":  5
+                                                                                         },
+                                                               "requestTimeoutSeconds":  {
+                                                                                             "type":  "integer",
+                                                                                             "minimum":  1,
+                                                                                             "maximum":  300
+                                                                                         }
+                                                           }
+                                        }
+                   }
+}

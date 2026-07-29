@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 0,
+  "fixtureName": "strat365-season-ingestion-parser-contract-v0",
+  "purpose": "Regression expectations for a manifest-driven parser over the completed league 479336 opening-night capture.",
+  "authoritativeRun": {
+    "runDirectory": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-07-21/capture-20260722T181249Z",
+    "leagueId": "479336",
+    "playerSetYear": 1968,
+    "leagueDate": "2026-07-21",
+    "expectedTeamCount": 12,
+    "expectedGameCount": 18,
+    "expectedSeriesCount": 6,
+    "frozenPlanSha256": "38D42C302BB7D982895C00F8EE11C8D6001D800793E38ECB46E078A7A11A8C9F",
+    "completedManifestSha256": "998C1AC76627FFCBCFAB2B869FD6740C831C545F7514854B4CCD3AD648742DBC"
+  },
+  "requestInventory": {
+    "totalRequestCount": 55,
+    "gameRequestCount": 54,
+    "scoresRequestCount": 1,
+    "sourceFamilyCounts": {
+      "leagueScores": 1,
+      "gameRecap": 18,
+      "gamePlayByPlay": 18,
+      "gameReplay": 18
+    },
+    "completeGameSourceFamilyCount": 18,
+    "unexpectedRequestIdCount": 0
+  },
+  "artifactInventory": {
+    "bodyReferenceCount": 55,
+    "responseHeadersReferenceCount": 55,
+    "metadataReferenceCount": 55,
+    "uniqueActiveArtifactCount": 165,
+    "missingArtifactCount": 0,
+    "outsideRunArtifactCount": 0,
+    "duplicateArtifactReferenceCount": 0,
+    "activeRecoveryArtifactReferenceCount": 0
+  },
+  "metadataSchemas": [
+    {
+      "sourceScope": "game requests",
+      "expectedCount": 54,
+      "requiredProperties": [
+        "attemptNumber",
+        "byteCount",
+        "capturedAtUtc",
+        "contentType",
+        "effectiveUrl",
+        "gameId",
+        "httpStatus",
+        "leagueDate",
+        "leagueId",
+        "provenance",
+        "rawResponsePath",
+        "requestedUrl",
+        "responseHeadersPath",
+        "schemaVersion",
+        "seriesKey",
+        "sha256",
+        "sourceFamily",
+        "sourceRouteClassification",
+        "teamIds",
+        "transportResult",
+        "validation"
+      ],
+      "requestIdRequired": false
+    },
+    {
+      "sourceScope": "league scores request",
+      "expectedCount": 1,
+      "requiredProperties": [
+        "attemptNumber",
+        "byteCount",
+        "capturedAtUtc",
+        "contentType",
+        "effectiveUrl",
+        "gameId",
+        "httpStatus",
+        "leagueDate",
+        "leagueId",
+        "provenance",
+        "rawResponsePath",
+        "requestedUrl",
+        "responseHeadersPath",
+        "schemaVersion",
+        "sha256",
+        "sourceFamily",
+        "sourceRouteClassification",
+        "teamId",
+        "transportResult",
+        "validation"
+      ],
+      "requestIdRequired": false
+    }
+  ],
+  "inputRules": {
+    "manifestDrivenOnly": true,
+    "filenameDiscoveryAllowed": false,
+    "recoveryManifestInputAllowed": false,
+    "rawArtifactMutationAllowed": false,
+    "frozenPlanMutationAllowed": false,
+    "manifestMutationAllowed": false,
+    "canonicalPromotionEligibility": "NO"
+  },
+  "minimumParsedOutput": {
+    "runProvenanceRequired": true,
+    "leagueIdentityRequired": true,
+    "seriesCount": 6,
+    "gameCount": 18,
+    "gameSourceAvailabilityRequired": true,
+    "sourceEvidenceReferencesRequired": true,
+    "uncertaintyRepresentationRequired": true
+  },
+  "conversationReadiness": {
+    "supportedAfterInitialParser": [
+      "opening-night league results",
+      "all 18 completed game results",
+      "all six opening series",
+      "team performance supported by captured games",
+      "recap and play-by-play observations"
+    ],
+    "requiresExplicitUserTeamMapping": [
+      "our team performance",
+      "our current opening series"
+    ],
+    "requiresAdditionalScheduleEvidence": [
+      "next opponent after the current series",
+      "future series calendar"
+    ],
+    "requiresAdditionalRosterEvidence": [
+      "roster matchup analysis",
+      "free-agent recommendations",
+      "player availability and fatigue recommendations"
+    ]
+  },
+  "prohibitedInitialActions": [
+    "canonical promotion",
+    "canonical replacement",
+    "unsupported schedule inference",
+    "unsupported roster inference",
+    "staging",
+    "committing",
+    "pushing"
+  ]
+}
