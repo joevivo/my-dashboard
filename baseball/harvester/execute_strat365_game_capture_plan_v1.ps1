@@ -201,12 +201,61 @@ function Save-ManifestAtomic {
             throw "Temporary manifest validation failed."
         }
 
-        [System.IO.File]::Replace(
-            $temporaryManifest,
-            $script:ManifestPath,
-            $replacementBackup,
-            $true
-        )
+        $replaceSucceeded = $false
+        $lastReplaceError = $null
+
+        for ($replaceAttempt = 1; $replaceAttempt -le 8; $replaceAttempt++) {
+            try {
+                [System.IO.File]::Replace(
+                    $temporaryManifest,
+                    $script:ManifestPath,
+                    $replacementBackup,
+                    $true
+                )
+
+                $replaceSucceeded = $true
+                break
+            }
+            catch {
+                $replaceException = $_.Exception
+
+                $rootReplaceException = if ($null -ne $replaceException.InnerException) {
+                    $replaceException.InnerException
+                }
+                else {
+                    $replaceException
+                }
+
+                $retryableReplaceError = (
+                    $rootReplaceException -is [System.IO.IOException] -or
+                    $rootReplaceException -is [System.UnauthorizedAccessException]
+                )
+
+                if (-not $retryableReplaceError) {
+                    throw
+                }
+
+                $lastReplaceError = $rootReplaceException
+
+                if ($replaceAttempt -ge 8) {
+                    break
+                }
+
+                [System.GC]::Collect()
+                [System.GC]::WaitForPendingFinalizers()
+
+                $replaceDelayMilliseconds = [int][Math]::Min(
+                    2000,
+                    125 * [Math]::Pow(2, $replaceAttempt - 1)
+                )
+
+                Start-Sleep -Milliseconds $replaceDelayMilliseconds
+            }
+        }
+
+        if (-not $replaceSucceeded) {
+            throw "Atomic manifest replacement failed after 8 attempts: $($lastReplaceError.Message)"
+        }
 
         if (Test-Path -LiteralPath $replacementBackup) {
             Remove-Item -LiteralPath $replacementBackup -Force
@@ -344,12 +393,26 @@ function Test-ManifestConsistency {
     $planRequests = @($Plan.requests)
     $manifestRequests = @($Manifest.requests)
 
-    if ($planRequests.Count -ne 54) {
-        throw "Frozen plan request count is not 54."
+    $plannedRequestCountValue = Get-Field $Plan "plannedRequestCount"
+
+    if ($null -eq $plannedRequestCountValue) {
+        throw "Frozen plan plannedRequestCount is missing."
     }
 
-    if ($manifestRequests.Count -ne 55) {
-        throw "Manifest request count is not 55."
+    $expectedPlanRequestCount = [int]$plannedRequestCountValue
+
+    if ($expectedPlanRequestCount -le 0) {
+        throw "Frozen plan plannedRequestCount must be greater than zero."
+    }
+
+    if ($planRequests.Count -ne $expectedPlanRequestCount) {
+        throw "Frozen plan request count does not match plannedRequestCount."
+    }
+
+    $expectedManifestRequestCount = $expectedPlanRequestCount + 1
+
+    if ($manifestRequests.Count -ne $expectedManifestRequestCount) {
+        throw "Manifest request count does not match frozen plan plus source-discovery request."
     }
 
     if ([string](Get-Field $Plan "planState") -ne "frozen") {

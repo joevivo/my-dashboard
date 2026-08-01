@@ -1,0 +1,19 @@
+{
+    "schemaVersion":  "1.0",
+    "requestId":  "",
+    "sourceFamily":  "leagueScores",
+    "leagueId":  "479431",
+    "leagueDate":  "2026-07-31",
+    "teamId":  "1853975",
+    "requestedUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+    "effectiveUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+    "httpStatus":  200,
+    "requestStatus":  "captured",
+    "attemptNumber":  1,
+    "attemptCount":  1,
+    "byteCount":  100635,
+    "sha256":  "0FB56FE7A749E647BEC9674D972A284AEABA029D0AEDE50E83936F21CCC5FB35",
+    "capturedAtUtc":  "2026-08-01T05:11:55.9992519Z",
+    "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-07-31/capture-20260801T043210Z/responses/league/league-scores-2026-07-31.html",
+    "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-07-31/capture-20260801T043210Z/responses/league/league-scores-2026-07-31.headers.txt"
+}
