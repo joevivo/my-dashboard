@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "strat365-direct-game-capture-metadata-v0",
+  "requestId": "game-54-recap",
+  "sourceFamily": "gameRecap",
+  "leagueId": "479431",
+  "gameId": "54",
+  "leagueDate": "2026-08-01",
+  "seasonGameNumber": 9,
+  "seriesGameNumber": 3,
+  "requestedUrl": "https://365.strat-o-matic.com/game/479431/54",
+  "requestStatus": "captured",
+  "httpStatus": 200,
+  "attemptNumber": 1,
+  "capturedAtUtc": "2026-08-02T12:25:28.0989724Z",
+  "byteCount": 40116,
+  "sha256": "E50D68E0C47A0AF984875AA516525FA0EBA948E65F0486F7D8DF11E325BEB11A",
+  "rawResponsePath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/responses/games/game-54/recap.html",
+  "responseHeadersPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/responses/games/game-54/recap.headers.txt",
+  "metadataPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/metadata/game-54-recap.attempt-1.json",
+  "effectiveUrl": "https://365.strat-o-matic.com/game/479431/54",
+  "attemptCount": 1
+}

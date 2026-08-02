@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-01/games/game-42-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-01/games/game-48-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-01/games/game-54-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 3,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 42,
+      "homeRuns": 4,
+      "homeTeam": "Ohio Players",
+      "innings": 13,
+      "winnerTeam": "Ohio Players"
+    },
+    {
+      "awayRuns": 2,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 48,
+      "homeRuns": 4,
+      "homeTeam": "Ohio Players",
+      "innings": 9,
+      "winnerTeam": "Ohio Players"
+    },
+    {
+      "awayRuns": 1,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 54,
+      "homeRuns": 8,
+      "homeTeam": "Ohio Players",
+      "innings": 9,
+      "winnerTeam": "Ohio Players"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 42,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "7 Sat, 8/01 @ Players L 4-3 (13) 5-2 Nolan, G. (R) Ohio Players defeat Aquarium Drinkers 4-3",
+      "seriesGameLabel": "7",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 48,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "8 Sat, 8/01 @ Players L 4-2 5-3 Nash, J.* (R) Larry Dierker and Players beat Drinkers, 4-2",
+      "seriesGameLabel": "8",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 54,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "9 Sat, 8/01 @ Players L 8-1 5-4 McNally, D.* (L) Luis Tiant and Players beat Drinkers, 8-1",
+      "seriesGameLabel": "9",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-01",
+  "leagueId": "479431",
+  "playByPlaySummary": {
+    "controlCount": 35,
+    "eventCount": 251,
+    "inningMarkerCount": 60,
+    "orderedRecordCount": 346,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/responses/league/league-scores-2026-08-01.html",
+    "bodySha256": "639BBCE2034BE8329B14B82615F657024350FF9EEACBEF93E9DFC92C82038328",
+    "metadataFile": "league-scores-2026-08-01.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}

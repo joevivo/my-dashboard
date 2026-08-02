@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "strat365-direct-game-capture-metadata-v0",
+  "requestId": "game-48-replay",
+  "sourceFamily": "gameReplay",
+  "leagueId": "479431",
+  "gameId": "48",
+  "leagueDate": "2026-08-01",
+  "seasonGameNumber": 8,
+  "seriesGameNumber": 2,
+  "requestedUrl": "https://365.strat-o-matic.com/game/replay/479431/48",
+  "requestStatus": "captured",
+  "httpStatus": 200,
+  "attemptNumber": 1,
+  "capturedAtUtc": "2026-08-02T11:54:46.678264+00:00",
+  "byteCount": 84073,
+  "sha256": "85422ECEFD3F5F1EF7928887E0AB279002BF70F706EED7CE31DAD176B8E797C8",
+  "rawResponsePath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/responses/games/game-48/replay.html",
+  "responseHeadersPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/responses/games/game-48/replay.headers.txt",
+  "metadataPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/capture-20260802T125917Z/metadata/game-48-replay.attempt-1.json",
+  "effectiveUrl": "https://365.strat-o-matic.com/game/replay/479431/48",
+  "attemptCount": 1
+}

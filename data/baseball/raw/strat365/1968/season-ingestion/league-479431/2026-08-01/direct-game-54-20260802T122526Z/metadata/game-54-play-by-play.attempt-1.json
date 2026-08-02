@@ -1,0 +1,20 @@
+{
+    "schemaVersion":  "strat365-direct-game-capture-metadata-v0",
+    "requestId":  "game-54-play-by-play",
+    "sourceFamily":  "play-by-play",
+    "leagueId":  "479431",
+    "gameId":  "54",
+    "leagueDate":  "2026-08-01",
+    "seasonGameNumber":  9,
+    "seriesGameNumber":  3,
+    "requestedUrl":  "https://365.strat-o-matic.com/game/playbyplay/479431/54",
+    "requestStatus":  "captured",
+    "httpStatus":  200,
+    "attemptNumber":  1,
+    "capturedAtUtc":  "2026-08-02T12:25:28.6367418Z",
+    "byteCount":  56521,
+    "sha256":  "245E43C7524E3BFA1C5F361F4F2692F6D2723D70C8BF2CA1282148BD14FF9B7D",
+    "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-54-20260802T122526Z/responses/play-by-play.html",
+    "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-54-20260802T122526Z/responses/play-by-play.headers.txt",
+    "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-54-20260802T122526Z/metadata/game-54-play-by-play.attempt-1.json"
+}
