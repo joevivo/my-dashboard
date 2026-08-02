@@ -1,0 +1,65 @@
+{
+  "authoritativeHashes": {
+    "captureLockSha256": "E5BD5A324FADBF16E434394D3F32B49FE67C14E87A73BF245F9A8965CA0A106C",
+    "gameSetSignature": "4CD5EBBC6DC806FE02168C3097CA90701E82B1F60093A15A558AF1EBD8A59AE4",
+    "leagueNightSha256": "348AE1F2BCADA7A2D7EC8BA2EC5EE8EDC7214EB274614DBDDA25B2E9F479CD02",
+    "manifestSha256": "1C5C6252D523CA3D33B6DC25837DD94264ADA7CDABEB68C76977F903C0D09074",
+    "parserSha256": "9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB",
+    "planSha256": "D3432D1CE0A19ACB1ECDEFE42349626BED1F8F7F6CB4C963E9CAE34C3024FB56"
+  },
+  "counts": {
+    "acceptedWinnerOmissions": 0,
+    "controlRows": 69,
+    "extraInningGames": 0,
+    "gameFiles": 6,
+    "gameSourcesVerified": 18,
+    "hitterRows": 166,
+    "inningMarkers": 107,
+    "metadataFiles": 19,
+    "orderedRecords": 655,
+    "pitcherRows": 37,
+    "playByPlayEvents": 479,
+    "reconciledGames": 6,
+    "substitutionRows": 33,
+    "unknownControls": 0,
+    "winnerMentions": 6
+  },
+  "failures": [],
+  "gates": {
+    "captureLockCoverageMatch": true,
+    "captureLockEvidenceHashMatch": true,
+    "captureLockRunIdentityMatch": true,
+    "captureLockStateMatch": true,
+    "gameFileCountMatch": true,
+    "gameIdCoverageMatch": true,
+    "gameSetSignaturePresent": true,
+    "leagueNightIdentityMatch": true,
+    "leagueNightSummaryMatch": true,
+    "metadataFamilyCountsMatch": true,
+    "metadataFileCountMatch": true,
+    "parserHashMatch": true,
+    "playByPlayAggregateCountsMatch": true,
+    "rawGameSourceReferencesMatch": true,
+    "recapAggregateCountsMatch": true,
+    "reconciliationAggregateCountsMatch": true,
+    "uniqueMetadataBodyPathCountMatch": true
+  },
+  "leagueDate": "2026-07-31",
+  "leagueId": "479431",
+  "promotionDecision": {
+    "authorizationScope": "1968/league-479431/2026-07-31",
+    "canonicalPromotionAuthorized": true,
+    "liveRecaptureAuthorized": false,
+    "requiresAtomicWrite": true,
+    "sourceStagingMutationAuthorized": false,
+    "status": "AUTHORIZED_FOR_ATOMIC_CANONICAL_PROMOTION"
+  },
+  "schemaVersion": "strat365-complete-night-validation-v0",
+  "scope": {
+    "captureDirectory": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-07-31/capture-20260801T043210Z",
+    "gameDirectory": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games",
+    "leagueNightFile": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/league-night-v0.json",
+    "parsedRoot": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31"
+  },
+  "season": "1968"
+}

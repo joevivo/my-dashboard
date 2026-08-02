@@ -9,14 +9,12 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_FAMILIES = {
-    'gamePlayByPlay': 18,
-    'gameRecap': 18,
-    'gameReplay': 18,
-    'leagueScores': 1,
-}
-
-
+GAME_SOURCE_FAMILIES = (
+    'gamePlayByPlay',
+    'gameRecap',
+    'gameReplay',
+)
+LEAGUE_SCORE_FAMILY = 'leagueScores'
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open('rb') as source:
@@ -34,6 +32,69 @@ def pick(record: Any, *names: str) -> Any:
             return normalized[name.lower()]
     return None
 
+
+def derive_manifest_expectations(
+    manifest: dict[str, Any],
+) -> tuple[dict[str, int], set[int], int]:
+    requests = pick(manifest, 'requests')
+
+    if not isinstance(requests, list) or not requests:
+        raise ValueError(
+            'Run manifest exposes no request inventory.'
+        )
+
+    actual_family_counts: dict[str, int] = {}
+    expected_game_ids: set[int] = set()
+
+    for request in requests:
+        if not isinstance(request, dict):
+            raise ValueError(
+                'Run manifest request inventory contains '
+                'a non-object row.'
+            )
+
+        family = str(
+            pick(request, 'sourceFamily') or 'UNKNOWN'
+        )
+        actual_family_counts[family] = (
+            actual_family_counts.get(family, 0) + 1
+        )
+
+        if family in GAME_SOURCE_FAMILIES:
+            game_id = pick(request, 'gameId')
+
+            if game_id is None:
+                raise ValueError(
+                    f'{family} request is missing gameId.'
+                )
+
+            expected_game_ids.add(int(game_id))
+
+    expected_game_count = len(expected_game_ids)
+
+    if expected_game_count < 1:
+        raise ValueError(
+            'Run manifest exposes no game-page identities.'
+        )
+
+    expected_families = {
+        family: expected_game_count
+        for family in GAME_SOURCE_FAMILIES
+    }
+    expected_families[LEAGUE_SCORE_FAMILY] = 1
+
+    if actual_family_counts != expected_families:
+        raise ValueError(
+            'Run manifest source-family inventory is not '
+            'one leagueScores row plus three pages per game: '
+            f'{actual_family_counts}'
+        )
+
+    return (
+        expected_families,
+        expected_game_ids,
+        sum(expected_families.values()),
+    )
 
 def resolve_artifact(value: Any, repo_root: Path, run_directory: Path) -> Path | None:
     if value is None or not str(value).strip():
@@ -60,68 +121,202 @@ def clean_html(fragment: str) -> str:
 def parse_league_inventory(
     body_path: Path,
     league_id: str,
+    expected_game_ids: set[int],
 ) -> list[dict[str, Any]]:
-    source = body_path.read_text(encoding="utf-8")
+    expected_game_ids = {
+        int(game_id)
+        for game_id in expected_game_ids
+    }
+    expected_game_count = len(expected_game_ids)
+
+    if expected_game_count < 1:
+        raise ValueError(
+            'Expected game inventory is empty.'
+        )
+
+    source = body_path.read_text(encoding='utf-8')
     tables = re.findall(
-        r"(?is)<table\b[^>]*>(.*?)</table>",
+        r'(?is)<table\b[^>]*>(.*?)</table>',
         source,
     )
 
-    if len(tables) != 54:
+    if len(tables) == 1:
+        row_matches = list(
+            re.finditer(
+                r'(?is)<tr\b[^>]*>(.*?)</tr>',
+                tables[0],
+            )
+        )
+        recap_route_pattern = re.compile(
+            rf'/game/{re.escape(league_id)}/(\d+)',
+            re.IGNORECASE,
+        )
+        games: list[dict[str, Any]] = []
+
+        for row_match in row_matches:
+            row_source = row_match.group(1)
+            route_game_ids = sorted(
+                {
+                    int(match.group(1))
+                    for match in recap_route_pattern.finditer(
+                        row_source
+                    )
+                    if int(match.group(1))
+                    in expected_game_ids
+                }
+            )
+
+            if not route_game_ids:
+                continue
+
+            if len(route_game_ids) != 1:
+                raise ValueError(
+                    'Team-schedule row exposes multiple '
+                    f'captured game IDs: {route_game_ids}'
+                )
+
+            cells = [
+                clean_html(cell_match.group(1))
+                for cell_match in re.finditer(
+                    r'(?is)<t[dh]\b[^>]*>(.*?)</t[dh]>',
+                    row_source,
+                )
+            ]
+            result_text = ' '.join(
+                cell for cell in cells if cell
+            )
+
+            if not result_text:
+                raise ValueError(
+                    'Team-schedule row has no result text.'
+                )
+
+            game_index = len(games)
+            game_id = route_game_ids[0]
+
+            games.append(
+                {
+                    'blockIndex': game_index + 1,
+                    'seriesIndex': game_index // 3 + 1,
+                    'seriesGameNumber': game_index % 3 + 1,
+                    'seriesGameLabel': (
+                        cells[0]
+                        if cells and cells[0]
+                        else f'Game {game_index + 1}'
+                    ),
+                    'gameId': game_id,
+                    'resultText': result_text,
+                    'inventorySourceType': (
+                        'TEAM_SCHEDULE_SINGLE_TABLE'
+                    ),
+                }
+            )
+
+        actual_game_ids = {
+            int(game['gameId'])
+            for game in games
+        }
+
+        if (
+            len(games) != expected_game_count
+            or actual_game_ids != expected_game_ids
+        ):
+            raise ValueError(
+                'Team-schedule game inventory differs from '
+                'the locked manifest: '
+                f'missing={sorted(expected_game_ids - actual_game_ids)}, '
+                f'extra={sorted(actual_game_ids - expected_game_ids)}, '
+                f'rows={len(games)}'
+            )
+
+        return games
+
+    expected_table_count = expected_game_count * 3
+
+    if len(tables) != expected_table_count:
         raise ValueError(
-            f"Expected 54 league-score tables; found {len(tables)}."
+            f'Expected either one team-schedule table or '
+            f'{expected_table_count} league-score tables; '
+            f'found {len(tables)}.'
         )
 
     if len(tables) % 3 != 0:
-        raise ValueError("League-score tables do not form three-table blocks.")
+        raise ValueError(
+            'League-score tables do not form '
+            'three-table blocks.'
+        )
 
-    games: list[dict[str, Any]] = []
+    games = []
     route_pattern = re.compile(
-        rf"/game/(?:playbyplay/|replay/)?{re.escape(league_id)}/(\d+)",
+        rf'/game/(?:playbyplay/|replay/)?'
+        rf'{re.escape(league_id)}/(\d+)',
         re.IGNORECASE,
     )
 
     for table_index in range(0, len(tables), 3):
         block_number = table_index // 3 + 1
-        block_source = "".join(tables[table_index:table_index + 3])
+        block_source = ''.join(
+            tables[table_index:table_index + 3]
+        )
         route_game_ids = sorted(
-            {match.group(1) for match in route_pattern.finditer(block_source)},
-            key=int,
+            {
+                int(match.group(1))
+                for match in route_pattern.finditer(
+                    block_source
+                )
+            }
         )
 
         if len(route_game_ids) != 1:
             raise ValueError(
-                f"Block {block_number} exposes {len(route_game_ids)} game IDs."
+                f'Block {block_number} exposes '
+                f'{len(route_game_ids)} game IDs.'
             )
 
         label = clean_html(tables[table_index])
-        result_text = clean_html(tables[table_index + 1])
+        result_text = clean_html(
+            tables[table_index + 1]
+        )
 
         if not result_text:
-            raise ValueError(f"Block {block_number} has no result text.")
+            raise ValueError(
+                f'Block {block_number} has no result text.'
+            )
 
         games.append(
             {
-                "blockIndex": block_number,
-                "seriesIndex": table_index // 9 + 1,
-                "seriesGameNumber": table_index // 3 % 3 + 1,
-                "seriesGameLabel": label,
-                "gameId": int(route_game_ids[0]),
-                "resultText": result_text,
+                'blockIndex': block_number,
+                'seriesIndex': table_index // 9 + 1,
+                'seriesGameNumber': (
+                    table_index // 3 % 3 + 1
+                ),
+                'seriesGameLabel': label,
+                'gameId': route_game_ids[0],
+                'resultText': result_text,
+                'inventorySourceType': (
+                    'FULL_LEAGUE_THREE_TABLE_BLOCK'
+                ),
             }
         )
 
-    unique_game_ids = {game["gameId"] for game in games}
+    actual_game_ids = {
+        int(game['gameId'])
+        for game in games
+    }
 
-    if len(games) != 18 or len(unique_game_ids) != 18:
+    if (
+        len(games) != expected_game_count
+        or actual_game_ids != expected_game_ids
+    ):
         raise ValueError(
-            f"Expected 18 unique league games; found {len(games)} records and "
-            f"{len(unique_game_ids)} unique IDs."
+            'Full-league game inventory differs from '
+            'the locked manifest: '
+            f'missing={sorted(expected_game_ids - actual_game_ids)}, '
+            f'extra={sorted(actual_game_ids - expected_game_ids)}, '
+            f'rows={len(games)}'
         )
 
     return games
-
-
 
 def parse_table_rows(table_body: str) -> list[list[str]]:
     rows: list[list[str]] = []
@@ -893,14 +1088,39 @@ def main() -> int:
     failures: list[str] = []
 
     lock_path = run_directory / 'capture-lock-and-promotion-decision-v1.json'
+    manifest_path = run_directory / 'run-manifest.json'
     metadata_directory = run_directory / 'metadata'
 
     if not run_directory.is_dir():
         failures.append('Run directory is missing.')
     if not lock_path.is_file():
         failures.append('Capture lock is missing.')
+    if not manifest_path.is_file():
+        failures.append('Run manifest is missing.')
     if not metadata_directory.is_dir():
         failures.append('Metadata directory is missing.')
+
+    expected_families: dict[str, int] = {}
+    expected_game_ids: set[int] = set()
+    expected_game_count = 0
+    expected_artifact_count = 0
+
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(
+                manifest_path.read_text(encoding='utf-8')
+            )
+            (
+                expected_families,
+                expected_game_ids,
+                expected_artifact_count,
+            ) = derive_manifest_expectations(manifest)
+            expected_game_count = len(expected_game_ids)
+        except Exception as error:
+            failures.append(
+                'Run manifest expectation derivation '
+                f'failed: {error}'
+            )
 
     lock_status = 'UNKNOWN'
     if lock_path.is_file():
@@ -913,9 +1133,17 @@ def main() -> int:
         if lock_status != 'LOCKED':
             failures.append(f'Capture status is {lock_status}, not LOCKED.')
 
-    metadata_files = sorted(metadata_directory.glob('*.json'))
-    if len(metadata_files) != 55:
-        failures.append(f'Expected 55 metadata files; found {len(metadata_files)}.')
+    metadata_files = sorted(
+        metadata_directory.glob('*.json')
+    )
+    if (
+        expected_artifact_count
+        and len(metadata_files) != expected_artifact_count
+    ):
+        failures.append(
+            f'Expected {expected_artifact_count} '
+            f'metadata files; found {len(metadata_files)}.'
+        )
 
     family_counts: dict[str, int] = {}
     game_ids: set[str] = set()
@@ -1023,18 +1251,47 @@ def main() -> int:
             if body_path.stat().st_size != int(expected_bytes):
                 failures.append(f'{metadata_path.name}: body byte-count mismatch.')
 
-    if family_counts != EXPECTED_FAMILIES:
-        failures.append(f'Unexpected source-family inventory: {family_counts}')
-    if len(game_ids) != 18:
-        failures.append(f'Expected 18 game IDs; found {len(game_ids)}.')
-    if len(body_paths) != 55:
-        failures.append(f'Expected 55 unique bodies; found {len(body_paths)}.')
-    if len(header_paths) != 55:
-        failures.append(f'Expected 55 unique header files; found {len(header_paths)}.')
-    if body_hash_checks != 55:
-        failures.append(f'Expected 55 body hash checks; found {body_hash_checks}.')
-    if body_byte_checks != 55:
-        failures.append(f'Expected 55 body byte checks; found {body_byte_checks}.')
+    if expected_families and family_counts != expected_families:
+        failures.append(
+            f'Unexpected source-family inventory: {family_counts}'
+        )
+
+    try:
+        metadata_game_ids = {
+            int(game_id)
+            for game_id in game_ids
+        }
+    except ValueError:
+        metadata_game_ids = set()
+        failures.append(
+            'Metadata game IDs are not all integers.'
+        )
+
+    if (
+        expected_game_ids
+        and metadata_game_ids != expected_game_ids
+    ):
+        failures.append(
+            'Metadata game-ID inventory differs from '
+            'the run manifest: '
+            f'missing={sorted(expected_game_ids - metadata_game_ids)}, '
+            f'extra={sorted(metadata_game_ids - expected_game_ids)}'
+        )
+
+    artifact_checks = {
+        'unique bodies': len(body_paths),
+        'unique header files': len(header_paths),
+        'body hash checks': body_hash_checks,
+        'body byte checks': body_byte_checks,
+    }
+
+    if expected_artifact_count:
+        for label, actual_count in artifact_checks.items():
+            if actual_count != expected_artifact_count:
+                failures.append(
+                    f'Expected {expected_artifact_count} '
+                    f'{label}; found {actual_count}.'
+                )
 
     identity_match = re.search(
         r"/strat365/(?P<season>[^/]+)/season-ingestion/"
@@ -1060,6 +1317,7 @@ def main() -> int:
             league_inventory = parse_league_inventory(
                 league_body_path,
                 league_id,
+                expected_game_ids,
             )
         except Exception as error:
             failures.append(f"League inventory parse failed: {error}")
@@ -1067,6 +1325,14 @@ def main() -> int:
     if not failures:
         inventory_game_ids = {int(game["gameId"]) for game in league_inventory}
         source_game_ids = set(game_sources)
+
+        if inventory_game_ids != expected_game_ids:
+            failures.append(
+                'League inventory differs from '
+                'the run manifest: '
+                f'missing={sorted(expected_game_ids - inventory_game_ids)}, '
+                f'extra={sorted(inventory_game_ids - expected_game_ids)}'
+            )
 
         if source_game_ids != inventory_game_ids:
             failures.append(
@@ -1212,8 +1478,9 @@ def main() -> int:
             if game["reconciliation"]["decisionSummaryExactMatch"]
         )
         complete_night_reconciliation_ready = (
-            len(game_records) == 18
-            and reconciled_game_count == 18
+            expected_game_count > 0
+            and len(game_records) == expected_game_count
+            and reconciled_game_count == expected_game_count
         )
 
     if not failures:
@@ -1338,7 +1605,7 @@ def main() -> int:
 
     family_summary = ','.join(
         f'{name}={family_counts.get(name, 0)}'
-        for name in sorted(EXPECTED_FAMILIES)
+        for name in sorted(expected_families)
     )
 
     print('# RESULT SUMMARY')
@@ -1347,6 +1614,11 @@ def main() -> int:
     print(f'CAPTURE_LOCK_STATUS: {lock_status}')
     print(f'METADATA_FILE_COUNT: {len(metadata_files)}')
     print(f'SOURCE_FAMILY_COUNTS: {family_summary}')
+    print(f'EXPECTED_GAME_COUNT: {expected_game_count}')
+    print(
+        f'EXPECTED_ARTIFACT_COUNT: '
+        f'{expected_artifact_count}'
+    )
     print(f'UNIQUE_GAME_ID_COUNT: {len(game_ids)}')
     print(f'UNIQUE_BODY_PATH_COUNT: {len(body_paths)}')
     print(f'UNIQUE_HEADER_PATH_COUNT: {len(header_paths)}')
@@ -1354,7 +1626,7 @@ def main() -> int:
     print(f'BODY_BYTE_COUNT_CHECK_COUNT: {body_byte_checks}')
     print(
         f"LEAGUE_INVENTORY_STATUS: "
-        f"{'PASS' if len(league_inventory) == 18 else 'FAIL'}"
+        f"{'PASS' if len(league_inventory) == expected_game_count else 'FAIL'}"
     )
     print(f"LEAGUE_INVENTORY_GAME_COUNT: {len(league_inventory)}")
     print(

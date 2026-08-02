@@ -1,0 +1,54 @@
+{
+  "canonicalPromotionDecision": {
+    "authorized": false,
+    "reason": "Raw capture is complete and valid, but parsed-output reconciliation and the complete-night validation gate have not yet passed.",
+    "status": "BLOCKED_PENDING_PARSER_VALIDATION"
+  },
+  "captureLock": {
+    "authorized": true,
+    "basis": "Schema-aware capture gate passed for six complete games: 18 captured game requests plus one filesystem-verified team-schedule capture; zero pending or failed requests.",
+    "liveRecaptureAuthorized": false,
+    "rawEvidenceImmutable": true,
+    "status": "LOCKED"
+  },
+  "createdAtUtc": "2026-08-01T16:33:18.662781Z",
+  "evidence": {
+    "artifactFailureCount": 0,
+    "capturedResponseCount": 19,
+    "completeGameCount": 6,
+    "executorSha256": "63D1B462D880444711A892C18C6A3E55B73FBF7197E2C5BAE79A5EBE0099A252",
+    "gameCoverageFailureCount": 0,
+    "manifestGameRequestCount": 18,
+    "manifestLeagueRequestCount": 1,
+    "manifestSha256": "1C5C6252D523CA3D33B6DC25837DD94264ADA7CDABEB68C76977F903C0D09074",
+    "manifestTotalRequestCount": 19,
+    "metadataFileCount": 19,
+    "parserSha256": "9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB",
+    "planGameRequestCount": 18,
+    "planSha256": "D3432D1CE0A19ACB1ECDEFE42349626BED1F8F7F6CB4C963E9CAE34C3024FB56",
+    "rawHtmlFileCount": 19,
+    "responseHeaderFileCount": 19,
+    "uniqueResponseArtifactCount": 19,
+    "validationFailureCount": 0,
+    "validatorSha256": "9F17C2E983E9E248A17B9F20B04BC398E8B620AE0520C1743C34BAAA47B96A8B"
+  },
+  "nextAuthorizedPhase": {
+    "canonicalWritesAuthorized": false,
+    "liveHttpRequestsAuthorized": false,
+    "phase": "PARSE_AND_CANONICAL_PROMOTION_GATE",
+    "rawArtifactModificationAuthorized": false,
+    "requirement": "Parser output, reconciliation, and complete-night validation must pass before canonical promotion."
+  },
+  "runIdentity": {
+    "leagueDate": "2026-07-31",
+    "leagueId": "479431",
+    "runDirectory": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-07-31/capture-20260801T043210Z",
+    "season": "1968"
+  },
+  "schemaNotes": [
+    "Derived from the established capture-lock schema.",
+    "All target counts and identities are derived from the locked run manifest.",
+    "This artifact authorizes parsing only; canonical promotion remains blocked."
+  ],
+  "schemaVersion": "bie.capture-lock-and-promotion-decision.v1"
+}

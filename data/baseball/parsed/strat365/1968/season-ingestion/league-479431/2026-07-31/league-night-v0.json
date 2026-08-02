@@ -1,0 +1,153 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 6,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-5-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-11-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-17-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-23-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-29-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-07-31/games/game-35-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 4,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 5,
+      "homeRuns": 2,
+      "homeTeam": "Willis Towers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 11,
+      "homeRuns": 6,
+      "homeTeam": "Willis Towers",
+      "innings": 9,
+      "winnerTeam": "Willis Towers"
+    },
+    {
+      "awayRuns": 7,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 17,
+      "homeRuns": 1,
+      "homeTeam": "Willis Towers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 23,
+      "homeRuns": 4,
+      "homeTeam": "Toledo Knights",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 9,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 29,
+      "homeRuns": 4,
+      "homeTeam": "Toledo Knights",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 8,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 35,
+      "homeRuns": 4,
+      "homeTeam": "Toledo Knights",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 5,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "1 Thu, 7/30 @ Towers W 4-2 1-0 McNally, D.* (L) Aquarium Drinkers beat Willis Towers 4-2",
+      "seriesGameLabel": "1",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 11,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "2 Thu, 7/30 @ Towers L 6-5 1-1 Nolan, G. (R) Willis Towers beat Aquarium Drinkers 6-5",
+      "seriesGameLabel": "2",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 17,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "3 Thu, 7/30 @ Towers W 7-1 2-1 Nash, J.* (R) Jim Nash pitches Drinkers past Towers, 7-1",
+      "seriesGameLabel": "3",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 4,
+      "gameId": 23,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "4 Fri, 7/31 @ Knights W 5-4 3-1 Arrigo, G.* (L) Aquarium Drinkers defeat Toledo Knights 5-4",
+      "seriesGameLabel": "4",
+      "seriesGameNumber": 1,
+      "seriesIndex": 2
+    },
+    {
+      "blockIndex": 5,
+      "gameId": 29,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "5 Fri, 7/31 @ Knights W 9-4 4-1 McNally, D.* (L) Aquarium Drinkers beat Toledo Knights 9-4",
+      "seriesGameLabel": "5",
+      "seriesGameNumber": 2,
+      "seriesIndex": 2
+    },
+    {
+      "blockIndex": 6,
+      "gameId": 35,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "6 Fri, 7/31 @ Knights W 8-4 5-1 Jaster, L. (L) Aquarium Drinkers defeat Toledo Knights 8-4",
+      "seriesGameLabel": "6",
+      "seriesGameNumber": 3,
+      "seriesIndex": 2
+    }
+  ],
+  "leagueDate": "2026-07-31",
+  "leagueId": "479431",
+  "playByPlaySummary": {
+    "controlCount": 69,
+    "eventCount": 479,
+    "inningMarkerCount": 107,
+    "orderedRecordCount": 655,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 6,
+    "leagueLoserMentionCount": 6,
+    "leagueScoreMatchCount": 6,
+    "leagueWinnerMentionCount": 6,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 6
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-07-31/capture-20260801T043210Z/responses/league/league-scores-2026-07-31.html",
+    "bodySha256": "0FB56FE7A749E647BEC9674D972A284AEABA029D0AEDE50E83936F21CCC5FB35",
+    "metadataFile": "league-scores-2026-07-31.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 6,
+  "warnings": []
+}
