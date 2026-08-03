@@ -1,0 +1,144 @@
+{
+    "schemaVersion":  "strat365-nightly-team-state-contract-v0",
+    "artifactType":  "strat365-nightly-team-state-contract",
+    "stateSchemaVersion":  "strat365-nightly-team-state-v0",
+    "createdAtUtc":  "2026-08-03T20:17:47.474Z",
+    "purpose":  "Define persistent spoiler-safe incremental nightly state for each active Strat-O-Matic 365 team.",
+    "storagePolicy":  {
+                          "rootTemplate":  "data/baseball/state/strat365/nightly/{leagueId}/{teamId}",
+                          "fileName":  "nightly-team-state-v0.json",
+                          "oneStateFilePerTeam":  true,
+                          "teamRegistryRemainsAuthoritative":  true,
+                          "gameResultsExcludedFromState":  true
+                      },
+    "requiredTopLevelProperties":  [
+                                       "schemaVersion",
+                                       "artifactType",
+                                       "teamKey",
+                                       "leagueId",
+                                       "teamId",
+                                       "teamName",
+                                       "strategyProfile",
+                                       "active",
+                                       "stateRevision",
+                                       "cutover",
+                                       "scheduleBaseline",
+                                       "discovery",
+                                       "capture",
+                                       "pregamePacket",
+                                       "series",
+                                       "leagueIntelligence",
+                                       "spoilerControl",
+                                       "audit",
+                                       "validation"
+                                   ],
+    "allowedValues":  {
+                          "scheduleBaselineStatus":  [
+                                                         "PENDING_INITIAL_SCHEDULE_BASELINE",
+                                                         "BASELINE_IN_PROGRESS",
+                                                         "READY",
+                                                         "FAILED"
+                                                     ],
+                          "discoveryStatus":  [
+                                                  "NOT_RUN",
+                                                  "NO_NEW_GAMES",
+                                                  "NEW_GAMES_DISCOVERED",
+                                                  "FAILED"
+                                              ],
+                          "captureStatus":  [
+                                                "NOT_RUN",
+                                                "PENDING",
+                                                "IN_PROGRESS",
+                                                "COMPLETE",
+                                                "PARTIAL",
+                                                "FAILED"
+                                            ],
+                          "pregamePacketStatus":  [
+                                                      "NOT_CREATED",
+                                                      "READY",
+                                                      "SEALED",
+                                                      "RELEASED",
+                                                      "FAILED"
+                                                  ],
+                          "seriesStatus":  [
+                                               "NO_ACTIVE_SERIES",
+                                               "PREGAME_READY",
+                                               "CAPTURE_PENDING",
+                                               "CAPTURED_SEALED",
+                                               "REPLAY_IN_PROGRESS",
+                                               "REVIEW_COMPLETE"
+                                           ],
+                          "wrapupStatus":  [
+                                               "NOT_ELIGIBLE",
+                                               "ELIGIBLE",
+                                               "READY",
+                                               "RELEASED",
+                                               "FAILED"
+                                           ],
+                          "leagueIntelligenceStatus":  [
+                                                           "NOT_RUN",
+                                                           "PENDING",
+                                                           "READY",
+                                                           "RELEASED",
+                                                           "FAILED"
+                                                       ],
+                          "spoilerState":  [
+                                               "SEALED",
+                                               "PARTIALLY_UNLOCKED",
+                                               "FULLY_UNLOCKED"
+                                           ]
+                      },
+    "baselineRules":  [
+                          "No game may be classified as newly discovered before the initial schedule baseline reaches READY.",
+                          "All game IDs visible during the initial baseline are seeded as historical known games.",
+                          "Initial baseline game IDs must not enter pending capture or replay queues.",
+                          "The baseline must retain the schedule source hash and capture timestamp."
+                      ],
+    "incrementalDiscoveryRules":  [
+                                      "New game IDs equal current schedule game IDs minus known game IDs.",
+                                      "Known game IDs must remain unique.",
+                                      "A rerun against an unchanged schedule must discover zero new games.",
+                                      "Cross-league and cross-team game identities must be rejected.",
+                                      "Partial capture state must be resumable without duplicating completed source requests."
+                                  ],
+    "spoilerRules":  [
+                         "Automatic discovery may expose game IDs but not scores, winners, records, line scores, decisive plays, or series outcomes.",
+                         "A game requires explicit user action before analysis is unlocked.",
+                         "Unlocking one game must not unlock another game.",
+                         "Series wrapup eligibility requires every game in the active series to be unlocked and reviewed.",
+                         "League intelligence generated after new games remains sealed until the applicable replay sequence is complete."
+                     ],
+    "arrayRules":  {
+                       "uniqueArrays":  [
+                                            "scheduleBaseline.historicalGameIds",
+                                            "discovery.knownGameIds",
+                                            "discovery.newlyDiscoveredGameIds",
+                                            "discovery.pendingCaptureGameIds",
+                                            "capture.capturedGameIds",
+                                            "capture.failedGameIds",
+                                            "series.gameIds",
+                                            "series.unlockedGameIds",
+                                            "series.reviewedGameIds"
+                                        ],
+                       "initialArraysMustBeEmpty":  true
+                   },
+    "stateTransitionRules":  [
+                                 "stateRevision increments once for every persisted state transition.",
+                                 "Every transition records a timestamp, action, prior state, next state, and run identifier.",
+                                 "State changes must be written atomically.",
+                                 "Failed runs must preserve the last valid state."
+                             ],
+    "thirdTeamPolicy":  {
+                            "pipelineCodeChangeRequired":  false,
+                            "registryEntryRequired":  true,
+                            "newStateFileRequired":  true,
+                            "initialBaselineRequired":  true
+                        },
+    "validation":  {
+                       "requiredTopLevelPropertyCount":  19,
+                       "activeTeamCountExpected":  2,
+                       "initialSpoilerState":  "SEALED",
+                       "initialStateRevision":  0,
+                       "status":  "PASS"
+                   }
+}
