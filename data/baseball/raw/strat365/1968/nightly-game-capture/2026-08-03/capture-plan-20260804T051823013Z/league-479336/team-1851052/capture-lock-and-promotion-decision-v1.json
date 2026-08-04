@@ -1,0 +1,54 @@
+{
+    "canonicalPromotionDecision":  {
+                                       "authorized":  false,
+                                       "reason":  "Parsing and independent complete-night validation must pass before any separate canonical-promotion decision.",
+                                       "status":  "NOT_AUTHORIZED"
+                                   },
+    "captureLock":  {
+                        "authorized":  true,
+                        "basis":  "All nine required requests for games 238, 244, and 250 passed path, transport, semantic-source, hash, durable-checkpoint, and revision-3 state validation.",
+                        "liveRecaptureAuthorized":  false,
+                        "rawEvidenceImmutable":  true,
+                        "status":  "LOCKED"
+                    },
+    "createdAtUtc":  "2026-08-04T15:33:39.8094992+00:00",
+    "evidence":  {
+                     "artifactFailureCount":  0,
+                     "capturedResponseCount":  10,
+                     "completeGameCount":  3,
+                     "executorSha256":  "2BF5849EA63A63AE8DC45B56037C17FEE120297ADA177F709D0A1312923E3C6A",
+                     "gameCoverageFailureCount":  0,
+                     "manifestGameRequestCount":  9,
+                     "manifestLeagueRequestCount":  1,
+                     "manifestSha256":  "9460FD53965412D5F34F7E932EFB51789A6C728667104CF068D257D619D834AE",
+                     "manifestTotalRequestCount":  10,
+                     "metadataFileCount":  10,
+                     "parserSha256":  "9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB",
+                     "planGameRequestCount":  9,
+                     "planSha256":  "2BBF349F471EC2A780989ADCED0D87DFF63F8084C6938B07BA7CD4511F95726E",
+                     "rawHtmlFileCount":  10,
+                     "responseHeaderFileCount":  10,
+                     "uniqueResponseArtifactCount":  10,
+                     "validationFailureCount":  0,
+                     "validatorSha256":  "9F17C2E983E9E248A17B9F20B04BC398E8B620AE0520C1743C34BAAA47B96A8B"
+                 },
+    "nextAuthorizedPhase":  {
+                                "canonicalWritesAuthorized":  false,
+                                "liveHttpRequestsAuthorized":  false,
+                                "phase":  "PARSE_AND_VALIDATE",
+                                "rawArtifactModificationAuthorized":  false,
+                                "requirement":  "Run the established parser and complete-night validator against this sealed capture. Do not promote or release results."
+                            },
+    "runIdentity":  {
+                        "leagueDate":  "2026-08-03",
+                        "leagueId":  "479336",
+                        "runDirectory":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052",
+                        "season":  "1968"
+                    },
+    "schemaNotes":  [
+                        "Derived from the established capture-lock schema.",
+                        "All target counts and identities are derived from the locked run manifest.",
+                        "This artifact authorizes parsing only; canonical promotion remains blocked."
+                    ],
+    "schemaVersion":  "bie.capture-lock-and-promotion-decision.v1"
+}
