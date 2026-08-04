@@ -1,0 +1,44 @@
+{
+    "schemaVersion":  "strat365-raw-response-metadata-v0",
+    "sourceFamily":  "gamePlayByPlay",
+    "sourceRouteClassification":  "game-238-play-by-play",
+    "requestedUrl":  "https://365.strat-o-matic.com/game/playbyplay/479336/238",
+    "effectiveUrl":  "https://365.strat-o-matic.com/game/playbyplay/479336/238",
+    "leagueId":  "479336",
+    "leagueDate":  "2026-08-03",
+    "teamIds":  [
+                    "1851052",
+                    "1853540"
+                ],
+    "gameId":  "238",
+    "seriesKey":  "nightly-479336-238-250",
+    "attemptNumber":  1,
+    "capturedAtUtc":  "2026-08-04T13:51:12.7168885Z",
+    "httpStatus":  200,
+    "contentType":  "text/html; charset=UTF-8",
+    "byteCount":  60623,
+    "sha256":  "E48BEB1D3D5432C81791136F21F682A98B4B4FA8812AFBE253B0832D871CFF4E",
+    "rawResponsePath":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/responses/games/game-238/play-by-play.html",
+    "responseHeadersPath":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/responses/games/game-238/play-by-play.headers.txt",
+    "transportResult":  "PASS",
+    "validation":  {
+                       "helperExitCode":  0,
+                       "rawBodyPresent":  true,
+                       "responseHeadersPresent":  true,
+                       "rawBodyHashMatch":  true,
+                       "effectiveRouteMatch":  true,
+                       "tableCount":  3,
+                       "topInningMarkerCount":  21,
+                       "bottomInningMarkerCount":  18,
+                       "replayMarkerPresent":  true,
+                       "semanticValidation":  "PASS",
+                       "sourceValidation":  "PASS"
+                   },
+    "provenance":  {
+                       "runManifest":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/run-manifest.json",
+                       "runSpec":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/run-spec.json",
+                       "gameCapturePlan":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/game-capture-plan.json",
+                       "transportHelper":  "baseball/harvester/invoke_strat365_raw_get_v0.ps1",
+                       "governingContract":  "docs/baseball/strat365-league-season-ingestion-source-contract-v0.md"
+                   }
+}

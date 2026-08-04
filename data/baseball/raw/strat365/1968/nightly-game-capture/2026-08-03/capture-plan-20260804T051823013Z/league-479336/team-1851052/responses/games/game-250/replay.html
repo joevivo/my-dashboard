@@ -1,0 +1,2058 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>365 by Strat-O-Matic</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="https://www.strat-o-matic.com/wp-content/themes/strat-o-matic/favicon.ico">
+
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-som.css?v=1" />
+<link rel="stylesheet" type="text/css" href="/css/style8.css" />
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css' />
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="/js/jquery.ui.touch-punch-0.2.3.min.js"></script> --> <!-- Makes JqueryUI touch-enabled -->
+
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/somonline.js"></script>
+<!-- This version (1.9.4) of dataTables is needed for the scroller plugin, which afaik is only used by the live draft, and was included by the old header_live_draft.php.  But the main header.php included a local dataTables.js (commented out below), the version of which was unknown.  I vaguely recall something else on the site requiring a certain version, but I can't find it now.  So, tentatively moving ahead with 1.9.4, hoping it's compatible with our site as a whole. -->
+<script type="text/javascript" language="javascript" src="/js/jquery.dataTables-1.9.4.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/dataTables.sTypes.js"></script>
+<!-- timer for live draft -->
+<script type="text/javascript" language="javascript" src="/js/jquery.timer.js"></script>
+
+
+<script>
+$(function() {
+
+    $('.button').button();
+
+    // Activate jQuery tooltips on all elements with class .tooltip
+    //     ... unless we're on a mobile device and the element is a link
+
+    $('.tooltip').tooltip({
+        tooltipClass: 'text10',
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    $('.tooltipMember').tooltip({
+        tooltipClass: 'text12',
+        content: function() {
+            return '<b>' + $(this).attr('memberName') + '</b>' +
+                   '<br /><br />' +
+                   'Experience: ' + $(this).attr('memberLevel') + '<br />' +
+                   'Teams: ' + $(this).attr('numTeams') + '<br />' +
+                   'Win Pct.: ' + $(this).attr('winPct');
+        },
+        items: '*',    // Necessary for content option to work
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    // Clicking on a link with class "helplink" shows/hides elements with the same class as the link's id
+    $("a.helplink").click(function(event) {
+		$(this).toggleClass('ui-icon-triangle-1-e');
+		$(this).toggleClass('ui-icon-triangle-1-s');
+        $("." + $(this).attr('id')).toggle("fast");
+    });
+
+    // For each injured player, ajax-load and display the number of days left in the injury
+
+    $('.injNum').each(function() {
+        var theElement = $(this);
+        $.get('/player/injuryinfoajax',
+              { player_id: $(this).attr('plId'), year: $(this).attr('y'), version: $(this).attr('v'), league_id: $(this).attr('lId') },
+              function(data) {
+                  theElement.html('I-' + data);
+              }
+        );        
+    });
+
+});
+</script>
+
+<style type="text/css" charset="utf-8">
+
+html {
+        background: url(/img/redesign/background_field.jpg) no-repeat center center fixed; 
+        -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    /* This fixes some layout issues on mobile, but only while we're still unoptimized for mobile.
+       When we launch our mobile optimized layout, I presume we should remove this. */
+    min-width: 1013px;
+}
+
+
+
+#splashLoginStrip a { color: lightgrey; }
+
+#container {
+        width: 1013px;        /* regular desktop site */
+        margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+}
+
+#container-content {
+        width:1013px;         /* regular desktop site */
+        float:left;
+    margin: 0px;
+    padding: 8px 14px;
+    background:#FFF;
+    position:relative;
+    z-index:1;
+}
+
+</style>
+
+</head>
+
+
+
+
+<body style="margin: 0; padding: 0;">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BLDNJ9F10"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2BLDNJ9F10');
+  gtag('config', 'AW-965318164');
+  gtag('config', 'GTM-M8H3GH8W');
+  gtag('config', 'GTM-P33BL3KZ');
+  
+</script>
+
+<!-- http://www.davidglarson.com/web-design/how-wide-should-your-website-be/ - "984px" -->
+
+<!-- moved outside the container div by Milos -->
+<div id="header" style="position: relative; background-image: url('/img/redesign/header_bkgd.jpg');">
+
+    <div style="margin-bottom: 5px; float: left;">
+        <a href="http://www.strat-o-matic.com">Strat-O-Matic.com</a> > <a href="/">365 Home</a>
+    </div>
+
+    <div style="margin-bottom: 5px; float: right;">
+
+    
+        <a href="/member/login">Login</a> |
+        <a href="/member/register">Register</a>
+
+    
+    </div>
+
+    
+    <a href="https://www.strat-o-matic.com"><img id="logoSom" src="/img/redesign/header_logo_som.png" style="" /></a>
+
+    
+        
+                    <a href="/"><img id="logo365Back" src="/img/redesign/header_logo_365_back.png" /></a>
+            <a href="/"><img id="logo365Front" src="/img/redesign/header_logo_365_front.png" /></a>
+        
+    
+</div>
+
+<div id="container">
+
+        <div id="container-content">
+
+<style>
+.inboxDot {
+    background: #cc6666;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0px 4px 0px 4px;
+    text-align: center;
+}
+</style>
+
+
+
+<script type="text/javascript">
+
+$(function(){
+
+    // http://css-tricks.com/simple-jquery-dropdowns/
+
+    $("ul.dropdown li").hover(function(){
+    
+        $(this).addClass("ui-state-hover hover").css('border', '0');
+        $('ul:first',this).css('visibility', 'visible');
+    
+    }, function(){
+
+        $(this).removeClass("ui-state-hover hover");
+        $('ul:first',this).css('visibility', 'hidden');
+    
+    });
+    
+    // $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
+
+    $("#linkLogin").click(function() {
+        $("#dialogLogin").dialog('open');
+        // prevent the browser from following the link
+        return false;
+    });
+
+    
+    $('#dialogLogin').dialog({
+        modal: true,
+        width: 450,
+        height: 300,
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        open: function() {
+            $('.ui-dialog :button').blur();  // don't incorrectly focus on any buttons
+        }
+    });
+
+    $('#dialogLoginSubmit').click(function() {
+        $.ajax({
+            crossDomain: true,
+            url: 'http://www.strat-o-matic.com/sn/sn_main_login.php',
+            type: "POST",
+            data: { name: $('#dialogLoginName').val(), pass: $('#dialogLoginPass').val() }
+        });
+    });
+
+});
+
+</script>
+
+<!--
+<div id="dialogLogin" style="display: none;">
+<input id="dialogLoginName" type="text" name="name" /> <input id="dialogLoginPass" name="pass" type="password" /> <input id="dialogLoginSubmit" name="op" type="submit" value="Log in" />
+</div>
+-->
+
+<div style="display: flex; flex-wrap: nowrap">
+
+    <div style="margin-bottom: 8px; color: #666; line-height: 35px; padding-right: 10px; margin-right: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden" class="text16">
+            </div>
+
+    <div style="display: flex; flex-shrink: 0; gap:10px; margin-bottom: 8px; line-height: 35px;" class="text16">
+        
+        <div style="background: url('/img/redesign/button_start_new_team.gif'); width: 267px; height: 35px; line-height: 35px; text-align: center;">
+            <a class="text18 b" style="color: white;" href="/member/startnewteam">Start a New Team!</a>
+        </div>
+    </div>
+
+</div>
+
+<br />
+
+<ul class="dropdown ui-state-default ui-corner-all" style="float: left; width: 100%; border: 0px;">
+
+    
+    
+    
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="">Community</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a target="_blank" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a></li>
+            <li><a href="/member/records">Manager Records</a></li>
+            <li><a href="/league/list">League Directory</a></li>
+            <li><a href="/mockdrafts">Mock Live Drafts</a></li>
+            <li><a href="/playerset/create">Custom Player Sets</a></li>
+            <li><span style="display: inline-block;"><a href="/playerset/records/baseball">Record Books</a></span>
+                <span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block; float: right; cursor: pointer; margin-top: 3px; margin-right: 10px;"></span>
+                <ul class="ui-widget-header ui-corner-bottom">
+                <li><a href="/playerset/records/baseball">Baseball</a></li>
+                <li><a href="/playerset/records/football">Football</a></li>
+                </ul>
+            </li>
+            <li><a href="/event/challenge/">Monthly Challenge</a></li>
+                    </ul>
+    </li>
+
+
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="/help">Info/Help</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a href="/help/rules">Game Rules</a></li>
+            <li><a href="/playerset/browse/292">Player Set Browser</a></li>
+            <li><a href="/help">Contact Us</a></li>
+                    </ul>
+    </li>
+
+</ul>
+
+<!--
+<ul class="dropdown ui-state-default ui-corner-all" style="float: right;">
+    <li class="ui-state-default">
+        <a href="/member/startnewteam">Start a New Team!</a>
+    </li>
+</ul>
+-->
+
+<br clear="all" /><br />
+
+
+        <style>
+
+.newsPreviewAdmin {
+    position: absolute;
+    font-size: 16px;
+    background: grey;
+    border: 1px solid yellow;
+    padding: 3px 7px;
+    color: yellow;
+    top: -16px;
+    right: 20px;
+}
+
+.newsWrapper {
+    position: relative;
+}
+
+/* newsStyle_headline */
+
+.newsStyle_headline.newsWrapper {
+    border: 3px solid #498abb;
+    padding: 2px;
+    margin: 10px 0px 15px 0px;
+}
+.newsStyle_headline .newsBody {
+    background: #3f3e3e;
+    color: white;
+    padding: 30px 10px 10px 10px;  /* assumes there's a headline. padding-top gets overridden if there isn't one */
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5em;
+}
+.newsStyle_headline .newsBody a {
+    color: white;
+}
+.newsStyle_headline .newsHeaderWrapper {
+    /* Positions the header absolutely, moving it up */
+    position: absolute;
+    top: -1em;
+    width: 100%;
+}
+.newsStyle_headline .newsHeaderWrapper2 {
+    /* Centers the header using auto margins and fixed width */
+    margin-left: auto;
+    margin-right: auto;
+}
+.newsStyle_headline .newsHeaderContent {
+    text-align: center;
+    /* height: 3em; */
+    padding: 10px;
+    background: #498abb;
+    color: white;
+    font-weight: bold;
+}
+
+/* newsStyle_notice */
+
+.newsStyle_notice.newsWrapper {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+    background: #ffcccc;
+    margin-bottom: 15px;
+}
+
+</style>
+
+
+
+
+
+<div id="tabs" style="clear: both; border: 0;" class="ui-tabs ui-corner-all">
+
+    <ul class="ui-tabs-nav ui-helper-clearfix" style="background: #ffffff; border: 0; border-bottom: 1px solid #aaa;">
+
+        <li class="ui-state-default ui-corner-top">
+            <a href="/game/479336/250">Recap/Boxscore</a>
+        </li>
+
+        <li class="ui-state-default ui-corner-top">
+            <a href="/game/playbyplay/479336/250">Play by Play</a>
+        </li>
+
+        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+            <a href="/game/replay/479336/250">Watch</a> <img class="binoculars" src="/img/game_replay/binoculars.gif" border="0" width="22" height="13" style="position: relative; top: 8px; left: -4px; margin-right: 5px;" />
+        </li>
+
+        
+    </ul>
+
+</div>
+
+<style type="text/css">
+
+#timerLog div {
+    border-bottom: 1px solid #ccc;
+}
+
+#theCast td {
+    border-bottom: 1px solid #ddd;
+}
+
+#theCast .inningTd {
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+#playButton, #pauseButton, #nextButton {
+    cursor: pointer;
+}
+
+#play {
+    width: 160px;
+    position: absolute;
+    top: 225px;
+    left: 88px;
+    background-color: #222244;
+    border: 1px solid white;
+    padding: 7px;
+    text-align: center;
+    color: yellow;
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: bold;
+}
+
+#lineScoreTable td {
+    border: 1px solid #ddd;
+}
+
+#lineScoreTable .inningTd {
+    width: 14px;
+    cursor: pointer;
+}
+
+.teamNameTd {
+    font-size: 12px;
+    padding-right: 15px;
+    text-align: left;
+}
+
+.runsTd {
+    font-weight: bold;
+    width: 30px;
+}
+
+.hitsTd, .errorsTd {
+    width: 18px;
+}
+
+.nameTd, .substitutionTd, .injuryTd {
+    padding-left: 7px;
+}
+
+.inningDivider {
+    background-color: #cccccc;
+}
+
+.inningTdHover {
+    background-color: lightblue;
+}
+
+.inningTdCurrent {
+    background-color: yellow;
+}
+
+</style>
+
+<script type="text/javascript">
+var ourTimerIdSeq = 0;
+var t = [];
+var numTimersRunning = 0;
+var str;
+var arr = [];
+var lineShown = [];   // whether the line has been shown OR a showLine has been called/scheduled for the line.  for avoiding duplicates
+var items;
+var delay = 2000;
+var thisDelay, style, rowClass;
+var onBase = [];
+var pitcher = [];   // 0 = away, 1 = home
+var runs = [];
+var hits = [];      // 0 = away, 1 = home
+var errors = [];    // 0 = away, 1 = home
+var inning = 1;
+var outs = 0;
+var topOrBottom = 0;
+var paused = 0;
+var lastLineNumShown;
+var targetLineNum = 1000000;   // 1000000 means "no target"
+
+var leagueId = 479336;
+var poolId = 1968;
+var gameId = 250;
+var playersInGame = {};
+
+// feature: link to a gamecast at a certain inning, paused
+// play result under batter - show RBIs, outs; colorize
+// clicking current inning?
+// hover highlight on inningTd's isn't "live"
+// PCF next to pitcher's name?
+// show cards
+//  h&r, errors: http://fantasygames.sportingnews.com/stratomatic/league/game_replay.html?group_id=99169&g_id=79
+//  extra innings: http://fantasygames.sportingnews.com/stratomatic/league/game_replay.html?group_id=99169&g_id=148
+//  playoffs (and T9 ending): http://fantasygames.sportingnews.com/stratomatic/league/gc.html?group_id=99169&g_id=983
+//  squeeze (B7): http://fantasygames.sportingnews.com/stratomatic/league/game_replay.html?group_id=140569&g_id=1
+
+function Timer(callback, delay) {
+
+    // Wrapper for setTimeout and clearTimeout that allows pausing and resuming.
+    // based off of http://stackoverflow.com/questions/3969475/javascript-pause-settimeout
+
+    var timerId, start, callbackStr, ourTimerId, remaining = delay;
+    var wasPausedWhileActive = 0;
+
+    this.cancel = function() {
+        remaining = 0;
+        $("#timerLog" + ourTimerId).css("text-decoration", "line-through");
+        window.clearTimeout(timerId);
+    }
+
+    this.isRunning = function() {
+        var now = new Date();
+        var expires = new Date();
+        expires.setTime(start.getTime() + remaining);
+
+        if (expires > now || wasPausedWhileActive == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    this.executeNow = function() {
+
+        // if this timer is still running, execute it now
+        if (this.isRunning()) {
+            this.pause();
+            remaining = 1;
+            this.resume();
+        }
+    }
+
+    this.pause = function() {
+        if (this.isRunning() && wasPausedWhileActive == 0) {
+            // $("#timerLog" + ourTimerId).remove();
+            window.clearTimeout(timerId);
+            remaining -= new Date() - start;
+            wasPausedWhileActive = 1;
+            $("#timerLog" + ourTimerId).css("color", "#6666cc");
+        }
+    };
+
+    this.resume = function() {
+        if (wasPausedWhileActive == 1) {
+            $("#timerLog" + ourTimerId).css("color", "#999999").css("text-decoration", "line-through");
+            this.scheduleNew();
+        }
+    };
+
+    this.scheduleNew = function() {
+        if (remaining > 0) {
+            ourTimerId = ourTimerIdSeq;
+            ourTimerIdSeq++;
+            start = new Date();
+            numTimersRunning++;
+            callbackStr = callback + " $('#timerLog" + ourTimerId + "').css('color', '#66cc66');";
+            timerId = window.setTimeout(callbackStr, remaining);
+            $("#timerLog").append('<div id="timerLog' + ourTimerId + '">' + ourTimerId + ': <span id="remaining' + ourTimerId + '">' + remaining + '</span> / ' + callbackStr + '</div>');
+            wasPausedWhileActive = 0;
+        }
+    }
+
+    this.scheduleNew();
+}
+
+function howManyTimersRunning() {
+    return (t[0].isRunning() + t[1].isRunning() + t[2].isRunning() + t[3].isRunning() + t[4].isRunning() + t[5].isRunning());
+}
+
+function setRunner(base, name) {
+    // base 0 is the batter
+    onBase[base] = name;
+    $("#onBase" + base).html(name);
+}
+
+function setBatter(name) {
+    setRunner(0, name);
+}
+
+function setPitcher(name) {
+    pitcher[topOrBottom ? 0 : 1] = name;
+    $("#pitcher").html(name);
+}
+
+function setRuns(inning, topOrBottom, runz) {
+    runs[topOrBottom][inning] = runz;
+    $("#inning" + topOrBottom + "_" + inning).html(runz);
+}
+
+function playerLookup(player) {
+    name = player.replace(/\s+/g, '').toLowerCase();
+
+    if (name in playersInGame) {
+        return `<a class='b' target='_blank' href='/player/${playersInGame[name]['id']}/${playersInGame[name]['year']}/${playersInGame[name]['version']}/${poolId}/${leagueId}'>${player}</a>`;
+    } else {
+        return player;
+    }
+}
+
+function findStartingPitcherAway () {
+    items = str.match(/ERA[\s\S]*?(\D\.\D+?)\s+.*\s+\d+/);
+    return playerLookup(items[1]);
+}
+
+function findStartingPitcherHome () {
+    items = str.match(/ERA[\s\S]*ERA[\s\S]*?(\D\.\D+?)\s+.*\s+\d+/);
+    return playerLookup(items[1]);
+}
+
+function findNextBatter (lineNo) {
+    var items;
+    for (var i = lineNo + 1; i < arr.length; i++) {
+        if (items = arr[i].match(/\*\*\* (TOP|BOTTOM) OF INNING (\d+) \*\*\*/)) {
+            return "";
+        } else if (items = arr[i].match(/\d .*(\D)\.((?: )?\S\D+?)\s+(\d+\-\d+|sac|bunt|sqz|h&r|\s+)\s+(.+?)\s+([b\-0123Ho ]+)\s+(.+?)\s+(F\d)/)) {
+            return playerLookup(items[1] + ". " + items[2]);
+        }
+    }
+}
+
+function doBaseAdvances (basesString) {
+    var basesArr = $.trim(basesString).split(/ /);
+    for (var i = 0; i < basesArr.length; i++) {
+        var baseArr = basesArr[i].split(/-/);
+        if (baseArr[0] == "b") {
+            baseArr[0] = 0;
+        }
+
+        if (baseArr[1] == "H") {
+            setRuns(inning, topOrBottom, runs[topOrBottom][inning] + 1);
+            setRuns(0, topOrBottom, runs[topOrBottom][0] + 1);
+        }
+
+        setRunner(baseArr[1], onBase[baseArr[0]]);
+        setRunner(baseArr[0], "&nbsp;");
+    }
+}
+
+function doOuts (basesString) {
+    outs = outs + basesString.split(/[0o]/).length - 1;
+    $("#outs").html("Outs: " + outs);
+    if (outs >= 3) {
+        // just to make sure final inning isn't blank at the end of the game
+        $("#inning" + topOrBottom + "_" + inning).html(runs[topOrBottom][inning]);
+    }
+}
+
+function handlePinchRunner (name) {
+
+    // The play-by-play never mentions which runner the PR is replacing, if there's more than one.
+    // All we can do is assume the lead runner
+
+    for (var i = 3; i >= 1; i--) {
+        if (onBase[i] != "") {
+            setRunner(i, name);
+            break;
+        }
+    }
+}
+
+function findLineNumOfInning (topOrBot, inn) {
+
+    // Return the line number of the game report with "[TOP|BOTTOM] OF INNING X"
+
+    var searchFor = (topOrBot == 1 ? "BOTTOM" : "TOP") + " OF INNING " + inn;
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i].search(searchFor) != -1) {
+            return(i);
+        }
+    }
+
+    // If we didn't find it, the user's requesting to jump to end of the game
+    return 999999;
+}
+
+function jumpToInning (topOrBot, inn) {
+    executeAllTimersNow();
+    targetLineNum = findLineNumOfInning(topOrBot, inn);
+
+    if (targetLineNum < lastLineNumShown) {
+        initGame();
+        cancelAllTimers();
+    }
+    if (targetLineNum != lastLineNumShown) {
+        // give the above executeAllTimersNow() a few extra milliseconds to run before calling resumePlayback()
+        window.setTimeout("resumePlayback();", 10);
+    }
+}
+
+function cancelAllTimers() {
+    t[0].cancel(); t[1].cancel(); t[2].cancel(); t[3].cancel(); t[4].cancel(); t[5].cancel();
+    numTimersRunning = 0;
+}
+
+function executeAllTimersNow() {
+    t[0].executeNow(); t[1].executeNow(); t[2].executeNow(); t[3].executeNow(); t[4].executeNow(); t[5].executeNow();
+    numTimersRunning = 0;
+}
+
+function pausePlayback () {
+    paused = 1;
+    t[0].pause(); t[1].pause(); t[2].pause(); t[3].pause(); t[4].pause(); t[5].pause();
+    $("#pauseButton").hide();
+    $("#playButton").show();
+    // $("#status").html("PAUSED").show().fadeOut(1500);
+}
+
+function resumePlayback () {
+    // alert("lastLineNumShown: " + lastLineNumShown + ", numTimersRunning: " + numTimersRunning);
+    if (paused == 1) {
+        paused = 0;
+        if ($("#status").html() == "PAUSED")
+            $("#status").html("PLAYING").show();
+        if (howManyTimersRunning() > 0) {
+            t[0].resume(); t[1].resume(); t[2].resume(); t[3].resume(); t[4].resume(); t[5].resume();
+        } else {
+            if (lineShown[lastLineNumShown + 1] == 0) {
+                lineShown[lastLineNumShown + 1] = 1;
+                showLine(lastLineNumShown + 1);
+            }
+        }
+        $("#playButton").hide();
+        $("#pauseButton").show();
+    } else {
+        if (howManyTimersRunning() == 0) {
+            if (lineShown[lastLineNumShown + 1] == 0) {
+                lineShown[lastLineNumShown + 1] = 1;
+                showLine(lastLineNumShown + 1);
+            }
+        }
+    }
+}
+
+function isGameOver() {
+
+    if (inning < 9) return 0;
+
+    if (runs[1][0] > runs[0][0]) {
+
+        // home team is ahead
+
+        if ((topOrBottom == 0 && outs == 3) || (topOrBottom == 1)) return 1;
+
+    } else if (runs[0][0] > runs[1][0]) {
+
+        // away team is ahead
+
+        if (topOrBottom == 1 && outs == 3) return 1;
+    }
+
+    return 0;
+}
+
+function initGame () {
+    outs = topOrBottom = hits[0] = hits[1] = errors[0] = errors[1] = 0;
+    inning = 1;
+    lastLineNumShown = findLineNumOfInning(0, 1) - 1;
+
+    setRunner(1, "");
+    setRunner(2, "");
+    setRunner(3, "");
+    $(".inningTd").html("").removeClass("inningTdCurrent");
+    $("#inning0_1").addClass("inningTdCurrent");
+    $("#inning0_0").html("0");
+    $("#hits0").html("0");
+    $("#errors0").html("0");
+    $("#inning1_0").html("0");
+    $("#hits1").html("0");
+    $("#errors1").html("0");
+    $("#outs").html("Outs: 0");
+    $("#inning").html("TOP 1");
+    $("#play").html("&nbsp;");
+    $("#statusSplash").html("");
+    $("#status").html("");
+    $("#recapAndBox").hide();
+
+    for (var i = 0; i <= 1; i++) {
+        runs[i] = [];
+        for (var j = 0; j <= 50; j++) {
+            runs[i][j] = 0;
+        }
+    }
+
+    for (var i = 0; i < 1000; i++) {
+        lineShown[i] = 0;
+    }
+
+    $("#theCast tr").remove();
+    $("#theCast").prepend('<tr><td class="inningTd">&nbsp;</td><td class="nameTd" colspan="3"><i>Start of game</i></td></tr>');
+    pitcher[0] = findStartingPitcherAway();
+    pitcher[1] = findStartingPitcherHome();
+    setPitcher(pitcher[1]);
+    setBatter(findNextBatter(findLineNumOfInning(0, 1)));
+}
+
+function handlePlay (lineNum, items) {
+
+    var fName = items[1]; var lName = items[2]; var rollOrStrategy = items[3]; var playResult = items[4]; var baseActions = items[5]; var bpOrX = items[6]; var pcf = items[7];
+    var fullName;
+
+    // alert("|" + fName + "|" + lName + "|" + rollOrStrategy + "|" + playResult + "|" + baseActions + "|" + bpOrX + "|" + pcf + "|");
+
+    if (rollOrStrategy.search(/\d/) != -1 && rollOrStrategy.search(/\-/) == -1) {
+        // If there's at least a number character, but no hyphen, it's a Mystery Card game
+        // So clear it out
+        rollOrStrategy = "";
+    }
+
+    if ($("#row" + lineNum).length == 0) {
+        if (lName.length > 0) {
+            fullName = fName + ". " + lName;
+            fullName = playerLookup(fullName);
+            setBatter(fullName);
+        } else {
+            fullName = "";
+        }
+        if (baseActions.match(/H/)) style = style + 'color: green; font-weight: bold;';
+        bpOrX = bpOrX.replace(/1-/g, "");
+        // if ((baseActions.split("-").length-1) == 1 && baseActions.search("b-0") != -1) baseActions = "&nbsp;";
+
+        if (playResult.search("Single") != -1 || (playResult.search("Double") != -1 && playResult.search("Double Play") == -1) || playResult.search("Triple") != -1 ||
+            playResult.search("Home Run") != -1) {
+            hits[topOrBottom]++;
+            $("#hits" + topOrBottom).html(hits[topOrBottom]);
+            rowClass = rowClass + " b";
+        }
+        if (playResult.search("Walk") != -1 || playResult.search("Base Error") != -1 || playResult.search("HBP") != -1) {
+            rowClass = rowClass + " b";
+        }
+        if (playResult.search("Error") != -1) {
+            errors[topOrBottom ? 0 : 1]++;
+            $("#errors" + (topOrBottom ? 0 : 1)).html(errors[topOrBottom ? 0 : 1]);
+        }
+
+        t[0] = new Timer('(' + lineNum + '); $("#theCast").prepend(' +
+                '"<tr id=\'row' + lineNum + '\' class=\'' + rowClass + '\' style=\'display: none;\' valign=top>' +
+                    '<td class=\'inningTd\' style=\'' + style + '\'>' + (topOrBottom ? "B" : "T") + inning + '</td>' +
+                    '<td class=\'nameTd\' style=\'' + style + '\'>' + fullName + '<br /><!-- ' + lineNum + ' --></td>' +
+                    '<td style=\'' + style + '\' nowrap>' + rollOrStrategy + '<br /><span class=\'text10\' style=\'color: #999999;\'>' + bpOrX + '</span></td>' +
+                    '<td style=\'' + style + '\'>' + playResult + '<br /><span class=\'text10\' style=\'color: #999999;\'>' + baseActions + '</td>' +
+                 '</tr>"); ' +
+                 '$("#play").html("' + playResult.replace("Double Play", "DP") + '"); ' +
+                 '$(\'#row' + lineNum + '\').fadeIn();', thisDelay);
+        t[1] = new Timer('(' + lineNum + '); doOuts("' + baseActions + '");', thisDelay);
+        t[2] = new Timer('(' + lineNum + '); doBaseAdvances("' + baseActions + '");', thisDelay * 2);
+        t[3] = new Timer('(' + lineNum + '); $("#play").html("&nbsp;");', thisDelay * 2.5);
+        t[4] = new Timer('(' + lineNum + '); setBatter(findNextBatter(' + lineNum + '));', thisDelay * 3);
+    }
+}
+
+function showLine (lineNum) {
+
+    style = '';
+    rowClass = '';
+
+    if (targetLineNum < 1000000)
+        thisDelay = 1;
+    else
+        thisDelay = delay;
+
+    if (lineNum <= targetLineNum && !isGameOver()) {
+
+        if (topOrBottom) rowClass = "even";
+
+        if (items = arr[lineNum].match(/\*\*\* (TOP|BOTTOM) OF INNING (\d+) \*\*\*/)) {
+
+            // If it's the top of an inning after the 9th, insert a new inning column in the lineScore
+            // (if it hasn't been inserted already)
+
+            if (items[1] == "TOP" && items[2] > 9) {
+                if ($("#inning0_" + items[2]).length == 0) {
+                    $('<td>' + items[2] + '</td>').insertBefore("#runsHeader");
+                    $('<td class="inningTd" id="inning0_' + items[2] + '">&nbsp;</td>').insertBefore("#inning0_0");
+                    $('<td class="inningTd" id="inning1_' + items[2] + '">&nbsp;</td>').insertBefore("#inning1_0");
+                }
+            }
+
+            outs = 0; $("#outs").html("Outs: " + outs);
+            $("#inning" + topOrBottom + "_" + inning).removeClass('inningTdCurrent');
+            if (runs[topOrBottom][inning] == 0) {
+                setRuns(inning, topOrBottom, 0);
+            }
+            inning = items[2];
+            if (items[1] == "TOP") {
+                topOrBottom = 0;
+                $("#inning").html("TOP " + items[2]);
+            } else if (items[1] == "BOTTOM") {
+                topOrBottom = 1;
+                $("#inning").html("BOTTOM " + items[2]);
+            }
+            $("#theCast").prepend("<tr class=\"inningDivider\"><td colspan=\"4\"><!-- " + lineNum + " --></td></tr>");
+            $("#inning" + topOrBottom + "_" + items[2]).addClass('inningTdCurrent');
+            setPitcher(pitcher[topOrBottom ? 0 : 1]);
+            setRunner(1, "");
+            setRunner(2, "");
+            setRunner(3, "");
+
+        } else if (items = arr[lineNum].match(/\d .*(\D)\.((?: )?\S\D+?)\s+(\d+|\d+\-\d+|sac|bunt|sqz|h\&amp;r|\s+)\s+(.+?)\s{2,}([b\-0123Ho ]+)\s+(.+?)\s+(F\d)/)) {
+
+            handlePlay(lineNum, items);
+
+        } else if (items = arr[lineNum].match(/\d .*()()(\d*)\s+(Stolen Base|SB \&amp; Error \- \S+?|Caught Stealing|Pickoff)\s+([b\-0123Ho ]+)\s+(.+?)\s+(F\d)/)) {
+
+            handlePlay(lineNum, items);
+
+        } else if (items = arr[lineNum].match(/SUBSTITUTE (\S+)\s?(?:\(.*hook\))*\s*\- (.+)/)) {
+
+            $("#theCast").prepend("<tr id=\"row" + lineNum + "\" class=\"" + rowClass + "\" style=\"display: none;\"><td class=\"inningTd\" style=\"" + style + "\">" + (topOrBottom ? "B" : "T") + inning + "</td><td class=\"substitutionTd\" style=\"" + style + "\" colspan='3'>SUBSTITUTION at " + items[1] + ": " + items[2] + "</td></tr>");
+            $("#row" + lineNum).fadeIn();
+            if (items[1] == "PR") {
+                handlePinchRunner(items[2]);
+            }
+            if (items[1] == "P") {
+                subarr = items[2].split(/\(/); // strip any Super Hal "role" for relievers
+                setPitcher(playerLookup(subarr[0]));
+            }
+
+        } else if (items = arr[lineNum].match(/(\D+) Injured for (\d+) more game/)) {
+
+            $("#theCast").prepend("<tr id=\"row" + lineNum + "\" class=\"" + rowClass + "\" style=\"display: none;\"><td class=\"inningTd\" style=\"" + style + "\">" + (topOrBottom ? "B" : "T") + inning + "</td><td class=\"injuryTd\" style=\"" + style + "\" colspan='3'>INJURY: " + items[1] + " for " + items[2] + " more game(s)</td></tr>");
+            $("#row" + lineNum).fadeIn();
+
+        } else {
+            $("#theCast").prepend("<tr><td colspan=4><i>unparsed line " + lineNum + "</i></td></tr>");
+        }
+
+        if (lineNum >= targetLineNum) {
+            paused = 1;   // set paused here so that we don't run the next showLine below
+            window.setTimeout("pausePlayback();", 5); // give the above timers a few extra milliseconds to run before pausing
+            targetLineNum = 1000000;      // reset it
+        }
+
+        lastLineNumShown = lineNum;
+
+        if (!paused && lineShown[lineNum+1] == 0) {
+            lineShown[lineNum+1] = 1;
+            t[5] = new Timer("(" + lineNum + "); showLine(" + (lineNum + 1) + ");", thisDelay * 3 + 5);
+        }
+    }
+
+    if (isGameOver()) {
+        pausePlayback();
+        $("#statusSplash").html("GAME OVER").show();
+        $("#recapAndBox").fadeIn("slow");
+        $("#status").html('recap/boxscore below').show();
+
+    }
+
+};
+
+$(document).ready(function() {
+
+$.getJSON(`/game/api/playersjson/${leagueId}/${gameId}` , function(data) {
+    playersInGame = data;
+
+    str = $("#theBox").html();
+    arr = str.split(/ATTENDANCE/);
+    // arr = str.split(/\*\*\* TOP OF INNING 1 \*\*\*/);
+    arr = arr[1].split(/\n/);
+
+    initGame();
+    $("#status").html('<span style="color: darkgreen"><b>Starting playback...</b></span>').show().fadeOut(3000);
+    lineShown[findLineNumOfInning(0, 1)] = 1;
+    showLine(findLineNumOfInning(0, 1));
+
+    $("#playButton, #pauseButton").click(function() {
+        if (!paused) {
+            pausePlayback();
+        } else {
+            resumePlayback();
+        }
+    });
+
+    $("#nextButton").click(function() {
+        if (topOrBottom == 0) {
+            jumpToInning(1, inning);
+        } else {
+            jumpToInning(0, Number(inning) + 1);
+        }
+    });
+
+    $("#playButton, #pauseButton, #nextButton").hover(
+        function() {
+            $(this).css("opacity", "1.0").css("filter", "alpha(opacity=100)");
+        },
+        function() {
+            $(this).css("opacity", "0.6").css("filter", "alpha(opacity=60)");
+    });
+
+    $("#stepButton").click(function() {
+        executeAllTimersNow();
+        targetLineNum = lastLineNumShown + 1;
+        // alert("lastLineNumShown: " + lastLineNumShown + ", stepping to " + targetLineNum);
+        resumePlayback();
+    });
+
+    $('#lineScoreTable').on('click', '.inningTd', function() {
+        // jump to inning
+        // id of clicked td = "inning1_5"; means bottom of the 5th
+        var strs = $(this).attr('id').split("_");
+        jumpToInning(strs[0].substr(-1), strs[1]);
+    });
+
+    $('#speedSlider').slider({
+        min: 100,
+        max: 5000,
+        value: 2550,
+        slide: function (event, ui) {
+            delay = 5100 - ui.value;
+        }
+    });
+
+    });
+
+});
+
+</script>
+
+<br /><br />
+
+<table class="cleft" width="100%" align="center">
+    <tr>
+        <td class="text12">
+
+        <center>
+        <span class="text12"><a class="text16" href="/team/1853540"><b>Classic City  Crazy Eights</b></a> at <a href="/team/1851052"><b>Aquarium Drinkers</b></a></span>
+        <br />
+        <b>Game 42</b>
+        </center>
+
+        <br />
+
+                    <table id="lineScoreTable" class="databox tright text12 ui-widget-content" cellpadding="2" cellspacing="0" align="center">
+                        <tr class="ui-widget-header">
+                            <td class="tleft">Team</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
+                            <td>9</td>
+                            <td id="runsHeader">R</td>
+                            <td>H</td>
+                            <td>E</td>
+                        </tr>
+                        <tr class="tright ">
+                            <td class="teamNameTd" nowrap>
+                                                                    Classic City  Crazy Eights                                                            </td>
+                            <td class="inningTd" id="inning0_1">&nbsp;</td>
+                            <td class="inningTd" id="inning0_2">&nbsp;</td>
+                            <td class="inningTd" id="inning0_3">&nbsp;</td>
+                            <td class="inningTd" id="inning0_4">&nbsp;</td>
+                            <td class="inningTd" id="inning0_5">&nbsp;</td>
+                            <td class="inningTd" id="inning0_6">&nbsp;</td>
+                            <td class="inningTd" id="inning0_7">&nbsp;</td>
+                            <td class="inningTd" id="inning0_8">&nbsp;</td>
+                            <td class="inningTd" id="inning0_9">&nbsp;</td>
+                            <td class="runsTd" id="inning0_0">0</td>
+                            <td class="hitsTd" id="hits0">0</td>
+                            <td class="errorsTd" id="errors0">0</td>
+                        </tr>
+                        <tr class="tright">
+                            <td class="teamNameTd">
+                                                                    Aquarium Drinkers                                                            </td>
+                            <td class="inningTd" id="inning1_1">&nbsp;</td>
+                            <td class="inningTd" id="inning1_2">&nbsp;</td>
+                            <td class="inningTd" id="inning1_3">&nbsp;</td>
+                            <td class="inningTd" id="inning1_4">&nbsp;</td>
+                            <td class="inningTd" id="inning1_5">&nbsp;</td>
+                            <td class="inningTd" id="inning1_6">&nbsp;</td>
+                            <td class="inningTd" id="inning1_7">&nbsp;</td>
+                            <td class="inningTd" id="inning1_8">&nbsp;</td>
+                            <td class="inningTd" id="inning1_9">&nbsp;</td>
+                            <td class="runsTd" id="inning1_0">0</td>
+                            <td class="hitsTd" id="hits1">0</td>
+                            <td class="errorsTd" id="errors1">0</td>
+                        </tr>
+                    </table>
+
+                    <br clear="all" />
+
+                    <div id="theField" style="width: 350px; position: relative; margin-left: 40px; float: left;">
+                    <img src="/img/game_replay/game_replay_field.jpg" width="350" style="opacity: 0.6; filter:alpha(opacity=60);" />
+                    <div id="ballparkInfo" style="text-align: right; font-size: 10px; position: absolute; top: 10px; right: 10px;">
+                        <span class="text11"><b>Astrodome 1968</b></span>
+                        <br />
+                        SI L: 1-9<br />
+                        SI R: 1-9<br />
+                        HR L: 1<br />
+                        HR R: 1                    </div>
+                    <div id="playPauseButtonDiv" style="position: absolute; top: 10px; left: 10px;">
+                    <img id="playButton" src="/img/game_replay/Button_Play.gif" style="opacity: 0.6; filter:alpha(opacity=60); display: none;" />
+                    <img id="pauseButton" src="/img/game_replay/Button_Pause.gif" style="opacity: 0.6; filter:alpha(opacity=60);" />
+                    </div>
+                    <img id="nextButton" src="/img/game_replay/Button_Next.gif" style="position: absolute; top: 20px; left: 57px; opacity: 0.6; filter:alpha(opacity=60);" />
+                    <div id="statusSplash" style="width: 200px; text-align: center; font-style: bold; color: #333333; font-size: 19px; font-weight: bold; position: absolute; top: 28px; left: 75px;"></div>
+                    <div id="status" style="width: 200px; text-align: center; color: #333333; font-size: 12px; position: absolute; top: 50px; left: 75px;"><i>Loading game...</i></div>
+                    <div id="onBase0" style="width: 120px; text-align: center; color: darkblue; font-size: 11px; font-weight: bold; position: absolute; top: 200px; left: 115px;"></div>
+                    <div id="onBase1" style="width: 120px; text-align: center; color: darkblue; font-size: 11px; font-weight: bold; position: absolute; top: 128px; left: 255px;"></div>
+                    <div id="onBase2" style="width: 120px; text-align: center; color: darkblue; font-size: 11px; font-weight: bold; position: absolute; top: 98px; left: 115px;"></div>
+                    <div id="onBase3" style="width: 120px; text-align: center; color: darkblue; font-size: 11px; font-weight: bold; position: absolute; top: 128px; left: -20px;"></div>
+                    <div id="pitcher" style="width: 120px; text-align: center; font-size: 11px; font-weight: bold; position: absolute; top: 128px; left: 115px;"></div>
+                    <div id="play">&nbsp;</div>
+                    <div id="inning" style="color: white; font-size: 16px; font-weight: bold; position: absolute; top: 200px; left: 10px;">Top 1</div>
+                    <div id="outs" style="color: white; font-size: 13px; font-weight: bold; position: absolute; top: 220px; left: 10px;">Outs: 0</div>
+                    </div>
+
+                    <div id="theDiv" style="width: 510px; margin-right: 40px; float: right; overflow-y: scroll; height: 274px; border: 1px solid #999;">
+                        <table id="theCast" width="100%" class="text11" cellspacing="0" cellpadding="2" style="line-height: 20px;">
+                            <colgroup width="25" />  <!-- inning -->
+                            <colgroup width="130" /> <!-- name -->
+                            <colgroup />             <!-- roll -->
+                            <colgroup width="290" /> <!-- play -->
+                        </table>
+                    </div>
+
+                    <br clear="all" />
+
+                    <!-- <input type="submit" id="stepButton" value="STEP" /> -->
+
+                    <br />
+
+                    <div id="speedSlider" style="width: 250px; margin-left: 90px;"></div>
+                    <table id="speedSliderCaption" width="250" class="text11" style="margin-left: 90px;">
+                        <tr><td>Slow</td><td class="tcenter">Playback speed</td><td class="tright">Fast</td></tr>
+                    </table>
+
+                    <div id="timerLog" style="display: none;" class="text10"></div>
+
+                    <div id="about" style="margin-top: 15px; display: none;">
+                    <center><span style="font: bold 24px Arial; color: #666666;">Welcome to the Strat-O-Matic Game Replay</span></center>
+
+                    <br /><br />
+
+                    Now, you can watch last night's games - or any past game ever! - unfold play by play, or inning by inning, or at whatever pace you wish, with the new <b>Strat-O-Matic Game Replay!</b>  Just click on the binoculars icon (<img src="/img/game_replay/binoculars.gif" />) next to any past game to start the show.  The playback will begin automatically after the page finishes loading.
+
+                    <br /><br />
+
+                    <b>Controls / Features</b>
+
+                    <br /><br />
+
+                    - Press the Pause button in the upper left corner of the baseball field display to <b>pause</b> the action.<br />
+                    - While paused, press the button again (Play) to <b>resume</b> the action.<br />
+                    - <b>Set the playback speed</b> using the slider under the field display.<br />
+                    - Click on the Skip button (next to the Play/Pause button) to <b>fast-forward to the start of the next half-inning</b>.<br />
+                    - Click on any half-inning in the line score to <b>seek to the start of that half-inning</b>.
+
+                    <br /><br />
+
+                    <b>Beta</b>
+
+                    <br /><br />
+
+                    Game Replay is currently in <b>Beta</b>, which means it has not been rigorously tested and is unlikely to be free of bugs.  If you watch games normally without clicking excessively on the Play/Pause and Skip buttons, the Game Replay should work fine for you.
+
+                    <br /><br />
+
+                    <font color="darkred"><b>Note: The Game Replay is known to have problems running on earlier versions of Internet Explorer.  Please upgrade to the latest version of IE if you can't get it to run at all, or use another browser such as Chrome, Firefox, or Safari.</b></font>
+
+                    <br /><br />
+
+                    While the Game Replay is running, the kind of issues you may run into (if at all) would likely include:
+
+                    <br /><br />
+
+                    - Play-by-play lines appearing twice in the event window.<br />
+                    - The Skip button not taking you all the way through to the end of the half-inning.  In this case, just click the button again.<br />
+                    - An unrecognized type of play.  Please report any plays you find that are not handled as expected.<br />
+                    - A pinch-runner replaces the wrong runner.  Unfortunately, the standard play-by-play report generated by the game engine doesn't specify which player a pinch-runner is replacing if there's more than one possibility.  Since Game Replay simply parses the play-by-play report, in these cases it has no other (feasible) choice but to  assume that the pinch-runner is replacing the lead runner, which obviously will be incorrect sometimes.
+
+                    <br /><br />
+
+
+                    In general, these types of problems are more likely to occur if you play around with the controls while playback is running.  The Skip button and the seek-to-half-inning controls automatically Pause the action when you arrive at your destination, so you'll usually be Paused while using them during normal operation.
+
+                    <br /><br />
+
+                    If you encounter a problem with the Game Replay, or you just have a suggestion, please drop us a line at <b>365support@strat-o-matic.com</b>, and be sure to include a link to the game in question.
+
+                    <br /><br />
+
+                    </div>
+
+                    <div id="recapAndBox" style="display: none;">
+                        <br /><hr /><br />
+                        <style type="text/css">
+.hideResultsShow {
+    display: none;
+}
+</style>
+
+<h2 class="main">Dean Chance and Drinkers beat Crazy Eights, 4-2</h2>
+<br />
+
+<div class="main b">
+
+        Aquarium Drinkers 4, Classic City  Crazy Eights 2        
+    <br />
+    
+    Game 42
+</div>
+
+<br clear="all" />
+
+    
+<div class="main" style="width: 400px; float: left;">
+
+    <table class="databox tright ui-widget-content" cellpadding="0" cellspacing="1" border="0" width="100%">
+        <tr class="ui-widget-header text10">
+            <td class="tleft">
+                                <b>FINAL</b>
+                            </td>
+                        <td width="5%">1                        <td width="5%">2                        <td width="5%">3                        <td width="5%">4                        <td width="5%">5                        <td width="5%">6                        <td width="5%">7                        <td width="5%">8                        <td width="5%">9                        <td width="10%"><b>R</b></td>
+            <td width="5%"><b>H</b></td>
+            <td width="5%"><b>E</b></td>
+        </tr>
+        <tr class="text10">
+            <td class="tleft"><a href="/team/1853540">Crazy Eights</a></td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>2</td>
+                        <td>
+                <span class="hideResultsHide hideResultsHideGame250 b">2</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame250">7</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame250">0</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+        </tr>
+        <tr class="text10">
+            <td class="tleft"><a href="/team/1851052">Drinkers</a></td>
+                                    <td>0</td>
+                                    <td>2</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>-</td>
+                        <td>
+                <span class="hideResultsHide hideResultsHideGame250 b">4</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame250">7</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame250">1</span>
+                <span class="hideResultsShow hideResultsShowGame250">?</span>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div style="margin-left: 15px; float: left;">
+
+    <table class="hideResultsHide" cellpadding="0" cellspacing="1" border="0" width="100%">
+        <tr>
+            <td class="text11" width="100%">
+                <b>W:</b> <a url="/player/31960/1968/5/1968/479336" href="javascript:void(window.open('/player/31960/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Chance, D. (8-2)</a>                <br />
+                <b>L:</b> <a url="/player/35831/1968/5/1968/479336" href="javascript:void(window.open('/player/35831/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Jackson, L. (2-3)</a>                <br />
+                                <b>S:</b> <a url="/player/40941/1968/5/1968/479336" href="javascript:void(window.open('/player/40941/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Shea, S. (2)</a>                <br />
+                                <b>HR:</b> B.Alyea(4th)            </td>
+        </tr>
+    </table>
+
+</div>
+
+<br clear="all" /><br />
+                        <div class="text12" style="margin-top: 20px; line-height: 16px;">
+
+<!-- <div class="text14" style="width: 890px;"> -->
+<div class="main" style="float: left; margin-right: 20px; width: 644px;">
+In a two run game the Aquarium Drinkers got by the Classic City Crazy Eights
+by the score of 4 to 2.<br /><br />Aquarium came up with 2 runs in the 2nd inning.  The key offensive moment was
+provided by Felipe Alou, who made the crowd happy when he hit a single
+scoring two baserunners.  Classic City threatened in the 9th but Aquarium was
+able to put down the rally.  <br /><br />Dean Chance(8-2) went 7 innings allowing no runs for the win. Chance got help
+from Steve Shea who was credited with his 2nd save.  Larry Jackson(2-3) was
+the losing pitcher.  He gave up 6 hits and 2 walks in 6 innings.  <br /><br />Splinter was clearly disappointed after the game.  'It was a manager's
+nightmare out there', he said, 'We should have had this one.'<br /><br /></div>
+
+<div style="float: left; width: 249px; text-align: center;">
+<img src="/img/ballparks/ballpark_41.jpg" style="border: 1px solid #999; max-width: 250px" />
+<br />
+at <a class="b" href="javascript:void(window.open('/ballpark/10103', '_blank', 'width=650, height=370'));">Astrodome 1968</a></div>
+<!-- </div> -->
+
+<br clear="all" /><br />
+
+<style type="text/css">
+
+    /* Away and home teams are side by side on larger screens */
+
+    @media (min-width: 600px) {
+        #awayTeam, #homeTeam {
+    	    vertical-align: top;
+            width: 50%;
+        }
+        #awayTeam { float: left; padding-right: 2%; }
+        #homeTeam { float: right; padding-left: 2%; }
+    }
+
+    /* On top of each other on smaller screens */
+
+    @media (max-width: 600px) {
+        #homeTeam { margin-top: 30px; }
+    }
+
+</style>
+
+<div class="main">
+
+    <div id="awayTeam">
+
+        <!-- Away hitters -->
+
+        <h3>Classic City  Crazy Eights</h3>
+
+        <table class="databox tright" style="margin-top: 7px; width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Hitters</td>
+                <td class="tleft">P</td>
+                <td width="10%">AB</td>
+                <td width="10%">R</td>
+                <td width="10%">H</td>
+                <td width="10%">RBI</td>
+                <td width="15%">BA</td>
+            </tr>
+                                    <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/40353/1968/5/1968/479336" href="javascript:void(window.open('/player/40353/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Rose, Pete</a></b>
+                </td>
+                <td class="tleft">CF</td>
+                <td>5</td>
+                <td>0</td>
+                <td>3</td>
+                <td>0</td>
+                <td>.379</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/38219/1968/5/1968/479336" href="javascript:void(window.open('/player/38219/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Millan, Felix</a></b>
+                </td>
+                <td class="tleft">2B</td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.233</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    &nbsp; &nbsp;D - <b><a url="/player/36593/1968/5/1968/479336" href="javascript:void(window.open('/player/36593/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Kostro, Frank</a></b>
+                </td>
+                <td class="tleft">PH</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.333</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/31879/1968/5/1968/479336" href="javascript:void(window.open('/player/31879/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Cash, Norm</a></b>
+                </td>
+                <td class="tleft">1B</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.242</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/39422/1968/5/1968/479336" href="javascript:void(window.open('/player/39422/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Perez, Tony</a></b>
+                </td>
+                <td class="tleft">3B</td>
+                <td>4</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.277</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/35593/1968/5/1968/479336" href="javascript:void(window.open('/player/35593/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Horton, Willie</a></b>
+                </td>
+                <td class="tleft">LF</td>
+                <td>3</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.241</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/41867/1968/5/1968/479336" href="javascript:void(window.open('/player/41867/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Tartabull, Jose</a></b>
+                </td>
+                <td class="tleft">RF</td>
+                <td>4</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.191</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/32429/1968/5/1968/479336" href="javascript:void(window.open('/player/32429/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Corrales, Pat</a></b>
+                </td>
+                <td class="tleft">C</td>
+                <td>3</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.238</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    &nbsp; &nbsp;B - <b><a url="/player/33694/1968/5/1968/479336" href="javascript:void(window.open('/player/33694/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Fernandez, Frank</a></b>
+                </td>
+                <td class="tleft">PR</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.310</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/30257/1968/5/1968/479336" href="javascript:void(window.open('/player/30257/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Aparicio, Luis</a></b>
+                </td>
+                <td class="tleft">SS</td>
+                <td>4</td>
+                <td>0</td>
+                <td>1</td>
+                <td>2</td>
+                <td>.232</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/35831/1968/5/1968/479336" href="javascript:void(window.open('/player/35831/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Jackson, Larry</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.174</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    &nbsp; &nbsp;A - <b><a url="/player/36050/1968/5/1968/479336" href="javascript:void(window.open('/player/36050/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Jones, Dalton</a></b>
+                </td>
+                <td class="tleft">PH</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.254</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/41851/1968/5/1968/479336" href="javascript:void(window.open('/player/41851/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Talbot, Fred</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.400</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    &nbsp; &nbsp;C - <b><a url="/player/32838/1968/5/1968/479336" href="javascript:void(window.open('/player/32838/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Davis, Ron</a></b>
+                </td>
+                <td class="tleft">PH</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.000</td>
+            </tr>
+                        <tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>35</td>
+                <td>2</td>
+                <td>7</td>
+                <td>2</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Away pitchers -->
+
+        <table class="databox tright" style="width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Pitchers</td>
+                <td class="tleft">Decision</td>
+                <td>IP</td>
+                <td>H</td>
+                <td>R</td>
+                <td>ER</td>
+                <td>BB</td>
+                <td>SO</td>
+                <td>HR</td>                <td>PC</td>
+                <td>ERA</td>
+            </tr>
+
+                                    <tr class="odd">
+                <td class="tleft"><b><a url="/player/35831/1968/5/1968/479336" href="javascript:void(window.open('/player/35831/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Jackson, Larry</a><b/></td>
+                <td class="tleft">L, 2-3</td>
+                <td>6</td>
+                <td>6</td>
+                <td>3</td>
+                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>1</td>                <td>105</td>
+                <td>3.27</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft"><b><a url="/player/41851/1968/5/1968/479336" href="javascript:void(window.open('/player/41851/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Talbot, Fred</a><b/></td>
+                <td class="tleft"></td>
+                <td>2</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>2</td>
+                <td>1</td>
+                <td>0</td>                <td>47</td>
+                <td>2.06</td>
+            </tr>
+            
+        	<tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>8</td>
+                <td>7</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>3</td>
+                <td>1</td>                <td></td>
+                <td></td>
+            </tr>
+
+        </table>
+
+    </div>  <!-- id="awayTeam" -->
+
+    <div id="homeTeam">
+
+        <!-- Home hitters -->
+
+        <h3>Aquarium Drinkers</h3>
+
+        <table class="databox tright" style="margin-top: 7px; width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Hitters</td>
+                <td class="tleft">P</td>
+                <td width="10%">AB</td>
+                <td width="10%">R</td>
+                <td width="10%">H</td>
+                <td width="10%">RBI</td>
+                <td width="15%">BA</td>
+            </tr>
+                                    <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/30164/1968/5/1968/479336" href="javascript:void(window.open('/player/30164/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Alou, Felipe</a></b>
+                </td>
+                <td class="tleft">CF</td>
+                <td>4</td>
+                <td>0</td>
+                <td>2</td>
+                <td>2</td>
+                <td>.285</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/37720/1968/5/1968/479336" href="javascript:void(window.open('/player/37720/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">McAuliffe, Dick</a></b>
+                </td>
+                <td class="tleft">2B</td>
+                <td>4</td>
+                <td>0</td>
+                <td>1</td>
+                <td>1</td>
+                <td>.186</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/41374/1968/5/1968/479336" href="javascript:void(window.open('/player/41374/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Spangler, Al</a></b>
+                </td>
+                <td class="tleft">RF</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.191</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/30187/1968/5/1968/479336" href="javascript:void(window.open('/player/30187/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Alyea, Brant</a></b>
+                </td>
+                <td class="tleft">LF</td>
+                <td>4</td>
+                <td>1</td>
+                <td>2</td>
+                <td>1</td>
+                <td>.259</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/33987/1968/5/1968/479336" href="javascript:void(window.open('/player/33987/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Freehan, Bill</a></b>
+                </td>
+                <td class="tleft">C</td>
+                <td>3</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.233</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/40222/1968/5/1968/479336" href="javascript:void(window.open('/player/40222/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Robinson, Brooks</a></b>
+                </td>
+                <td class="tleft">3B</td>
+                <td>4</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.261</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/34002/1968/5/1968/479336" href="javascript:void(window.open('/player/34002/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Fregosi, Jim</a></b>
+                </td>
+                <td class="tleft">SS</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.220</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/39265/1968/5/1968/479336" href="javascript:void(window.open('/player/39265/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Parker, Wes</a></b>
+                </td>
+                <td class="tleft">1B</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.238</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/31960/1968/5/1968/479336" href="javascript:void(window.open('/player/31960/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Chance, Dean</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.074</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/36532/1968/5/1968/479336" href="javascript:void(window.open('/player/36532/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Knowles, Darold</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.333</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/40941/1968/5/1968/479336" href="javascript:void(window.open('/player/40941/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Shea, Steve</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.000</td>
+            </tr>
+                        <tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>28</td>
+                <td>4</td>
+                <td>7</td>
+                <td>4</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Home pitchers -->
+
+        <table class="databox tright" style="width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Pitchers</td>
+                <td class="tleft">Decision</td>
+                <td>IP</td>
+                <td>H</td>
+                <td>R</td>
+                <td>ER</td>
+                <td>BB</td>
+                <td>SO</td>
+                <td>HR</td>                <td>PC</td>
+                <td>ERA</td>
+            </tr>
+
+                                    <tr class="odd">
+                <td class="tleft"><b><a url="/player/31960/1968/5/1968/479336" href="javascript:void(window.open('/player/31960/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Chance, Dean</a><b/></td>
+                <td class="tleft">W, 8-2</td>
+                <td>7</td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>6</td>
+                <td>0</td>                <td>91</td>
+                <td>1.81</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft"><b><a url="/player/36532/1968/5/1968/479336" href="javascript:void(window.open('/player/36532/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Knowles, Darold</a><b/></td>
+                <td class="tleft"></td>
+                <td>1.2</td>
+                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>                <td>42</td>
+                <td>3.62</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft"><b><a url="/player/40941/1968/5/1968/479336" href="javascript:void(window.open('/player/40941/1968/5/1968/479336', '_blank', 'width=740, height=650, scrollbars=yes'));">Shea, Steve</a><b/></td>
+                <td class="tleft">S, 2</td>
+                <td>0.1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>                <td>1</td>
+                <td>0.00</td>
+            </tr>
+            
+        	<tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>9</td>
+                <td>7</td>
+                <td>2</td>
+                <td>2</td>
+                <td>2</td>
+                <td>7</td>
+                <td>0</td>                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </div>  <!-- id="homeTeam" -->
+
+</div>  <!-- class="main" -->
+
+<br clear="all" /><br />
+
+<div class="main">
+
+<!-- LINEUP NOTES -->
+
+A-Pinch Hit For Jackson In 7th Inning<br />
+B-Pinch Ran For Corrales In 9th Inning<br />
+C-Pinch Hit For Talbot In 9th Inning<br />
+D-Pinch Hit For Millan In 9th Inning<br />
+
+<!-- INJURIES -->
+
+<br />
+<b>INJURIES:</b>
+<br />
+Pat Corrales INJURED (for 8 more games) in 9th inning<br />
+
+<br />
+
+<!-- END NOTES -->
+
+ATTENDANCE- 49,514 <br />
+T- 2:53<br />
+LEFT ON BASE- Crazy Eights: 9  Drinkers: 6<br />
+DOUBLE PLAYS- Crazy Eights: 1  Drinkers: 0<br />
+ERRORS- D.McAuliffe<br />
+DOUBLES- B.Alyea(16th)<br />
+TRIPLES- P.Rose(2nd)<br />
+HOME RUNS- B.Alyea(4th)<br />
+STOLEN BASES- F.Alou(3rd)<br />
+SACRIFICE HITS- J.Fregosi, D.Chance<br />
+WALKS- N.Cash, W.Horton, A.Spangler, B.Freehan, W.Parker-2<br />
+HIT BY PITCH- P.Corrales<br />
+STRIKE OUTS- F.Millan-2, T.Perez-2, W.Horton, L.Aparicio, L.Jackson,<br />
+             D.McAuliffe, B.Freehan, D.Chance<br />
+GIDP- B.Robinson<br />
+<br />
+<br />
+<br />
+
+</div>
+
+</div>
+                    </div>
+
+                    <!-- The replay code parses this, though we never show it to the user. -->
+                    <div id="theBox" style="display: none;">
+                    
+  Crazy Eights       AB  R  H RBI AVG     Drinkers           AB  R  H RBI AVG
+  P.Rose CF           5  0  3  0 .379     F.Alou CF           4  0  2  2 .285  
+  F.Millan 2B         4  0  0  0 .233     D.McAuliffe 2B      4  0  1  1 .186  
+D-F.Kostro PH         1  0  0  0 .333     A.Spangler RF       3  0  0  0 .191  
+  N.Cash 1B           3  0  0  0 .242     B.Alyea LF          4  1  2  1 .259  
+  T.Perez 3B          4  1  1  0 .277     B.Freehan C         3  1  1  0 .233  
+  W.Horton LF         3  0  1  0 .241     B.Robinson 3B       4  1  1  0 .261  
+  J.Tartabull RF      4  1  0  0 .191     J.Fregosi SS        3  0  0  0 .220  
+  P.Corrales C        3  0  1  0 .238     W.Parker 1B         1  1  0  0 .238  
+B-F.Fernandez PR      0  0  0  0 .310     D.Chance P          2  0  0  0 .074  
+  L.Aparicio SS       4  0  1  2 .232     D.Knowles P         0  0  0  0 .333  
+  L.Jackson P         2  0  0  0 .174     S.Shea P            0  0  0  0 .000  
+A-D.Jones PH          1  0  0  0 .254                                          
+  F.Talbot P          0  0  0  0 .400                                          
+C-R.Davis PH          1  0  0  0 .000                                          
+                     -- -- -- ---                            -- -- -- ---      
+         Totals      35  2  7  2                 Totals      28  4  7  4
+
+A-Pinch Hit For Jackson In 7th Inning
+B-Pinch Ran For Corrales In 9th Inning
+C-Pinch Hit For Talbot In 9th Inning
+D-Pinch Hit For Millan In 9th Inning
+
+INJURY: Pat Corrales INJURED (for 8 more games) in 9th inning
+
+Crazy Eights.... 0 0 0  0 0 0  0 0 2  -  2  7  0
+Drinkers........ 0 2 0  0 0 1  1 0    -  4  7  1
+
+Crazy Eights             IP       H   R  ER  BB  SO  HR  PC    ERA
+L.Jackson LOSS(2-3)       6       6   3   3   2   2   1 105   3.27
+F.Talbot                  2       1   1   1   2   1   0  47   2.06
+Totals                    8       7   4   4   4   3   1
+
+Drinkers                 IP       H   R  ER  BB  SO  HR  PC    ERA
+D.Chance WIN(8-2)         7       4   0   0   1   6   0  91   1.81
+D.Knowles                 1 2/3   3   2   2   1   1   0  42   3.62
+S.Shea SAVE(2nd)          0 1/3   0   0   0   0   0   0   1   0.00
+Totals                    9       7   2   2   2   7   0
+
+ATTENDANCE- 49,514 
+T- 2:53
+LEFT ON BASE- Crazy Eights: 9  Drinkers: 6
+DOUBLE PLAYS- Crazy Eights: 1  Drinkers: 0
+ERRORS- D.McAuliffe
+DOUBLES- B.Alyea(16th)
+TRIPLES- P.Rose(2nd)
+HOME RUNS- B.Alyea(4th)
+STOLEN BASES- F.Alou(3rd)
+SACRIFICE HITS- J.Fregosi, D.Chance
+WALKS- N.Cash, W.Horton, A.Spangler, B.Freehan, W.Parker-2
+HIT BY PITCH- P.Corrales
+STRIKE OUTS- F.Millan-2, T.Perez-2, W.Horton, L.Aparicio, L.Jackson,
+             D.McAuliffe, B.Freehan, D.Chance
+GIDP- B.Robinson
+
+
+                    *** TOP OF INNING 1 ***
+0     P.Rose              1-5  Triple (CF)                    b-3                       F9
+0   3 F.Millan            3-9  Ground Out (3B)                b-0                       F9
+1   3 N.Cash              1-7  Pop Out (1B)                   b-0                       F9
+2   3 T.Perez             6-8  Ground Out (SS)                b-0                       F9
+*** BOTTOM OF INNING 1 ***
+0     F.Alou              3-6  Single (LF)                    b-1                       F9
+0 1                            Stolen Base                    1-2                       F9
+0  2  D.McAuliffe         6-4  Fly Out (CF)                   b-0             fly(CF)x  F9
+1  2  A.Spangler          2-6  Line Out (2B)                  b-0                       F9
+2  2  B.Alyea             2-12 Ground Out (P)                 b-0                       F9
+*** TOP OF INNING 2 ***
+0     W.Horton            4-6  Strike Out                     b-0                       F9
+1     J.Tartabull         5-10 Fly Out (LF)                   b-0                       F9
+2     P.Corrales          6-5  Ground Out (SS)                b-0             gb(SS)x   F9
+*** BOTTOM OF INNING 2 ***
+0     B.Freehan           3-6  Walk                           b-1                       F9
+0 1   B.Robinson          4-7  Single (LF)                    1-2 b-1                   F9
+0 12  J.Fregosi                Sac Bunt (3B)                  2-3 1-2 b-0               F9
+1  23 W.Parker            3-6  Walk                           b-1                       F9
+1 123 D.Chance            2-4  Strike Out                     b-0                       F9
+2 123 F.Alou              1-7  Single (RF)                    3-H 2-H 1-3 b-1           F9
+2 1 3 D.McAuliffe         2-11 Fly Out (RF)                   b-0             bpHR 1    F9
+*** TOP OF INNING 3 ***
+0     L.Aparicio          1-6  Ground Out (SS)                b-0                       F9
+1     L.Jackson           2-8  Strike Out                     b-0                       F9
+2     P.Rose              6-5  Ground Out (SS)                b-0             gb(SS)x   F9
+*** BOTTOM OF INNING 3 ***
+0     A.Spangler          6-10 Ground Out (SS)                b-0             gb(SS)x   F9
+1     B.Alyea             3-5  Double (CF)                    b-2                       F9
+1  2  B.Freehan           5-10 Fly Out (LF)                   b-0             bpSI 1-9  F9
+2  2  B.Robinson          6-7  Fly Out (CF)                   b-0                       F9
+*** TOP OF INNING 4 ***
+0     F.Millan            6-7  1 Base Error - 2B              b-1             gb(2B)x   F9
+0 1   N.Cash              4-8  Walk                           1-2 b-1                   F9
+0 12  T.Perez             2-8  Strike Out                     b-0                       F9
+1 12  W.Horton            3-2  Fly Out (CF)                   2-3 1-2 b-0               F9
+2  23 J.Tartabull         1-3  Foul Out (C)                   b-0                       F9
+*** BOTTOM OF INNING 4 ***
+0     J.Fregosi           5-4  Ground Out (3B)                b-0             gb(3B)x   F9
+1     W.Parker            6-7  Fly Out (CF)                   b-0                       F9
+2     D.Chance            3-6  Ground Out (SS)                b-0                       F9
+*** TOP OF INNING 5 ***
+0     P.Corrales          3-11 Single (CF)                    b-1             bpSI 1-9  F9
+0 1   L.Aparicio          4-8  Strike Out                     b-0                       F9
+1 1   L.Jackson           sac  Force Play (P)                 1-o b-1                   F9
+2 1   P.Rose              5-6  Single (CF)                    1-3 b-1                   F9
+2 1 3 F.Millan            4-6  Strike Out                     b-0                       F9
+*** BOTTOM OF INNING 5 ***
+0     F.Alou              6-6  Ground Out (SS)                b-0                       F9
+1     D.McAuliffe         5-9  Strike Out                     b-0                       F9
+2     A.Spangler          1-7  Fly Out (RF)                   b-0                       F9
+*** TOP OF INNING 6 ***
+0     N.Cash              1-5  Line Out (2B)                  b-0                       F9
+1     T.Perez             2-8  Strike Out                     b-0                       F9
+2     W.Horton            2-4  Single (CF)                    b-1             bpSI 1-9  F9
+2 1   J.Tartabull         1-3  Foul Out (C)                   b-0                       F9
+*** BOTTOM OF INNING 6 ***
+0     B.Alyea             3-4  Home Run (CF)                  b-H                       F9
+0     B.Freehan           2-10 Single (CF)                    b-1                       F9
+0 1   B.Robinson          4-9  Ground Out (SS) Double Play    1-o b-0                   F9
+2     J.Fregosi           1-8  Ground Out (3B)                b-0                       F9
+*** TOP OF INNING 7 ***
+0     P.Corrales          5-5  Fly Out (LF)                   b-0                       F9
+1     L.Aparicio          1-9  Ground Out (3B)                b-0                       F9
+                               SUBSTITUTE PH- Dalton Jones (L)
+2     D.Jones             1-6  Fly Out (LF)                   b-0                       F9
+*** BOTTOM OF INNING 7 ***
+                               SUBSTITUTE P - Fred Talbot (R)
+0     W.Parker            4-6  Walk                           b-1                       F9
+0 1   D.Chance                 Sac Bunt (3B)                  1-2 b-0                   F9
+1  2  F.Alou              3-12 Fly Out (LF)                   b-0             bpHR 1    F9
+2  2  D.McAuliffe         1-7  Single (CF)                    2-H b-1                   F9
+2 1   A.Spangler          4-6  Walk                           1-2 b-1                   F9
+2 12  B.Alyea             1-7  Ground Out (P)                 b-0                       F9
+*** TOP OF INNING 8 ***
+                               SUBSTITUTE P - Darold Knowles (L)
+0     P.Rose              5-4  Ground Out (3B)                b-0             gb(3B)x   F9
+1     F.Millan            5-7  Strike Out                     b-0                       F9
+2     N.Cash              1-10 Ground Out (SS)                b-0                       F9
+*** BOTTOM OF INNING 8 ***
+0     B.Freehan           5-7  Strike Out                     b-0                       F9
+1     B.Robinson          6-12 Ground Out (2B)                b-0             gb(2B)x   F9
+2     J.Fregosi           6-8  Ground Out (2B)                b-0             gb(2B)x   F9
+*** TOP OF INNING 9 ***
+0     T.Perez             1-6  Single (CF)                    b-1                       F9
+0 1   W.Horton            2-4  Walk                           1-2 b-1                   F9
+0 12  J.Tartabull         1-9  Force Play (SS)                2-3 1-o b-1               F9
+1 1 3 P.Corrales          2-11 HBP                            1-2 b-1                   F9
+                               SUBSTITUTE PR- Frank Fernandez
+                               P. Corrales Injured for 8 more games
+1 123 L.Aparicio          3-10 Single (CF)                    3-H 2-H 1-2 b-1           F9
+                               SUBSTITUTE PH- Ron Davis (R)
+1 12  R.Davis             3-11 Fly Out (RF)                   b-0                       F9
+2 12  P.Rose              3-4  Single (LF)                    2-3 1-2 b-1     bpSI 1-9  F9
+                               SUBSTITUTE P - Steve Shea (R)
+                               SUBSTITUTE PH- Frank Kostro (R)
+2 123 F.Kostro            6-9  Ground Out (3B)                b-0                       F9
+                    </div>
+
+        </td>
+    </tr>
+</table>
+
+<br /><br /><br /><br /><br /><br />
+
+
+        </div>     <!-- container-content -->
+
+</div>      <!-- container -->
+
+<br clear="all" />
+
+<div style="width: 100%; height: 16px; background-color: #d9782d;"></div>
+
+<div style="width: 100%; min-height: 400px; background-color: black; color: grey;">
+    <div class="text16" style="width: 1013px; padding: 20px 10px; margin-left: auto; margin-right: auto;">
+        <div style="float: left;">
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="/help">Contact Us</a>
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a>
+            <a class="b" style="color: #d9782d;" href="/help/rules">Info/Help</a>
+        </div>
+        <div id="footerSocialMedia" style="float: right;">
+            <a target="_blank" href="http://www.facebook.com/pages/Strat-O-Matic-Games/184660618996"><img src="https://s3.amazonaws.com/som.com/images/icon_facebook.png" /></a>
+            <a target="_blank" href="https://twitter.com/StratOMatic"><img src="https://s3.amazonaws.com/som.com/images/icon_twitter.png" /></a>
+            <a target="_blank" href="http://instagram.com/stratomatic/"><img src="https://s3.amazonaws.com/som.com/images/icon_instagram.png" /></a>
+            <a target="_blank" href="http://www.youtube.com/user/StratOMaticMarketing/videos"><img src="https://s3.amazonaws.com/som.com/images/icon_youtube.png" /></a>
+            <a target="_blank" href="http://pinterest.com/stratpinterest/"><img src="https://s3.amazonaws.com/som.com/images/icon_pinterest.png" /></a>
+        </div>
+        <br clear="all" />
+    </div>
+
+    <center>© 2026 Strat-O-Matic Media, LLC - All rights reserved.</center>
+
+</div>
+
+</body>
+</html>
+
+
