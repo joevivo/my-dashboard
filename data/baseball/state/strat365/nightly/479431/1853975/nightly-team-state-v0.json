@@ -1,122 +1,136 @@
 {
-    "schemaVersion":  "strat365-nightly-team-state-v0",
-    "artifactType":  "strat365-nightly-team-state",
-    "teamKey":  "479431:1853975",
-    "leagueId":  "479431",
-    "teamId":  "1853975",
-    "teamName":  "Aquarium Drinkers",
-    "strategyProfile":  "comiskey-pitchers-who-hit",
-    "active":  true,
-    "stateRevision":  0,
-    "cutover":  {
-                    "mode":  "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
-                    "userReplayStatus":  "CAUGHT_UP_BEFORE_AUTOMATION",
-                    "recordedAtUtc":  "2026-08-03T20:17:47.474Z",
-                    "rationale":  "The user completed all currently available game replays before nightly automation initialization."
-                },
-    "scheduleBaseline":  {
-                             "status":  "PENDING_INITIAL_SCHEDULE_BASELINE",
-                             "scheduleUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
-                             "capturedAtUtc":  null,
-                             "scheduleSha256":  null,
-                             "historicalGameIds":  [
-
-                                                   ],
-                             "historicalGameCount":  0,
-                             "baselineRunId":  null
-                         },
-    "discovery":  {
-                      "status":  "NOT_RUN",
-                      "lastCheckedAtUtc":  null,
-                      "knownGameIds":  [
-
-                                       ],
-                      "newlyDiscoveredGameIds":  [
-
-                                                 ],
-                      "pendingCaptureGameIds":  [
-
-                                                ],
-                      "lastDiscoveredGameId":  null,
-                      "scheduleUnchanged":  null
-                  },
-    "capture":  {
-                    "status":  "NOT_RUN",
-                    "lastRunId":  null,
-                    "startedAtUtc":  null,
-                    "completedAtUtc":  null,
-                    "capturedGameIds":  [
-
-                                        ],
-                    "failedGameIds":  [
-
-                                      ],
-                    "lastCapturedGameId":  null,
-                    "requiredGameSourceFamilies":  [
-                                                       "gameRecap",
-                                                       "gamePlayByPlay",
-                                                       "gameReplay"
-                                                   ]
-                },
-    "pregamePacket":  {
-                          "status":  "NOT_CREATED",
-                          "packetId":  null,
-                          "leagueDate":  null,
-                          "opponentTeamId":  null,
-                          "createdAtUtc":  null,
-                          "sourceSetSha256":  null,
-                          "sealed":  true
-                      },
-    "series":  {
-                   "status":  "NO_ACTIVE_SERIES",
-                   "seriesKey":  null,
-                   "leagueDate":  null,
-                   "opponentTeamId":  null,
-                   "gameIds":  [
-
-                               ],
-                   "unlockedGameIds":  [
-
-                                       ],
-                   "reviewedGameIds":  [
-
-                                       ],
-                   "lastUnlockedGameId":  null,
-                   "wrapupStatus":  "NOT_ELIGIBLE",
-                   "wrapupArtifactPath":  null
-               },
-    "leagueIntelligence":  {
-                               "status":  "NOT_RUN",
-                               "snapshotId":  null,
-                               "capturedAtUtc":  null,
-                               "sourceSetSha256":  null,
-                               "sealed":  true,
-                               "releasedAtUtc":  null
-                           },
-    "spoilerControl":  {
-                           "state":  "SEALED",
-                           "automaticOutcomeDisclosure":  false,
-                           "explicitGameUnlockRequired":  true,
-                           "unlockOneGameAtATime":  true,
-                           "seriesWrapupRequiresAllGamesReviewed":  true,
-                           "leagueIntelligenceRemainsSealedDuringReplay":  true
-                       },
-    "audit":  {
-                  "initializedAtUtc":  "2026-08-03T20:17:47.474Z",
-                  "lastTransitionAtUtc":  "2026-08-03T20:17:47.474Z",
-                  "lastTransitionAction":  "INITIALIZE_PENDING_BASELINE",
-                  "lastRunId":  null,
-                  "transitionCount":  0,
-                  "transitionHistory":  [
-
-                                        ]
-              },
-    "validation":  {
-                       "registryTeamIdentityMatch":  true,
-                       "pendingBaselineBeforeDiscovery":  true,
-                       "initialQueuesEmpty":  true,
-                       "initialSpoilerState":  "SEALED",
-                       "gameResultsStoredInState":  false,
-                       "status":  "PASS"
-                   }
+  "schemaVersion": "strat365-nightly-team-state-v0",
+  "artifactType": "strat365-nightly-team-state",
+  "teamKey": "479431:1853975",
+  "leagueId": "479431",
+  "teamId": "1853975",
+  "teamName": "Aquarium Drinkers",
+  "strategyProfile": "comiskey-pitchers-who-hit",
+  "active": true,
+  "stateRevision": 1,
+  "cutover": {
+    "mode": "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
+    "userReplayStatus": "CAUGHT_UP_BEFORE_AUTOMATION",
+    "recordedAtUtc": "2026-08-03T20:17:47.474Z",
+    "rationale": "The user completed all currently available game replays before nightly automation initialization."
+  },
+  "scheduleBaseline": {
+    "status": "READY",
+    "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1853975",
+    "capturedAtUtc": "2026-08-03T20:46:07.358Z",
+    "scheduleSha256": "2D3F5F432DEC3F8B0FC57746F3807869438791B0BB6F2411810A84A2A12F789B",
+    "historicalGameIds": [
+      "5",
+      "11",
+      "17",
+      "23",
+      "29",
+      "35",
+      "42",
+      "48",
+      "54",
+      "60",
+      "66",
+      "72"
+    ],
+    "historicalGameCount": 12,
+    "baselineRunId": "initial-live-baseline-479431-1853975-20260803T204607266Z"
+  },
+  "discovery": {
+    "status": "NO_NEW_GAMES",
+    "lastCheckedAtUtc": "2026-08-03T20:46:07.358Z",
+    "knownGameIds": [
+      "5",
+      "11",
+      "17",
+      "23",
+      "29",
+      "35",
+      "42",
+      "48",
+      "54",
+      "60",
+      "66",
+      "72"
+    ],
+    "newlyDiscoveredGameIds": [],
+    "pendingCaptureGameIds": [],
+    "lastDiscoveredGameId": "72",
+    "scheduleUnchanged": null
+  },
+  "capture": {
+    "status": "NOT_RUN",
+    "lastRunId": null,
+    "startedAtUtc": null,
+    "completedAtUtc": null,
+    "capturedGameIds": [],
+    "failedGameIds": [],
+    "lastCapturedGameId": null,
+    "requiredGameSourceFamilies": [
+      "gameRecap",
+      "gamePlayByPlay",
+      "gameReplay"
+    ]
+  },
+  "pregamePacket": {
+    "status": "NOT_CREATED",
+    "packetId": null,
+    "leagueDate": null,
+    "opponentTeamId": null,
+    "createdAtUtc": null,
+    "sourceSetSha256": null,
+    "sealed": true
+  },
+  "series": {
+    "status": "NO_ACTIVE_SERIES",
+    "seriesKey": null,
+    "leagueDate": null,
+    "opponentTeamId": null,
+    "gameIds": [],
+    "unlockedGameIds": [],
+    "reviewedGameIds": [],
+    "lastUnlockedGameId": null,
+    "wrapupStatus": "NOT_ELIGIBLE",
+    "wrapupArtifactPath": null
+  },
+  "leagueIntelligence": {
+    "status": "NOT_RUN",
+    "snapshotId": null,
+    "capturedAtUtc": null,
+    "sourceSetSha256": null,
+    "sealed": true,
+    "releasedAtUtc": null
+  },
+  "spoilerControl": {
+    "state": "SEALED",
+    "automaticOutcomeDisclosure": false,
+    "explicitGameUnlockRequired": true,
+    "unlockOneGameAtATime": true,
+    "seriesWrapupRequiresAllGamesReviewed": true,
+    "leagueIntelligenceRemainsSealedDuringReplay": true
+  },
+  "audit": {
+    "initializedAtUtc": "2026-08-03T20:17:47.474Z",
+    "lastTransitionAtUtc": "2026-08-03T20:46:07.358Z",
+    "lastTransitionAction": "INITIAL_SCHEDULE_BASELINE_READY",
+    "lastRunId": "initial-live-baseline-479431-1853975-20260803T204607266Z",
+    "transitionCount": 1,
+    "transitionHistory": [
+      {
+        "timestampUtc": "2026-08-03T20:46:07.358Z",
+        "action": "INITIAL_SCHEDULE_BASELINE_READY",
+        "priorState": "PENDING_INITIAL_SCHEDULE_BASELINE",
+        "nextState": "READY",
+        "runId": "initial-live-baseline-479431-1853975-20260803T204607266Z"
+      }
+    ]
+  },
+  "validation": {
+    "registryTeamIdentityMatch": true,
+    "pendingBaselineBeforeDiscovery": false,
+    "initialQueuesEmpty": false,
+    "initialSpoilerState": "SEALED",
+    "gameResultsStoredInState": false,
+    "status": "PASS"
+  }
 }
