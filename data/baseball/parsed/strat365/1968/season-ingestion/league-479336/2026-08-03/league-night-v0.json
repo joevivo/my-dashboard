@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03/games/game-238-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03/games/game-244-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03/games/game-250-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 5,
+      "awayTeam": "Classic City Crazy Eights",
+      "gameId": 238,
+      "homeRuns": 2,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Classic City Crazy Eights"
+    },
+    {
+      "awayRuns": 1,
+      "awayTeam": "Classic City Crazy Eights",
+      "gameId": 244,
+      "homeRuns": 0,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Classic City Crazy Eights"
+    },
+    {
+      "awayRuns": 2,
+      "awayTeam": "Classic City Crazy Eights",
+      "gameId": 250,
+      "homeRuns": 4,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 238,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "40 Mon, 8/03 Crazy Eights L 5-2 26-14 Singer, B.* (R) Ray Sadecki and Crazy Eights beat Drinkers, 5-2",
+      "seriesGameLabel": "40",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 244,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "41 Mon, 8/03 Crazy Eights L 1-0 26-15 Perry, G.* (R) Sonny Siebert and Crazy Eights beat Drinkers, 1-0",
+      "seriesGameLabel": "41",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 250,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "42 Mon, 8/03 Crazy Eights W 4-2 27-15 Chance, D.* (R) Dean Chance and Drinkers beat Crazy Eights, 4-2",
+      "seriesGameLabel": "42",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-03",
+  "leagueId": "479336",
+  "playByPlaySummary": {
+    "controlCount": 24,
+    "eventCount": 211,
+    "inningMarkerCount": 53,
+    "orderedRecordCount": 288,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-03/capture-20260804T135111Z-nightly-compat-v0/responses/league/team-schedule.html",
+    "bodySha256": "B26F52594A8C3E8B6B6668B1FF9F8238DBC80AAD467FC59EADA4B6F26693F261",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}
