@@ -1,232 +1,271 @@
 {
-  "schemaVersion": "strat365-nightly-team-state-v0",
-  "artifactType": "strat365-nightly-team-state",
-  "teamKey": "479336:1851052",
-  "leagueId": "479336",
-  "teamId": "1851052",
-  "teamName": "Aquarium Drinkers",
-  "strategyProfile": "astrodome-run-prevention",
-  "active": true,
-  "stateRevision": 2,
-  "cutover": {
-    "mode": "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
-    "userReplayStatus": "CAUGHT_UP_BEFORE_AUTOMATION",
-    "recordedAtUtc": "2026-08-03T20:17:47.474Z",
-    "rationale": "The user completed all currently available game replays before nightly automation initialization."
-  },
-  "scheduleBaseline": {
-    "status": "READY",
-    "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1851052",
-    "capturedAtUtc": "2026-08-03T20:46:07.237Z",
-    "scheduleSha256": "7072C52A0F8D30DCDD2DB6FCC24B9ED57CC8EE6768EAF7AA98AD0A2390978584",
-    "historicalGameIds": [
-      "1",
-      "7",
-      "13",
-      "19",
-      "25",
-      "31",
-      "38",
-      "44",
-      "50",
-      "56",
-      "62",
-      "68",
-      "73",
-      "79",
-      "85",
-      "91",
-      "97",
-      "103",
-      "114",
-      "120",
-      "126",
-      "127",
-      "133",
-      "139",
-      "146",
-      "152",
-      "158",
-      "165",
-      "171",
-      "177",
-      "185",
-      "191",
-      "197",
-      "202",
-      "208",
-      "214",
-      "219",
-      "225",
-      "231"
-    ],
-    "historicalGameCount": 39,
-    "baselineRunId": "initial-live-baseline-479336-1851052-20260803T204607118Z"
-  },
-  "discovery": {
-    "status": "NEW_GAMES_DISCOVERED",
-    "lastCheckedAtUtc": "2026-08-04T04:17:44.750Z",
-    "knownGameIds": [
-      "1",
-      "7",
-      "13",
-      "19",
-      "25",
-      "31",
-      "38",
-      "44",
-      "50",
-      "56",
-      "62",
-      "68",
-      "73",
-      "79",
-      "85",
-      "91",
-      "97",
-      "103",
-      "114",
-      "120",
-      "126",
-      "127",
-      "133",
-      "139",
-      "146",
-      "152",
-      "158",
-      "165",
-      "171",
-      "177",
-      "185",
-      "191",
-      "197",
-      "202",
-      "208",
-      "214",
-      "219",
-      "225",
-      "231",
-      "238",
-      "244",
-      "250"
-    ],
-    "newlyDiscoveredGameIds": [
-      "238",
-      "244",
-      "250"
-    ],
-    "pendingCaptureGameIds": [
-      "238",
-      "244",
-      "250"
-    ],
-    "lastDiscoveredGameId": "250",
-    "scheduleUnchanged": false
-  },
-  "capture": {
-    "status": "PENDING",
-    "lastRunId": null,
-    "startedAtUtc": null,
-    "completedAtUtc": null,
-    "capturedGameIds": [],
-    "failedGameIds": [],
-    "lastCapturedGameId": null,
-    "requiredGameSourceFamilies": [
-      "gameRecap",
-      "gamePlayByPlay",
-      "gameReplay"
-    ]
-  },
-  "pregamePacket": {
-    "status": "NOT_CREATED",
-    "packetId": null,
-    "leagueDate": null,
-    "opponentTeamId": null,
-    "createdAtUtc": null,
-    "sourceSetSha256": null,
-    "sealed": true
-  },
-  "series": {
-    "status": "NO_ACTIVE_SERIES",
-    "seriesKey": null,
-    "leagueDate": null,
-    "opponentTeamId": null,
-    "gameIds": [],
-    "unlockedGameIds": [],
-    "reviewedGameIds": [],
-    "lastUnlockedGameId": null,
-    "wrapupStatus": "NOT_ELIGIBLE",
-    "wrapupArtifactPath": null
-  },
-  "leagueIntelligence": {
-    "status": "NOT_RUN",
-    "snapshotId": null,
-    "capturedAtUtc": null,
-    "sourceSetSha256": null,
-    "sealed": true,
-    "releasedAtUtc": null
-  },
-  "spoilerControl": {
-    "state": "SEALED",
-    "automaticOutcomeDisclosure": false,
-    "explicitGameUnlockRequired": true,
-    "unlockOneGameAtATime": true,
-    "seriesWrapupRequiresAllGamesReviewed": true,
-    "leagueIntelligenceRemainsSealedDuringReplay": true
-  },
-  "audit": {
-    "initializedAtUtc": "2026-08-03T20:17:47.474Z",
-    "lastTransitionAtUtc": "2026-08-04T04:17:44.750Z",
-    "lastTransitionAction": "DISCOVER_NEW_GAMES",
-    "lastRunId": "apply-live-discovery-479336-1851052-20260804T041744662Z",
-    "transitionCount": 2,
-    "transitionHistory": [
-      {
-        "timestampUtc": "2026-08-03T20:46:07.237Z",
-        "action": "INITIAL_SCHEDULE_BASELINE_READY",
-        "priorState": "PENDING_INITIAL_SCHEDULE_BASELINE",
-        "nextState": "READY",
-        "runId": "initial-live-baseline-479336-1851052-20260803T204607118Z"
-      },
-      {
-        "runId": "apply-live-discovery-479336-1851052-20260804T041744662Z",
-        "transitionedAtUtc": "2026-08-04T04:17:44.750Z",
-        "action": "DISCOVER_NEW_GAMES",
-        "priorState": {
-          "stateRevision": 1,
-          "discoveryStatus": "NO_NEW_GAMES",
-          "knownGameCount": 39,
-          "newlyDiscoveredGameCount": 0,
-          "pendingCaptureGameCount": 0,
-          "captureStatus": "NOT_RUN",
-          "spoilerState": "SEALED"
-        },
-        "nextState": {
-          "stateRevision": 2,
-          "discoveryStatus": "NEW_GAMES_DISCOVERED",
-          "knownGameCount": 42,
-          "newlyDiscoveredGameCount": 3,
-          "pendingCaptureGameCount": 3,
-          "captureStatus": "PENDING",
-          "spoilerState": "SEALED"
-        },
-        "newlyDiscoveredGameIds": [
-          "238",
-          "244",
-          "250"
-        ],
-        "fixturePath": "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/responses/team-schedule.html",
-        "metadataPath": "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/metadata/team-schedule.attempt-1.json",
-        "scheduleSha256": "B26F52594A8C3E8B6B6668B1FF9F8238DBC80AAD467FC59EADA4B6F26693F261"
-      }
-    ]
-  },
-  "validation": {
-    "registryTeamIdentityMatch": true,
-    "pendingBaselineBeforeDiscovery": false,
-    "initialQueuesEmpty": false,
-    "initialSpoilerState": "SEALED",
-    "gameResultsStoredInState": false,
-    "status": "PASS"
-  }
+    "schemaVersion":  "strat365-nightly-team-state-v0",
+    "artifactType":  "strat365-nightly-team-state",
+    "teamKey":  "479336:1851052",
+    "leagueId":  "479336",
+    "teamId":  "1851052",
+    "teamName":  "Aquarium Drinkers",
+    "strategyProfile":  "astrodome-run-prevention",
+    "active":  true,
+    "stateRevision":  3,
+    "cutover":  {
+                    "mode":  "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
+                    "userReplayStatus":  "CAUGHT_UP_BEFORE_AUTOMATION",
+                    "recordedAtUtc":  "2026-08-03T20:17:47.474Z",
+                    "rationale":  "The user completed all currently available game replays before nightly automation initialization."
+                },
+    "scheduleBaseline":  {
+                             "status":  "READY",
+                             "scheduleUrl":  "https://365.strat-o-matic.com/team/schedule/1851052",
+                             "capturedAtUtc":  "2026-08-03T20:46:07.237Z",
+                             "scheduleSha256":  "7072C52A0F8D30DCDD2DB6FCC24B9ED57CC8EE6768EAF7AA98AD0A2390978584",
+                             "historicalGameIds":  [
+                                                       "1",
+                                                       "7",
+                                                       "13",
+                                                       "19",
+                                                       "25",
+                                                       "31",
+                                                       "38",
+                                                       "44",
+                                                       "50",
+                                                       "56",
+                                                       "62",
+                                                       "68",
+                                                       "73",
+                                                       "79",
+                                                       "85",
+                                                       "91",
+                                                       "97",
+                                                       "103",
+                                                       "114",
+                                                       "120",
+                                                       "126",
+                                                       "127",
+                                                       "133",
+                                                       "139",
+                                                       "146",
+                                                       "152",
+                                                       "158",
+                                                       "165",
+                                                       "171",
+                                                       "177",
+                                                       "185",
+                                                       "191",
+                                                       "197",
+                                                       "202",
+                                                       "208",
+                                                       "214",
+                                                       "219",
+                                                       "225",
+                                                       "231"
+                                                   ],
+                             "historicalGameCount":  39,
+                             "baselineRunId":  "initial-live-baseline-479336-1851052-20260803T204607118Z"
+                         },
+    "discovery":  {
+                      "status":  "NO_NEW_GAMES",
+                      "lastCheckedAtUtc":  "2026-08-04T04:17:44.750Z",
+                      "knownGameIds":  [
+                                           "1",
+                                           "7",
+                                           "13",
+                                           "19",
+                                           "25",
+                                           "31",
+                                           "38",
+                                           "44",
+                                           "50",
+                                           "56",
+                                           "62",
+                                           "68",
+                                           "73",
+                                           "79",
+                                           "85",
+                                           "91",
+                                           "97",
+                                           "103",
+                                           "114",
+                                           "120",
+                                           "126",
+                                           "127",
+                                           "133",
+                                           "139",
+                                           "146",
+                                           "152",
+                                           "158",
+                                           "165",
+                                           "171",
+                                           "177",
+                                           "185",
+                                           "191",
+                                           "197",
+                                           "202",
+                                           "208",
+                                           "214",
+                                           "219",
+                                           "225",
+                                           "231",
+                                           "238",
+                                           "244",
+                                           "250"
+                                       ],
+                      "newlyDiscoveredGameIds":  [
+                                                     "238",
+                                                     "244",
+                                                     "250"
+                                                 ],
+                      "pendingCaptureGameIds":  [
+
+                                                ],
+                      "lastDiscoveredGameId":  "250",
+                      "scheduleUnchanged":  false
+                  },
+    "capture":  {
+                    "status":  "COMPLETE",
+                    "lastRunId":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052",
+                    "startedAtUtc":  "2026-08-04T13:51:11.7207278+00:00",
+                    "completedAtUtc":  "2026-08-04T13:51:20.2557709+00:00",
+                    "capturedGameIds":  [
+                                            "238",
+                                            "244",
+                                            "250"
+                                        ],
+                    "failedGameIds":  [
+
+                                      ],
+                    "lastCapturedGameId":  "250",
+                    "requiredGameSourceFamilies":  [
+                                                       "gameRecap",
+                                                       "gamePlayByPlay",
+                                                       "gameReplay"
+                                                   ]
+                },
+    "pregamePacket":  {
+                          "status":  "NOT_CREATED",
+                          "packetId":  null,
+                          "leagueDate":  null,
+                          "opponentTeamId":  null,
+                          "createdAtUtc":  null,
+                          "sourceSetSha256":  null,
+                          "sealed":  true
+                      },
+    "series":  {
+                   "status":  "CAPTURED_SEALED",
+                   "seriesKey":  null,
+                   "leagueDate":  null,
+                   "opponentTeamId":  null,
+                   "gameIds":  [
+
+                               ],
+                   "unlockedGameIds":  [
+
+                                       ],
+                   "reviewedGameIds":  [
+
+                                       ],
+                   "lastUnlockedGameId":  null,
+                   "wrapupStatus":  "NOT_ELIGIBLE",
+                   "wrapupArtifactPath":  null
+               },
+    "leagueIntelligence":  {
+                               "status":  "NOT_RUN",
+                               "snapshotId":  null,
+                               "capturedAtUtc":  null,
+                               "sourceSetSha256":  null,
+                               "sealed":  true,
+                               "releasedAtUtc":  null
+                           },
+    "spoilerControl":  {
+                           "state":  "SEALED",
+                           "automaticOutcomeDisclosure":  false,
+                           "explicitGameUnlockRequired":  true,
+                           "unlockOneGameAtATime":  true,
+                           "seriesWrapupRequiresAllGamesReviewed":  true,
+                           "leagueIntelligenceRemainsSealedDuringReplay":  true
+                       },
+    "audit":  {
+                  "initializedAtUtc":  "2026-08-03T20:17:47.474Z",
+                  "lastTransitionAtUtc":  "2026-08-04T15:06:41.5844567+00:00",
+                  "lastTransitionAction":  "DISCOVER_NEW_GAMES",
+                  "lastRunId":  "apply-live-discovery-479336-1851052-20260804T041744662Z",
+                  "transitionCount":  3,
+                  "transitionHistory":  [
+                                            {
+                                                "timestampUtc":  "2026-08-03T20:46:07.237Z",
+                                                "action":  "INITIAL_SCHEDULE_BASELINE_READY",
+                                                "priorState":  "PENDING_INITIAL_SCHEDULE_BASELINE",
+                                                "nextState":  "READY",
+                                                "runId":  "initial-live-baseline-479336-1851052-20260803T204607118Z"
+                                            },
+                                            {
+                                                "runId":  "apply-live-discovery-479336-1851052-20260804T041744662Z",
+                                                "transitionedAtUtc":  "2026-08-04T04:17:44.750Z",
+                                                "action":  "DISCOVER_NEW_GAMES",
+                                                "priorState":  {
+                                                                   "stateRevision":  1,
+                                                                   "discoveryStatus":  "NO_NEW_GAMES",
+                                                                   "knownGameCount":  39,
+                                                                   "newlyDiscoveredGameCount":  0,
+                                                                   "pendingCaptureGameCount":  0,
+                                                                   "captureStatus":  "NOT_RUN",
+                                                                   "spoilerState":  "SEALED"
+                                                               },
+                                                "nextState":  {
+                                                                  "stateRevision":  2,
+                                                                  "discoveryStatus":  "NEW_GAMES_DISCOVERED",
+                                                                  "knownGameCount":  42,
+                                                                  "newlyDiscoveredGameCount":  3,
+                                                                  "pendingCaptureGameCount":  3,
+                                                                  "captureStatus":  "PENDING",
+                                                                  "spoilerState":  "SEALED"
+                                                              },
+                                                "newlyDiscoveredGameIds":  [
+                                                                               "238",
+                                                                               "244",
+                                                                               "250"
+                                                                           ],
+                                                "fixturePath":  "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/responses/team-schedule.html",
+                                                "metadataPath":  "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/metadata/team-schedule.attempt-1.json",
+                                                "scheduleSha256":  "B26F52594A8C3E8B6B6668B1FF9F8238DBC80AAD467FC59EADA4B6F26693F261"
+                                            },
+                                            {
+                                                "runId":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052",
+                                                "transitionedAtUtc":  "2026-08-04T15:06:41.5844567+00:00",
+                                                "action":  "CAPTURE_COMPLETED",
+                                                "priorState":  {
+                                                                   "stateRevision":  2,
+                                                                   "discoveryStatus":  "NEW_GAMES_DISCOVERED",
+                                                                   "knownGameCount":  42,
+                                                                   "newlyDiscoveredGameCount":  3,
+                                                                   "pendingCaptureGameCount":  3,
+                                                                   "captureStatus":  "PENDING",
+                                                                   "spoilerState":  "SEALED"
+                                                               },
+                                                "nextState":  {
+                                                                  "stateRevision":  3,
+                                                                  "discoveryStatus":  "NO_NEW_GAMES",
+                                                                  "knownGameCount":  42,
+                                                                  "newlyDiscoveredGameCount":  0,
+                                                                  "pendingCaptureGameCount":  0,
+                                                                  "captureStatus":  "COMPLETE",
+                                                                  "spoilerState":  "SEALED"
+                                                              },
+                                                "newlyDiscoveredGameIds":  [
+
+                                                                           ],
+                                                "fixturePath":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/game-capture-plan.json",
+                                                "metadataPath":  "data/baseball/raw/strat365/1968/nightly-game-capture/2026-08-03/capture-plan-20260804T051823013Z/league-479336/team-1851052/run-manifest.json",
+                                                "scheduleSha256":  "B26F52594A8C3E8B6B6668B1FF9F8238DBC80AAD467FC59EADA4B6F26693F261"
+                                            }
+                                        ]
+              },
+    "validation":  {
+                       "registryTeamIdentityMatch":  true,
+                       "pendingBaselineBeforeDiscovery":  false,
+                       "initialQueuesEmpty":  false,
+                       "initialSpoilerState":  "SEALED",
+                       "gameResultsStoredInState":  false,
+                       "status":  "PASS"
+                   }
 }
