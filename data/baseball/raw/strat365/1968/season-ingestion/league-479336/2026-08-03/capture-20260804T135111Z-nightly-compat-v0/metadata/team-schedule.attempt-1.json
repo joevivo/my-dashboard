@@ -1,7 +1,7 @@
 {
     "schemaVersion":  "strat365-nightly-schedule-capture-v0",
     "artifactType":  "strat365-nightly-schedule-capture",
-    "sourceFamily":  "teamSchedule",
+    "sourceFamily":  "leagueScores",
     "teamKey":  "479336:1851052",
     "leagueId":  "479336",
     "teamId":  "1851052",
