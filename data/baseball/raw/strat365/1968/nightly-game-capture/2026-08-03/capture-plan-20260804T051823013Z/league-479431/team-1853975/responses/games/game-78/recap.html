@@ -1,0 +1,1042 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>365 by Strat-O-Matic</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="https://www.strat-o-matic.com/wp-content/themes/strat-o-matic/favicon.ico">
+
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-som.css?v=1" />
+<link rel="stylesheet" type="text/css" href="/css/style8.css" />
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css' />
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="/js/jquery.ui.touch-punch-0.2.3.min.js"></script> --> <!-- Makes JqueryUI touch-enabled -->
+
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/somonline.js"></script>
+<!-- This version (1.9.4) of dataTables is needed for the scroller plugin, which afaik is only used by the live draft, and was included by the old header_live_draft.php.  But the main header.php included a local dataTables.js (commented out below), the version of which was unknown.  I vaguely recall something else on the site requiring a certain version, but I can't find it now.  So, tentatively moving ahead with 1.9.4, hoping it's compatible with our site as a whole. -->
+<script type="text/javascript" language="javascript" src="/js/jquery.dataTables-1.9.4.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/dataTables.sTypes.js"></script>
+<!-- timer for live draft -->
+<script type="text/javascript" language="javascript" src="/js/jquery.timer.js"></script>
+
+
+<script>
+$(function() {
+
+    $('.button').button();
+
+    // Activate jQuery tooltips on all elements with class .tooltip
+    //     ... unless we're on a mobile device and the element is a link
+
+    $('.tooltip').tooltip({
+        tooltipClass: 'text10',
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    $('.tooltipMember').tooltip({
+        tooltipClass: 'text12',
+        content: function() {
+            return '<b>' + $(this).attr('memberName') + '</b>' +
+                   '<br /><br />' +
+                   'Experience: ' + $(this).attr('memberLevel') + '<br />' +
+                   'Teams: ' + $(this).attr('numTeams') + '<br />' +
+                   'Win Pct.: ' + $(this).attr('winPct');
+        },
+        items: '*',    // Necessary for content option to work
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    // Clicking on a link with class "helplink" shows/hides elements with the same class as the link's id
+    $("a.helplink").click(function(event) {
+		$(this).toggleClass('ui-icon-triangle-1-e');
+		$(this).toggleClass('ui-icon-triangle-1-s');
+        $("." + $(this).attr('id')).toggle("fast");
+    });
+
+    // For each injured player, ajax-load and display the number of days left in the injury
+
+    $('.injNum').each(function() {
+        var theElement = $(this);
+        $.get('/player/injuryinfoajax',
+              { player_id: $(this).attr('plId'), year: $(this).attr('y'), version: $(this).attr('v'), league_id: $(this).attr('lId') },
+              function(data) {
+                  theElement.html('I-' + data);
+              }
+        );        
+    });
+
+});
+</script>
+
+<style type="text/css" charset="utf-8">
+
+html {
+        background: url(/img/redesign/background_field.jpg) no-repeat center center fixed; 
+        -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    /* This fixes some layout issues on mobile, but only while we're still unoptimized for mobile.
+       When we launch our mobile optimized layout, I presume we should remove this. */
+    min-width: 1013px;
+}
+
+
+
+#splashLoginStrip a { color: lightgrey; }
+
+#container {
+        width: 1013px;        /* regular desktop site */
+        margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+}
+
+#container-content {
+        width:1013px;         /* regular desktop site */
+        float:left;
+    margin: 0px;
+    padding: 8px 14px;
+    background:#FFF;
+    position:relative;
+    z-index:1;
+}
+
+</style>
+
+</head>
+
+
+
+
+<body style="margin: 0; padding: 0;">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BLDNJ9F10"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2BLDNJ9F10');
+  gtag('config', 'AW-965318164');
+  gtag('config', 'GTM-M8H3GH8W');
+  gtag('config', 'GTM-P33BL3KZ');
+  
+</script>
+
+<!-- http://www.davidglarson.com/web-design/how-wide-should-your-website-be/ - "984px" -->
+
+<!-- moved outside the container div by Milos -->
+<div id="header" style="position: relative; background-image: url('/img/redesign/header_bkgd.jpg');">
+
+    <div style="margin-bottom: 5px; float: left;">
+        <a href="http://www.strat-o-matic.com">Strat-O-Matic.com</a> > <a href="/">365 Home</a>
+    </div>
+
+    <div style="margin-bottom: 5px; float: right;">
+
+    
+        <a href="/member/login">Login</a> |
+        <a href="/member/register">Register</a>
+
+    
+    </div>
+
+    
+    <a href="https://www.strat-o-matic.com"><img id="logoSom" src="/img/redesign/header_logo_som.png" style="" /></a>
+
+    
+        
+                    <a href="/"><img id="logo365Back" src="/img/redesign/header_logo_365_back.png" /></a>
+            <a href="/"><img id="logo365Front" src="/img/redesign/header_logo_365_front.png" /></a>
+        
+    
+</div>
+
+<div id="container">
+
+        <div id="container-content">
+
+<style>
+.inboxDot {
+    background: #cc6666;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0px 4px 0px 4px;
+    text-align: center;
+}
+</style>
+
+
+
+<script type="text/javascript">
+
+$(function(){
+
+    // http://css-tricks.com/simple-jquery-dropdowns/
+
+    $("ul.dropdown li").hover(function(){
+    
+        $(this).addClass("ui-state-hover hover").css('border', '0');
+        $('ul:first',this).css('visibility', 'visible');
+    
+    }, function(){
+
+        $(this).removeClass("ui-state-hover hover");
+        $('ul:first',this).css('visibility', 'hidden');
+    
+    });
+    
+    // $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
+
+    $("#linkLogin").click(function() {
+        $("#dialogLogin").dialog('open');
+        // prevent the browser from following the link
+        return false;
+    });
+
+    
+    $('#dialogLogin').dialog({
+        modal: true,
+        width: 450,
+        height: 300,
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        open: function() {
+            $('.ui-dialog :button').blur();  // don't incorrectly focus on any buttons
+        }
+    });
+
+    $('#dialogLoginSubmit').click(function() {
+        $.ajax({
+            crossDomain: true,
+            url: 'http://www.strat-o-matic.com/sn/sn_main_login.php',
+            type: "POST",
+            data: { name: $('#dialogLoginName').val(), pass: $('#dialogLoginPass').val() }
+        });
+    });
+
+});
+
+</script>
+
+<!--
+<div id="dialogLogin" style="display: none;">
+<input id="dialogLoginName" type="text" name="name" /> <input id="dialogLoginPass" name="pass" type="password" /> <input id="dialogLoginSubmit" name="op" type="submit" value="Log in" />
+</div>
+-->
+
+<div style="display: flex; flex-wrap: nowrap">
+
+    <div style="margin-bottom: 8px; color: #666; line-height: 35px; padding-right: 10px; margin-right: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden" class="text16">
+            </div>
+
+    <div style="display: flex; flex-shrink: 0; gap:10px; margin-bottom: 8px; line-height: 35px;" class="text16">
+        
+        <div style="background: url('/img/redesign/button_start_new_team.gif'); width: 267px; height: 35px; line-height: 35px; text-align: center;">
+            <a class="text18 b" style="color: white;" href="/member/startnewteam">Start a New Team!</a>
+        </div>
+    </div>
+
+</div>
+
+<br />
+
+<ul class="dropdown ui-state-default ui-corner-all" style="float: left; width: 100%; border: 0px;">
+
+    
+    
+    
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="">Community</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a target="_blank" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a></li>
+            <li><a href="/member/records">Manager Records</a></li>
+            <li><a href="/league/list">League Directory</a></li>
+            <li><a href="/mockdrafts">Mock Live Drafts</a></li>
+            <li><a href="/playerset/create">Custom Player Sets</a></li>
+            <li><span style="display: inline-block;"><a href="/playerset/records/baseball">Record Books</a></span>
+                <span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block; float: right; cursor: pointer; margin-top: 3px; margin-right: 10px;"></span>
+                <ul class="ui-widget-header ui-corner-bottom">
+                <li><a href="/playerset/records/baseball">Baseball</a></li>
+                <li><a href="/playerset/records/football">Football</a></li>
+                </ul>
+            </li>
+            <li><a href="/event/challenge/">Monthly Challenge</a></li>
+                    </ul>
+    </li>
+
+
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="/help">Info/Help</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a href="/help/rules">Game Rules</a></li>
+            <li><a href="/playerset/browse/292">Player Set Browser</a></li>
+            <li><a href="/help">Contact Us</a></li>
+                    </ul>
+    </li>
+
+</ul>
+
+<!--
+<ul class="dropdown ui-state-default ui-corner-all" style="float: right;">
+    <li class="ui-state-default">
+        <a href="/member/startnewteam">Start a New Team!</a>
+    </li>
+</ul>
+-->
+
+<br clear="all" /><br />
+
+
+        <style>
+
+.newsPreviewAdmin {
+    position: absolute;
+    font-size: 16px;
+    background: grey;
+    border: 1px solid yellow;
+    padding: 3px 7px;
+    color: yellow;
+    top: -16px;
+    right: 20px;
+}
+
+.newsWrapper {
+    position: relative;
+}
+
+/* newsStyle_headline */
+
+.newsStyle_headline.newsWrapper {
+    border: 3px solid #498abb;
+    padding: 2px;
+    margin: 10px 0px 15px 0px;
+}
+.newsStyle_headline .newsBody {
+    background: #3f3e3e;
+    color: white;
+    padding: 30px 10px 10px 10px;  /* assumes there's a headline. padding-top gets overridden if there isn't one */
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5em;
+}
+.newsStyle_headline .newsBody a {
+    color: white;
+}
+.newsStyle_headline .newsHeaderWrapper {
+    /* Positions the header absolutely, moving it up */
+    position: absolute;
+    top: -1em;
+    width: 100%;
+}
+.newsStyle_headline .newsHeaderWrapper2 {
+    /* Centers the header using auto margins and fixed width */
+    margin-left: auto;
+    margin-right: auto;
+}
+.newsStyle_headline .newsHeaderContent {
+    text-align: center;
+    /* height: 3em; */
+    padding: 10px;
+    background: #498abb;
+    color: white;
+    font-weight: bold;
+}
+
+/* newsStyle_notice */
+
+.newsStyle_notice.newsWrapper {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+    background: #ffcccc;
+    margin-bottom: 15px;
+}
+
+</style>
+
+
+
+
+<style type="text/css">
+.hideResultsShow {
+    display: none;
+}
+</style>
+
+<h2 class="main">Dave McNally (AQU) shuts out Players , 4-0</h2>
+<br />
+
+<div class="main b">
+
+        Aquarium Drinkers 4, Ohio Players  0        
+    <br />
+    
+    Game 13
+</div>
+
+<br clear="all" />
+
+    
+<div class="main" style="width: 400px; float: left;">
+
+    <table class="databox tright ui-widget-content" cellpadding="0" cellspacing="1" border="0" width="100%">
+        <tr class="ui-widget-header text10">
+            <td class="tleft">
+                                <b>FINAL</b>
+                            </td>
+                        <td width="5%">1                        <td width="5%">2                        <td width="5%">3                        <td width="5%">4                        <td width="5%">5                        <td width="5%">6                        <td width="5%">7                        <td width="5%">8                        <td width="5%">9                        <td width="10%"><b>R</b></td>
+            <td width="5%"><b>H</b></td>
+            <td width="5%"><b>E</b></td>
+        </tr>
+        <tr class="text10">
+            <td class="tleft"><a href="/team/1854355">Players </a></td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                        <td>
+                <span class="hideResultsHide hideResultsHideGame78 b">0</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame78">2</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame78">1</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+        </tr>
+        <tr class="text10">
+            <td class="tleft"><a href="/team/1853975">Drinkers</a></td>
+                                    <td>0</td>
+                                    <td>4</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>-</td>
+                        <td>
+                <span class="hideResultsHide hideResultsHideGame78 b">4</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame78">6</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+            <td>
+                <span class="hideResultsHide hideResultsHideGame78">0</span>
+                <span class="hideResultsShow hideResultsShowGame78">?</span>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div style="margin-left: 15px; float: left;">
+
+    <table class="hideResultsHide" cellpadding="0" cellspacing="1" border="0" width="100%">
+        <tr>
+            <td class="text11" width="100%">
+                <b>W:</b> <a url="/player/38025/1968/5/1968/479431" href="javascript:void(window.open('/player/38025/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McNally, D. (3-1)</a>                <br />
+                <b>L:</b> <a url="/player/42075/1968/5/1968/479431" href="javascript:void(window.open('/player/42075/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Tiant, L. (3-1)</a>                <br />
+                                <b>HR:</b> E.Charles(2nd), D.McNally(1st)            </td>
+        </tr>
+    </table>
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="tabs" style="clear: both; border: 0;" class="ui-tabs ui-corner-all">
+
+    <ul class="ui-tabs-nav ui-helper-clearfix" style="background: #ffffff; border: 0; border-bottom: 1px solid #aaa;">
+
+        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+            <a href="/game/479431/78">Recap/Boxscore</a>
+        </li>
+
+        <li class="ui-state-default ui-corner-top">
+            <a href="/game/playbyplay/479431/78">Play by Play</a>
+        </li>
+
+        <li class="ui-state-default ui-corner-top">
+            <a href="/game/replay/479431/78">Watch</a> <img class="binoculars" src="/img/game_replay/binoculars.gif" border="0" width="22" height="13" style="position: relative; top: 8px; left: -4px; margin-right: 5px;" />
+        </li>
+
+        
+    </ul>
+
+</div>
+
+<div class="text12" style="margin-top: 20px; line-height: 16px;">
+
+<!-- <div class="text14" style="width: 890px;"> -->
+<div class="main" style="float: left; margin-right: 20px; width: 644px;">
+Dave McNally whitewashed Ohio on 2 hits at Comiskey Park 1968 where the
+Aquarium Drinkers beat the Ohio Players 4 to 0.<br /><br />McNally(3-1) came through with a virtuoso performance against the Ohio
+hitters.  He didn't allow much, just 2 hits and 1 walk in 9 innings lowering
+his ERA from 4.58 to 3.04.  Neither team managed to score after the 2nd
+inning.  <br /><br />Luis Tiant(3-1) ended up with the loss.  'McNally pitched a gem of a game',
+John Unrein recounted.  'He kept our batters off balance the entire game.'<br /><br /></div>
+
+<div style="float: left; width: 249px; text-align: center;">
+<img src="/img/ballparks/ballpark_56.jpg" style="border: 1px solid #999; max-width: 250px" />
+<br />
+at <a class="b" href="javascript:void(window.open('/ballpark/10093', '_blank', 'width=650, height=370'));">Comiskey Park 1968</a></div>
+<!-- </div> -->
+
+<br clear="all" /><br />
+
+<style type="text/css">
+
+    /* Away and home teams are side by side on larger screens */
+
+    @media (min-width: 600px) {
+        #awayTeam, #homeTeam {
+    	    vertical-align: top;
+            width: 50%;
+        }
+        #awayTeam { float: left; padding-right: 2%; }
+        #homeTeam { float: right; padding-left: 2%; }
+    }
+
+    /* On top of each other on smaller screens */
+
+    @media (max-width: 600px) {
+        #homeTeam { margin-top: 30px; }
+    }
+
+</style>
+
+<div class="main">
+
+    <div id="awayTeam">
+
+        <!-- Away hitters -->
+
+        <h3>Ohio Players </h3>
+
+        <table class="databox tright" style="margin-top: 7px; width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Hitters</td>
+                <td class="tleft">P</td>
+                <td width="10%">AB</td>
+                <td width="10%">R</td>
+                <td width="10%">H</td>
+                <td width="10%">RBI</td>
+                <td width="15%">BA</td>
+            </tr>
+                                    <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/34979/1968/5/1968/479431" href="javascript:void(window.open('/player/34979/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Harper, Tommy</a></b>
+                </td>
+                <td class="tleft">LF</td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.240</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/31062/1968/5/1968/479431" href="javascript:void(window.open('/player/31062/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Bonds, Bobby</a></b>
+                </td>
+                <td class="tleft">CF</td>
+                <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.235</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/40232/1968/5/1968/479431" href="javascript:void(window.open('/player/40232/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Robinson, Frank</a></b>
+                </td>
+                <td class="tleft">1B</td>
+                <td>4</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.308</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/32151/1968/5/1968/479431" href="javascript:void(window.open('/player/32151/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Clemente, Roberto</a></b>
+                </td>
+                <td class="tleft">RF</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.192</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/39422/1968/5/1968/479431" href="javascript:void(window.open('/player/39422/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Perez, Tony</a></b>
+                </td>
+                <td class="tleft">3B</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.383</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/36525/1968/5/1968/479431" href="javascript:void(window.open('/player/36525/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Knoop, Bobby</a></b>
+                </td>
+                <td class="tleft">2B</td>
+                <td>3</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.280</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/37768/1968/5/1968/479431" href="javascript:void(window.open('/player/37768/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McCarver, Tim</a></b>
+                </td>
+                <td class="tleft">C</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.244</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/43072/1968/5/1968/479431" href="javascript:void(window.open('/player/43072/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Wine, Bobby</a></b>
+                </td>
+                <td class="tleft">SS</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.150</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/42075/1968/5/1968/479431" href="javascript:void(window.open('/player/42075/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Tiant, Luis</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.111</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    &nbsp; &nbsp;A - <b><a url="/player/33968/1968/5/1968/479431" href="javascript:void(window.open('/player/33968/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Francona, Tito</a></b>
+                </td>
+                <td class="tleft">PH</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.281</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/37826/1968/5/1968/479431" href="javascript:void(window.open('/player/37826/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McDaniel, Lindy</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.000</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    &nbsp; &nbsp;C - <b><a url="/player/32838/1968/5/1968/479431" href="javascript:void(window.open('/player/32838/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Davis, Ron</a></b>
+                </td>
+                <td class="tleft">PH</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.000</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/38002/1968/5/1968/479431" href="javascript:void(window.open('/player/38002/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McMahon, Don</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>----</td>
+            </tr>
+                        <tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>29</td>
+                <td>0</td>
+                <td>2</td>
+                <td>0</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Away pitchers -->
+
+        <table class="databox tright" style="width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Pitchers</td>
+                <td class="tleft">Decision</td>
+                <td>IP</td>
+                <td>H</td>
+                <td>R</td>
+                <td>ER</td>
+                <td>BB</td>
+                <td>SO</td>
+                <td>HR</td>                <td>PC</td>
+                <td>ERA</td>
+            </tr>
+
+                                    <tr class="odd">
+                <td class="tleft"><b><a url="/player/42075/1968/5/1968/479431" href="javascript:void(window.open('/player/42075/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Tiant, Luis</a><b/></td>
+                <td class="tleft">L, 3-1</td>
+                <td>5</td>
+                <td>6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>1</td>
+                <td>7</td>
+                <td>2</td>                <td>90</td>
+                <td>1.98</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft"><b><a url="/player/37826/1968/5/1968/479431" href="javascript:void(window.open('/player/37826/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McDaniel, Lindy</a><b/></td>
+                <td class="tleft"></td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>2</td>
+                <td>0</td>                <td>15</td>
+                <td>0.00</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft"><b><a url="/player/38002/1968/5/1968/479431" href="javascript:void(window.open('/player/38002/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McMahon, Don</a><b/></td>
+                <td class="tleft"></td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>                <td>15</td>
+                <td>2.25</td>
+            </tr>
+            
+        	<tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>8</td>
+                <td>6</td>
+                <td>4</td>
+                <td>4</td>
+                <td>1</td>
+                <td>9</td>
+                <td>2</td>                <td></td>
+                <td></td>
+            </tr>
+
+        </table>
+
+    </div>  <!-- id="awayTeam" -->
+
+    <div id="homeTeam">
+
+        <!-- Home hitters -->
+
+        <h3>Aquarium Drinkers</h3>
+
+        <table class="databox tright" style="margin-top: 7px; width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Hitters</td>
+                <td class="tleft">P</td>
+                <td width="10%">AB</td>
+                <td width="10%">R</td>
+                <td width="10%">H</td>
+                <td width="10%">RBI</td>
+                <td width="15%">BA</td>
+            </tr>
+                                    <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/42848/1968/5/1968/479431" href="javascript:void(window.open('/player/42848/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">White, Roy</a></b>
+                </td>
+                <td class="tleft">LF</td>
+                <td>4</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.354</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/37497/1968/5/1968/479431" href="javascript:void(window.open('/player/37497/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Mantle, Mickey</a></b>
+                </td>
+                <td class="tleft">1B</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.208</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/41095/1968/5/1968/479431" href="javascript:void(window.open('/player/41095/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Sims, Duke</a></b>
+                </td>
+                <td class="tleft">C</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.240</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    &nbsp; &nbsp;B - <b><a url="/player/32262/1968/5/1968/479431" href="javascript:void(window.open('/player/32262/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Collins, Kevin</a></b>
+                </td>
+                <td class="tleft">3B</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.000</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/38928/1968/5/1968/479431" href="javascript:void(window.open('/player/38928/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Northrup, Jim</a></b>
+                </td>
+                <td class="tleft">RF</td>
+                <td>4</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.318</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/41477/1968/5/1968/479431" href="javascript:void(window.open('/player/41477/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Stanley, Mickey</a></b>
+                </td>
+                <td class="tleft">CF</td>
+                <td>4</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>.204</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/31988/1968/5/1968/479431" href="javascript:void(window.open('/player/31988/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Charles, Ed</a></b>
+                </td>
+                <td class="tleft">3B,C</td>
+                <td>3</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>.308</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/35196/1968/5/1968/479431" href="javascript:void(window.open('/player/35196/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Helms, Tommy</a></b>
+                </td>
+                <td class="tleft">2B</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.271</td>
+            </tr>
+                        <tr class="odd">
+                <td class="tleft">
+                    <b><a url="/player/30147/1968/5/1968/479431" href="javascript:void(window.open('/player/30147/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">Alley, Gene</a></b>
+                </td>
+                <td class="tleft">SS</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>.174</td>
+            </tr>
+                        <tr class="even">
+                <td class="tleft">
+                    <b><a url="/player/38025/1968/5/1968/479431" href="javascript:void(window.open('/player/38025/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McNally, Dave</a></b>
+                </td>
+                <td class="tleft">P</td>
+                <td>3</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>.200</td>
+            </tr>
+                        <tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>31</td>
+                <td>4</td>
+                <td>6</td>
+                <td>4</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <br />
+
+        <!-- Home pitchers -->
+
+        <table class="databox tright" style="width: 100%;">
+            <tr class="ui-widget-header">
+                <td class="tleft">Pitchers</td>
+                <td class="tleft">Decision</td>
+                <td>IP</td>
+                <td>H</td>
+                <td>R</td>
+                <td>ER</td>
+                <td>BB</td>
+                <td>SO</td>
+                <td>HR</td>                <td>PC</td>
+                <td>ERA</td>
+            </tr>
+
+                                    <tr class="odd">
+                <td class="tleft"><b><a url="/player/38025/1968/5/1968/479431" href="javascript:void(window.open('/player/38025/1968/5/1968/479431', '_blank', 'width=740, height=650, scrollbars=yes'));">McNally, Dave</a><b/></td>
+                <td class="tleft">W, 3-1</td>
+                <td>9</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>9</td>
+                <td>0</td>                <td>113</td>
+                <td>3.04</td>
+            </tr>
+            
+        	<tr class="ui-widget-content b">
+                <td class="tleft">Totals</td>
+                <td class="tleft"></td>
+                <td>9</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>9</td>
+                <td>0</td>                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </div>  <!-- id="homeTeam" -->
+
+</div>  <!-- class="main" -->
+
+<br clear="all" /><br />
+
+<div class="main">
+
+<!-- LINEUP NOTES -->
+
+A-Pinch Hit For Tiant In 6th Inning<br />
+B-Subbed Defensively (3B) For Sims In 8th Inning<br />
+C-Pinch Hit For McDaniel In 8th Inning<br />
+
+<!-- INJURIES -->
+
+
+<br />
+
+<!-- END NOTES -->
+
+ATTENDANCE- 37,019 <br />
+T- 2:23<br />
+LEFT ON BASE- Players: 3  Drinkers: 4<br />
+DOUBLE PLAYS- Players: 0  Drinkers: 0<br />
+ERRORS- T.Perez<br />
+DOUBLES- F.Robinson(6th)<br />
+HOME RUNS- E.Charles(2nd), D.McNally(1st)<br />
+STOLEN BASES- R.White(5th), M.Mantle(1st)<br />
+WALKS- B.Wine, M.Mantle<br />
+STRIKE OUTS- B.Bonds-2, F.Robinson-2, T.Perez, T.McCarver, B.Wine, L.Tiant,<br />
+             R.Davis, R.White-2, M.Mantle-3, D.Sims, T.Helms, G.Alley,<br />
+             D.McNally<br />
+<br />
+<br />
+<br />
+
+</div>
+
+</div>
+
+<br /><br /><br /><br /><br /><br />
+
+
+        </div>     <!-- container-content -->
+
+</div>      <!-- container -->
+
+<br clear="all" />
+
+<div style="width: 100%; height: 16px; background-color: #d9782d;"></div>
+
+<div style="width: 100%; min-height: 400px; background-color: black; color: grey;">
+    <div class="text16" style="width: 1013px; padding: 20px 10px; margin-left: auto; margin-right: auto;">
+        <div style="float: left;">
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="/help">Contact Us</a>
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a>
+            <a class="b" style="color: #d9782d;" href="/help/rules">Info/Help</a>
+        </div>
+        <div id="footerSocialMedia" style="float: right;">
+            <a target="_blank" href="http://www.facebook.com/pages/Strat-O-Matic-Games/184660618996"><img src="https://s3.amazonaws.com/som.com/images/icon_facebook.png" /></a>
+            <a target="_blank" href="https://twitter.com/StratOMatic"><img src="https://s3.amazonaws.com/som.com/images/icon_twitter.png" /></a>
+            <a target="_blank" href="http://instagram.com/stratomatic/"><img src="https://s3.amazonaws.com/som.com/images/icon_instagram.png" /></a>
+            <a target="_blank" href="http://www.youtube.com/user/StratOMaticMarketing/videos"><img src="https://s3.amazonaws.com/som.com/images/icon_youtube.png" /></a>
+            <a target="_blank" href="http://pinterest.com/stratpinterest/"><img src="https://s3.amazonaws.com/som.com/images/icon_pinterest.png" /></a>
+        </div>
+        <br clear="all" />
+    </div>
+
+    <center>© 2026 Strat-O-Matic Media, LLC - All rights reserved.</center>
+
+</div>
+
+</body>
+</html>
+
+
