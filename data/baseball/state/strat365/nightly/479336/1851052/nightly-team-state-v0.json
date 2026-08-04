@@ -7,7 +7,7 @@
   "teamName": "Aquarium Drinkers",
   "strategyProfile": "astrodome-run-prevention",
   "active": true,
-  "stateRevision": 1,
+  "stateRevision": 2,
   "cutover": {
     "mode": "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
     "userReplayStatus": "CAUGHT_UP_BEFORE_AUTOMATION",
@@ -64,8 +64,8 @@
     "baselineRunId": "initial-live-baseline-479336-1851052-20260803T204607118Z"
   },
   "discovery": {
-    "status": "NO_NEW_GAMES",
-    "lastCheckedAtUtc": "2026-08-03T20:46:07.237Z",
+    "status": "NEW_GAMES_DISCOVERED",
+    "lastCheckedAtUtc": "2026-08-04T04:17:44.750Z",
     "knownGameIds": [
       "1",
       "7",
@@ -105,15 +105,26 @@
       "214",
       "219",
       "225",
-      "231"
+      "231",
+      "238",
+      "244",
+      "250"
     ],
-    "newlyDiscoveredGameIds": [],
-    "pendingCaptureGameIds": [],
-    "lastDiscoveredGameId": "231",
-    "scheduleUnchanged": null
+    "newlyDiscoveredGameIds": [
+      "238",
+      "244",
+      "250"
+    ],
+    "pendingCaptureGameIds": [
+      "238",
+      "244",
+      "250"
+    ],
+    "lastDiscoveredGameId": "250",
+    "scheduleUnchanged": false
   },
   "capture": {
-    "status": "NOT_RUN",
+    "status": "PENDING",
     "lastRunId": null,
     "startedAtUtc": null,
     "completedAtUtc": null,
@@ -165,10 +176,10 @@
   },
   "audit": {
     "initializedAtUtc": "2026-08-03T20:17:47.474Z",
-    "lastTransitionAtUtc": "2026-08-03T20:46:07.237Z",
-    "lastTransitionAction": "INITIAL_SCHEDULE_BASELINE_READY",
-    "lastRunId": "initial-live-baseline-479336-1851052-20260803T204607118Z",
-    "transitionCount": 1,
+    "lastTransitionAtUtc": "2026-08-04T04:17:44.750Z",
+    "lastTransitionAction": "DISCOVER_NEW_GAMES",
+    "lastRunId": "apply-live-discovery-479336-1851052-20260804T041744662Z",
+    "transitionCount": 2,
     "transitionHistory": [
       {
         "timestampUtc": "2026-08-03T20:46:07.237Z",
@@ -176,6 +187,37 @@
         "priorState": "PENDING_INITIAL_SCHEDULE_BASELINE",
         "nextState": "READY",
         "runId": "initial-live-baseline-479336-1851052-20260803T204607118Z"
+      },
+      {
+        "runId": "apply-live-discovery-479336-1851052-20260804T041744662Z",
+        "transitionedAtUtc": "2026-08-04T04:17:44.750Z",
+        "action": "DISCOVER_NEW_GAMES",
+        "priorState": {
+          "stateRevision": 1,
+          "discoveryStatus": "NO_NEW_GAMES",
+          "knownGameCount": 39,
+          "newlyDiscoveredGameCount": 0,
+          "pendingCaptureGameCount": 0,
+          "captureStatus": "NOT_RUN",
+          "spoilerState": "SEALED"
+        },
+        "nextState": {
+          "stateRevision": 2,
+          "discoveryStatus": "NEW_GAMES_DISCOVERED",
+          "knownGameCount": 42,
+          "newlyDiscoveredGameCount": 3,
+          "pendingCaptureGameCount": 3,
+          "captureStatus": "PENDING",
+          "spoilerState": "SEALED"
+        },
+        "newlyDiscoveredGameIds": [
+          "238",
+          "244",
+          "250"
+        ],
+        "fixturePath": "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/responses/team-schedule.html",
+        "metadataPath": "data/baseball/raw/strat365/1968/nightly-discovery/2026-08-03/capture-20260804T041415019Z/league-479336/team-1851052/metadata/team-schedule.attempt-1.json",
+        "scheduleSha256": "B26F52594A8C3E8B6B6668B1FF9F8238DBC80AAD467FC59EADA4B6F26693F261"
       }
     ]
   },
