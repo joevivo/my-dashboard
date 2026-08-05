@@ -1,0 +1,118 @@
+{
+    "schemaVersion":  "strat365-league-capture-run-v0",
+    "baseUri":  "https://365.strat-o-matic.com",
+    "playerSetYear":  "1968",
+    "leagueId":  479431,
+    "leagueDate":  "2026-08-03",
+    "expectedCounts":  {
+                           "teamCount":  2,
+                           "gameCount":  3,
+                           "seriesCount":  1
+                       },
+    "teamIds":  [
+                    "1853975",
+                    "1854355"
+                ],
+    "requiredSourceFamilies":  [
+                                   "leagueScores",
+                                   "gameRecap",
+                                   "gamePlayByPlay",
+                                   "gameReplay"
+                               ],
+    "routeSeeds":  {
+                       "batting":  [
+                                       {
+                                           "positionFilter":  "all",
+                                           "sortField":  "ops",
+                                           "startPage":  0,
+                                           "pathTemplate":  "/league/stats/players/batting/{leagueId}/{positionFilter}/{sortField}/{page}"
+                                       }
+                                   ],
+                       "pitching":  [
+                                        {
+                                            "roleFilter":  "all",
+                                            "sortField":  "era",
+                                            "startPage":  0,
+                                            "pathTemplate":  "/league/stats/players/pitching/{leagueId}/{roleFilter}/{sortField}/{page}"
+                                        }
+                                    ],
+                       "transactions":  [
+                                            {
+                                                "sourceFamily":  "transactionsMain",
+                                                "pathTemplate":  "/league/transactions/{leagueId}",
+                                                "paginationMode":  "offset",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  20
+                                            },
+                                            {
+                                                "sourceFamily":  "transactionsAdds",
+                                                "pathTemplate":  "/league/transactions/adds/{leagueId}",
+                                                "paginationMode":  "none",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  1
+                                            },
+                                            {
+                                                "sourceFamily":  "transactionsDrops",
+                                                "pathTemplate":  "/league/transactions/drops/{leagueId}",
+                                                "paginationMode":  "none",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  1
+                                            },
+                                            {
+                                                "sourceFamily":  "transactionsTrades",
+                                                "pathTemplate":  "/league/transactions/trades/{leagueId}",
+                                                "paginationMode":  "none",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  1
+                                            },
+                                            {
+                                                "sourceFamily":  "waivers",
+                                                "pathTemplate":  "/league/waivers/{leagueId}",
+                                                "paginationMode":  "none",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  1
+                                            },
+                                            {
+                                                "sourceFamily":  "teamTransactions",
+                                                "pathTemplate":  "/league/transactions/team/{teamId}",
+                                                "paginationMode":  "none",
+                                                "startOffset":  0,
+                                                "pageSize":  100,
+                                                "maxPages":  1
+                                            }
+                                        ]
+                   },
+    "captureRootPolicy":  {
+                              "relativeRootTemplate":  "data/baseball/raw/strat365/{playerSetYear}/season-ingestion",
+                              "requireRepositoryContainment":  true,
+                              "allowOverwrite":  false,
+                              "timestampFormat":  "yyyyMMddTHHmmssZ"
+                          },
+    "transportPolicy":  {
+                            "client":  "curl.exe",
+                            "sslNoRevoke":  true,
+                            "followRedirects":  true,
+                            "useAuthenticationCookies":  false,
+                            "useRefererHeader":  false
+                        },
+    "capturePlanPolicy":  {
+                              "freezeBeforeBulkCapture":  true,
+                              "deduplicateUrls":  true,
+                              "rejectCrossLeagueLinks":  true,
+                              "rejectUnknownTeamIds":  true,
+                              "rejectUnplannedExpansion":  true
+                          },
+    "safetyLimits":  {
+                         "maxDiscoveredGames":  3,
+                         "maxDiscoveredTeams":  2,
+                         "maxPaginationPagesPerSeed":  20,
+                         "maxPlannedRequests":  10,
+                         "maxAttemptsPerRequest":  2,
+                         "requestTimeoutSeconds":  60
+                     }
+}
