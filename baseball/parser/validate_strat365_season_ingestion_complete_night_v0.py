@@ -123,9 +123,13 @@ def main() -> int:
     league_id = str(capture_lock_identity.get("leagueId", ""))
     league_date = str(capture_lock_identity.get("leagueDate", ""))
 
-    authorization_scope = (
+    league_authorization_scope = (
         f"{season}/league-{league_id}/{league_date}"
     )
+    authorization_scope = league_authorization_scope
+    scope_type = "LEAGUE_NIGHT"
+    team_id = ""
+    team_name = ""
 
     plan_game_request_ids = [
         str(request.get("requestId", ""))
@@ -1100,6 +1104,117 @@ def main() -> int:
         "League-night aggregate summary differs from game staging.",
     )
 
+    metadata_team_ids: set[str] = set()
+
+    for metadata_path in sorted(
+        metadata_directory.glob("*.json"),
+        key=lambda value: value.name,
+    ):
+        metadata_payload = load_json(metadata_path)
+        metadata_team_id = str(
+            metadata_payload.get("teamId", "")
+        ).strip()
+
+        if metadata_team_id:
+            metadata_team_ids.add(metadata_team_id)
+
+    if expected_game_count > 0 and expected_game_count != 18:
+        scope_type = "TEAM_NIGHT"
+
+        if len(metadata_team_ids) != 1:
+            failures.append(
+                "Team-night metadata does not contain exactly "
+                "one authoritative team ID: "
+                f"{sorted(metadata_team_ids)}"
+            )
+        else:
+            team_id = next(iter(metadata_team_ids))
+
+        if team_id:
+            team_state_path = (
+                repo_root
+                / "data/baseball/state/strat365/nightly"
+                / league_id
+                / team_id
+                / "nightly-team-state-v0.json"
+            )
+
+            if not team_state_path.is_file():
+                failures.append(
+                    "The sealed team-state authority is missing: "
+                    f"{team_state_path}"
+                )
+            else:
+                team_state = load_json(team_state_path)
+
+                if str(
+                    team_state.get("leagueId", "")
+                ) != league_id:
+                    failures.append(
+                        "The sealed team-state league ID differs."
+                    )
+
+                if str(
+                    team_state.get("teamId", "")
+                ) != team_id:
+                    failures.append(
+                        "The sealed team-state team ID differs."
+                    )
+
+                team_name = str(
+                    team_state.get("teamName", "")
+                ).strip()
+
+                if not team_name:
+                    failures.append(
+                        "The sealed team-state team name is missing."
+                    )
+
+            tracked_team_game_count = 0
+
+            for game_id, game in games_by_id.items():
+                home_name = str(
+                    game.get("homeTeam", {}).get("name", "")
+                ).strip()
+                away_name = str(
+                    game.get("awayTeam", {}).get("name", "")
+                ).strip()
+
+                game_team_names = {
+                    value
+                    for value in (home_name, away_name)
+                    if value
+                }
+
+                if len(game_team_names) != 2:
+                    failures.append(
+                        f"Game {game_id} does not contain "
+                        "two distinct team names."
+                    )
+
+                if team_name and team_name in game_team_names:
+                    tracked_team_game_count += 1
+                elif team_name:
+                    failures.append(
+                        f"Game {game_id} does not contain "
+                        f"the tracked team: {team_name}"
+                    )
+
+            if (
+                team_name
+                and tracked_team_game_count
+                != expected_game_count
+            ):
+                failures.append(
+                    "The tracked team does not appear in "
+                    "every team-night game."
+                )
+
+            authorization_scope = (
+                f"{season}/league-{league_id}/"
+                f"team-{team_id}/{league_date}"
+            )
+
     promotion_authorized = not failures and all(gates.values())
 
     report = {
@@ -1110,6 +1225,9 @@ def main() -> int:
         "leagueId": league_id,
         "leagueDate": league_date,
         "scope": {
+            "scopeType": scope_type,
+            "teamId": team_id,
+            "teamName": team_name,
             "parsedRoot": parsed_root.relative_to(
                 repo_root
             ).as_posix(),
@@ -1152,6 +1270,7 @@ def main() -> int:
         },
         "gates": gates,
         "promotionDecision": {
+            "scopeType": scope_type,
             "status": (
                 "AUTHORIZED_FOR_ATOMIC_CANONICAL_PROMOTION"
                 if promotion_authorized
