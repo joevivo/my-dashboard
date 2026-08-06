@@ -444,17 +444,53 @@ def main() -> int:
             {},
         )
 
-        if (
+        legacy_result_match = (
             reconciliation.get("resultSourceMatch")
-            is not True
+            is True
+        )
+
+        granular_result_match = all(
+            reconciliation.get(field_name) is True
+            for field_name in (
+                "finalHeaderMatch",
+                "homeTeamLineMatch",
+                "awayTeamLineMatch",
+                "leagueScoreMatch",
+                "leagueResultOutcomeMatch",
+                "decisionSummaryExactMatch",
+                "recapReplayOrientationMatch",
+                "teamOrderMatch",
+            )
+        ) and (
+            reconciliation.get("leagueWinnerMention")
+            is True
+            or reconciliation.get(
+                "leagueWinnerOmissionAccepted"
+            )
+            is True
+        )
+
+        if not (
+            legacy_result_match
+            or granular_result_match
         ):
             failures.append(
                 f"Game {game_id} result does not reconcile."
             )
 
-        if (
+        legacy_play_by_play_attached = (
             reconciliation.get("playByPlayAttached")
-            is not True
+            is True
+        )
+
+        granular_play_by_play_attached = (
+            reconciliation.get("playByPlayInningsMatch")
+            is True
+        )
+
+        if not (
+            legacy_play_by_play_attached
+            or granular_play_by_play_attached
         ):
             failures.append(
                 f"Game {game_id} lacks play-by-play."
