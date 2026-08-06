@@ -47,10 +47,11 @@
   "leagueDate": "2026-08-03",
   "leagueId": "479336",
   "promotionDecision": {
-    "authorizationScope": "1968/league-479336/2026-08-03",
+    "authorizationScope": "1968/league-479336/team-1851052/2026-08-03",
     "canonicalPromotionAuthorized": true,
     "liveRecaptureAuthorized": false,
     "requiresAtomicWrite": true,
+    "scopeType": "TEAM_NIGHT",
     "sourceStagingMutationAuthorized": false,
     "status": "AUTHORIZED_FOR_ATOMIC_CANONICAL_PROMOTION"
   },
@@ -59,7 +60,10 @@
     "captureDirectory": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-03/capture-20260804T135111Z-nightly-compat-v0",
     "gameDirectory": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03/games",
     "leagueNightFile": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03/league-night-v0.json",
-    "parsedRoot": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03"
+    "parsedRoot": "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-03",
+    "scopeType": "TEAM_NIGHT",
+    "teamId": "1851052",
+    "teamName": "Aquarium Drinkers"
   },
   "season": "1968"
 }
