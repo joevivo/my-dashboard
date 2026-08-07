@@ -13,10 +13,10 @@
     "harvesterScript":  "baseball/harvester/capture_strat365_league_night_raw_v0.ps1",
     "harvesterSha256":  "63D1B462D880444711A892C18C6A3E55B73FBF7197E2C5BAE79A5EBE0099A252",
     "plannedRequestCount":  10,
-    "attemptedRequestCount":  1,
-    "capturedResponseCount":  1,
+    "attemptedRequestCount":  10,
+    "capturedResponseCount":  10,
     "failedRequestCount":  0,
-    "httpRequestCount":  1,
+    "httpRequestCount":  10,
     "canonicalPromotionEligibility":  "NO",
     "validation":  {
                        "preflight":  "PASS",
@@ -56,7 +56,7 @@
                                         }
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "290",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -73,11 +73,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/479336/290",
+                         "byteCount":  40614,
+                         "sha256":  "62DDBE6BD8744DF9E6914C4799CA3285BCB9D1989BBC0BFDD43516A7EE1C20AC"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "290",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -94,11 +98,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/playbyplay/479336/290",
+                         "byteCount":  57568,
+                         "sha256":  "1D1F27D11673214F04842B2F0D4112DE9A74106F4C9909FFF044E9B241CA64D0"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "290",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -115,11 +123,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/replay/479336/290",
+                         "byteCount":  83412,
+                         "sha256":  "A2C505351A8FAFCCC6208508834E7154DBFB83D3270BBE9710D0DBF6C631179B"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "296",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -136,11 +148,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/479336/296",
+                         "byteCount":  41677,
+                         "sha256":  "AFB8F92F37B2B8FB93FFB0D20B2E74393442AA967DA27765102D0AD9916FF4B8"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "296",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -157,11 +173,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/playbyplay/479336/296",
+                         "byteCount":  57152,
+                         "sha256":  "390769E8A3A36904C087BEE5B1921FCA92409E714014407F2FE1B99A648EAC0E"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "296",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -178,11 +198,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/replay/479336/296",
+                         "byteCount":  84554,
+                         "sha256":  "51C40108B05D1821BE9F3F13240621E56745651D77E360A75FC741EBB60BB323"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "302",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -199,11 +223,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/479336/302",
+                         "byteCount":  44022,
+                         "sha256":  "C4D7ABA87AE8BE421E3E9AA02F6300D2D40239FB7ED957DF54E2F20BD286D9F9"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "302",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -220,11 +248,15 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/playbyplay/479336/302",
+                         "byteCount":  63303,
+                         "sha256":  "A72338E08CB228DE0BBA151EACF44B234899209865239332F966845211575F0E"
                      },
                      {
-                         "attemptCount":  0,
+                         "attemptCount":  1,
                          "gameId":  "302",
                          "leagueDate":  "2026-08-06",
                          "leagueId":  "479336",
@@ -241,8 +273,12 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "planned",
-                         "attemptNumber":  0
+                         "requestStatus":  "captured",
+                         "attemptNumber":  1,
+                         "httpStatus":  200,
+                         "effectiveUrl":  "https://365.strat-o-matic.com/game/replay/479336/302",
+                         "byteCount":  88703,
+                         "sha256":  "AA1559E0790C073483E63C4A7AE6D88F693FFB32BCAD948EEDA77B36ADCB37B5"
                      }
                  ],
     "scoresDiscovery":  {
@@ -273,10 +309,10 @@
                             "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html"
                         },
     "gameCaptureExecution":  {
-                                 "capturedGameRequestCount":  0,
-                                 "pendingGameRequestCount":  9,
+                                 "capturedGameRequestCount":  9,
+                                 "pendingGameRequestCount":  0,
                                  "failedGameRequestCount":  0,
-                                 "lastCompletedGameId":  null,
+                                 "lastCompletedGameId":  302,
                                  "executionLedger":  "run-manifest.json requests",
                                  "frozenPlanImmutable":  true,
                                  "planMutationAllowed":  false
