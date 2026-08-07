@@ -15,6 +15,10 @@ GAME_SOURCE_FAMILIES = (
     'gameReplay',
 )
 LEAGUE_SCORE_FAMILY = 'leagueScores'
+LEAGUE_INVENTORY_METADATA_FAMILIES = {
+    'leagueScores',
+    'teamSchedule',
+}
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open('rb') as source:
@@ -1207,9 +1211,21 @@ def main() -> int:
             continue
         body_paths.add(str(body_path).lower())
 
-        if family == "leagueScores":
-            league_body_path = body_path
-            league_metadata_name = metadata_path.name
+        if family in LEAGUE_INVENTORY_METADATA_FAMILIES:
+            if league_body_path is not None:
+                failures.append(
+                    "Multiple league-inventory metadata rows were resolved."
+                )
+            else:
+                league_body_path = body_path
+                league_metadata_name = metadata_path.name
+                family_counts[LEAGUE_SCORE_FAMILY] = (
+                    family_counts.get(LEAGUE_SCORE_FAMILY, 0) + 1
+                )
+                if family != LEAGUE_SCORE_FAMILY:
+                    family_counts[family] -= 1
+                    if family_counts[family] == 0:
+                        del family_counts[family]
 
         if family in {"gameRecap", "gamePlayByPlay", "gameReplay"} and game_id is not None:
             game_key = int(game_id)
