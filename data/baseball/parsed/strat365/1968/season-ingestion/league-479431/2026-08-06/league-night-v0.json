@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-06/games/game-131-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-06/games/game-137-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-06/games/game-143-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 3,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 131,
+      "homeRuns": 1,
+      "homeTeam": "Ukrainian Drones",
+      "innings": 10,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 8,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 137,
+      "homeRuns": 5,
+      "homeTeam": "Ukrainian Drones",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 143,
+      "homeRuns": 4,
+      "homeTeam": "Ukrainian Drones",
+      "innings": 10,
+      "winnerTeam": "Aquarium Drinkers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 131,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "22 Thu, 8/06 @ Drones W 3-1 (10) 13-9 Nash, J.* (R) Aquarium Drinkers beat Ukrainian Drones 3-1",
+      "seriesGameLabel": "22",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 137,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "23 Thu, 8/06 @ Drones W 8-5 14-9 Arrigo, G.* (L) Aquarium Drinkers beat Ukrainian Drones 8-5",
+      "seriesGameLabel": "23",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 143,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "24 Thu, 8/06 @ Drones W 5-4 (10) 15-9 Jaster, L. (L) Aquarium Drinkers defeat Ukrainian Drones 5-4",
+      "seriesGameLabel": "24",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-06",
+  "leagueId": "479431",
+  "playByPlaySummary": {
+    "controlCount": 50,
+    "eventCount": 275,
+    "inningMarkerCount": 58,
+    "orderedRecordCount": 383,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html",
+    "bodySha256": "ED3187546C8E65223C0ABE491DC2A59FA4813C506237FCCC5A67C19F0D48F3A9",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}

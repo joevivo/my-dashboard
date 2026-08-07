@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-06/games/game-290-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-06/games/game-296-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-06/games/game-302-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 2,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 290,
+      "homeRuns": 3,
+      "homeTeam": "Iowa bombers",
+      "innings": 9,
+      "winnerTeam": "Iowa bombers"
+    },
+    {
+      "awayRuns": 2,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 296,
+      "homeRuns": 4,
+      "homeTeam": "Iowa bombers",
+      "innings": 9,
+      "winnerTeam": "Iowa bombers"
+    },
+    {
+      "awayRuns": 5,
+      "awayTeam": "Aquarium Drinkers",
+      "gameId": 302,
+      "homeRuns": 10,
+      "homeTeam": "Iowa bombers",
+      "innings": 9,
+      "winnerTeam": "Iowa bombers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 290,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "49 Thu, 8/06 @ bombers L 3-2 30-19 Perry, G.* (R) Iowa bombers beat Aquarium Drinkers 3-2",
+      "seriesGameLabel": "49",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 296,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "50 Thu, 8/06 @ bombers L 4-2 30-20 Chance, D.* (R) Iowa bombers beat Aquarium Drinkers 4-2",
+      "seriesGameLabel": "50",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 302,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "51 Thu, 8/06 @ bombers L 10-5 30-21 Washburn, R.* (R) Iowa bombers defeat Aquarium Drinkers 10-5",
+      "seriesGameLabel": "51",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-06",
+  "leagueId": "479336",
+  "playByPlaySummary": {
+    "controlCount": 23,
+    "eventCount": 230,
+    "inningMarkerCount": 53,
+    "orderedRecordCount": 306,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html",
+    "bodySha256": "63ADB69E9011E5DFB7B54D5C70DC40AD79FBB9E862E21F87DF7F5BCF6521F255",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}
