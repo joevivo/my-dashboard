@@ -392,8 +392,13 @@ def main() -> int:
         metadata_by_name[metadata_path.name] = metadata
 
         family = str(metadata.get("sourceFamily", ""))
-        metadata_family_counts[family] = (
-            metadata_family_counts.get(family, 0) + 1
+        logical_family = (
+            "leagueScores"
+            if family == "teamSchedule"
+            else family
+        )
+        metadata_family_counts[logical_family] = (
+            metadata_family_counts.get(logical_family, 0) + 1
         )
 
         raw_response_value = str(metadata.get("rawResponsePath", ""))
