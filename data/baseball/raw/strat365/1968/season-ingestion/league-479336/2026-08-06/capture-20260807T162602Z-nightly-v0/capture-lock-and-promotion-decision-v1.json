@@ -1,0 +1,54 @@
+{
+    "schemaVersion":  "bie.capture-lock-and-promotion-decision.v1",
+    "createdAtUtc":  "2026-08-07T18:27:11.9571201Z",
+    "runIdentity":  {
+                        "season":  1968,
+                        "leagueId":  479336,
+                        "leagueDate":  "2026-08-06",
+                        "runDirectory":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0"
+                    },
+    "captureLock":  {
+                        "status":  "LOCKED",
+                        "authorized":  true,
+                        "basis":  "All nine required requests for games 290, 296, 302 passed path, transport, semantic-source, hash, durable-checkpoint, and captured-state validation.",
+                        "rawEvidenceImmutable":  true,
+                        "liveRecaptureAuthorized":  false
+                    },
+    "evidence":  {
+                     "capturedResponseCount":  10,
+                     "completeGameCount":  3,
+                     "manifestTotalRequestCount":  10,
+                     "manifestGameRequestCount":  9,
+                     "manifestLeagueRequestCount":  1,
+                     "planGameRequestCount":  9,
+                     "metadataFileCount":  10,
+                     "rawHtmlFileCount":  10,
+                     "responseHeaderFileCount":  10,
+                     "uniqueResponseArtifactCount":  30,
+                     "artifactFailureCount":  0,
+                     "gameCoverageFailureCount":  0,
+                     "validationFailureCount":  0,
+                     "manifestSha256":  "B6152F197FB184311F63BB1E28EDB290C14187504597496C3A956B82098CE9AA",
+                     "planSha256":  "92F39DF96F5A85CDCB9E08FC086180E6BD7D6F1150A986AF36B37FF8EDC780DF",
+                     "executorSha256":  "2BF5849EA63A63AE8DC45B56037C17FEE120297ADA177F709D0A1312923E3C6A",
+                     "parserSha256":  "9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB",
+                     "validatorSha256":  "C2DE1C08C39DD7F839BE63ABC93B81D9D4B2984BF3E3BB8DFE01D6DE0724CEC7"
+                 },
+    "canonicalPromotionDecision":  {
+                                       "status":  "NOT_AUTHORIZED",
+                                       "authorized":  false,
+                                       "reason":  "Parsing and independent complete-night validation must pass before any separate canonical-promotion decision."
+                                   },
+    "nextAuthorizedPhase":  {
+                                "phase":  "PARSE_AND_VALIDATE",
+                                "requirement":  "Run the established parser and complete-night validator against this sealed capture. Do not promote or release results.",
+                                "liveHttpRequestsAuthorized":  false,
+                                "rawArtifactModificationAuthorized":  false,
+                                "canonicalWritesAuthorized":  false
+                            },
+    "schemaNotes":  [
+                        "Derived from the established capture-lock schema.",
+                        "All target counts and identities are derived from the locked run manifest.",
+                        "This artifact authorizes parsing only; canonical promotion remains blocked."
+                    ]
+}
