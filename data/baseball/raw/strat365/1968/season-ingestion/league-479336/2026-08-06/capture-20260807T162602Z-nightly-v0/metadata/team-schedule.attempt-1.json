@@ -1,0 +1,34 @@
+{
+    "schemaVersion":  "strat365-team-schedule-capture-v0",
+    "leagueId":  "479336",
+    "leagueDate":  "2026-08-06",
+    "teamId":  "1851052",
+    "opponentTeamId":  "1853382",
+    "requestId":  "team-schedule-2026-08-06",
+    "sourceFamily":  "teamSchedule",
+    "requestedUrl":  "https://365.strat-o-matic.com/team/schedule/1851052",
+    "effectiveUrl":  "https://365.strat-o-matic.com/team/schedule/1851052",
+    "requestStatus":  "captured",
+    "attemptNumber":  1,
+    "attemptCount":  1,
+    "httpStatus":  200,
+    "contentType":  "text/html; charset=UTF-8",
+    "byteCount":  128532,
+    "sha256":  "63ADB69E9011E5DFB7B54D5C70DC40AD79FBB9E862E21F87DF7F5BCF6521F255",
+    "capturedAtUtc":  "2026-08-07T16:26:04.7925034Z",
+    "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html",
+    "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.headers.txt",
+    "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/team-schedule.attempt-1.json",
+    "validation":  {
+                       "sourceValidation":  "PASS",
+                       "discoveredGameCount":  3,
+                       "expectedGameCount":  3,
+                       "dateEvidence":  true,
+                       "opponentEvidence":  true,
+                       "gameIds":  [
+                                       "290",
+                                       "296",
+                                       "302"
+                                   ]
+                   }
+}

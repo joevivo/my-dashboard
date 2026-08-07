@@ -1,0 +1,286 @@
+{
+    "schemaVersion":  "strat365-league-capture-manifest-v0",
+    "runState":  "capture_plan_frozen",
+    "captureTimestampUtc":  "2026-08-04T05:41:10.302Z",
+    "captureTimestampToken":  "20260804T054110302Z",
+    "runDirectory":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0",
+    "leagueId":  479431,
+    "leagueDate":  "2026-08-06",
+    "playerSetYear":  1968,
+    "runSpecSource":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/run-spec.json",
+    "runSpecCopy":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/run-spec.json",
+    "runSpecSha256":  "2C14DB8AA5114D56419C1188680F5A2B6021B4A954214B08645D66D138EA103D",
+    "harvesterScript":  "baseball/harvester/execute_strat365_game_capture_plan_v1.ps1",
+    "harvesterSha256":  "2BF5849EA63A63AE8DC45B56037C17FEE120297ADA177F709D0A1312923E3C6A",
+    "plannedRequestCount":  10,
+    "attemptedRequestCount":  1,
+    "capturedResponseCount":  1,
+    "failedRequestCount":  0,
+    "httpRequestCount":  1,
+    "canonicalPromotionEligibility":  "NO",
+    "validation":  {
+                       "preflight":  "NOT_RUN",
+                       "repositoryContainment":  "PASS",
+                       "overwriteProtection":  "PASS",
+                       "runSpecCopyHash":  "PASS",
+                       "status":  "NOT_RUN"
+                   },
+    "provenance":  {
+                       "sourceContract":  "docs/baseball/strat365-league-season-ingestion-source-contract-v0.md",
+                       "harvesterDesign":  "docs/baseball/strat365-manual-league-raw-capture-harvester-design-v0.md"
+                   },
+    "requests":  [
+                     {
+                         "sourceFamily":  "leagueScores",
+                         "requestedUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+                         "effectiveUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+                         "attemptNumber":  1,
+                         "requestStatus":  "captured",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html",
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.headers.txt",
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/team-schedule.attempt-1.json",
+                         "byteCount":  112078,
+                         "sha256":  "ED3187546C8E65223C0ABE491DC2A59FA4813C506237FCCC5A67C19F0D48F3A9",
+                         "requestId":  "team-schedule-2026-08-06",
+                         "attemptCount":  1,
+                         "httpStatus":  200,
+                         "leagueId":  479431,
+                         "leagueDate":  "2026-08-03",
+                         "teamId":  "1853975",
+                         "contentType":  "text/html; charset=UTF-8",
+                         "capturedAtUtc":  "2026-08-07T16:26:05.4488260Z",
+                         "validation":  {
+                                            "sourceValidation":  "PASS",
+                                            "uniqueGameCount":  3,
+                                            "expectedGameCount":  3,
+                                            "teamScheduleCompatibility":  "PASS"
+                                        }
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "131",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-131-recap.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/recap.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/479431/131",
+                         "requestId":  "game-131-recap",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/recap.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameRecap",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "131",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-131-play-by-play.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/play-by-play.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/playbyplay/479431/131",
+                         "requestId":  "game-131-play-by-play",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/play-by-play.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gamePlayByPlay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "131",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-131-replay.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/replay.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/replay/479431/131",
+                         "requestId":  "game-131-replay",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-131/replay.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameReplay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "137",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-137-recap.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/recap.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/479431/137",
+                         "requestId":  "game-137-recap",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/recap.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameRecap",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "137",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-137-play-by-play.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/play-by-play.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/playbyplay/479431/137",
+                         "requestId":  "game-137-play-by-play",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/play-by-play.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gamePlayByPlay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "137",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-137-replay.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/replay.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/replay/479431/137",
+                         "requestId":  "game-137-replay",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-137/replay.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameReplay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "143",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-143-recap.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/recap.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/479431/143",
+                         "requestId":  "game-143-recap",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/recap.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameRecap",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "143",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-143-play-by-play.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/play-by-play.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/playbyplay/479431/143",
+                         "requestId":  "game-143-play-by-play",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/play-by-play.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gamePlayByPlay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     },
+                     {
+                         "attemptCount":  0,
+                         "gameId":  "143",
+                         "leagueDate":  "2026-08-06",
+                         "leagueId":  479431,
+                         "metadataPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/metadata/game-143-replay.attempt-1.json",
+                         "planStatus":  "planned",
+                         "rawResponsePath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/replay.html",
+                         "requestedUrl":  "https://365.strat-o-matic.com/game/replay/479431/143",
+                         "requestId":  "game-143-replay",
+                         "required":  true,
+                         "responseHeadersPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/games/game-143/replay.headers.txt",
+                         "seriesKey":  "nightly-479431-131-143",
+                         "sourceFamily":  "gameReplay",
+                         "teamIds":  [
+                                         "1853975",
+                                         "1854376"
+                                     ],
+                         "requestStatus":  "pending",
+                         "attemptNumber":  0
+                     }
+                 ],
+    "scoresDiscovery":  {
+                            "status":  "captured",
+                            "requestedUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+                            "expectedGameCount":  3,
+                            "discoveredGameCount":  3,
+                            "duplicateGameLinkCount":  0,
+                            "finalIndicatorCount":  0,
+                            "sourceValidation":  "PASS",
+                            "seriesCoverageStatus":  "PASS",
+                            "effectiveUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
+                            "requestStatus":  "captured",
+                            "httpStatus":  200
+                        },
+    "gameCapturePlan":  {
+                            "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/game-capture-plan.json",
+                            "planSha256":  "5463050CBF9CB933E5E24FC74C8C0CFD5B24202158B3EF8AB1C25821637A62BD",
+                            "planState":  "frozen",
+                            "frozenAtUtc":  "2026-08-04T05:18:23.014Z",
+                            "plannedGameRequestCount":  9,
+                            "requiredGameRequestCount":  9,
+                            "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/responses/league/team-schedule.html"
+                        },
+    "normalizedFromDirectCaptures":  {
+                                         "42":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-42-20260802T040548Z",
+                                         "48":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-48-20260802T115441Z",
+                                         "54":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-54-20260802T122526Z"
+                                     },
+    "leagueScoresRequestIncluded":  true,
+    "runSpec":  {
+                    "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/run-spec.json",
+                    "sha256":  "00FDF24D5679E7EECC9FA40E8793F68B2AC594E8EDAB969C5ADB3656C2683C15"
+                },
+    "capturePlanFrozen":  true,
+    "capturePlanPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
+    "capturePlanSha256":  "CD296299C23E347278C5C3F23951B3FCB40A80868096C23A07FFBDCD9CF89D34",
+    "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
+    "planSha256":  "CD296299C23E347278C5C3F23951B3FCB40A80868096C23A07FFBDCD9CF89D34"
+}
