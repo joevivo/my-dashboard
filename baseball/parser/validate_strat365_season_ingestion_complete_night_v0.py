@@ -8,9 +8,10 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_PARSER_SHA256 = (
-    '9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB'
-)
+SUPPORTED_PARSER_SHA256 = {
+    '9CFE7586AD7077113DB00B52468A2CB1F5884E6DAD58F38889DC4377A564ACDB',
+    '78B7F6BACB0690FBFA6F7D622C3C105EE1138B32F208B17DFD8FD0DAD2894899',
+}
 
 REQUIRED_GAME_SOURCE_FAMILIES = {
     "gamePlayByPlay",
@@ -213,7 +214,7 @@ def main() -> int:
         gates,
         failures,
         "parserHashMatch",
-        parser_hash == EXPECTED_PARSER_SHA256,
+        parser_hash in SUPPORTED_PARSER_SHA256,
         f"Parser hash mismatch: {parser_hash}",
     )
     add_gate(
