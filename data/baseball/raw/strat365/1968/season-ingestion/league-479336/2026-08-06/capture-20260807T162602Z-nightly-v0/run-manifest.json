@@ -73,7 +73,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -94,7 +94,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -115,7 +115,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -136,7 +136,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -157,7 +157,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -178,7 +178,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -199,7 +199,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -220,7 +220,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      },
                      {
@@ -241,7 +241,7 @@
                                          "1851052",
                                          "1853382"
                                      ],
-                         "requestStatus":  "pending",
+                         "requestStatus":  "planned",
                          "attemptNumber":  0
                      }
                  ],
@@ -271,5 +271,14 @@
                             "plannedGameRequestCount":  9,
                             "requiredGameRequestCount":  9,
                             "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html"
-                        }
+                        },
+    "gameCaptureExecution":  {
+                                 "capturedGameRequestCount":  0,
+                                 "pendingGameRequestCount":  9,
+                                 "failedGameRequestCount":  0,
+                                 "lastCompletedGameId":  null,
+                                 "executionLedger":  "run-manifest.json requests",
+                                 "frozenPlanImmutable":  true,
+                                 "planMutationAllowed":  false
+                             }
 }
