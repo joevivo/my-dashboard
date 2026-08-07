@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Date: Fri, 07 Aug 2026 18:14:27 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: nginx/1.16.1
+X-Powered-By: PHP/5.6.40
+Set-Cookie: og_session=HagVPplEIZMCRzYLHoT6niFIU6z6sHnl3lOKX2Q99%2BusCHXyDYn3VI5FqCxVGuXNSpYx%2FV5A9hY2pFTZVzMDNAo7tHhhRJs7u5hA1pyzm7jkSiyQxnNncumjgLkXTrPXPk8ZlMy%2FFrKjNlQ2YhOqPuZPsiLFEpW1TULnhikvR5qqa4Pa3aBuO87pPKYNhuzk5yBmrll49F7IS2ZhDUBVquv%2B474NvbhvJByPU1nu8ohmhpK%2Ftgxu9tmTPyoLyh50PC0bPixQ0pax0lwfl2n3custTI6anj3GFYuPnkmxBf0%3D; expires=Sat, 08-Aug-2026 18:14:27 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Set-Cookie: og_session=a%3A0%3A%7B%7D; expires=Fri, 08-Aug-2025 04:14:27 GMT; Max-Age=-31500000; path=/; domain=.strat-o-matic.com
+Set-Cookie: og_session=weYAGyzALVArSS4spxoq0GGpZiPAHP%2BrW4I61dtIs7GIOeHWOQ6FTcYB1oC9vxFkdnl1Yz8Qu83ov6eMK%2FxlIUi%2F4BrbxtM1NUl7I84UJ3HJ07giR7NCwXHx1iFlBH0XEIpIOqZeeTsWFYuEvFrOblgW9h%2FnzNIkxWUM%2BIpH8wlZ5OgO4keMHjbzqQxgVHu4mlK4xZlvuvNN8erY%2FqvPyQneuHsRSeXb65sfcse%2FnmnaH4FM6q8yw%2FwXb6SaQBQi7Md%2BOygy7AZXQIvjp6YxrDrn9SKMRureUqekmxU2Ig0ODhKYNvgORKTc6ECJpyDsvqpbinMfahr9OvisEAYQiiCpkk2Rq%2Fug0mIsCz9500cEuyWGnV0lqSHaIUv11s5yM%2BhxYhNlR1QfjzmViIygRJnFBjR%2BWUNqPswy6VHLBfA%3D; expires=Sat, 08-Aug-2026 18:14:27 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+
