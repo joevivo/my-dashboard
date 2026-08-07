@@ -262,5 +262,14 @@
     "capturePlanPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
     "capturePlanSha256":  "92F39DF96F5A85CDCB9E08FC086180E6BD7D6F1150A986AF36B37FF8EDC780DF",
     "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
-    "planSha256":  "92F39DF96F5A85CDCB9E08FC086180E6BD7D6F1150A986AF36B37FF8EDC780DF"
+    "planSha256":  "92F39DF96F5A85CDCB9E08FC086180E6BD7D6F1150A986AF36B37FF8EDC780DF",
+    "gameCapturePlan":  {
+                            "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
+                            "planSha256":  "92F39DF96F5A85CDCB9E08FC086180E6BD7D6F1150A986AF36B37FF8EDC780DF",
+                            "planState":  "frozen",
+                            "frozenAtUtc":  "2026-08-07T16:26:04.7925034Z",
+                            "plannedGameRequestCount":  9,
+                            "requiredGameRequestCount":  9,
+                            "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html"
+                        }
 }

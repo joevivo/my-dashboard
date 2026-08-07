@@ -260,13 +260,13 @@
                             "httpStatus":  200
                         },
     "gameCapturePlan":  {
-                            "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/game-capture-plan.json",
-                            "planSha256":  "5463050CBF9CB933E5E24FC74C8C0CFD5B24202158B3EF8AB1C25821637A62BD",
+                            "planPath":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/game-capture-plan.json",
+                            "planSha256":  "CD296299C23E347278C5C3F23951B3FCB40A80868096C23A07FFBDCD9CF89D34",
                             "planState":  "frozen",
                             "frozenAtUtc":  "2026-08-04T05:18:23.014Z",
                             "plannedGameRequestCount":  9,
                             "requiredGameRequestCount":  9,
-                            "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-03/capture-20260805T175102Z-nightly-compat-v0/responses/league/team-schedule.html"
+                            "sourceScoresResponse":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-06/capture-20260807T162602Z-nightly-v0/responses/team/team-schedule-2026-08-06.html"
                         },
     "normalizedFromDirectCaptures":  {
                                          "42":  "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-01/direct-game-42-20260802T040548Z",
