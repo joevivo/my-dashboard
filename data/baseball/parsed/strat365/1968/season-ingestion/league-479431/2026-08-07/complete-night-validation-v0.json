@@ -1,0 +1,69 @@
+{
+  "authoritativeHashes": {
+    "captureLockSha256": "B04DAD868824391C20A40E67E08842373A1AD6DFD644222DA39E8695BA80A69F",
+    "gameSetSignature": "C3FEAB57539CEFB89914BCFCB229809C76D8A647F5BC1099962B20441AC9B68D",
+    "leagueNightSha256": "595A49040B9462944FD53390858D3A3E4226016E5FAC54C283FE2F1FD7BA5D6D",
+    "manifestSha256": "FF2021DFE6B20D19E0A7CE8767B72517A5755D802EA10E8665FA2FE5EF6F97E2",
+    "parserSha256": "78B7F6BACB0690FBFA6F7D622C3C105EE1138B32F208B17DFD8FD0DAD2894899",
+    "planSha256": "C25EF77CBCC79C79F43099A3E471CD03F6765080E1F3D14070F47CB7D20AFB0A"
+  },
+  "counts": {
+    "acceptedWinnerOmissions": 0,
+    "controlRows": 19,
+    "extraInningGames": 0,
+    "gameFiles": 3,
+    "gameSourcesVerified": 9,
+    "hitterRows": 71,
+    "inningMarkers": 52,
+    "metadataFiles": 10,
+    "orderedRecords": 296,
+    "pitcherRows": 14,
+    "playByPlayEvents": 225,
+    "reconciledGames": 3,
+    "substitutionRows": 9,
+    "unknownControls": 0,
+    "winnerMentions": 3
+  },
+  "failures": [],
+  "gates": {
+    "captureLockCoverageMatch": true,
+    "captureLockEvidenceHashMatch": true,
+    "captureLockRunIdentityMatch": true,
+    "captureLockStateMatch": true,
+    "gameFileCountMatch": true,
+    "gameIdCoverageMatch": true,
+    "gameSetSignaturePresent": true,
+    "leagueNightIdentityMatch": true,
+    "leagueNightSummaryMatch": true,
+    "metadataFamilyCountsMatch": true,
+    "metadataFileCountMatch": true,
+    "parserHashMatch": true,
+    "playByPlayAggregateCountsMatch": true,
+    "rawGameSourceReferencesMatch": true,
+    "recapAggregateCountsMatch": true,
+    "reconciliationAggregateCountsMatch": true,
+    "uniqueMetadataBodyPathCountMatch": true
+  },
+  "leagueDate": "2026-08-07",
+  "leagueId": "479431",
+  "promotionDecision": {
+    "authorizationScope": "1968/league-479431/team-1853975/2026-08-07",
+    "canonicalPromotionAuthorized": true,
+    "liveRecaptureAuthorized": false,
+    "requiresAtomicWrite": true,
+    "scopeType": "TEAM_NIGHT",
+    "sourceStagingMutationAuthorized": false,
+    "status": "AUTHORIZED_FOR_ATOMIC_CANONICAL_PROMOTION"
+  },
+  "schemaVersion": "strat365-complete-night-validation-v0",
+  "scope": {
+    "captureDirectory": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-07/capture-20260808T160935Z-nightly-v0",
+    "gameDirectory": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07/games",
+    "leagueNightFile": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07/league-night-v0.json",
+    "parsedRoot": "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07",
+    "scopeType": "TEAM_NIGHT",
+    "teamId": "1853975",
+    "teamName": "Aquarium Drinkers"
+  },
+  "season": "1968"
+}

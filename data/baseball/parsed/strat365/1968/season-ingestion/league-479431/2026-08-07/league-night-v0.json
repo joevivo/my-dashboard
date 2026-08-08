@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07/games/game-145-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07/games/game-151-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-07/games/game-157-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 4,
+      "awayTeam": "Atlanta Crew",
+      "gameId": 145,
+      "homeRuns": 0,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Atlanta Crew"
+    },
+    {
+      "awayRuns": 3,
+      "awayTeam": "Atlanta Crew",
+      "gameId": 151,
+      "homeRuns": 11,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 3,
+      "awayTeam": "Atlanta Crew",
+      "gameId": 157,
+      "homeRuns": 5,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 145,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "25 Fri, 8/07 Crew L 4-0 15-10 McNally, D.* (L) Stan Williams (ATL) shuts out Drinkers, 4-0",
+      "seriesGameLabel": "25",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 151,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "26 Fri, 8/07 Crew W 11-3 16-10 Nolan, G. (R) Aquarium Drinkers annihilate Atlanta Crew , 11-3",
+      "seriesGameLabel": "26",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 157,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "27 Fri, 8/07 Crew W 5-3 17-10 Nash, J.* (R) Aquarium Drinkers defeat Atlanta Crew 5-3",
+      "seriesGameLabel": "27",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-07",
+  "leagueId": "479431",
+  "playByPlaySummary": {
+    "controlCount": 19,
+    "eventCount": 225,
+    "inningMarkerCount": 52,
+    "orderedRecordCount": 296,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-07/capture-20260808T160935Z-nightly-v0/responses/team/team-schedule-2026-08-07.html",
+    "bodySha256": "375026D4707D0BFF78F51FBA4D547D778B88D04E2785B11C0CFD3A8139133E8E",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}
