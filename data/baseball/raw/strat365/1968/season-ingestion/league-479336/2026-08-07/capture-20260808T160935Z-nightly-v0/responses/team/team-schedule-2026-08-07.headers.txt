@@ -1,0 +1,9 @@
+HTTP_STATUS: 200
+EFFECTIVE_URL: https://365.strat-o-matic.com/team/schedule/1851052
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Sat, 08 Aug 2026 16:09:35 GMT
+Set-Cookie: og_session=FBrJLLEEeGTdzqQMthaRRFjKqhlh35t5RVcDtrThI%2FRw4P5Ho40NS7uKYL0Jdt7F8aiXVIpII5hWvK2%2FSAFtRR%2B98hzdJ2L7nLMQN3fStFaOyTtKCdxhLqVl6iTHaqsQMKfWnfQz1BMYu1AHRgvegV8u9mF7mYaWfdiENlBRJbZPfYdmhP1hpnbOL1NsDhZknzncxecHbR1bqRrjbmhOaj68dK7sGkQGfRDwu%2BnuTFLXBaLe94N4SCxti5Opmej1HWicPITulon8ODy9ylNDeafUBIiGiIQL2UHDQo48YrRPAaCep6O95Li6dj%2FkGim98QXCvMkxn7%2FyFzG40v%2F%2FwUZd3Tdabn8HSERFjfscPzm5oQSSONYJs4s9%2BxAZWYsC; expires=Sun, 09-Aug-2026 16:09:35 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com, og_session=a%3A0%3A%7B%7D; expires=Sat, 09-Aug-2025 02:09:35 GMT; Max-Age=-31500000; path=/; domain=.strat-o-matic.com, og_session=lApuDlq6bZANyBc9THvOdSm5dEabqMwYfx%2BFZROPyZFu25c519VbgBSLf3Gl3y1P2e5YryjsRXrvF5pWs7Dw60VLma4QFhiPC7tn82k4szYvt%2BkDv577o%2FXmf9REwQFFFTvXV5ZFJcdGlj9pA7kbxsBh%2Fh937Nx%2FZOa8R42r6MFD5xGgo%2FnIB5edxlGW02BudxGCwvnMbC3FG2g7RzsYpyDz6Q35kDKMPSjbLhWzdzAL6x5ORxu5HucqgOuZ8bW3ZMjhMyynl%2BFRm6WUxrnN24SsGgF%2FnNziPjPwXFQnq3h8IMAkq9dFHrsriuzJuCsLkNuU%2F0Ezy9UjZVwZ7%2BFGWncpA%2FfdOPjpROar60LB%2Bcih90F80eB9F2zg606l%2B527W4GOKue3BjAhaa9iYaL9LZY%2BTTiPBupT0rs3eHIjqFfxk5tbpJo2s%2B%2FObbqQ86QmdNSn%2FdVpi524uXbRSxnROV8lUftVK3PGuX%2B6hgc36E4hKHGEazuzp6uqX6OG0Fu1; expires=Sun, 09-Aug-2026 16:09:35 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Server: nginx/1.16.1
+X-Powered-By: PHP/5.6.40
+Content-Type: text/html; charset=UTF-8
