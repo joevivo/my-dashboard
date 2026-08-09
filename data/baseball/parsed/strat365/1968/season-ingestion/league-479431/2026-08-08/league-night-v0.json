@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-08/games/game-168-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-08/games/game-174-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479431/2026-08-08/games/game-180-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 1,
+      "awayTeam": "Milan Azzurri",
+      "gameId": 168,
+      "homeRuns": 4,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 0,
+      "awayTeam": "Milan Azzurri",
+      "gameId": 174,
+      "homeRuns": 6,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 3,
+      "awayTeam": "Milan Azzurri",
+      "gameId": 180,
+      "homeRuns": 2,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Milan Azzurri"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 168,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "28 Sat, 8/08 Azzurri W 4-1 18-10 Arrigo, G.* (L) Gerry Arrigo pitches Drinkers past Azzurri, 4-1",
+      "seriesGameLabel": "28",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 174,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "29 Sat, 8/08 Azzurri W 6-0 19-10 McNally, D.* (L) Dave McNally (AQU) shuts out Azzurri, 6-0",
+      "seriesGameLabel": "29",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 180,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "30 Sat, 8/08 Azzurri L 3-2 19-11 Jaster, L. (L) Denny McLain and Azzurri beat Drinkers, 3-2",
+      "seriesGameLabel": "30",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-08",
+  "leagueId": "479431",
+  "playByPlaySummary": {
+    "controlCount": 22,
+    "eventCount": 216,
+    "inningMarkerCount": 52,
+    "orderedRecordCount": 290,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 2,
+    "leagueWinnerOmissionAcceptedCount": 1,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479431/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/team/team-schedule-2026-08-08.html",
+    "bodySha256": "AFC8049929B4AF9E83405F0C2F4FD86069EB706A46D8520A74674ABF04E624AA",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}

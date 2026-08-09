@@ -1,0 +1,96 @@
+{
+  "canonicalPromotionAuthorized": false,
+  "gameCount": 3,
+  "gameFiles": [
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-08/games/game-328-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-08/games/game-334-v0.json",
+    "data/baseball/parsed/strat365/1968/season-ingestion/league-479336/2026-08-08/games/game-340-v0.json"
+  ],
+  "gameSummaries": [
+    {
+      "awayRuns": 3,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 328,
+      "homeRuns": 1,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 13,
+      "winnerTeam": "Fresno Raisin Eaters"
+    },
+    {
+      "awayRuns": 0,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 334,
+      "homeRuns": 4,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 9,
+      "winnerTeam": "Aquarium Drinkers"
+    },
+    {
+      "awayRuns": 3,
+      "awayTeam": "Fresno Raisin Eaters",
+      "gameId": 340,
+      "homeRuns": 4,
+      "homeTeam": "Aquarium Drinkers",
+      "innings": 10,
+      "winnerTeam": "Aquarium Drinkers"
+    }
+  ],
+  "games": [
+    {
+      "blockIndex": 1,
+      "gameId": 328,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "55 Sat, 8/08 Raisin Eaters L 3-1 (13) 31-24 Washburn, R.* (R) Fresno Raisin Eaters defeat Aquarium Drinkers 3-1",
+      "seriesGameLabel": "55",
+      "seriesGameNumber": 1,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 2,
+      "gameId": 334,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "56 Sat, 8/08 Raisin Eaters W 4-0 32-24 Singer, B.* (R) Aquarium Drinkers defeat Fresno Raisin Eaters 4-0",
+      "seriesGameLabel": "56",
+      "seriesGameNumber": 2,
+      "seriesIndex": 1
+    },
+    {
+      "blockIndex": 3,
+      "gameId": 340,
+      "inventorySourceType": "TEAM_SCHEDULE_SINGLE_TABLE",
+      "resultText": "57 Sat, 8/08 Raisin Eaters W 4-3 (10) 33-24 Perry, G.* (R) Aquarium Drinkers defeat Fresno Raisin Eaters 4-3",
+      "seriesGameLabel": "57",
+      "seriesGameNumber": 3,
+      "seriesIndex": 1
+    }
+  ],
+  "leagueDate": "2026-08-08",
+  "leagueId": "479336",
+  "playByPlaySummary": {
+    "controlCount": 33,
+    "eventCount": 249,
+    "inningMarkerCount": 63,
+    "orderedRecordCount": 345,
+    "unknownControlCount": 0
+  },
+  "reconciliationSummary": {
+    "canonicalPromotionAuthorized": false,
+    "completeNightReady": true,
+    "decisionSummaryExactMatchCount": 3,
+    "leagueLoserMentionCount": 3,
+    "leagueScoreMatchCount": 3,
+    "leagueWinnerMentionCount": 3,
+    "leagueWinnerOmissionAcceptedCount": 0,
+    "reconciledGameCount": 3
+  },
+  "schemaVersion": "strat365-league-night-v0",
+  "season": "1968",
+  "source": {
+    "bodyPath": "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/team/team-schedule-2026-08-08.html",
+    "bodySha256": "6F62CDF24EE51F106C30F47D8EB669705421212145105FDBDFAA81618758B33C",
+    "metadataFile": "team-schedule.attempt-1.json",
+    "sourceFamily": "leagueScores"
+  },
+  "structuredGameCount": 3,
+  "warnings": []
+}
