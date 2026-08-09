@@ -105,6 +105,96 @@ def state_rows(
     return rows[:5]
 
 
+
+def extract_upcoming_series(
+    team_payload: dict[str, Any],
+    schedule_payload: dict[str, Any] | None,
+) -> dict[str, Any]:
+    if schedule_payload is None:
+        return {
+            "status": "NOT_PROVIDED",
+            "scheduledDate": None,
+            "opponentDisplayName": None,
+            "opponentTeamId": None,
+            "homeAway": None,
+            "gameCount": 0,
+            "scheduleGameNumbers": [],
+        }
+
+    team_league_id = str(team_payload.get("leagueId") or "").strip()
+    schedule_league_id = str(
+        schedule_payload.get("leagueId") or ""
+    ).strip()
+
+    if (
+        team_league_id
+        and schedule_league_id
+        and team_league_id != schedule_league_id
+    ):
+        raise ValueError(
+            "Team readiness and schedule league IDs do not match: "
+            f"{team_league_id!r} != {schedule_league_id!r}"
+        )
+
+    team_name = str(team_payload.get("teamName") or "").strip()
+    schedule_team_name = str(
+        schedule_payload.get("teamName") or ""
+    ).strip()
+
+    if (
+        team_name
+        and schedule_team_name
+        and team_name != schedule_team_name
+    ):
+        raise ValueError(
+            "Team readiness and schedule team names do not match: "
+            f"{team_name!r} != {schedule_team_name!r}"
+        )
+
+    next_series = as_dict(schedule_payload.get("nextSeries"))
+    status = str(next_series.get("status") or "").strip()
+
+    if status != "FOUND":
+        return {
+            "status": status or "NOT_FOUND",
+            "scheduledDate": None,
+            "opponentDisplayName": None,
+            "opponentTeamId": None,
+            "homeAway": None,
+            "gameCount": 0,
+            "scheduleGameNumbers": [],
+        }
+
+    opponent_display_name = str(
+        next_series.get("opponentDisplayName") or ""
+    ).strip()
+
+    if not opponent_display_name:
+        raise ValueError(
+            "Schedule nextSeries is FOUND but opponentDisplayName "
+            "is missing"
+        )
+
+    game_count = int(as_number(next_series.get("gameCount")))
+
+    if game_count <= 0:
+        raise ValueError(
+            "Schedule nextSeries is FOUND but gameCount is not positive"
+        )
+
+    return {
+        "status": "FOUND",
+        "scheduledDate": next_series.get("scheduledDate"),
+        "opponentDisplayName": opponent_display_name,
+        "opponentTeamId": next_series.get("opponentTeamId"),
+        "homeAway": next_series.get("homeAway"),
+        "gameCount": game_count,
+        "scheduleGameNumbers": as_list(
+            next_series.get("scheduleGameNumbers")
+        ),
+    }
+
+
 def summarize_recent_signals(payload: dict[str, Any]) -> dict[str, Any]:
     signals = as_dict(payload.get("seriesReadinessSignals"))
 
@@ -264,6 +354,8 @@ def compare_recent_signals(
 def build_engine(
     team_payload: dict[str, Any],
     team_source: Path,
+    team_schedule_payload: dict[str, Any] | None,
+    team_schedule_source: Path | None,
     opponent_payload: dict[str, Any] | None,
     opponent_source: Path | None,
     explicit_opponent_name: str | None,
@@ -276,11 +368,34 @@ def build_engine(
     previous_opponents = derive_previous_series_opponents(team_payload)
     team_recent = summarize_recent_signals(team_payload)
 
-    opponent_name = (
+    upcoming_series = extract_upcoming_series(
+        team_payload,
+        team_schedule_payload,
+    )
+
+    schedule_opponent_name = (
+        upcoming_series["opponentDisplayName"]
+        if upcoming_series["status"] == "FOUND"
+        else None
+    )
+
+    explicit_name = (
         explicit_opponent_name.strip()
         if explicit_opponent_name
         else None
     )
+
+    if (
+        schedule_opponent_name
+        and explicit_name
+        and schedule_opponent_name != explicit_name
+    ):
+        raise ValueError(
+            "Explicit opponent name does not match schedule: "
+            f"{explicit_name!r} != {schedule_opponent_name!r}"
+        )
+
+    opponent_name = schedule_opponent_name or explicit_name
 
     opponent_recent: dict[str, Any] | None = None
     matchup: dict[str, Any]
@@ -324,12 +439,23 @@ def build_engine(
 
     else:
         matchup = {
-            "status": "OPPONENT_EVIDENCE_REQUIRED",
+            "status": (
+                "UPCOMING_SERIES_IDENTIFIED"
+                if upcoming_series["status"] == "FOUND"
+                else "OPPONENT_EVIDENCE_REQUIRED"
+            ),
             "opponentName": opponent_name,
+            "opponentTeamId":
+                upcoming_series.get("opponentTeamId"),
             "comparison": None,
         }
 
     missing_evidence: list[str] = []
+
+    if upcoming_series["status"] != "FOUND":
+        missing_evidence.append(
+            "upcoming opponent schedule identity"
+        )
 
     if opponent_payload is None:
         missing_evidence.append(
@@ -355,6 +481,11 @@ def build_engine(
         },
         "sourceEvidence": {
             "teamReadiness": str(team_source),
+            "teamSchedule": (
+                str(team_schedule_source)
+                if team_schedule_source is not None
+                else None
+            ),
             "opponentReadiness": (
                 str(opponent_source)
                 if opponent_source is not None
@@ -365,6 +496,7 @@ def build_engine(
             "gameIds": as_list(team_payload.get("gameIds")),
             "opponents": previous_opponents,
         },
+        "upcomingSeries": upcoming_series,
         "recentTeamSignals": team_recent,
         "recentOpponentSignals": opponent_recent,
         "matchupAssessment": matchup,
@@ -407,6 +539,10 @@ def main() -> int:
         type=Path,
     )
     parser.add_argument(
+        "--team-schedule",
+        type=Path,
+    )
+    parser.add_argument(
         "--opponent-readiness",
         type=Path,
     )
@@ -423,6 +559,12 @@ def main() -> int:
 
     team_payload = load_json(args.team_readiness)
 
+    team_schedule_payload = (
+        load_json(args.team_schedule)
+        if args.team_schedule
+        else None
+    )
+
     opponent_payload = (
         load_json(args.opponent_readiness)
         if args.opponent_readiness
@@ -432,6 +574,8 @@ def main() -> int:
     output = build_engine(
         team_payload=team_payload,
         team_source=args.team_readiness,
+        team_schedule_payload=team_schedule_payload,
+        team_schedule_source=args.team_schedule,
         opponent_payload=opponent_payload,
         opponent_source=args.opponent_readiness,
         explicit_opponent_name=args.opponent_name,
@@ -448,6 +592,14 @@ def main() -> int:
                 "teamName": output["team"]["teamName"],
                 "matchupStatus":
                     output["matchupAssessment"]["status"],
+                "upcomingSeriesStatus":
+                    output["upcomingSeries"]["status"],
+                "upcomingOpponent":
+                    output["upcomingSeries"][
+                        "opponentDisplayName"
+                    ],
+                "upcomingOpponentTeamId":
+                    output["upcomingSeries"]["opponentTeamId"],
                 "watchItemCount":
                     len(output["managerialWatchlist"]),
                 "recommendationStatus":
