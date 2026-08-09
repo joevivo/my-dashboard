@@ -1,0 +1,695 @@
+{
+  "gameCount": 3,
+  "gameIds": [
+    "168",
+    "174",
+    "180"
+  ],
+  "games": [
+    {
+      "awayTeam": "Milan Azzurri",
+      "catastrophicOutcomes": {
+        "Strike Out": 3
+      },
+      "defenseErrorEvents": {
+        "1 Base Error - 1B": 1
+      },
+      "defenseStatePerformance": {
+        "outs=0|bases=1": {
+          "opportunities": 2,
+          "prevented": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=2": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=empty": {
+          "opportunities": 9,
+          "prevented": 8,
+          "runs_to_inning_end": 1
+        },
+        "outs=1|bases=1": {
+          "opportunities": 4,
+          "prevented": 4,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=2": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=empty": {
+          "opportunities": 7,
+          "prevented": 6,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=1": {
+          "opportunities": 4,
+          "prevented": 4,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=2": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=23": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=empty": {
+          "opportunities": 5,
+          "prevented": 4,
+          "runs_to_inning_end": 1
+        }
+      },
+      "eventCount": 76,
+      "gameId": "168",
+      "homeTeam": "Aquarium Drinkers",
+      "offenseStatePerformance": {
+        "outs=0|bases=1": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=12": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=2": {
+          "converted": 1,
+          "opportunities": 1,
+          "runs_to_inning_end": 3
+        },
+        "outs=0|bases=empty": {
+          "converted": 2,
+          "opportunities": 8,
+          "runs_to_inning_end": 4
+        },
+        "outs=1|bases=1": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=12": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=2": {
+          "converted": 1,
+          "opportunities": 2,
+          "runs_to_inning_end": 2
+        },
+        "outs=1|bases=empty": {
+          "converted": 1,
+          "opportunities": 6,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=1": {
+          "converted": 1,
+          "opportunities": 1,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=12": {
+          "converted": 1,
+          "opportunities": 2,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=123": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=2": {
+          "converted": 2,
+          "opportunities": 5,
+          "runs_to_inning_end": 3
+        },
+        "outs=2|bases=23": {
+          "converted": 0,
+          "opportunities": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=empty": {
+          "converted": 1,
+          "opportunities": 4,
+          "runs_to_inning_end": 1
+        }
+      },
+      "runMechanisms": {
+        "extra_base_hit": 2,
+        "single": 1
+      },
+      "tacticalEvents": {
+        "error": 1,
+        "intentional_walk": 1
+      },
+      "twoOutConversion": {
+        "converted": 4,
+        "opportunities": 11,
+        "runs_to_inning_end": 5
+      }
+    },
+    {
+      "awayTeam": "Milan Azzurri",
+      "catastrophicOutcomes": {
+        "Strike Out": 1
+      },
+      "defenseErrorEvents": {},
+      "defenseStatePerformance": {
+        "outs=0|bases=1": {
+          "opportunities": 2,
+          "prevented": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=empty": {
+          "opportunities": 9,
+          "prevented": 9,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=1": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=2": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=empty": {
+          "opportunities": 7,
+          "prevented": 7,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=1": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=12": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=2": {
+          "opportunities": 2,
+          "prevented": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=3": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=empty": {
+          "opportunities": 7,
+          "prevented": 7,
+          "runs_to_inning_end": 0
+        }
+      },
+      "eventCount": 70,
+      "gameId": "174",
+      "homeTeam": "Aquarium Drinkers",
+      "offenseStatePerformance": {
+        "outs=0|bases=1": {
+          "converted": 1,
+          "opportunities": 2,
+          "runs_to_inning_end": 4
+        },
+        "outs=0|bases=2": {
+          "converted": 1,
+          "opportunities": 1,
+          "runs_to_inning_end": 5
+        },
+        "outs=0|bases=23": {
+          "converted": 1,
+          "opportunities": 1,
+          "runs_to_inning_end": 4
+        },
+        "outs=0|bases=empty": {
+          "converted": 1,
+          "opportunities": 8,
+          "runs_to_inning_end": 5
+        },
+        "outs=1|bases=1": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=123": {
+          "converted": 1,
+          "opportunities": 1,
+          "runs_to_inning_end": 4
+        },
+        "outs=1|bases=2": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=1|bases=23": {
+          "converted": 2,
+          "opportunities": 2,
+          "runs_to_inning_end": 6
+        },
+        "outs=1|bases=empty": {
+          "converted": 0,
+          "opportunities": 6,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=1": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=12": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=2": {
+          "converted": 0,
+          "opportunities": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=3": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=empty": {
+          "converted": 0,
+          "opportunities": 5,
+          "runs_to_inning_end": 0
+        }
+      },
+      "runMechanisms": {
+        "productive_out": 1,
+        "single": 2
+      },
+      "tacticalEvents": {
+        "error": 1,
+        "intentional_walk": 1,
+        "wild_pitch": 1
+      },
+      "twoOutConversion": {
+        "converted": 0,
+        "opportunities": 5,
+        "runs_to_inning_end": 0
+      }
+    },
+    {
+      "awayTeam": "Milan Azzurri",
+      "catastrophicOutcomes": {
+        "Ground Out (1B) Double Play": 1,
+        "Strike Out": 5
+      },
+      "defenseErrorEvents": {
+        "1 Base Error - 2B": 1,
+        "Single & Error - 1B": 1
+      },
+      "defenseStatePerformance": {
+        "outs=0|bases=1": {
+          "opportunities": 2,
+          "prevented": 1,
+          "runs_to_inning_end": 1
+        },
+        "outs=0|bases=empty": {
+          "opportunities": 10,
+          "prevented": 8,
+          "runs_to_inning_end": 2
+        },
+        "outs=1|bases=3": {
+          "opportunities": 1,
+          "prevented": 0,
+          "runs_to_inning_end": 1
+        },
+        "outs=1|bases=empty": {
+          "opportunities": 8,
+          "prevented": 7,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=1": {
+          "opportunities": 1,
+          "prevented": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=3": {
+          "opportunities": 1,
+          "prevented": 0,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=empty": {
+          "opportunities": 8,
+          "prevented": 8,
+          "runs_to_inning_end": 0
+        }
+      },
+      "eventCount": 70,
+      "gameId": "180",
+      "homeTeam": "Aquarium Drinkers",
+      "offenseStatePerformance": {
+        "outs=0|bases=1": {
+          "converted": 2,
+          "opportunities": 4,
+          "runs_to_inning_end": 2
+        },
+        "outs=0|bases=2": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=0|bases=empty": {
+          "converted": 2,
+          "opportunities": 9,
+          "runs_to_inning_end": 2
+        },
+        "outs=1|bases=1": {
+          "converted": 1,
+          "opportunities": 3,
+          "runs_to_inning_end": 1
+        },
+        "outs=1|bases=12": {
+          "converted": 1,
+          "opportunities": 2,
+          "runs_to_inning_end": 1
+        },
+        "outs=1|bases=2": {
+          "converted": 1,
+          "opportunities": 3,
+          "runs_to_inning_end": 1
+        },
+        "outs=1|bases=empty": {
+          "converted": 0,
+          "opportunities": 4,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=1": {
+          "converted": 0,
+          "opportunities": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=2": {
+          "converted": 0,
+          "opportunities": 2,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=23": {
+          "converted": 0,
+          "opportunities": 1,
+          "runs_to_inning_end": 0
+        },
+        "outs=2|bases=3": {
+          "converted": 1,
+          "opportunities": 2,
+          "runs_to_inning_end": 1
+        },
+        "outs=2|bases=empty": {
+          "converted": 0,
+          "opportunities": 3,
+          "runs_to_inning_end": 0
+        }
+      },
+      "runMechanisms": {
+        "single": 2
+      },
+      "tacticalEvents": {
+        "double_play": 1
+      },
+      "twoOutConversion": {
+        "converted": 1,
+        "opportunities": 7,
+        "runs_to_inning_end": 1
+      }
+    }
+  ],
+  "leagueDate": "2026-08-08",
+  "leagueId": "479431",
+  "notes": [
+    "v0 measures realized inning-end conversion from each observed base/out state.",
+    "v0 separates offensive state conversion from defensive state prevention.",
+    "v0 records tactical and catastrophic outcomes as observed events rather than assuming value.",
+    "v0 records defensive error events separately so pitching review can distinguish defense-created leverage.",
+    "v0 win-mechanism diversity is a simple count of distinct run-scoring mechanism classes observed in the series.",
+    "v0 does not yet calculate empirical run expectancy, leverage index, handedness splits, park adjustment, or player-card balance."
+  ],
+  "schema": "bie.strat365.series-readiness.v0",
+  "season": 1968,
+  "seriesReadinessSignals": {
+    "catastrophicOutcomes": {
+      "Ground Out (1B) Double Play": 1,
+      "Strike Out": 9
+    },
+    "defenseBaseOutStates": [
+      {
+        "opportunities": 6,
+        "prevented": 5,
+        "preventionRate": 0.8333,
+        "runs_to_inning_end": 1,
+        "state": "outs=0|bases=1"
+      },
+      {
+        "opportunities": 1,
+        "prevented": 1,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=0|bases=2"
+      },
+      {
+        "opportunities": 28,
+        "prevented": 25,
+        "preventionRate": 0.8929,
+        "runs_to_inning_end": 3,
+        "state": "outs=0|bases=empty"
+      },
+      {
+        "opportunities": 5,
+        "prevented": 5,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=1|bases=1"
+      },
+      {
+        "opportunities": 2,
+        "prevented": 2,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=1|bases=2"
+      },
+      {
+        "opportunities": 1,
+        "prevented": 0,
+        "preventionRate": 0.0,
+        "runs_to_inning_end": 1,
+        "state": "outs=1|bases=3"
+      },
+      {
+        "opportunities": 22,
+        "prevented": 20,
+        "preventionRate": 0.9091,
+        "runs_to_inning_end": 2,
+        "state": "outs=1|bases=empty"
+      },
+      {
+        "opportunities": 6,
+        "prevented": 6,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=1"
+      },
+      {
+        "opportunities": 1,
+        "prevented": 1,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=12"
+      },
+      {
+        "opportunities": 3,
+        "prevented": 3,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=2"
+      },
+      {
+        "opportunities": 1,
+        "prevented": 1,
+        "preventionRate": 1.0,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=23"
+      },
+      {
+        "opportunities": 2,
+        "prevented": 1,
+        "preventionRate": 0.5,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=3"
+      },
+      {
+        "opportunities": 20,
+        "prevented": 19,
+        "preventionRate": 0.95,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=empty"
+      }
+    ],
+    "defenseErrorEvents": {
+      "1 Base Error - 1B": 1,
+      "1 Base Error - 2B": 1,
+      "Single & Error - 1B": 1
+    },
+    "offenseBaseOutStates": [
+      {
+        "conversionRate": 0.4286,
+        "converted": 3,
+        "opportunities": 7,
+        "runs_to_inning_end": 6,
+        "state": "outs=0|bases=1"
+      },
+      {
+        "conversionRate": 0.0,
+        "converted": 0,
+        "opportunities": 1,
+        "runs_to_inning_end": 0,
+        "state": "outs=0|bases=12"
+      },
+      {
+        "conversionRate": 0.6667,
+        "converted": 2,
+        "opportunities": 3,
+        "runs_to_inning_end": 8,
+        "state": "outs=0|bases=2"
+      },
+      {
+        "conversionRate": 1.0,
+        "converted": 1,
+        "opportunities": 1,
+        "runs_to_inning_end": 4,
+        "state": "outs=0|bases=23"
+      },
+      {
+        "conversionRate": 0.2,
+        "converted": 5,
+        "opportunities": 25,
+        "runs_to_inning_end": 11,
+        "state": "outs=0|bases=empty"
+      },
+      {
+        "conversionRate": 0.2,
+        "converted": 1,
+        "opportunities": 5,
+        "runs_to_inning_end": 1,
+        "state": "outs=1|bases=1"
+      },
+      {
+        "conversionRate": 0.3333,
+        "converted": 1,
+        "opportunities": 3,
+        "runs_to_inning_end": 1,
+        "state": "outs=1|bases=12"
+      },
+      {
+        "conversionRate": 1.0,
+        "converted": 1,
+        "opportunities": 1,
+        "runs_to_inning_end": 4,
+        "state": "outs=1|bases=123"
+      },
+      {
+        "conversionRate": 0.3333,
+        "converted": 2,
+        "opportunities": 6,
+        "runs_to_inning_end": 3,
+        "state": "outs=1|bases=2"
+      },
+      {
+        "conversionRate": 1.0,
+        "converted": 2,
+        "opportunities": 2,
+        "runs_to_inning_end": 6,
+        "state": "outs=1|bases=23"
+      },
+      {
+        "conversionRate": 0.0625,
+        "converted": 1,
+        "opportunities": 16,
+        "runs_to_inning_end": 1,
+        "state": "outs=1|bases=empty"
+      },
+      {
+        "conversionRate": 0.25,
+        "converted": 1,
+        "opportunities": 4,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=1"
+      },
+      {
+        "conversionRate": 0.3333,
+        "converted": 1,
+        "opportunities": 3,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=12"
+      },
+      {
+        "conversionRate": 0.0,
+        "converted": 0,
+        "opportunities": 1,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=123"
+      },
+      {
+        "conversionRate": 0.2222,
+        "converted": 2,
+        "opportunities": 9,
+        "runs_to_inning_end": 3,
+        "state": "outs=2|bases=2"
+      },
+      {
+        "conversionRate": 0.0,
+        "converted": 0,
+        "opportunities": 3,
+        "runs_to_inning_end": 0,
+        "state": "outs=2|bases=23"
+      },
+      {
+        "conversionRate": 0.3333,
+        "converted": 1,
+        "opportunities": 3,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=3"
+      },
+      {
+        "conversionRate": 0.0833,
+        "converted": 1,
+        "opportunities": 12,
+        "runs_to_inning_end": 1,
+        "state": "outs=2|bases=empty"
+      }
+    ],
+    "runMechanisms": {
+      "extra_base_hit": 2,
+      "productive_out": 1,
+      "single": 5
+    },
+    "tacticalEvents": {
+      "double_play": 1,
+      "error": 2,
+      "intentional_walk": 2,
+      "wild_pitch": 1
+    },
+    "twoOutConversion": {
+      "conversionRate": 0.2174,
+      "converted": 5,
+      "opportunities": 23,
+      "runs_to_inning_end": 6
+    },
+    "winMechanismDiversityCount": 3
+  },
+  "sourceParsedRoot": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\season-ingestion\\league-479431\\2026-08-08",
+  "teamName": "Aquarium Drinkers"
+}
