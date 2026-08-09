@@ -1,0 +1,195 @@
+{
+    "schemaVersion":  "strat365-nightly-raw-capture-lock-v0",
+    "leagueId":  "479336",
+    "leagueDate":  "2026-08-08",
+    "runDirectory":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0",
+    "lockedAtUtc":  "2026-08-09T03:24:23.5787499Z",
+    "spoilerSafe":  true,
+    "gameIds":  [
+                    "328",
+                    "334",
+                    "340"
+                ],
+    "sourceDiscoveryRequestCount":  1,
+    "gameRequestCount":  9,
+    "capturedGameRequestCount":  9,
+    "pendingGameRequestCount":  0,
+    "failedGameRequestCount":  0,
+    "runSpecSha256":  "A39823199F0DAEE6C2BBF6AFF26013EF3E1ECCA7E48D5121FA048D4E55A4FADE",
+    "scheduleBodySha256":  "6F62CDF24EE51F106C30F47D8EB669705421212145105FDBDFAA81618758B33C",
+    "gameCapturePlanSha256":  "F5D0ED89558E4A870C5C9DFA872D5D481763C856B02F93E5728B86F2D2A4F4A0",
+    "postCaptureManifestSha256":  "12404C0DA4DB97EE6B70685A6B6408186CD120B1ED509C329DC1729902D575A8",
+    "artifactCountExcludingLock":  33,
+    "artifactInventory":  [
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/game-capture-plan.json",
+                                  "bytes":  9659,
+                                  "sha256":  "F5D0ED89558E4A870C5C9DFA872D5D481763C856B02F93E5728B86F2D2A4F4A0"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-328-play-by-play.attempt-1.json",
+                                  "bytes":  2619,
+                                  "sha256":  "5F175CB69BBF61B0366B74B1AD51568ECECA1342B3EA5B6ED2A75ED708835AC2"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-328-recap.attempt-1.json",
+                                  "bytes":  2570,
+                                  "sha256":  "AC7575D6C656C9072B7FE5328C85843541E57D793FEE0C83DA59054117DE43AD"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-328-replay.attempt-1.json",
+                                  "bytes":  2590,
+                                  "sha256":  "4417A19F1BA17CE13DFC6707CFB81B36E9D0A5C2B50549F50E234B0FEAE5A00B"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-334-play-by-play.attempt-1.json",
+                                  "bytes":  2619,
+                                  "sha256":  "2A1F432A25D938B82A384AF706B451E931364DD474C8916E8027807DB7C4585E"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-334-recap.attempt-1.json",
+                                  "bytes":  2570,
+                                  "sha256":  "E187530D6731778E327A5CAEFB91EB0AB613BC0928D99A876879B2D0AA5F3893"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-334-replay.attempt-1.json",
+                                  "bytes":  2590,
+                                  "sha256":  "B4ADF830C896E0464C26A46D921960AE0DD002AD943317F77C39CA97D9EBFB1B"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-340-play-by-play.attempt-1.json",
+                                  "bytes":  2619,
+                                  "sha256":  "D986F5D3C869CBC45F3D09B12D5C9DE7EE8E67574798F73BA0A808BDA16BB4F0"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-340-recap.attempt-1.json",
+                                  "bytes":  2570,
+                                  "sha256":  "EACC9E1E16677116358FBE6606B708372C4EED66B564BB34E85CD5AB3C3CD853"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/game-340-replay.attempt-1.json",
+                                  "bytes":  2590,
+                                  "sha256":  "9E1C8A6CF26D813075064845D4C238A2EC1F868D99D70E448B80A72ED31EE65A"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/metadata/team-schedule.attempt-1.json",
+                                  "bytes":  1815,
+                                  "sha256":  "132BB315094717F36238814AA15C3C98C363AE0BBA10CE9493163410F8E50D98"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/play-by-play.headers.txt",
+                                  "bytes":  1332,
+                                  "sha256":  "D178B0C06B990880B9EB6AEE50B03E8BF51F0E52540AF6EABDCA4B502CC9C5DA"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/play-by-play.html",
+                                  "bytes":  74128,
+                                  "sha256":  "FC552B984675D755712C48662AD4C6FF56DF31C86FDD165AC02176DBCB2558B7"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/recap.headers.txt",
+                                  "bytes":  1334,
+                                  "sha256":  "CD9CCA8A4901B48D71DE05264788E6FFD1A651012672BB7FC87790D4D471464A"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/recap.html",
+                                  "bytes":  51698,
+                                  "sha256":  "9F8BA23E9D1AAD7CAE137AED270AAE0B64C2BA6F0A217A8EE9B51C75C10911FD"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/replay.headers.txt",
+                                  "bytes":  1328,
+                                  "sha256":  "E73FD4BC8AA6653F8DCA0BA2270C696A65612E372637D6D48E908B895B93AE63"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-328/replay.html",
+                                  "bytes":  99081,
+                                  "sha256":  "351C8704FF7F9DBE3697D6FF1944F67FF76443989D1B01F313A252307331CCD6"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/play-by-play.headers.txt",
+                                  "bytes":  1318,
+                                  "sha256":  "60329EFBB31C9097E598D55D82E691C1E3110421FD611D5A4477503DD44B1A30"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/play-by-play.html",
+                                  "bytes":  52921,
+                                  "sha256":  "374E2BE3F2C4EA7A1DE8875B0465EAD1EC8B6FED524896A7374492D3AB4542EC"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/recap.headers.txt",
+                                  "bytes":  1328,
+                                  "sha256":  "F4BC6824C3A883F79C5BA52AC10ECEA8E730027EB03BD28BAFD2C884A2960536"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/recap.html",
+                                  "bytes":  39249,
+                                  "sha256":  "EC1D132A7A85440CA047BE2D72CED11B1002A13B19C2E69BD80653CA5AF08766"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/replay.headers.txt",
+                                  "bytes":  1322,
+                                  "sha256":  "8216D3B8CCFD709ED8B9B9444FF6E1AEC9982C3C94010C12348BA74650298E5A"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-334/replay.html",
+                                  "bytes":  80886,
+                                  "sha256":  "E59F791A0C994FF7694525EC2E0827F5D17896D5B73FB5F3564E61490895AFE1"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/play-by-play.headers.txt",
+                                  "bytes":  1328,
+                                  "sha256":  "CE0A59C9A11DFAEF8F6B337CF42CAE2BCEEEEC76FAFD3A35767221B8FC762499"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/play-by-play.html",
+                                  "bytes":  64010,
+                                  "sha256":  "8D3C4A8C06D59A2374E7278A17FCDF9036FB7BA4E657A495EC050C3B1859F298"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/recap.headers.txt",
+                                  "bytes":  1318,
+                                  "sha256":  "16EF34137CD6AEA8C654FBF9D1CDE81F0D72F9EC129D240547A5080AD1177041"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/recap.html",
+                                  "bytes":  44099,
+                                  "sha256":  "CA7567F2696BB20FE7884B5393C29944FD3EEF414EDEA05BFE4526D5BA1719C5"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/replay.headers.txt",
+                                  "bytes":  1338,
+                                  "sha256":  "2A0A147B089EF943F3AA93A3EE6246020A56B3ABED0E25F309A37336A7007750"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/games/game-340/replay.html",
+                                  "bytes":  88717,
+                                  "sha256":  "886C61A977376F9B890D0049D4D3AE45BC91DF92D511A0254D70022D5F7D5452"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/team/team-schedule-2026-08-08.headers.txt",
+                                  "bytes":  1541,
+                                  "sha256":  "B8AA3B053D1FCF9765BD6DB7FF75186F2014382965A947FA2CB836F4202FCFF2"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/responses/team/team-schedule-2026-08-08.html",
+                                  "bytes":  132078,
+                                  "sha256":  "6F62CDF24EE51F106C30F47D8EB669705421212145105FDBDFAA81618758B33C"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/run-manifest.json",
+                                  "bytes":  22715,
+                                  "sha256":  "12404C0DA4DB97EE6B70685A6B6408186CD120B1ED509C329DC1729902D575A8"
+                              },
+                              {
+                                  "path":  "data/baseball/raw/strat365/1968/season-ingestion/league-479336/2026-08-08/capture-20260809T032219Z-nightly-v0/run-spec.json",
+                                  "bytes":  6503,
+                                  "sha256":  "A39823199F0DAEE6C2BBF6AFF26013EF3E1ECCA7E48D5121FA048D4E55A4FADE"
+                              }
+                          ],
+    "governance":  {
+                       "canonicalPromotionExecuted":  false,
+                       "parserExecuted":  false,
+                       "immutableEvidenceCheckpoint":  true
+                   }
+}
