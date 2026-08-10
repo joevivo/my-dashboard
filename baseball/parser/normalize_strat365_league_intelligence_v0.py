@@ -378,6 +378,243 @@ def parse_manager(
     return result
 
 
+class TeamLinkParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.current_href: str | None = None
+        self.current_text: list[str] = []
+        self.links: list[tuple[str, str]] = []
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        if tag.lower() != "a":
+            return
+
+        self.current_href = str(
+            dict(attrs).get("href") or ""
+        )
+        self.current_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self.current_href is not None:
+            self.current_text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if (
+            tag.lower() != "a"
+            or self.current_href is None
+        ):
+            return
+
+        label = " ".join(
+            " ".join(self.current_text).split()
+        )
+
+        match = re.search(
+            r"(?:^|/)team/(\d+)(?:$|[/?#])",
+            self.current_href,
+        )
+
+        if match and label:
+            self.links.append(
+                (
+                    label,
+                    match.group(1),
+                )
+            )
+
+        self.current_href = None
+        self.current_text = []
+
+
+def parse_team_links(
+    path: Path,
+) -> dict[str, str]:
+    parser = TeamLinkParser()
+
+    parser.feed(
+        path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+    )
+
+    result: dict[str, str] = {}
+
+    for label, team_id in parser.links:
+        key = team_key(label)
+
+        existing = result.get(key)
+
+        if (
+            existing is not None
+            and existing != team_id
+        ):
+            raise ValueError(
+                "Conflicting Strat team IDs for "
+                f"{label}: {existing} vs {team_id}"
+            )
+
+        result[key] = team_id
+
+    return result
+
+
+def team_tokens(value: str) -> list[str]:
+    value = unicodedata.normalize(
+        "NFKD",
+        value,
+    )
+
+    value = "".join(
+        char
+        for char in value
+        if not unicodedata.combining(char)
+    )
+
+    return re.findall(
+        r"[a-z0-9]+",
+        value.casefold(),
+    )
+
+
+def resolve_alias_collection_globally(
+    collection: dict[str, dict[str, Any]],
+    canonical: dict[str, dict[str, Any]],
+    collection_name: str,
+) -> dict[str, dict[str, Any]]:
+    candidate_map: dict[str, set[str]] = {}
+
+    for alias_key in collection:
+        candidates: set[str] = set()
+
+        if alias_key in canonical:
+            candidates.add(alias_key)
+
+        for canonical_key, item in canonical.items():
+            name = str(
+                item.get("teamName") or ""
+            )
+
+            tokens = team_tokens(name)
+
+            if (
+                len(alias_key) >= 3
+                and any(
+                    token.startswith(alias_key)
+                    for token in tokens
+                )
+            ):
+                candidates.add(
+                    canonical_key
+                )
+
+        if not candidates:
+            raise ValueError(
+                f"{collection_name} alias has no "
+                f"canonical candidate: {alias_key}"
+            )
+
+        candidate_map[alias_key] = candidates
+
+    aliases = sorted(
+        candidate_map,
+        key=lambda alias: (
+            len(candidate_map[alias]),
+            alias,
+        ),
+    )
+
+    solutions: list[dict[str, str]] = []
+
+    def search(
+        index: int,
+        used: set[str],
+        assignment: dict[str, str],
+    ) -> None:
+        if len(solutions) > 1:
+            return
+
+        if index == len(aliases):
+            solutions.append(
+                dict(assignment)
+            )
+            return
+
+        alias = aliases[index]
+
+        available = sorted(
+            candidate_map[alias] - used
+        )
+
+        for canonical_key in available:
+            assignment[alias] = canonical_key
+
+            search(
+                index + 1,
+                used | {canonical_key},
+                assignment,
+            )
+
+            assignment.pop(
+                alias,
+                None,
+            )
+
+    search(
+        0,
+        set(),
+        {},
+    )
+
+    if len(solutions) != 1:
+        raise ValueError(
+            f"{collection_name} global alias mapping "
+            f"expected one solution; found "
+            f"{len(solutions)}. Candidates={candidate_map}"
+        )
+
+    solution = solutions[0]
+
+    result: dict[str, dict[str, Any]] = {}
+
+    for alias_key, canonical_key in solution.items():
+        item = dict(
+            collection[alias_key]
+        )
+
+        item["sourceTeamLabel"] = str(
+            collection[alias_key].get(
+                "teamName"
+            ) or ""
+        )
+
+        item["teamName"] = str(
+            canonical[canonical_key][
+                "teamName"
+            ]
+        )
+
+        item["teamId"] = str(
+            canonical[canonical_key][
+                "teamId"
+            ]
+        )
+
+        result[canonical_key] = item
+
+    if set(result) != set(canonical):
+        raise ValueError(
+            f"{collection_name} global resolution "
+            "did not cover every canonical team."
+        )
+
+    return result
+
+
 def rank_values(
     teams: list[dict[str, Any]],
     accessor,
@@ -582,6 +819,50 @@ def build(
         manager_table
     )
 
+    standings_team_links = parse_team_links(
+        responses
+        / "league-standings"
+        / "page-00000.html"
+    )
+
+    for canonical_key, standing in standings.items():
+        team_id = standings_team_links.get(
+            canonical_key
+        )
+
+        if team_id is None:
+            raise ValueError(
+                "Standings team lacks canonical "
+                "Strat team ID: "
+                f"{standing['teamName']}"
+            )
+
+        standing["teamId"] = team_id
+
+    if set(offense) != set(standings):
+        raise ValueError(
+            "Offense full-name identities do not "
+            "match standings."
+        )
+
+    if set(pitching) != set(standings):
+        raise ValueError(
+            "Pitching full-name identities do not "
+            "match standings."
+        )
+
+    fielding = resolve_alias_collection_globally(
+        fielding,
+        standings,
+        "fielding",
+    )
+
+    managers = resolve_alias_collection_globally(
+        managers,
+        standings,
+        "managers",
+    )
+
     collections = {
         "standings": standings,
         "offense": offense,
@@ -671,6 +952,7 @@ def build(
 
         teams.append(
             {
+                "teamId": standing["teamId"],
                 "teamName": standing["teamName"],
                 "teamKey": key,
                 "owner": standing["owner"],
@@ -878,6 +1160,10 @@ def build(
             "canonicalDataModified": False,
             "gameCaptureContractChanged": False,
             "bieOwnsSortingAndAnalysis": True,
+            "teamIdentityResolution": (
+                "STRAT_TEAM_ID_CANONICAL_PLUS_"
+                "UNIQUE_GLOBAL_ALIAS_MATCH"
+            ),
             "unearnedRunsFormula": "R_MINUS_ER",
             "unearnedRunsInterpretation": (
                 "DEFENSE_ASSOCIATED_RUN_DAMAGE_"
