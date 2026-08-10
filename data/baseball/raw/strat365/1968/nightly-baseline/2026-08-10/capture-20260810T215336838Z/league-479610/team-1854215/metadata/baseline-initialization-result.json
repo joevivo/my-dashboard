@@ -1,0 +1,44 @@
+{
+    "schemaVersion":  "strat365-nightly-baseline-initialization-v0",
+    "artifactType":  "strat365-nightly-baseline-initialization",
+    "teamKey":  "479610:1854215",
+    "leagueId":  "479610",
+    "teamId":  "1854215",
+    "runId":  "479610-initial-baseline-20260810T215336838Z",
+    "appliedAtUtc":  "2026-08-10T21:53:37.919Z",
+    "initializerPath":  "baseball/automation/initialize_strat365_schedule_baseline_v0.py",
+    "initializerCommit":  "7c0dbb9a58c101c2f3d97cfc85552fd45723acee",
+    "result":  {
+                   "status":  "PASS",
+                   "mode":  "APPLY",
+                   "teamKey":  "479610:1854215",
+                   "leagueId":  "479610",
+                   "teamId":  "1854215",
+                   "fixturePath":  "data/baseball/raw/strat365/1968/nightly-baseline/2026-08-10/capture-20260810T215336838Z/league-479610/team-1854215/responses/team-schedule.html",
+                   "fixtureSha256":  "91F5D3DF66B1C977D554FA18D8490F58CD62969577347A2D54E85F8FC826285A",
+                   "fixtureByteCount":  96692,
+                   "leagueFixturePath":  "data/baseball/raw/strat365/1968/nightly-baseline/2026-08-10/capture-20260810T215336838Z/league-479610/team-1854215/responses/league-schedule.html",
+                   "leagueFixtureSha256":  "E3339E3411BB7C62BAAE58DC2C2B8228F16037C8A420456EF13272503BFD70C0",
+                   "zeroGameIdentityValidation":  {
+                                                      "teamScheduleTitleMatch":  true,
+                                                      "leagueIdentityMatch":  true,
+                                                      "leagueTeamMembershipMatch":  true
+                                                  },
+                   "crossLeagueGameLinkCount":  0,
+                   "discoveredGameCount":  0,
+                   "discoveredGameIds":  [
+
+                                         ],
+                   "currentBaselineStatus":  "PENDING_INITIAL_SCHEDULE_BASELINE",
+                   "proposedBaselineStatus":  "READY",
+                   "currentStateRevision":  0,
+                   "proposedStateRevision":  1,
+                   "historicalGameCountProposed":  0,
+                   "newlyDiscoveredGameCountProposed":  0,
+                   "pendingCaptureGameCountProposed":  0,
+                   "stateWriteCount":  1,
+                   "spoilerStatus":  "SEALED",
+                   "outcomeFieldsPrinted":  0,
+                   "runId":  "479610-initial-baseline-20260810T215336838Z"
+               }
+}

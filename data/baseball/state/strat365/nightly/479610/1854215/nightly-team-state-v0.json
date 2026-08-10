@@ -7,7 +7,7 @@
   "teamName": "Aquarium Drinkers",
   "strategyProfile": "busch-preseason-environment",
   "active": true,
-  "stateRevision": 0,
+  "stateRevision": 1,
   "cutover": {
     "mode": "BASELINE_ALL_EXISTING_GAMES_AS_HISTORICAL",
     "userReplayStatus": "CAUGHT_UP_BEFORE_AUTOMATION",
@@ -15,17 +15,17 @@
     "rationale": "The user completed all currently available game replays before nightly automation initialization."
   },
   "scheduleBaseline": {
-    "status": "PENDING_INITIAL_SCHEDULE_BASELINE",
+    "status": "READY",
     "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1854215",
-    "capturedAtUtc": null,
-    "scheduleSha256": null,
+    "capturedAtUtc": "2026-08-10T21:53:37.909Z",
+    "scheduleSha256": "91F5D3DF66B1C977D554FA18D8490F58CD62969577347A2D54E85F8FC826285A",
     "historicalGameIds": [],
     "historicalGameCount": 0,
-    "baselineRunId": null
+    "baselineRunId": "479610-initial-baseline-20260810T215336838Z"
   },
   "discovery": {
-    "status": "NOT_RUN",
-    "lastCheckedAtUtc": null,
+    "status": "NO_NEW_GAMES",
+    "lastCheckedAtUtc": "2026-08-10T21:53:37.909Z",
     "knownGameIds": [],
     "newlyDiscoveredGameIds": [],
     "pendingCaptureGameIds": [],
@@ -85,16 +85,24 @@
   },
   "audit": {
     "initializedAtUtc": "2026-08-10T19:20:49.199Z",
-    "lastTransitionAtUtc": null,
-    "lastTransitionAction": "INITIALIZE_PENDING_BASELINE",
-    "lastRunId": null,
-    "transitionCount": 0,
-    "transitionHistory": []
+    "lastTransitionAtUtc": "2026-08-10T21:53:37.909Z",
+    "lastTransitionAction": "INITIAL_SCHEDULE_BASELINE_READY",
+    "lastRunId": "479610-initial-baseline-20260810T215336838Z",
+    "transitionCount": 1,
+    "transitionHistory": [
+      {
+        "timestampUtc": "2026-08-10T21:53:37.909Z",
+        "action": "INITIAL_SCHEDULE_BASELINE_READY",
+        "priorState": "PENDING_INITIAL_SCHEDULE_BASELINE",
+        "nextState": "READY",
+        "runId": "479610-initial-baseline-20260810T215336838Z"
+      }
+    ]
   },
   "validation": {
     "registryTeamIdentityMatch": true,
-    "pendingBaselineBeforeDiscovery": true,
-    "initialQueuesEmpty": true,
+    "pendingBaselineBeforeDiscovery": false,
+    "initialQueuesEmpty": false,
     "initialSpoilerState": "SEALED",
     "gameResultsStoredInState": false,
     "status": "PASS"

@@ -1,0 +1,26 @@
+{
+    "schemaVersion":  "strat365-nightly-schedule-capture-v0",
+    "artifactType":  "strat365-nightly-schedule-capture",
+    "sourceFamily":  "leagueSchedule",
+    "teamKey":  "479610:1854215",
+    "leagueId":  "479610",
+    "teamId":  "1854215",
+    "requestedUrl":  "https://365.strat-o-matic.com/league/schedule/479610",
+    "requestStatus":  "captured",
+    "attemptNumber":  1,
+    "transportResult":  "PASS",
+    "httpStatus":  200,
+    "capturedAtUtc":  "2026-08-10T21:53:37.822Z",
+    "rawResponsePath":  "data/baseball/raw/strat365/1968/nightly-baseline/2026-08-10/capture-20260810T215336838Z/league-479610/team-1854215/responses/league-schedule.html",
+    "responseHeadersPath":  "data/baseball/raw/strat365/1968/nightly-baseline/2026-08-10/capture-20260810T215336838Z/league-479610/team-1854215/responses/league-schedule.headers.txt",
+    "metadataPath":  "data/baseball/raw/strat365/1968/nightly-baseline/2026-08-10/capture-20260810T215336838Z/league-479610/team-1854215/metadata/league-schedule.attempt-1.json",
+    "byteCount":  33536,
+    "sha256":  "E3339E3411BB7C62BAAE58DC2C2B8228F16037C8A420456EF13272503BFD70C0",
+    "validation":  {
+                       "sourceValidation":  "PASS",
+                       "leagueIdentity":  true,
+                       "teamMembershipIdentity":  true,
+                       "teamScheduleId":  "1854215",
+                       "spoilerSafeCapture":  true
+                   }
+}
