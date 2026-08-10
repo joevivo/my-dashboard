@@ -1219,10 +1219,10 @@ def main() -> int:
             else:
                 league_body_path = body_path
                 league_metadata_name = metadata_path.name
-                family_counts[LEAGUE_SCORE_FAMILY] = (
-                    family_counts.get(LEAGUE_SCORE_FAMILY, 0) + 1
-                )
                 if family != LEAGUE_SCORE_FAMILY:
+                    family_counts[LEAGUE_SCORE_FAMILY] = (
+                        family_counts.get(LEAGUE_SCORE_FAMILY, 0) + 1
+                    )
                     family_counts[family] -= 1
                     if family_counts[family] == 0:
                         del family_counts[family]
