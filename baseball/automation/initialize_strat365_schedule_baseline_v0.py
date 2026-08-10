@@ -147,6 +147,77 @@ def discover_game_ids(
     return game_ids, cross_league_count
 
 
+def visible_html_text(html_text: str) -> str:
+    without_tags = re.sub(
+        r"<[^>]+>",
+        " ",
+        html_text,
+    )
+    return " ".join(without_tags.split())
+
+
+def validate_zero_game_baseline_identity(
+    *,
+    team_schedule_html: str,
+    league_schedule_html: str,
+    league_id: str,
+    team_id: str,
+    team_name: str,
+) -> dict[str, bool]:
+    team_visible = visible_html_text(
+        team_schedule_html
+    )
+    league_visible = visible_html_text(
+        league_schedule_html
+    )
+
+    team_schedule_title_match = (
+        re.search(
+            r"\bTeam\s+Schedule\s*:\s*"
+            + re.escape(team_name)
+            + r"\b",
+            team_visible,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+    league_identity_match = (
+        re.search(
+            r"\bAuto\s+League\s+"
+            + re.escape(league_id)
+            + r"\b",
+            league_visible,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+    league_team_membership_match = (
+        re.search(
+            r"(?:https?://365\.strat-o-matic\.com)?"
+            r"/team/schedule/"
+            + re.escape(team_id)
+            + r"(?=[/?#\"'<\s]|$)",
+            league_schedule_html,
+            re.IGNORECASE,
+        )
+        is not None
+    )
+
+    return {
+        "teamScheduleTitleMatch": (
+            team_schedule_title_match
+        ),
+        "leagueIdentityMatch": (
+            league_identity_match
+        ),
+        "leagueTeamMembershipMatch": (
+            league_team_membership_match
+        ),
+    }
+
+
 def atomic_write_json(
     destination: Path,
     value: dict[str, Any],
@@ -224,7 +295,9 @@ def build_proposed_state(
             "knownGameIds": game_ids,
             "newlyDiscoveredGameIds": [],
             "pendingCaptureGameIds": [],
-            "lastDiscoveredGameId": game_ids[-1],
+            "lastDiscoveredGameId": (
+                game_ids[-1] if game_ids else None
+            ),
             "scheduleUnchanged": None,
         }
     )
@@ -329,6 +402,15 @@ def validate_proposed_state(
         "Initial baseline must not queue historical games.",
     )
 
+    expected_last_discovered_game_id = (
+        game_ids[-1] if game_ids else None
+    )
+    require(
+        proposed["discovery"]["lastDiscoveredGameId"]
+        == expected_last_discovered_game_id,
+        "Initial baseline last discovered game ID is incorrect.",
+    )
+
     require(
         proposed["capture"]["capturedGameIds"]
         == [],
@@ -360,6 +442,7 @@ def initialize_baseline(
     repo_root: Path,
     team_key: str,
     fixture_path: Path,
+    league_fixture_path: Path | None,
     dry_run: bool,
     apply: bool,
     run_id: str,
@@ -396,6 +479,7 @@ def initialize_baseline(
     team = matches[0]
     league_id = str(team["leagueId"])
     team_id = str(team["teamId"])
+    team_name = str(team["teamName"])
 
     root_template = str(
         contract["storagePolicy"]["rootTemplate"]
@@ -463,17 +547,78 @@ def initialize_baseline(
     )
 
     require(
-        game_ids,
-        "No target-league game IDs were discovered.",
-    )
-
-    require(
         cross_league_count == 0,
         (
             "Cross-league game links were discovered: "
             f"{cross_league_count}"
         ),
     )
+
+    zero_game_identity_validation = None
+    league_fixture_sha256 = None
+
+    if not game_ids:
+        require(
+            league_fixture_path is not None,
+            (
+                "Zero-game baseline requires a companion "
+                "league schedule fixture."
+            ),
+        )
+        require(
+            league_fixture_path.is_file(),
+            (
+                "Saved league schedule fixture is missing: "
+                f"{league_fixture_path}"
+            ),
+        )
+
+        league_html_text = league_fixture_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+
+        zero_game_identity_validation = (
+            validate_zero_game_baseline_identity(
+                team_schedule_html=html_text,
+                league_schedule_html=league_html_text,
+                league_id=league_id,
+                team_id=team_id,
+                team_name=team_name,
+            )
+        )
+
+        require(
+            zero_game_identity_validation[
+                "teamScheduleTitleMatch"
+            ],
+            (
+                "Zero-game team schedule does not "
+                "authenticate the configured team name."
+            ),
+        )
+        require(
+            zero_game_identity_validation[
+                "leagueIdentityMatch"
+            ],
+            (
+                "Zero-game league schedule does not "
+                "authenticate the configured league."
+            ),
+        )
+        require(
+            zero_game_identity_validation[
+                "leagueTeamMembershipMatch"
+            ],
+            (
+                "Zero-game league schedule does not "
+                "authenticate team membership."
+            ),
+        )
+
+        league_fixture_sha256 = sha256_file(
+            league_fixture_path
+        )
 
     fixture_sha256 = sha256_file(fixture_path)
     captured_at_utc = utc_now_text()
@@ -514,6 +659,18 @@ def initialize_baseline(
         ),
         "fixtureSha256": fixture_sha256,
         "fixtureByteCount": fixture_path.stat().st_size,
+        "leagueFixturePath": (
+            repository_relative(
+                repo_root,
+                league_fixture_path,
+            )
+            if league_fixture_path is not None
+            else None
+        ),
+        "leagueFixtureSha256": league_fixture_sha256,
+        "zeroGameIdentityValidation": (
+            zero_game_identity_validation
+        ),
         "crossLeagueGameLinkCount": cross_league_count,
         "discoveredGameCount": len(game_ids),
         "discoveredGameIds": game_ids,
@@ -563,6 +720,16 @@ def main() -> int:
     )
 
     parser.add_argument(
+        "--league-fixture-path",
+        required=False,
+        help=(
+            "Companion saved league schedule fixture. "
+            "Required when the initial team schedule "
+            "contains zero completed game IDs."
+        ),
+    )
+
+    parser.add_argument(
         "--run-id",
         required=True,
     )
@@ -592,11 +759,20 @@ def main() -> int:
             repo_root,
             args.fixture_path,
         )
+        league_fixture_path = (
+            repository_path(
+                repo_root,
+                args.league_fixture_path,
+            )
+            if args.league_fixture_path
+            else None
+        )
 
         result = initialize_baseline(
             repo_root=repo_root,
             team_key=args.team_key,
             fixture_path=fixture_path,
+            league_fixture_path=league_fixture_path,
             dry_run=args.dry_run,
             apply=args.apply,
             run_id=args.run_id,
