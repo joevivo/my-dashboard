@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-managers",
+  "sourceFamily": "leagueManagers",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/managers/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/managers/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:23.158408+00:00",
+  "byteCount": 35101,
+  "sha256": "7DC4EEFF66C1E7D972FB38F48A51E9AFFFCFF94D842169A3D0CB7AD8C14BA59D",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

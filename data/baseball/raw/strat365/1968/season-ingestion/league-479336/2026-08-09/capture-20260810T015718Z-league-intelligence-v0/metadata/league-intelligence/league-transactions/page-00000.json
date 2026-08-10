@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-transactions",
+  "sourceFamily": "leagueTransactions",
+  "requestedUrl": "https://365.strat-o-matic.com/league/transactions/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/transactions/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:23.846735+00:00",
+  "byteCount": 74428,
+  "sha256": "59F553B7DBA4546D2BB9F805227A5CADDD7B891467D5BC6793527057BAAC0A0A",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

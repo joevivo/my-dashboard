@@ -1,0 +1,1158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>365 by Strat-O-Matic</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="https://www.strat-o-matic.com/wp-content/themes/strat-o-matic/favicon.ico">
+
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-som.css?v=1" />
+<link rel="stylesheet" type="text/css" href="/css/style8.css" />
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css' />
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="/js/jquery.ui.touch-punch-0.2.3.min.js"></script> --> <!-- Makes JqueryUI touch-enabled -->
+
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/somonline.js"></script>
+<!-- This version (1.9.4) of dataTables is needed for the scroller plugin, which afaik is only used by the live draft, and was included by the old header_live_draft.php.  But the main header.php included a local dataTables.js (commented out below), the version of which was unknown.  I vaguely recall something else on the site requiring a certain version, but I can't find it now.  So, tentatively moving ahead with 1.9.4, hoping it's compatible with our site as a whole. -->
+<script type="text/javascript" language="javascript" src="/js/jquery.dataTables-1.9.4.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/dataTables.sTypes.js"></script>
+<!-- timer for live draft -->
+<script type="text/javascript" language="javascript" src="/js/jquery.timer.js"></script>
+
+
+<script>
+$(function() {
+
+    $('.button').button();
+
+    // Activate jQuery tooltips on all elements with class .tooltip
+    //     ... unless we're on a mobile device and the element is a link
+
+    $('.tooltip').tooltip({
+        tooltipClass: 'text10',
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    $('.tooltipMember').tooltip({
+        tooltipClass: 'text12',
+        content: function() {
+            return '<b>' + $(this).attr('memberName') + '</b>' +
+                   '<br /><br />' +
+                   'Experience: ' + $(this).attr('memberLevel') + '<br />' +
+                   'Teams: ' + $(this).attr('numTeams') + '<br />' +
+                   'Win Pct.: ' + $(this).attr('winPct');
+        },
+        items: '*',    // Necessary for content option to work
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    // Clicking on a link with class "helplink" shows/hides elements with the same class as the link's id
+    $("a.helplink").click(function(event) {
+		$(this).toggleClass('ui-icon-triangle-1-e');
+		$(this).toggleClass('ui-icon-triangle-1-s');
+        $("." + $(this).attr('id')).toggle("fast");
+    });
+
+    // For each injured player, ajax-load and display the number of days left in the injury
+
+    $('.injNum').each(function() {
+        var theElement = $(this);
+        $.get('/player/injuryinfoajax',
+              { player_id: $(this).attr('plId'), year: $(this).attr('y'), version: $(this).attr('v'), league_id: $(this).attr('lId') },
+              function(data) {
+                  theElement.html('I-' + data);
+              }
+        );        
+    });
+
+});
+</script>
+
+<style type="text/css" charset="utf-8">
+
+html {
+        background: url(/img/redesign/background_field.jpg) no-repeat center center fixed; 
+        -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    /* This fixes some layout issues on mobile, but only while we're still unoptimized for mobile.
+       When we launch our mobile optimized layout, I presume we should remove this. */
+    min-width: 1013px;
+}
+
+
+
+#splashLoginStrip a { color: lightgrey; }
+
+#container {
+        width: 1013px;        /* regular desktop site */
+        margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+}
+
+#container-content {
+        width:1013px;         /* regular desktop site */
+        float:left;
+    margin: 0px;
+    padding: 8px 14px;
+    background:#FFF;
+    position:relative;
+    z-index:1;
+}
+
+</style>
+
+</head>
+
+
+
+
+<body style="margin: 0; padding: 0;">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BLDNJ9F10"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2BLDNJ9F10');
+  gtag('config', 'AW-965318164');
+  gtag('config', 'GTM-M8H3GH8W');
+  gtag('config', 'GTM-P33BL3KZ');
+  
+</script>
+
+<!-- http://www.davidglarson.com/web-design/how-wide-should-your-website-be/ - "984px" -->
+
+<!-- moved outside the container div by Milos -->
+<div id="header" style="position: relative; background-image: url('/img/redesign/header_bkgd.jpg');">
+
+    <div style="margin-bottom: 5px; float: left;">
+        <a href="http://www.strat-o-matic.com">Strat-O-Matic.com</a> > <a href="/">365 Home</a>
+    </div>
+
+    <div style="margin-bottom: 5px; float: right;">
+
+    
+        <a href="/member/login">Login</a> |
+        <a href="/member/register">Register</a>
+
+    
+    </div>
+
+    
+    <a href="https://www.strat-o-matic.com"><img id="logoSom" src="/img/redesign/header_logo_som.png" style="" /></a>
+
+    
+        
+                    <a href="/"><img id="logo365Back" src="/img/redesign/header_logo_365_back.png" /></a>
+            <a href="/"><img id="logo365Front" src="/img/redesign/header_logo_365_front.png" /></a>
+        
+    
+</div>
+
+<div id="container">
+
+        <div id="container-content">
+
+<style>
+.inboxDot {
+    background: #cc6666;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0px 4px 0px 4px;
+    text-align: center;
+}
+</style>
+
+
+
+<script type="text/javascript">
+
+$(function(){
+
+    // http://css-tricks.com/simple-jquery-dropdowns/
+
+    $("ul.dropdown li").hover(function(){
+    
+        $(this).addClass("ui-state-hover hover").css('border', '0');
+        $('ul:first',this).css('visibility', 'visible');
+    
+    }, function(){
+
+        $(this).removeClass("ui-state-hover hover");
+        $('ul:first',this).css('visibility', 'hidden');
+    
+    });
+    
+    // $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
+
+    $("#linkLogin").click(function() {
+        $("#dialogLogin").dialog('open');
+        // prevent the browser from following the link
+        return false;
+    });
+
+    
+    $('#dialogLogin').dialog({
+        modal: true,
+        width: 450,
+        height: 300,
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        open: function() {
+            $('.ui-dialog :button').blur();  // don't incorrectly focus on any buttons
+        }
+    });
+
+    $('#dialogLoginSubmit').click(function() {
+        $.ajax({
+            crossDomain: true,
+            url: 'http://www.strat-o-matic.com/sn/sn_main_login.php',
+            type: "POST",
+            data: { name: $('#dialogLoginName').val(), pass: $('#dialogLoginPass').val() }
+        });
+    });
+
+});
+
+</script>
+
+<!--
+<div id="dialogLogin" style="display: none;">
+<input id="dialogLoginName" type="text" name="name" /> <input id="dialogLoginPass" name="pass" type="password" /> <input id="dialogLoginSubmit" name="op" type="submit" value="Log in" />
+</div>
+-->
+
+<div style="display: flex; flex-wrap: nowrap">
+
+    <div style="margin-bottom: 8px; color: #666; line-height: 35px; padding-right: 10px; margin-right: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden" class="text16">
+            </div>
+
+    <div style="display: flex; flex-shrink: 0; gap:10px; margin-bottom: 8px; line-height: 35px;" class="text16">
+        
+        <div style="background: url('/img/redesign/button_start_new_team.gif'); width: 267px; height: 35px; line-height: 35px; text-align: center;">
+            <a class="text18 b" style="color: white;" href="/member/startnewteam">Start a New Team!</a>
+        </div>
+    </div>
+
+</div>
+
+<br />
+
+<ul class="dropdown ui-state-default ui-corner-all" style="float: left; width: 100%; border: 0px;">
+
+    
+    
+    
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="">Community</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a target="_blank" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a></li>
+            <li><a href="/member/records">Manager Records</a></li>
+            <li><a href="/league/list">League Directory</a></li>
+            <li><a href="/mockdrafts">Mock Live Drafts</a></li>
+            <li><a href="/playerset/create">Custom Player Sets</a></li>
+            <li><span style="display: inline-block;"><a href="/playerset/records/baseball">Record Books</a></span>
+                <span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block; float: right; cursor: pointer; margin-top: 3px; margin-right: 10px;"></span>
+                <ul class="ui-widget-header ui-corner-bottom">
+                <li><a href="/playerset/records/baseball">Baseball</a></li>
+                <li><a href="/playerset/records/football">Football</a></li>
+                </ul>
+            </li>
+            <li><a href="/event/challenge/">Monthly Challenge</a></li>
+                    </ul>
+    </li>
+
+
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="/help">Info/Help</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a href="/help/rules">Game Rules</a></li>
+            <li><a href="/playerset/browse/292">Player Set Browser</a></li>
+            <li><a href="/help">Contact Us</a></li>
+                    </ul>
+    </li>
+
+</ul>
+
+<!--
+<ul class="dropdown ui-state-default ui-corner-all" style="float: right;">
+    <li class="ui-state-default">
+        <a href="/member/startnewteam">Start a New Team!</a>
+    </li>
+</ul>
+-->
+
+<br clear="all" /><br />
+
+
+        <style>
+
+.newsPreviewAdmin {
+    position: absolute;
+    font-size: 16px;
+    background: grey;
+    border: 1px solid yellow;
+    padding: 3px 7px;
+    color: yellow;
+    top: -16px;
+    right: 20px;
+}
+
+.newsWrapper {
+    position: relative;
+}
+
+/* newsStyle_headline */
+
+.newsStyle_headline.newsWrapper {
+    border: 3px solid #498abb;
+    padding: 2px;
+    margin: 10px 0px 15px 0px;
+}
+.newsStyle_headline .newsBody {
+    background: #3f3e3e;
+    color: white;
+    padding: 30px 10px 10px 10px;  /* assumes there's a headline. padding-top gets overridden if there isn't one */
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5em;
+}
+.newsStyle_headline .newsBody a {
+    color: white;
+}
+.newsStyle_headline .newsHeaderWrapper {
+    /* Positions the header absolutely, moving it up */
+    position: absolute;
+    top: -1em;
+    width: 100%;
+}
+.newsStyle_headline .newsHeaderWrapper2 {
+    /* Centers the header using auto margins and fixed width */
+    margin-left: auto;
+    margin-right: auto;
+}
+.newsStyle_headline .newsHeaderContent {
+    text-align: center;
+    /* height: 3em; */
+    padding: 10px;
+    background: #498abb;
+    color: white;
+    font-weight: bold;
+}
+
+/* newsStyle_notice */
+
+.newsStyle_notice.newsWrapper {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+    background: #ffcccc;
+    margin-bottom: 15px;
+}
+
+</style>
+
+
+    
+        
+            <div class="newsStyle_headline newsWrapper" style="margin-top: 0px !important;">
+
+                
+                
+                <div class="newsBody" style="padding-top: 10px !important;">
+                    <div style="position: relative; margin-left: auto; margin-right: auto;">
+
+                        For a limited time only, Get <a href="/member/purchasecredits"><b>5 Baseball Teams for $75</b></a>, <a href="/member/purchasecredits"><b>5 Football Teams for $30</b></a> <br /> This sale runs through Tue, Aug 11 at 12pm ET (Noon), so be sure to take advantage before then!
+
+<br><br>
+
+<b>Note:</b> The price for the baseball 5 pack was incorrectly listed at $80.
+<br>
+If you purchased it at that price please contact support and we will refund the difference.
+                    </div>
+
+                    
+                </div>
+
+            </div>
+
+        
+    
+
+
+
+<script type="text/javascript">
+
+$(function() {
+
+    $(".ui-tabs-nav li").hover(
+        function() { $(this).addClass('ui-state-hover'); },
+        function() { $(this).removeClass('ui-state-hover'); }
+    );
+
+});
+
+</script>
+
+<script>
+
+    $(document).ready(function() {
+
+        $('#dialogHelpFAPenalty, #dialogRequestInviteOk, #dialogRequestInviteError').dialog({
+            modal: true,
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
+            buttons: {
+                Ok: function() {
+                    $(this).dialog('close');	                
+                }
+            }
+        });
+
+        $('#linkDialogHelpFAPenalty').click(function() {
+            $('#dialogHelpFAPenalty').dialog('open');
+        });
+
+        $('#dialogRequestInvite').dialog({
+            modal: true,
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
+            open: function() {
+                $('.ui-dialog :button').blur();     // don't focus on any of the buttons
+            }
+        });
+
+        $('#linkDialogRequestInvite').click(function() {
+            $('#dialogRequestInvite').dialog('open');
+        });
+
+        $('#buttonRequestInviteDo').click(function() {
+            $.post('/league/requestinvite/479336',
+                { 'confirmRequestInvite': 'REQUESTINVITE', 'customMsg': $('textarea[name="textareaRequestInvite"]').val() },
+                function(result) {
+                    $('#dialogRequestInvite').dialog('close');
+                    if (result == 'ok') {
+                        $('#dialogRequestInviteOk').dialog('open');
+                    } else {
+                        $('#dialogRequestInviteError').dialog('open');
+                    }
+                }
+            );
+        });
+
+        $('.buttonRequestInviteClose').click(function() { $('#dialogRequestInvite').dialog('close'); });
+
+        if ($('#leagueDesc').prop('scrollHeight') > $('#leagueDesc').height()) {
+            $('#expandLeagueDesc').show();
+        }
+
+        $('#expandLeagueDesc').on('click', function() {
+            $(this).hide();
+            $('#leagueDesc').toggleClass('expand');
+        });
+
+    });
+
+</script>
+
+
+<style>
+#leagueDesc {
+  max-height: 200px;
+  overflow: auto;
+  transition: all .5s ease-in-out;
+  display: block;
+  word-break: break-word;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+#expandLeagueDesc {
+  display: none;
+}
+
+.expand {
+  max-height: none !important;
+}
+
+</style>
+
+<div class="ui-widget-header" style="padding: 15px; font-weight: normal;">
+
+	<h1 style="color: white; margin-bottom: 10px;">LEAGUE: Auto League 479336</h1>
+
+		<div style="float: left; margin-right: 25px;">
+	<img src="https://365.strat-o-matic.com/img/icons_player_sets/icon_1968.png" style="max-width: 120px" />
+	</div>
+	
+    <div style="float: left;">
+
+		<div style="float: left; margin-right: 80px;">
+
+		    <b>Player Set:</b> 1968 season<br />
+
+                            <b>Skill Level:</b> Standard<br />
+            
+		    <b>Draft type:</b>
+
+                                    Auto List Draft
+                
+            <br />
+
+		    <b>Salary Cap:</b> $80,000,000<br />
+
+            <b>Salary Floor:</b> $72,000,000<br />
+
+		    <b>FA Drop Penalty:</b>
+            5/10/20%            [<a id="linkDialogHelpFAPenalty" href="javascript: void(0);">?</a>]
+
+		</div>
+
+		<div style="float: left; margin-right:12px">
+
+                            <b>DH Rule:</b> no<br />
+            
+		    <b>Waivers:</b>
+
+                                    yes
+                
+            <br />
+
+            
+		                    <b>Postseason Format:</b> 2 rounds: Best-of-7, Best-of-7<br />
+            
+		    <b>Opening Day:</b>
+
+                            Tuesday, Jul. 21, 2026            
+            <br />
+            <b>Managers may own multiple teams:</b> no
+		</div>
+
+
+        
+		<br clear="all" />
+
+				<br />
+		<div style="width: 808px;">
+		    <b>Description:</b><br />
+            <div id="leagueDesc">
+                This is an automatically-generated league into which managers selecting the "Join an Auto League" option are automatically placed.            </div>
+            <div id="expandLeagueDesc">
+            <br />
+            <a class="b" href="javascript: void(0);">Expand Description</a>
+            </div>
+		</div>
+		
+		
+            
+		
+                
+    </div>
+
+    <br clear="all" />
+
+</div>
+
+<div id="dialogHelpFAPenalty" title="Free Agent Drop Penalty" class="tleft hidden" style="padding: 1.5rem;">
+    This is how much of a player's salary is withheld from the amount of money you are credited when you drop him to the free agent pool after the season starts.
+
+            <br /><br />
+        5/10/20%: 5% until Game 42 is played, 10% after that until Game 81 is played, and 20% after that.
+    </div>
+
+<div id="dialogRequestInvite" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Request an invite to join this league from the league's Commissioner, <b></b>.
+
+    <br /><br />
+
+    You may include an optional personalized message with your request.
+
+    <br /><br />
+
+    <textarea name="textareaRequestInvite" rows="6" style="width: 100%;" placeholder="Your short message (optional)"></textarea>
+
+    <br /><br />
+
+    <button id="buttonRequestInviteDo" class="button text14">✅ Send</button>
+    <button class="button text14 buttonRequestInviteClose">🚫 Cancel</button>
+
+</div>
+
+<div id="dialogRequestInviteOk" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Your request has been successfully sent to <b></b>'s account inbox.  Any reply they send will be sent to your account inbox.
+
+</div>
+
+<div id="dialogRequestInviteError" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Sorry, but there was a problem sending your request to <b></b>.  You may either try again or wait until a later time.
+
+</div>
+
+<br />
+
+
+    <div id="divLeagueLinksBar" class="ui-widget-header ui-corner-all">
+
+        <div><a  href="/league/479336">STANDINGS</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/scores/479336">SCORES</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/schedule/479336">SCHEDULE</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/headtohead/479336">HEAD-TO-HEAD</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/transactions/479336">TRANSACTIONS</a></div>
+
+        <div>|</div>
+
+        <div><a style="color: white;" href="/league/stats/479336">STATS</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/injuries/479336">INJURIES</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/rosters/479336">ROSTERS</a></div>
+    
+            
+        <br clear="all" />
+    </div>
+
+
+<br />
+
+<div id="tabs" style="border: 0;" class="ui-tabs ui-corner-all">
+
+    <ul class="ui-tabs-nav ui-helper-clearfix" style="background: #ffffff; border: 0; border-bottom: 1px solid #aaa;">
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/players/batting/479336/all/ops/1">Player Batting</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/players/pitching/479336/all/era/1">Player Pitching</a>
+        </li>
+        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+            <a href="/league/stats/leaders/479336">Leaders</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/teams/479336">Team</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/teams/fielding/479336">Team Fielding</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/managers/479336">Manager Profiles</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/awards/479336">Awards Voting</a>
+        </li>
+    </ul>
+
+</div>
+
+<br />
+
+
+    <h3 class="main">League Leaders</h3>
+
+<br />
+
+
+<div class="main" style="">
+
+<pre>
+ ----BATTING AVERAGE----   --------AT BATS--------   ------RUNS SCORED------  
+ P.Rose        CLA  .359   F.Alou        AQU   244   J.Wynn        Hog    52   
+ J.Wynn        Hog  .339   L.Brock       ARK   244   P.Rose        CLA    44   
+ M.Alou        MIG  .326   C.Flood       ARK   243   R.Jackson     BOQ    43   
+ C.Yastrzemski Hog  .314   G.Beckert     MIG   240   M.Rettenmund  MIG    42   
+ K.Harrelson   RAI  .313   P.Rose        CLA   234   C.Yastrzemski Hog    42   
+ J.Bench       Hog  .310   M.Shannon     ARK   231   B.Bonds       NOR    38   
+ R.Smith       MIG  .308   H.Aaron       RAI   228   B.Williams    RAI    37   
+ F.Alou        AQU  .307   T.Uhlaender   IOW   228   L.Brock       ARK    35   
+ J.Grote       MIG  .301   D.McAuliffe   AQU   225   C.Flood       ARK    35   
+ W.McCovey     BOQ  .293   W.McCovey     BOQ   225   H.Aaron       RAI    34   
+ C.Tovar       BOQ  .291   R.Staub       NOR   225   OTHERS TIED WITH     33   
+ B.Sudakis     Hog  .291   OTHERS TIED WITH    224                             
+
+ ----------HITS---------   --------DOUBLES--------   --------TRIPLES--------  
+ P.Rose        CLA    84   B.Alyea       AQU    19   B.Bonds       NOR     7   
+ F.Alou        AQU    75   P.Rose        CLA    18   F.Alou        AQU     5   
+ M.Alou        MIG    73   R.Smith       MIG    18   B.Sudakis     Hog     5   
+ W.McCovey     BOQ    66   J.Bench       Hog    18   J.Fregosi     AQU     4   
+ K.Harrelson   RAI    66   F.Alou        AQU    17   L.Brock       ARK     4   
+ G.Beckert     MIG    66   L.Brock       ARK    16   G.Nettles     RAI     4   
+ R.Smith       MIG    65   J.Northrup    FRE    14   B.Williams    RAI     4   
+ J.Bench       Hog    63   R.Monday      RAI    14   F.Robinson    IOW     4   
+ J.Wynn        Hog    63   B.Robinson    AQU    13   OTHERS TIED WITH      3   
+ C.Tovar       BOQ    62   C.Tovar       BOQ    13                             
+ K.McMullen    NEW    62   P.Corrales    CLA    13                             
+ OTHERS TIED WITH     61   D.Cater       Hog    13                             
+
+ --------HOMERUNS-------   -----RUNS BATTED IN----   ---------WALKS---------  
+ J.Wynn        Hog    21   J.Wynn        Hog    41   M.Rettenmund  MIG    64   
+ G.Nettles     RAI    17   K.Harrelson   RAI    40   M.Mantle      FRE    49   
+ W.Horton      CLA    17   W.Stargell    FUN    39   R.Santo       IOW    39   
+ W.McCovey     BOQ    16   G.Nettles     RAI    39   D.McAuliffe   AQU    38   
+ W.Stargell    FUN    16   R.Smith       MIG    39   R.Hunt        NOR    36   
+ R.Jackson     BOQ    15   T.Oliva       Hog    39   J.Briggs      IOW    35   
+ D.Allen       BOQ    14   H.Aaron       RAI    38   C.Yastrzemski Hog    35   
+ K.Harrelson   RAI    14   W.Horton      CLA    38   D.Buford      FRE    33   
+ F.Howard      FUN    13   B.Sudakis     Hog    37   B.Powell      NEW    31   
+ R.Clemente    BOQ    11   J.Bench       Hog    36   J.Wynn        Hog    31   
+ H.Aaron       RAI    11   W.McCovey     BOQ    35   B.Bonds       NOR    30   
+ B.Sudakis     Hog    11   OTHERS TIED WITH     33   OTHERS TIED WITH     28   
+
+ ---INTENTIONAL WALKS---   ------STRIKE OUTS------   ------HIT BY PITCH-----  
+ R.Staub       NOR     7   R.Renick      FRE    91   B.Freehan     AQU    10   
+ C.Tovar       BOQ     6   D.Dietz       FRE    64   R.Hunt        NOR     7   
+ T.Francona    MIG     6   R.Oyler       IOW    64   J.Fregosi     AQU     6   
+ F.Alou        AQU     5   R.Jackson     BOQ    63   C.Tovar       BOQ     6   
+ B.Robinson    AQU     5   D.Allen       BOQ    60   J.Wynn        Hog     6   
+ J.Azcue       ARK     5   M.Belanger    BOQ    58   J.Zimmerman   RAI     5   
+ A.Kaline      NOR     5   F.Howard      FUN    57   T.Perez       CLA     5   
+ B.Powell      NEW     5   C.Jones       NEW    57   W.Stargell    FUN     4   
+ V.Fuller      IOW     5   B.Alyea       AQU    56   M.Hershberger FRE     4   
+ P.Rose        CLA     5   M.Mantle      FRE    56   C.Jones       NEW     4   
+ OTHERS TIED WITH      4   B.Knoop       ARK    56   F.Robinson    IOW     4   
+                           R.Monday      RAI    54   P.Corrales    CLA     4   
+
+ -----SACRIFICE HITS----   ------STOLEN BASES-----   ----STOLEN BASE PCT----  
+ M.Alou        MIG    23   L.Brock       ARK    27   H.Aaron       RAI  .900   
+ F.Millan      CLA    11   M.Wills       NOR    25   L.Brock       ARK  .844   
+ M.Andrews     RAI     8   C.Jones       NEW    21   R.Monday      RAI  .833   
+ R.Washburn    AQU     7   B.Bonds       NOR    18   M.Wills       NOR  .806   
+ B.Gibson      ARK     7   D.Buford      FRE    15   F.Patek       FUN  .786   
+ D.Lemaster    BOQ     6   F.Patek       FUN    11   C.Tovar       BOQ  .769   
+ M.Wills       NOR     6   C.Tovar       BOQ    10   D.Buford      FRE  .750   
+ R.Culp        IOW     6   C.Flood       ARK    10   B.Bonds       NOR  .750   
+ J.Koosman     IOW     6   R.Monday      RAI    10   C.Jones       NEW  .750   
+ S.Siebert     CLA     6   T.Taylor      MIG    10   V.Pinson      FRE  .727   
+ OTHERS TIED WITH      5   H.Aaron       RAI     9   B.Campaneris  NEW  .692   
+                           B.Campaneris  NEW     9   OTHERS TIED WITH   .667   
+
+ ----------GIDP---------   -----HITTING STREAK----   ---PINCH HIT BAT AVG---  
+ D.Cater       Hog    10   C.Tovar       BOQ  * 17   C.Salmon      Hog  .455   
+ B.Sudakis     Hog     9   R.Hunt        NOR    16   O.Brown       NEW  .444   
+ R.Hundley     BOQ     8   J.Bench       Hog    16   J.Javier      Hog  .417   
+ T.Satriano    NEW     8   F.Millan      CLA    14   L.Stahl       AQU  .375   
+ M.Alou        MIG     8   J.Grote       MIG    14   E.Stroud      Hog  .357   
+ B.Alyea       AQU     7   D.Cater       Hog    14   R.Carew       FUN  .333   
+ B.Robinson    AQU     7   F.Alou        AQU    13   J.Alou        MIG  .333   
+ M.Shannon     ARK     7   C.Flood       ARK    12   J.Lefebvre    IOW  .308   
+ H.Aaron       RAI     7   C.Jones       NEW    12   R.Petrocelli  Hog  .308   
+ B.Williams    RAI     7   M.Alou        MIG    11   J.Lahoud      AQU  .294   
+ J.Grote       MIG     7   R.Smith       MIG    11   K.Boyer       RAI  .286   
+ T.Oliva       Hog     7   OTHERS TIED WITH     10   OTHERS TIED WITH   .273   
+
+ ------SLUGGING PCT-----   ------ON BASE PCT------   ---RUNSCREATED/27OUT---  
+ J.Wynn        Hog  .747   J.Wynn        Hog  .446   J.Wynn        Hog  13.5   
+ B.Sudakis     Hog  .562   C.Yastrzemski Hog  .425   P.Rose        CLA   9.0   
+ W.McCovey     BOQ  .560   M.Rettenmund  MIG  .424   C.Yastrzemski Hog   8.1   
+ D.Allen       BOQ  .547   P.Rose        CLA  .418   R.Jackson     BOQ   7.9   
+ G.Nettles     RAI  .542   R.Hunt        NOR  .382   K.Harrelson   RAI   7.3   
+ K.Harrelson   RAI  .540   R.Smith       MIG  .377   M.Rettenmund  MIG   7.0   
+ P.Rose        CLA  .526   R.Jackson     BOQ  .373   B.Sudakis     Hog   6.6   
+ R.Jackson     BOQ  .525   R.Monday      RAI  .370   D.Allen       BOQ   6.6   
+ R.Smith       MIG  .517   M.Andrews     RAI  .364   J.Bench       Hog   6.5   
+ W.Horton      CLA  .516   M.Alou        MIG  .363   R.Smith       MIG   6.5   
+ C.Yastrzemski Hog  .516   K.Harrelson   RAI  .361   W.Horton      CLA   6.3   
+ J.Bench       Hog  .512   D.Allen       BOQ  .361   W.McCovey     BOQ   6.3   
+
+ -----TOTAL AVERAGE-----   ------TOTAL BASES------   ----BAT AVG VS. LEFT---  
+ J.Wynn        Hog 1.386   J.Wynn        Hog   139   J.Wynn        Hog  .475   
+ C.Yastrzemski Hog  .978   W.McCovey     BOQ   126   R.Monday      RAI  .436   
+ P.Rose        CLA  .961   P.Rose        CLA   123   M.Andrews     RAI  .415   
+ R.Jackson     BOQ  .952   F.Alou        AQU   117   C.Tovar       BOQ  .409   
+ M.Rettenmund  MIG  .947   K.Harrelson   RAI   114   J.Bench       Hog  .378   
+ D.Allen       BOQ  .910   B.Sudakis     Hog   114   W.Horton      CLA  .368   
+ B.Bonds       NOR  .901   D.Allen       BOQ   111   F.Howard      FUN  .359   
+ B.Sudakis     Hog  .890   W.Horton      CLA   111   J.Javier      Hog  .358   
+ K.Harrelson   RAI  .879   R.Smith       MIG   109   C.Jones       NEW  .348   
+ R.Smith       MIG  .874   R.Jackson     BOQ   107   B.Alyea       AQU  .345   
+ W.Horton      CLA  .855   H.Aaron       RAI   107   T.Perez       CLA  .342   
+ C.Jones       NEW  .850   T.Oliva       Hog   106   L.Cardenas    NOR  .340   
+
+ ------HR VS. LEFT------   ---BAT AVG VS. RIGHT---   ------HR VS. RIGHT-----  
+ C.Jones       NEW     7   P.Rose        CLA  .371   G.Nettles     RAI    17   
+ H.Killebrew   NOR     6   M.Alou        MIG  .338   W.Stargell    FUN    15   
+ J.Wynn        Hog     6   K.Harrelson   RAI  .319   J.Wynn        Hog    15   
+ W.Horton      CLA     5   R.Smith       MIG  .318   W.McCovey     BOQ    14   
+ O.Cepeda      ARK     4   F.Alou        AQU  .316   R.Jackson     BOQ    13   
+ B.Williams    RAI     4   C.Yastrzemski Hog  .315   K.Harrelson   RAI    12   
+ F.Robinson    IOW     4   R.Jackson     BOQ  .312   W.Horton      CLA    12   
+ OTHERS TIED WITH      3   B.Sudakis     Hog  .312   D.Allen       BOQ    11   
+                           G.Holman      ARK  .306   F.Howard      FUN    10   
+                           J.Wynn        Hog  .301   T.Oliva       Hog    10   
+                           G.Beckert     MIG  .298   B.Sudakis     Hog    10   
+                           B.Robinson    AQU  .296   R.Clemente    BOQ     9   
+
+ ---------ERRORS--------   ----OPPONENT STEALS----   ----OPPONENT SB PCT----  
+ D.Buford      FRE    16   D.Sims        NOR    51   J.Martin      Hog  .167   
+ D.Allen       BOQ    15   T.Satriano    NEW    36   F.Fernandez   CLA  .389   
+ M.Mantle      FRE    11   D.Dietz       FRE    35   B.Freehan     AQU  .600   
+ R.Renick      FRE    11   T.Haller      IOW    25   T.Haller      IOW  .610   
+ M.Belanger    BOQ    10   P.Corrales    CLA    23   R.Hundley     BOQ  .611   
+ P.Schaal      FRE    10   R.Hundley     BOQ    22   P.Corrales    CLA  .622   
+ T.Perez       CLA    10   J.Torre       FUN    22   J.Bench       Hog  .625   
+ OTHERS TIED WITH      9   J.Grote       MIG    19   D.Pavletich   RAI  .650   
+                           C.Dalrymple   FUN    18   J.Zimmerman   RAI  .667   
+                           J.Azcue       ARK    15   J.McNertney   BOQ  .667   
+                           D.Pavletich   RAI    13   D.Dietz       FRE  .673   
+                           B.Freehan     AQU    12   T.Satriano    NEW  .706   
+
+ ----------WINS---------   ---------LOSSES--------   ------WINNING PCT------  
+ D.Chance      AQU     9   T.Phoebus     BOQ     7   D.Chance      AQU  .750   
+ R.Washburn    AQU     9   J.Marichal    FUN     7   J.Brewer      RAI  .750   
+ J.Hardin      BOQ     9   S.McDowell    FUN     7   R.Reed        ARK  .714   
+ R.Culp        IOW     8   B.Gibson      ARK     7   D.Wilson      NOR  .714   
+ S.McDowell    FUN     7   P.Niekro      NOR     7   S.Siebert     CLA  .700   
+ S.Carlton     ARK     7   S.Blass       IOW     7   R.Washburn    AQU  .692   
+ B.Gibson      ARK     7   R.Sadecki     CLA     7   D.Patterson   FRE  .667   
+ B.Odom        NOR     7   OTHERS TIED WITH      6   R.Culp        IOW  .667   
+ S.Siebert     CLA     7                             R.Taylor      CLA  .667   
+ D.Giusti      MIG     7                             F.Jenkins     MIG  .667   
+ D.McLain      MIG     7                             J.Ray         Hog  .667   
+ OTHERS TIED WITH      6                             J.Hardin      BOQ  .643   
+
+ ----------ERA----------   ----INNINGS PITCHED----   ----------TBF----------  
+ M.Drabowsky   BOQ  1.21   B.Gibson      ARK 123.2   B.Gibson      ARK   480   
+ D.Chance      AQU  1.98   D.McLain      MIG 120.1   G.Perry       AQU   475   
+ V.Romo        RAI  2.07   G.Perry       AQU 119.1   D.McLain      MIG   475   
+ D.Kelley      RAI  2.11   L.Tiant       FRE 115.0   B.Odom        NOR   455   
+ S.McDowell    FUN  2.15   B.Odom        NOR 114.0   L.Tiant       FRE   453   
+ M.Stottlemyre FRE  2.22   P.Jarvis      IOW 109.1   R.Culp        IOW   444   
+ S.Williams    NOR  2.32   S.McDowell    FUN 109.0   S.McDowell    FUN   439   
+ J.Nash        FRE  2.33   S.Blass       IOW 105.2   S.Blass       IOW   434   
+ G.Perry       AQU  2.34   R.Culp        IOW 104.1   P.Jarvis      IOW   429   
+ B.Singer      AQU  2.39   T.Seaver      ARK 103.0   R.Sadecki     CLA   426   
+ B.Odom        NOR  2.45   F.Jenkins     MIG 101.2   T.Seaver      ARK   424   
+ B.Gibson      ARK  2.47   J.Koosman     IOW 100.1   F.Jenkins     MIG   423   
+
+ -----GAMES PITCHED-----   -----GAMES STARTED-----   -----COMPLETE GAMES----  
+ F.Linzy       NEW    37   G.Perry       AQU    15   L.Tiant       FRE     6   
+ F.Talbot      CLA    34   S.McDowell    FUN    15   B.Gibson      ARK     6   
+ D.Knowles     AQU    32   L.Tiant       FRE    15   B.Odom        NOR     5   
+ H.Aguirre     FUN    31   B.Gibson      ARK    15   R.Culp        IOW     5   
+ M.Drabowsky   BOQ    30   E.Wilson      RAI    15   R.Sadecki     CLA     5   
+ V.Romo        RAI    30   B.Odom        NOR    15   T.Seaver      ARK     4   
+ E.Fisher      NEW    30   P.Jarvis      IOW    15   S.Blass       IOW     4   
+ L.Stange      Hog    29   D.McLain      MIG    15   P.Jarvis      IOW     4   
+ J.Wyatt       Hog    29   OTHERS TIED WITH     14   D.McLain      MIG     4   
+ J.Hoerner     BOQ    28                             OTHERS TIED WITH      3   
+ J.Purdin      MIG    28                                                       
+ OTHERS TIED WITH     27                                                       
+
+ -----GAMES FINISHED----   ---------SAVES---------   --------SAVE PCT-------  
+ F.Linzy       NEW    26   D.Segui       FUN    20   L.McDaniel    MIG  .941   
+ D.Knowles     AQU    24   D.Knowles     AQU    17   D.Knowles     AQU  .895   
+ M.Drabowsky   BOQ    24   M.Drabowsky   BOQ    16   D.Segui       FUN  .870   
+ D.Segui       FUN    24   L.McDaniel    MIG    16   F.Talbot      CLA  .857   
+ D.Selma       IOW    24   L.Stange      Hog    12   M.Drabowsky   BOQ  .800   
+ L.Stange      Hog    24   H.Wilhelm     NEW     8   H.Wilhelm     NEW  .800   
+ L.McDaniel    MIG    20   D.Selma       IOW     6   L.Stange      Hog  .800   
+ F.Talbot      CLA    19   F.Talbot      CLA     6   E.Sprague     FRE  .714   
+ J.Hoerner     BOQ    15   E.Sprague     FRE     5   R.Kline       ARK  .667   
+ P.Regan       RAI    15   C.Upshaw      CLA     5   V.Romo        RAI  .667   
+ OTHERS TIED WITH     14   OTHERS TIED WITH      4   D.Selma       IOW  .667   
+                                                     C.Upshaw      CLA  .625   
+
+ --------SHUTOUTS-------   ------HITS ALLOWED-----   ----------RUNS---------  
+ B.Gibson      ARK     3   R.Sadecki     CLA   105   C.Pascual     BOQ    50   
+ R.Culp        IOW     3   J.Marichal    FUN    97   P.Niekro      NOR    48   
+ L.Tiant       FRE     2   S.Carlton     ARK    97   R.Culp        IOW    47   
+ D.Wilson      NOR     2   P.Niekro      NOR    97   R.Sadecki     CLA    47   
+ R.Sadecki     CLA     2   L.Jackson     CLA    97   B.Monbouquett Hog    47   
+ OTHERS TIED WITH      1   G.Perry       AQU    94   T.Seaver      ARK    45   
+                           D.Giusti      MIG    93   S.Blass       IOW    45   
+                           D.McLain      MIG    93   J.Horlen      FUN    43   
+                           M.Cuellar     Hog    92   M.Cuellar     Hog    43   
+                           T.Seaver      ARK    91   M.Lolich      FUN    42   
+                           C.Osteen      MIG    90   J.Marichal    FUN    42   
+                           S.Blass       IOW    89   F.Jenkins     MIG    42   
+
+ ------EARNED RUNS------   ---HOME RUNS ALLOWED---   ---------WALKS---------  
+ C.Pascual     BOQ    47   C.Pascual     BOQ    14   L.Walker      RAI    56   
+ R.Culp        IOW    45   B.Gibson      ARK    13   R.Culp        IOW    49   
+ B.Monbouquett Hog    45   S.Blass       IOW    12   T.Phoebus     BOQ    44   
+ J.Horlen      FUN    42   R.Culp        IOW    12   B.Odom        NOR    42   
+ R.Sadecki     CLA    42   P.Niekro      NOR    11   S.Siebert     CLA    41   
+ S.Blass       IOW    41   F.Jenkins     MIG    11   M.Lolich      FUN    38   
+ M.Lolich      FUN    40   D.McLain      MIG    11   V.Romo        RAI    38   
+ T.Seaver      ARK    40   J.Hardin      BOQ    10   S.McDowell    FUN    37   
+ P.Niekro      NOR    40   M.Lolich      FUN    10   A.Messersmith NEW    37   
+ D.McLain      MIG    38   L.Tiant       FRE    10   J.Hannan      FRE    36   
+ M.Cuellar     Hog    38   T.Seaver      ARK    10   J.Horlen      FUN    35   
+ OTHERS TIED WITH     37   S.Siebert     CLA    10   OTHERS TIED WITH     33   
+
+ -------STRIKEOUTS------   ------WILD PITCHES-----   ---------BALKS---------  
+ L.Tiant       FRE   129   R.Culp        IOW    11   J.Hardin      BOQ     3   
+ B.Gibson      ARK   120   J.Billingham  FUN     9   D.Leonhard    RAI     3   
+ D.McLain      MIG   115   J.Hannan      FRE     6   D.Ellsworth   FRE     2   
+ S.McDowell    FUN   114   L.Walker      RAI     6   D.Ellis       NOR     2   
+ R.Sadecki     CLA   102   P.Niekro      NOR     6   B.Locke       NOR     2   
+ F.Jenkins     MIG    95   B.Odom        NOR     6   D.Giusti      MIG     2   
+ R.Culp        IOW    92   J.Purdin      MIG     6   D.Knowles     AQU     1   
+ T.Phoebus     BOQ    83   B.Singer      AQU     5   T.Phoebus     BOQ     1   
+ D.Chance      AQU    79   V.Romo        RAI     5   J.Marichal    FUN     1   
+ J.Koosman     IOW    79   D.Giusti      MIG     5   D.Patterson   FRE     1   
+ B.Singer      AQU    77   OTHERS TIED WITH      4   A.Worthington FRE     1   
+ B.Odom        NOR    76                             J.James       NOR     1   
+
+ ----OPPONENT STEALS----   ----OPPONENT SB PCT----   ---PITCHER'S BAT AVG---  
+ S.Williams    NOR    16   L.Jackson     CLA  .455   R.Reed        ARK  .381   
+ R.Culp        IOW    16   M.Drabowsky   BOQ  .500   M.Drabowsky   BOQ  .308   
+ T.Phoebus     BOQ    10   R.Sadecki     CLA  .556   B.Odom        NOR  .294   
+ S.McDowell    FUN     9   B.Odom        NOR  .583   R.Culp        IOW  .281   
+ D.Wilson      NOR     9   J.Koosman     IOW  .600   B.Singer      AQU  .269   
+ J.Hannan      FRE     8   J.Hannan      FRE  .615   S.Siebert     CLA  .267   
+ S.Bahnsen     CLA     8   T.Phoebus     BOQ  .625   T.Murphy      NEW  .238   
+ H.Aguirre     FUN     7   D.McLain      MIG  .636   D.Bosman      RAI  .222   
+ D.Ellis       NOR     7   M.Stottlemyre FRE  .667   C.Osteen      MIG  .222   
+ B.Odom        NOR     7   J.Marichal    FUN  .667   L.Jackson     CLA  .194   
+ D.Giusti      MIG     7   S.McDowell    FUN  .692   J.Ray         Hog  .192   
+ D.McLain      MIG     7   E.Wilson      RAI  .750   D.McLain      MIG  .190   
+
+ -----PITCHER'S HRs-----   ----HITS / 9 INNINGS---   -----BB / 9 INNINGS----  
+ J.Nash        FRE     2   V.Romo        RAI  4.26   M.Pappas      Hog  0.94   
+ T.Phoebus     BOQ     1   M.Drabowsky   BOQ  4.53   B.Monbouquett Hog  1.53   
+ M.Cuellar     Hog     1   S.Siebert     CLA  5.44   D.Chance      AQU  1.60   
+ M.Pappas      Hog     1   F.Talbot      CLA  5.72   J.Koosman     IOW  1.61   
+                           B.Odom        NOR  6.00   D.Ellsworth   FRE  1.71   
+                           B.Gibson      ARK  6.04   J.Nash        FRE  1.96   
+                           P.Jarvis      IOW  6.26   B.Gibson      ARK  2.04   
+                           J.Hardin      BOQ  6.35   P.Jarvis      IOW  2.14   
+                           L.Tiant       FRE  6.42   L.Jackson     CLA  2.19   
+                           A.Messersmith NEW  6.50   M.Drabowsky   BOQ  2.26   
+                           L.Walker      RAI  6.55   G.Perry       AQU  2.26   
+                           D.Wilson      NOR  6.62   L.Tiant       FRE  2.27   
+
+ -----Ks / 9 INNINGS----   ----HRs / 9 INNINGS----   ----OPPONENT BAT AVG---  
+ L.Tiant       FRE 10.10   M.Drabowsky   BOQ  0.15   V.Romo        RAI  .141   
+ L.Walker      RAI  9.62   J.Hannan      FRE  0.28   M.Drabowsky   BOQ  .147   
+ S.McDowell    FUN  9.41   R.Reed        ARK  0.31   S.Siebert     CLA  .170   
+ R.Sadecki     CLA  9.27   J.Nash        FRE  0.37   F.Talbot      CLA  .182   
+ B.Gibson      ARK  8.73   D.Lemaster    BOQ  0.38   B.Gibson      ARK  .187   
+ D.McLain      MIG  8.60   G.Perry       AQU  0.38   B.Odom        NOR  .191   
+ F.Jenkins     MIG  8.41   T.Murphy      NEW  0.38   J.Hardin      BOQ  .193   
+ B.Singer      AQU  8.35   D.Kelley      RAI  0.42   P.Jarvis      IOW  .193   
+ T.Phoebus     BOQ  8.27   D.Leonhard    RAI  0.43   L.Tiant       FRE  .198   
+ J.Ray         Hog  8.08   E.Wilson      RAI  0.45   D.Chance      AQU  .200   
+ R.Culp        IOW  7.94   R.Sadecki     CLA  0.45   L.Walker      RAI  .203   
+ D.Chance      AQU  7.43   B.Odom        NOR  0.47   A.Messersmith NEW  .205   
+
+ ----LEFT OPP BAT AVG---   ---RIGHT OPP BAT AVG---   ------RUN SUPPORT------  
+ B.Odom        NOR  .144   V.Romo        RAI  .101   R.Reed        ARK  5.57   
+ J.Nash        FRE  .152   F.Talbot      CLA  .128   R.Culp        IOW  5.57   
+ S.Siebert     CLA  .158   M.Drabowsky   BOQ  .132   J.Ray         Hog  5.42   
+ L.Walker      RAI  .162   J.Hardin      BOQ  .144   L.Walker      RAI  5.18   
+ M.Drabowsky   BOQ  .163   S.Williams    NOR  .145   T.Seaver      ARK  5.00   
+ D.Lemaster    BOQ  .167   B.Singer      AQU  .164   B.Monbouquett Hog  5.00   
+ P.Jarvis      IOW  .171   G.Perry       AQU  .169   M.Lolich      FUN  4.86   
+ M.Stottlemyre FRE  .175   D.Chance      AQU  .176   S.Siebert     CLA  4.86   
+ L.Tiant       FRE  .178   A.Messersmith NEW  .179   F.Jenkins     MIG  4.64   
+ M.Lolich      FUN  .179   S.Siebert     CLA  .179   M.Cuellar     Hog  4.58   
+ B.Gibson      ARK  .181   D.Wilson      NOR  .186   M.Pappas      Hog  4.40   
+ S.McDowell    FUN  .185   B.Gibson      ARK  .191   OTHERS TIED WITH   4.21   
+
+ ---INHERITED SCORE %---   ----STRIKEOUTS/WALKS---  
+ S.Hamilton    AQU  .077   M.Pappas      Hog  7.00   
+ C.Carroll     FRE  .083   D.Chance      AQU  4.65   
+ D.McMahon     BOQ  .133   L.Tiant       FRE  4.45   
+ D.Patterson   FRE  .143   J.Koosman     IOW  4.39   
+ S.Shea        AQU  .143   B.Gibson      ARK  4.29   
+ J.Morris      Hog  .154   D.McLain      MIG  3.59   
+ M.Drabowsky   BOQ  .174   R.Sadecki     CLA  3.52   
+ R.Kline       ARK  .214   J.Nash        FRE  3.38   
+ J.Purdin      MIG  .231   S.McDowell    FUN  3.08   
+ J.Wyatt       Hog  .250   M.Drabowsky   BOQ  2.93   
+ J.Brewer      RAI  .250   F.Jenkins     MIG  2.88   
+ P.Regan       RAI  .263   B.Singer      AQU  2.75   
+</pre>
+
+<style type="text/css">
+    .division {
+        display: inline-block;
+        width: 230px;
+        margin-bottom: 1em;
+    }
+    .abbrev, .fullname {
+        display: inline-block;
+    }
+    .abbrev {
+        width: 3em;
+    }
+</style>
+
+<b>Key to Team Abbreviations</b>
+
+<br /><br />
+
+
+    
+        <div class="division">
+
+            <div>
+                <h3>East</h3>
+            </div>
+
+            
+            <div class="abbrev text12">AQU</div>
+            <div class="fullname text12"><a href="/team/1851052">Aquarium Drinkers</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">BOQ</div>
+            <div class="fullname text12"><a href="/team/1853550">Boquete Bombers</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">FUN</div>
+            <div class="fullname text12"><a href="/team/1853594">Funk Brothers </a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">FRE</div>
+            <div class="fullname text12"><a href="/team/1853667">Fresno Raisin Eaters</a></div>
+            <br clear="all" />
+
+            
+        </div>
+
+    
+        <div class="division">
+
+            <div>
+                <h3>Central</h3>
+            </div>
+
+            
+            <div class="abbrev text12">ARK</div>
+            <div class="fullname text12"><a href="/team/1853519">Busch League Arkinals™</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">RAI</div>
+            <div class="fullname text12"><a href="/team/1853674">RainRain 80's Mustache</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">NOR</div>
+            <div class="fullname text12"><a href="/team/1853506">Norwich Not Flatlanders</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">NEW</div>
+            <div class="fullname text12"><a href="/team/1853598">New York Highlanders</a></div>
+            <br clear="all" />
+
+            
+        </div>
+
+    
+        <div class="division">
+
+            <div>
+                <h3>West</h3>
+            </div>
+
+            
+            <div class="abbrev text12">IOW</div>
+            <div class="fullname text12"><a href="/team/1853382">Iowa bombers</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">CLA</div>
+            <div class="fullname text12"><a href="/team/1853540">Classic City  Crazy Eights</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">MIG</div>
+            <div class="fullname text12"><a href="/team/1853443">Mighty Yankees</a></div>
+            <br clear="all" />
+
+            
+            <div class="abbrev text12">Hog</div>
+            <div class="fullname text12"><a href="/team/1853534">Northside Hogs</a></div>
+            <br clear="all" />
+
+            
+        </div>
+
+    
+
+</div>
+
+
+<br /><br /><br /><br /><br /><br />
+
+
+        </div>     <!-- container-content -->
+
+</div>      <!-- container -->
+
+<br clear="all" />
+
+<div style="width: 100%; height: 16px; background-color: #d9782d;"></div>
+
+<div style="width: 100%; min-height: 400px; background-color: black; color: grey;">
+    <div class="text16" style="width: 1013px; padding: 20px 10px; margin-left: auto; margin-right: auto;">
+        <div style="float: left;">
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="/help">Contact Us</a>
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a>
+            <a class="b" style="color: #d9782d;" href="/help/rules">Info/Help</a>
+        </div>
+        <div id="footerSocialMedia" style="float: right;">
+            <a target="_blank" href="http://www.facebook.com/pages/Strat-O-Matic-Games/184660618996"><img src="https://s3.amazonaws.com/som.com/images/icon_facebook.png" /></a>
+            <a target="_blank" href="https://twitter.com/StratOMatic"><img src="https://s3.amazonaws.com/som.com/images/icon_twitter.png" /></a>
+            <a target="_blank" href="http://instagram.com/stratomatic/"><img src="https://s3.amazonaws.com/som.com/images/icon_instagram.png" /></a>
+            <a target="_blank" href="http://www.youtube.com/user/StratOMaticMarketing/videos"><img src="https://s3.amazonaws.com/som.com/images/icon_youtube.png" /></a>
+            <a target="_blank" href="http://pinterest.com/stratpinterest/"><img src="https://s3.amazonaws.com/som.com/images/icon_pinterest.png" /></a>
+        </div>
+        <br clear="all" />
+    </div>
+
+    <center>© 2026 Strat-O-Matic Media, LLC - All rights reserved.</center>
+
+</div>
+
+</body>
+</html>
+
+

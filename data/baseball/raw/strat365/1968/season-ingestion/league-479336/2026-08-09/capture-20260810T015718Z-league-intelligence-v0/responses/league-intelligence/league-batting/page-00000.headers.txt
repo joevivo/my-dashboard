@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/players/batting/479336/all/ops/1
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:21 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=daYHit%2BRTpBfVwEtUEpaw%2BX4Rf0qC0xB9%2B2z4Jyl7fY5OObMhye1qOHjDmUak6vCDfEM5fe2N1k2vTQtkv2PexRkxkNgMTxN9A9nCN%2FvWG3yZ%2Fmwy6ysA1%2BPZBvq%2FwqLMi4SUg0lV%2F6YH4EgGklXCPBKXP6NVmti1ViP%2F2aC%2BbavvhBXw%2Frk7UxLe0u18DHOwiFqNsTB89u1yiX2yA8GWj5T8h6Wsj5nTXfYTFs7%2BzGVPDNU1F%2BNJV2uHq%2FnB092yaRa7FYzPy%2FNxkJFHVqPpUie11oGCq6ruDC3S2Jk349vzNGZxrfBNVoQM4CDK7pJ1MgmNMX5eeMydFw0WCrKDXRvy8LI%2BaUVM1OX1WIV6rWxjcowV84UBIaisoQFR5nizpV4YnXmeYdK5pcJF%2FIEt8j98Qq0xU91vv6wokvDheS5e87fp7%2F2%2BCpE4WaYNaxfHjYETExdTacc8Dv63Jl9xuUCf4ukH5dhI6sOFSTTgOuk7wLTFrEtWHAM%2FyvhEzPtkgyw3ft7oqw0Rkuq2s101hXQ4ChlaOasgnhW%2BaiC9yw%3D; expires=Tue, 11-Aug-2026 01:57:21 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

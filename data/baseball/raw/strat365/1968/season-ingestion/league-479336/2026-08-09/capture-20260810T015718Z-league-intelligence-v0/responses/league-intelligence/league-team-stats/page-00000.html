@@ -1,0 +1,1291 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>365 by Strat-O-Matic</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="https://www.strat-o-matic.com/wp-content/themes/strat-o-matic/favicon.ico">
+
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-som.css?v=1" />
+<link rel="stylesheet" type="text/css" href="/css/style8.css" />
+
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css' />
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="/js/jquery.ui.touch-punch-0.2.3.min.js"></script> --> <!-- Makes JqueryUI touch-enabled -->
+
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/somonline.js"></script>
+<!-- This version (1.9.4) of dataTables is needed for the scroller plugin, which afaik is only used by the live draft, and was included by the old header_live_draft.php.  But the main header.php included a local dataTables.js (commented out below), the version of which was unknown.  I vaguely recall something else on the site requiring a certain version, but I can't find it now.  So, tentatively moving ahead with 1.9.4, hoping it's compatible with our site as a whole. -->
+<script type="text/javascript" language="javascript" src="/js/jquery.dataTables-1.9.4.min.js"></script>
+<!-- <script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" language="javascript" src="https://cdn.strat-o-matic.com/js/jquery_datatables/dataTables.sTypes.js"></script>
+<!-- timer for live draft -->
+<script type="text/javascript" language="javascript" src="/js/jquery.timer.js"></script>
+
+
+<script>
+$(function() {
+
+    $('.button').button();
+
+    // Activate jQuery tooltips on all elements with class .tooltip
+    //     ... unless we're on a mobile device and the element is a link
+
+    $('.tooltip').tooltip({
+        tooltipClass: 'text10',
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    $('.tooltipMember').tooltip({
+        tooltipClass: 'text12',
+        content: function() {
+            return '<b>' + $(this).attr('memberName') + '</b>' +
+                   '<br /><br />' +
+                   'Experience: ' + $(this).attr('memberLevel') + '<br />' +
+                   'Teams: ' + $(this).attr('numTeams') + '<br />' +
+                   'Win Pct.: ' + $(this).attr('winPct');
+        },
+        items: '*',    // Necessary for content option to work
+        show: false,    // don't fade in
+        hide: false,    // or out
+        track: true     // follow the mouse
+    });
+
+    // Clicking on a link with class "helplink" shows/hides elements with the same class as the link's id
+    $("a.helplink").click(function(event) {
+		$(this).toggleClass('ui-icon-triangle-1-e');
+		$(this).toggleClass('ui-icon-triangle-1-s');
+        $("." + $(this).attr('id')).toggle("fast");
+    });
+
+    // For each injured player, ajax-load and display the number of days left in the injury
+
+    $('.injNum').each(function() {
+        var theElement = $(this);
+        $.get('/player/injuryinfoajax',
+              { player_id: $(this).attr('plId'), year: $(this).attr('y'), version: $(this).attr('v'), league_id: $(this).attr('lId') },
+              function(data) {
+                  theElement.html('I-' + data);
+              }
+        );        
+    });
+
+});
+</script>
+
+<style type="text/css" charset="utf-8">
+
+html {
+        background: url(/img/redesign/background_field.jpg) no-repeat center center fixed; 
+        -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    /* This fixes some layout issues on mobile, but only while we're still unoptimized for mobile.
+       When we launch our mobile optimized layout, I presume we should remove this. */
+    min-width: 1013px;
+}
+
+
+
+#splashLoginStrip a { color: lightgrey; }
+
+#container {
+        width: 1013px;        /* regular desktop site */
+        margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+}
+
+#container-content {
+        width:1013px;         /* regular desktop site */
+        float:left;
+    margin: 0px;
+    padding: 8px 14px;
+    background:#FFF;
+    position:relative;
+    z-index:1;
+}
+
+</style>
+
+</head>
+
+
+
+
+<body style="margin: 0; padding: 0;">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BLDNJ9F10"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2BLDNJ9F10');
+  gtag('config', 'AW-965318164');
+  gtag('config', 'GTM-M8H3GH8W');
+  gtag('config', 'GTM-P33BL3KZ');
+  
+</script>
+
+<!-- http://www.davidglarson.com/web-design/how-wide-should-your-website-be/ - "984px" -->
+
+<!-- moved outside the container div by Milos -->
+<div id="header" style="position: relative; background-image: url('/img/redesign/header_bkgd.jpg');">
+
+    <div style="margin-bottom: 5px; float: left;">
+        <a href="http://www.strat-o-matic.com">Strat-O-Matic.com</a> > <a href="/">365 Home</a>
+    </div>
+
+    <div style="margin-bottom: 5px; float: right;">
+
+    
+        <a href="/member/login">Login</a> |
+        <a href="/member/register">Register</a>
+
+    
+    </div>
+
+    
+    <a href="https://www.strat-o-matic.com"><img id="logoSom" src="/img/redesign/header_logo_som.png" style="" /></a>
+
+    
+        
+                    <a href="/"><img id="logo365Back" src="/img/redesign/header_logo_365_back.png" /></a>
+            <a href="/"><img id="logo365Front" src="/img/redesign/header_logo_365_front.png" /></a>
+        
+    
+</div>
+
+<div id="container">
+
+        <div id="container-content">
+
+<style>
+.inboxDot {
+    background: #cc6666;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0px 4px 0px 4px;
+    text-align: center;
+}
+</style>
+
+
+
+<script type="text/javascript">
+
+$(function(){
+
+    // http://css-tricks.com/simple-jquery-dropdowns/
+
+    $("ul.dropdown li").hover(function(){
+    
+        $(this).addClass("ui-state-hover hover").css('border', '0');
+        $('ul:first',this).css('visibility', 'visible');
+    
+    }, function(){
+
+        $(this).removeClass("ui-state-hover hover");
+        $('ul:first',this).css('visibility', 'hidden');
+    
+    });
+    
+    // $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
+
+    $("#linkLogin").click(function() {
+        $("#dialogLogin").dialog('open');
+        // prevent the browser from following the link
+        return false;
+    });
+
+    
+    $('#dialogLogin').dialog({
+        modal: true,
+        width: 450,
+        height: 300,
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        open: function() {
+            $('.ui-dialog :button').blur();  // don't incorrectly focus on any buttons
+        }
+    });
+
+    $('#dialogLoginSubmit').click(function() {
+        $.ajax({
+            crossDomain: true,
+            url: 'http://www.strat-o-matic.com/sn/sn_main_login.php',
+            type: "POST",
+            data: { name: $('#dialogLoginName').val(), pass: $('#dialogLoginPass').val() }
+        });
+    });
+
+});
+
+</script>
+
+<!--
+<div id="dialogLogin" style="display: none;">
+<input id="dialogLoginName" type="text" name="name" /> <input id="dialogLoginPass" name="pass" type="password" /> <input id="dialogLoginSubmit" name="op" type="submit" value="Log in" />
+</div>
+-->
+
+<div style="display: flex; flex-wrap: nowrap">
+
+    <div style="margin-bottom: 8px; color: #666; line-height: 35px; padding-right: 10px; margin-right: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden" class="text16">
+            </div>
+
+    <div style="display: flex; flex-shrink: 0; gap:10px; margin-bottom: 8px; line-height: 35px;" class="text16">
+        
+        <div style="background: url('/img/redesign/button_start_new_team.gif'); width: 267px; height: 35px; line-height: 35px; text-align: center;">
+            <a class="text18 b" style="color: white;" href="/member/startnewteam">Start a New Team!</a>
+        </div>
+    </div>
+
+</div>
+
+<br />
+
+<ul class="dropdown ui-state-default ui-corner-all" style="float: left; width: 100%; border: 0px;">
+
+    
+    
+    
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="">Community</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a target="_blank" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a></li>
+            <li><a href="/member/records">Manager Records</a></li>
+            <li><a href="/league/list">League Directory</a></li>
+            <li><a href="/mockdrafts">Mock Live Drafts</a></li>
+            <li><a href="/playerset/create">Custom Player Sets</a></li>
+            <li><span style="display: inline-block;"><a href="/playerset/records/baseball">Record Books</a></span>
+                <span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block; float: right; cursor: pointer; margin-top: 3px; margin-right: 10px;"></span>
+                <ul class="ui-widget-header ui-corner-bottom">
+                <li><a href="/playerset/records/baseball">Baseball</a></li>
+                <li><a href="/playerset/records/football">Football</a></li>
+                </ul>
+            </li>
+            <li><a href="/event/challenge/">Monthly Challenge</a></li>
+                    </ul>
+    </li>
+
+
+    <li class="ui-state-default">
+        <span style="float: left;"><a href="/help">Info/Help</a></span>
+        <span class="ui-icon ui-icon-triangle-1-s" style="float: left; cursor: pointer; margin-top: 4px; margin-left: -5px;"></span>
+        <ul class="ui-widget-header ui-corner-bottom">
+            <li><a href="/help/rules">Game Rules</a></li>
+            <li><a href="/playerset/browse/292">Player Set Browser</a></li>
+            <li><a href="/help">Contact Us</a></li>
+                    </ul>
+    </li>
+
+</ul>
+
+<!--
+<ul class="dropdown ui-state-default ui-corner-all" style="float: right;">
+    <li class="ui-state-default">
+        <a href="/member/startnewteam">Start a New Team!</a>
+    </li>
+</ul>
+-->
+
+<br clear="all" /><br />
+
+
+        <style>
+
+.newsPreviewAdmin {
+    position: absolute;
+    font-size: 16px;
+    background: grey;
+    border: 1px solid yellow;
+    padding: 3px 7px;
+    color: yellow;
+    top: -16px;
+    right: 20px;
+}
+
+.newsWrapper {
+    position: relative;
+}
+
+/* newsStyle_headline */
+
+.newsStyle_headline.newsWrapper {
+    border: 3px solid #498abb;
+    padding: 2px;
+    margin: 10px 0px 15px 0px;
+}
+.newsStyle_headline .newsBody {
+    background: #3f3e3e;
+    color: white;
+    padding: 30px 10px 10px 10px;  /* assumes there's a headline. padding-top gets overridden if there isn't one */
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5em;
+}
+.newsStyle_headline .newsBody a {
+    color: white;
+}
+.newsStyle_headline .newsHeaderWrapper {
+    /* Positions the header absolutely, moving it up */
+    position: absolute;
+    top: -1em;
+    width: 100%;
+}
+.newsStyle_headline .newsHeaderWrapper2 {
+    /* Centers the header using auto margins and fixed width */
+    margin-left: auto;
+    margin-right: auto;
+}
+.newsStyle_headline .newsHeaderContent {
+    text-align: center;
+    /* height: 3em; */
+    padding: 10px;
+    background: #498abb;
+    color: white;
+    font-weight: bold;
+}
+
+/* newsStyle_notice */
+
+.newsStyle_notice.newsWrapper {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+    background: #ffcccc;
+    margin-bottom: 15px;
+}
+
+</style>
+
+
+    
+        
+            <div class="newsStyle_headline newsWrapper" style="margin-top: 0px !important;">
+
+                
+                
+                <div class="newsBody" style="padding-top: 10px !important;">
+                    <div style="position: relative; margin-left: auto; margin-right: auto;">
+
+                        For a limited time only, Get <a href="/member/purchasecredits"><b>5 Baseball Teams for $75</b></a>, <a href="/member/purchasecredits"><b>5 Football Teams for $30</b></a> <br /> This sale runs through Tue, Aug 11 at 12pm ET (Noon), so be sure to take advantage before then!
+
+<br><br>
+
+<b>Note:</b> The price for the baseball 5 pack was incorrectly listed at $80.
+<br>
+If you purchased it at that price please contact support and we will refund the difference.
+                    </div>
+
+                    
+                </div>
+
+            </div>
+
+        
+    
+
+
+
+<script type="text/javascript">
+
+$(function() {
+
+    $(".ui-tabs-nav li").hover(
+        function() { $(this).addClass('ui-state-hover'); },
+        function() { $(this).removeClass('ui-state-hover'); }
+    );
+
+});
+
+</script>
+
+<script>
+
+    $(document).ready(function() {
+
+        $('#dialogHelpFAPenalty, #dialogRequestInviteOk, #dialogRequestInviteError').dialog({
+            modal: true,
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
+            buttons: {
+                Ok: function() {
+                    $(this).dialog('close');	                
+                }
+            }
+        });
+
+        $('#linkDialogHelpFAPenalty').click(function() {
+            $('#dialogHelpFAPenalty').dialog('open');
+        });
+
+        $('#dialogRequestInvite').dialog({
+            modal: true,
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
+            open: function() {
+                $('.ui-dialog :button').blur();     // don't focus on any of the buttons
+            }
+        });
+
+        $('#linkDialogRequestInvite').click(function() {
+            $('#dialogRequestInvite').dialog('open');
+        });
+
+        $('#buttonRequestInviteDo').click(function() {
+            $.post('/league/requestinvite/479336',
+                { 'confirmRequestInvite': 'REQUESTINVITE', 'customMsg': $('textarea[name="textareaRequestInvite"]').val() },
+                function(result) {
+                    $('#dialogRequestInvite').dialog('close');
+                    if (result == 'ok') {
+                        $('#dialogRequestInviteOk').dialog('open');
+                    } else {
+                        $('#dialogRequestInviteError').dialog('open');
+                    }
+                }
+            );
+        });
+
+        $('.buttonRequestInviteClose').click(function() { $('#dialogRequestInvite').dialog('close'); });
+
+        if ($('#leagueDesc').prop('scrollHeight') > $('#leagueDesc').height()) {
+            $('#expandLeagueDesc').show();
+        }
+
+        $('#expandLeagueDesc').on('click', function() {
+            $(this).hide();
+            $('#leagueDesc').toggleClass('expand');
+        });
+
+    });
+
+</script>
+
+
+<style>
+#leagueDesc {
+  max-height: 200px;
+  overflow: auto;
+  transition: all .5s ease-in-out;
+  display: block;
+  word-break: break-word;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+#expandLeagueDesc {
+  display: none;
+}
+
+.expand {
+  max-height: none !important;
+}
+
+</style>
+
+<div class="ui-widget-header" style="padding: 15px; font-weight: normal;">
+
+	<h1 style="color: white; margin-bottom: 10px;">LEAGUE: Auto League 479336</h1>
+
+		<div style="float: left; margin-right: 25px;">
+	<img src="https://365.strat-o-matic.com/img/icons_player_sets/icon_1968.png" style="max-width: 120px" />
+	</div>
+	
+    <div style="float: left;">
+
+		<div style="float: left; margin-right: 80px;">
+
+		    <b>Player Set:</b> 1968 season<br />
+
+                            <b>Skill Level:</b> Standard<br />
+            
+		    <b>Draft type:</b>
+
+                                    Auto List Draft
+                
+            <br />
+
+		    <b>Salary Cap:</b> $80,000,000<br />
+
+            <b>Salary Floor:</b> $72,000,000<br />
+
+		    <b>FA Drop Penalty:</b>
+            5/10/20%            [<a id="linkDialogHelpFAPenalty" href="javascript: void(0);">?</a>]
+
+		</div>
+
+		<div style="float: left; margin-right:12px">
+
+                            <b>DH Rule:</b> no<br />
+            
+		    <b>Waivers:</b>
+
+                                    yes
+                
+            <br />
+
+            
+		                    <b>Postseason Format:</b> 2 rounds: Best-of-7, Best-of-7<br />
+            
+		    <b>Opening Day:</b>
+
+                            Tuesday, Jul. 21, 2026            
+            <br />
+            <b>Managers may own multiple teams:</b> no
+		</div>
+
+
+        
+		<br clear="all" />
+
+				<br />
+		<div style="width: 808px;">
+		    <b>Description:</b><br />
+            <div id="leagueDesc">
+                This is an automatically-generated league into which managers selecting the "Join an Auto League" option are automatically placed.            </div>
+            <div id="expandLeagueDesc">
+            <br />
+            <a class="b" href="javascript: void(0);">Expand Description</a>
+            </div>
+		</div>
+		
+		
+            
+		
+                
+    </div>
+
+    <br clear="all" />
+
+</div>
+
+<div id="dialogHelpFAPenalty" title="Free Agent Drop Penalty" class="tleft hidden" style="padding: 1.5rem;">
+    This is how much of a player's salary is withheld from the amount of money you are credited when you drop him to the free agent pool after the season starts.
+
+            <br /><br />
+        5/10/20%: 5% until Game 42 is played, 10% after that until Game 81 is played, and 20% after that.
+    </div>
+
+<div id="dialogRequestInvite" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Request an invite to join this league from the league's Commissioner, <b></b>.
+
+    <br /><br />
+
+    You may include an optional personalized message with your request.
+
+    <br /><br />
+
+    <textarea name="textareaRequestInvite" rows="6" style="width: 100%;" placeholder="Your short message (optional)"></textarea>
+
+    <br /><br />
+
+    <button id="buttonRequestInviteDo" class="button text14">✅ Send</button>
+    <button class="button text14 buttonRequestInviteClose">🚫 Cancel</button>
+
+</div>
+
+<div id="dialogRequestInviteOk" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Your request has been successfully sent to <b></b>'s account inbox.  Any reply they send will be sent to your account inbox.
+
+</div>
+
+<div id="dialogRequestInviteError" title="Request Invite" class="tleft hidden" style="padding: 1.5rem;">
+
+    Sorry, but there was a problem sending your request to <b></b>.  You may either try again or wait until a later time.
+
+</div>
+
+<br />
+
+
+    <div id="divLeagueLinksBar" class="ui-widget-header ui-corner-all">
+
+        <div><a  href="/league/479336">STANDINGS</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/scores/479336">SCORES</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/schedule/479336">SCHEDULE</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/headtohead/479336">HEAD-TO-HEAD</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/transactions/479336">TRANSACTIONS</a></div>
+
+        <div>|</div>
+
+        <div><a style="color: white;" href="/league/stats/479336">STATS</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/injuries/479336">INJURIES</a></div>
+
+        <div>|</div>
+
+        <div><a  href="/league/rosters/479336">ROSTERS</a></div>
+    
+            
+        <br clear="all" />
+    </div>
+
+
+<br />
+
+<div id="tabs" style="border: 0;" class="ui-tabs ui-corner-all">
+
+    <ul class="ui-tabs-nav ui-helper-clearfix" style="background: #ffffff; border: 0; border-bottom: 1px solid #aaa;">
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/players/batting/479336/all/ops/1">Player Batting</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/players/pitching/479336/all/era/1">Player Pitching</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/leaders/479336">Leaders</a>
+        </li>
+        <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+            <a href="/league/stats/teams/479336">Team</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/teams/fielding/479336">Team Fielding</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/managers/479336">Manager Profiles</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="/league/stats/awards/479336">Awards Voting</a>
+        </li>
+    </ul>
+
+</div>
+
+<br />
+
+
+        <script>
+
+    $(function() {
+
+    
+        $("#hittingTable").dataTable({
+            "bInfo": false,                    // don't display footer
+            "bAutoWidth": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "aaSorting": [[2, "desc"]],        // sort by runs scored desc at the start
+            "aoColumnDefs": [
+                // disable sorting on team name
+                { "bSortable": false, "aTargets": [ 0 ] },
+                // all other columns sort by desc when clicked, asc when clicked again
+                { "asSorting": [ "desc", "asc" ], "aTargets": [ "_all" ] }
+            ]
+        });
+
+        $("#pitchingTable").dataTable({
+            "bInfo": false,                    // don't display footer
+            "bAutoWidth": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "aaSorting": [[13, "asc"]],        // sort by ERA asc at the start
+            "aoColumnDefs": [
+                // disable sorting on team name
+                { "bSortable": false, "aTargets": [ 0 ] },
+                // all other columns sort by default asc-then-desc; except for columns with the classname "sortDescAsc"
+                { "asSorting": [ "desc", "asc" ], "aTargets": [ "sortDescAsc" ] },
+                // make sure to treat IP, ERA & WHIP as numbers
+                { "sType": "numeric", "aTargets": [ 5, 13, 14 ] }
+            ]
+        });
+
+    
+    });
+</script>
+
+    <style>
+    /* remove column borders on mobile because individual columns appear/disappear */
+    .borderLeft { border: 0 !important; }
+    </style>
+
+<br />
+
+<h3 class="main" style="margin-bottom: 5px;">Team Hitting (sortable)</h3>
+
+<table id="hittingTable" class="sortingTable databox tright somresponsive hitters" width="100%">
+
+    <thead>
+    <tr class="ui-widget-header tright">
+        <th class="tleft">Team</th>
+        <th name="ab">AB</th>
+        <th name="r">R</th>
+        <th name="h">H</th>
+        <th name="2b">2B</th>
+        <th name="3b">3B</th>
+        <th name="hr">HR</th>
+        <th name="rbi">RBI</th>
+        <th name="bb">BB</th>
+        <th name="so">SO</th>
+        <th name="sb">SB</th>
+        <th name="cs">CS</th>
+        <th name="ba">BA</th>
+        <th name="obp">OBP</th>
+        <th name="slg">SLG</th>
+        <th name="ops">OPS</th>
+    </tr>
+    </thead>
+
+            <tr>
+        <td class="tleft"><a href="/team/1851052">Aquarium Drinkers</a></td>
+        <td name="ab">1913</td>
+        <td name="r">205</td>
+        <td name="h">461</td>
+        <td name="2b">101</td>
+        <td name="3b">22</td>
+        <td name="hr">33</td>
+        <td name="rbi">188</td>
+        <td name="bb">186</td>
+        <td name="so">382</td>
+        <td name="sb">17</td>
+        <td name="cs">14</td>
+        <td name="ba">.241</td>
+        <td name="obp">.312</td>
+        <td name="slg">.369</td>
+        <td name="ops">.680</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853382">Iowa bombers</a></td>
+        <td name="ab">1903</td>
+        <td name="r">216</td>
+        <td name="h">407</td>
+        <td name="2b">71</td>
+        <td name="3b">14</td>
+        <td name="hr">27</td>
+        <td name="rbi">200</td>
+        <td name="bb">217</td>
+        <td name="so">405</td>
+        <td name="sb">8</td>
+        <td name="cs">6</td>
+        <td name="ba">.214</td>
+        <td name="obp">.298</td>
+        <td name="slg">.309</td>
+        <td name="ops">.607</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853443">Mighty Yankees</a></td>
+        <td name="ab">1946</td>
+        <td name="r">215</td>
+        <td name="h">519</td>
+        <td name="2b">99</td>
+        <td name="3b">8</td>
+        <td name="hr">18</td>
+        <td name="rbi">198</td>
+        <td name="bb">190</td>
+        <td name="so">324</td>
+        <td name="sb">29</td>
+        <td name="cs">22</td>
+        <td name="ba">.267</td>
+        <td name="obp">.332</td>
+        <td name="slg">.354</td>
+        <td name="ops">.686</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853506">Norwich Not Flatlanders</a></td>
+        <td name="ab">1902</td>
+        <td name="r">223</td>
+        <td name="h">440</td>
+        <td name="2b">61</td>
+        <td name="3b">15</td>
+        <td name="hr">36</td>
+        <td name="rbi">213</td>
+        <td name="bb">225</td>
+        <td name="so">325</td>
+        <td name="sb">64</td>
+        <td name="cs">31</td>
+        <td name="ba">.231</td>
+        <td name="obp">.317</td>
+        <td name="slg">.336</td>
+        <td name="ops">.653</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853519">Busch League Arkinals™</a></td>
+        <td name="ab">1988</td>
+        <td name="r">224</td>
+        <td name="h">484</td>
+        <td name="2b">80</td>
+        <td name="3b">15</td>
+        <td name="hr">26</td>
+        <td name="rbi">205</td>
+        <td name="bb">145</td>
+        <td name="so">363</td>
+        <td name="sb">41</td>
+        <td name="cs">15</td>
+        <td name="ba">.244</td>
+        <td name="obp">.297</td>
+        <td name="slg">.338</td>
+        <td name="ops">.635</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853534">Northside Hogs</a></td>
+        <td name="ab">1968</td>
+        <td name="r">272</td>
+        <td name="h">521</td>
+        <td name="2b">97</td>
+        <td name="3b">16</td>
+        <td name="hr">72</td>
+        <td name="rbi">265</td>
+        <td name="bb">194</td>
+        <td name="so">339</td>
+        <td name="sb">13</td>
+        <td name="cs">11</td>
+        <td name="ba">.265</td>
+        <td name="obp">.334</td>
+        <td name="slg">.440</td>
+        <td name="ops">.774</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853540">Classic City  Crazy Eights</a></td>
+        <td name="ab">1968</td>
+        <td name="r">209</td>
+        <td name="h">484</td>
+        <td name="2b">76</td>
+        <td name="3b">10</td>
+        <td name="hr">45</td>
+        <td name="rbi">200</td>
+        <td name="bb">140</td>
+        <td name="so">367</td>
+        <td name="sb">0</td>
+        <td name="cs">0</td>
+        <td name="ba">.246</td>
+        <td name="obp">.300</td>
+        <td name="slg">.363</td>
+        <td name="ops">.663</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853550">Boquete Bombers</a></td>
+        <td name="ab">1962</td>
+        <td name="r">214</td>
+        <td name="h">472</td>
+        <td name="2b">58</td>
+        <td name="3b">13</td>
+        <td name="hr">67</td>
+        <td name="rbi">203</td>
+        <td name="bb">146</td>
+        <td name="so">390</td>
+        <td name="sb">23</td>
+        <td name="cs">15</td>
+        <td name="ba">.241</td>
+        <td name="obp">.297</td>
+        <td name="slg">.386</td>
+        <td name="ops">.683</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853594">Funk Brothers </a></td>
+        <td name="ab">1890</td>
+        <td name="r">201</td>
+        <td name="h">415</td>
+        <td name="2b">63</td>
+        <td name="3b">3</td>
+        <td name="hr">64</td>
+        <td name="rbi">191</td>
+        <td name="bb">130</td>
+        <td name="so">391</td>
+        <td name="sb">30</td>
+        <td name="cs">13</td>
+        <td name="ba">.220</td>
+        <td name="obp">.274</td>
+        <td name="slg">.358</td>
+        <td name="ops">.631</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853598">New York Highlanders</a></td>
+        <td name="ab">1929</td>
+        <td name="r">191</td>
+        <td name="h">440</td>
+        <td name="2b">67</td>
+        <td name="3b">14</td>
+        <td name="hr">41</td>
+        <td name="rbi">178</td>
+        <td name="bb">180</td>
+        <td name="so">324</td>
+        <td name="sb">48</td>
+        <td name="cs">18</td>
+        <td name="ba">.228</td>
+        <td name="obp">.300</td>
+        <td name="slg">.341</td>
+        <td name="ops">.641</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853667">Fresno Raisin Eaters</a></td>
+        <td name="ab">1898</td>
+        <td name="r">180</td>
+        <td name="h">374</td>
+        <td name="2b">65</td>
+        <td name="3b">12</td>
+        <td name="hr">41</td>
+        <td name="rbi">166</td>
+        <td name="bb">194</td>
+        <td name="so">427</td>
+        <td name="sb">35</td>
+        <td name="cs">16</td>
+        <td name="ba">.197</td>
+        <td name="obp">.273</td>
+        <td name="slg">.309</td>
+        <td name="ops">.582</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853674">RainRain 80's Mustache</a></td>
+        <td name="ab">1942</td>
+        <td name="r">238</td>
+        <td name="h">482</td>
+        <td name="2b">67</td>
+        <td name="3b">18</td>
+        <td name="hr">62</td>
+        <td name="rbi">218</td>
+        <td name="bb">150</td>
+        <td name="so">345</td>
+        <td name="sb">26</td>
+        <td name="cs">4</td>
+        <td name="ba">.248</td>
+        <td name="obp">.307</td>
+        <td name="slg">.397</td>
+        <td name="ops">.704</td>
+    </tr>
+    
+    <tfoot>
+    <tr class="ui-widget-content b">
+        <td class="tleft">TOTALS</td>
+        <td name="ab">23209</td>
+        <td name="r">2588</td>
+        <td name="h">5499</td>
+        <td name="2b">905</td>
+        <td name="3b">160</td>
+        <td name="hr">532</td>
+        <td name="rbi">2425</td>
+        <td name="bb">2097</td>
+        <td name="so">4382</td>
+        <td name="sb">334</td>
+        <td name="cs">165</td>
+        <td name="ba">.237</td>
+        <td name="obp">.303</td>
+        <td name="slg">.358</td>
+        <td name="ops">.662</td>
+    </tr>
+    </tfoot>
+
+</table>
+
+<br /><br />
+
+<h3 class="main" style="margin-bottom: 5px;">Team Pitching (sortable)</h3>
+
+<table id="pitchingTable" class="sortingTable databox tright somresponsive pitchers" width="100%">
+
+    <thead>
+    <tr class="ui-widget-header tright">
+        <th class="tleft">Team</td>
+        <th class="sortDescAsc" name="w">W</td>
+        <th class="sortDescAsc" name="l">L</td>
+        <th class="sortDescAsc" name="s">S</td>
+        <th class="sortDescAsc" name="bs">BS</td>
+        <th class="sortDescAsc" name="ip">IP</td>
+        <th name="h">H</td>
+        <th name="r">R</td>
+        <th name="er">ER</td>
+        <th name="bb">BB</td>
+        <th class="sortDescAsc" name="so">SO</td>
+        <th class="sortDescAsc" name="cg">CG</td>
+        <th class="sortDescAsc" name="sho">SHO</td>
+        <th name="era">ERA</td>
+        <th name="whip">WHIP</td>
+    </tr>
+    </thead>
+
+            <tr>
+        <td class="tleft"><a href="/team/1851052">Aquarium Drinkers</a></td>
+        <td name="w">33</td>
+        <td name="l">24</td>
+        <td name="s">21</td>
+        <td name="bs">3</td>
+        <td name="ip">516.1</td>
+        <td name="h">443</td>
+        <td name="r">176</td>
+        <td name="er">147</td>
+        <td name="bb">139</td>
+        <td name="so">404</td>
+        <td name="cg">3</td>
+        <td name="sho">0</td>
+        <td name="era">2.56</td>
+        <td name="whip">1.13</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853382">Iowa bombers</a></td>
+        <td name="w">27</td>
+        <td name="l">30</td>
+        <td name="s">7</td>
+        <td name="bs">5</td>
+        <td name="ip">513.2</td>
+        <td name="h">441</td>
+        <td name="r">227</td>
+        <td name="er">206</td>
+        <td name="bb">163</td>
+        <td name="so">354</td>
+        <td name="cg">15</td>
+        <td name="sho">6</td>
+        <td name="era">3.61</td>
+        <td name="whip">1.18</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853443">Mighty Yankees</a></td>
+        <td name="w">31</td>
+        <td name="l">26</td>
+        <td name="s">18</td>
+        <td name="bs">5</td>
+        <td name="ip">509.1</td>
+        <td name="h">442</td>
+        <td name="r">191</td>
+        <td name="er">175</td>
+        <td name="bb">165</td>
+        <td name="so">387</td>
+        <td name="cg">9</td>
+        <td name="sho">3</td>
+        <td name="era">3.09</td>
+        <td name="whip">1.19</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853506">Norwich Not Flatlanders</a></td>
+        <td name="w">29</td>
+        <td name="l">28</td>
+        <td name="s">9</td>
+        <td name="bs">6</td>
+        <td name="ip">514.2</td>
+        <td name="h">454</td>
+        <td name="r">228</td>
+        <td name="er">187</td>
+        <td name="bb">181</td>
+        <td name="so">321</td>
+        <td name="cg">12</td>
+        <td name="sho">4</td>
+        <td name="era">3.27</td>
+        <td name="whip">1.23</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853519">Busch League Arkinals™</a></td>
+        <td name="w">31</td>
+        <td name="l">26</td>
+        <td name="s">10</td>
+        <td name="bs">7</td>
+        <td name="ip">523.1</td>
+        <td name="h">445</td>
+        <td name="r">183</td>
+        <td name="er">168</td>
+        <td name="bb">149</td>
+        <td name="so">359</td>
+        <td name="cg">16</td>
+        <td name="sho">6</td>
+        <td name="era">2.89</td>
+        <td name="whip">1.14</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853534">Northside Hogs</a></td>
+        <td name="w">27</td>
+        <td name="l">30</td>
+        <td name="s">17</td>
+        <td name="bs">4</td>
+        <td name="ip">504.1</td>
+        <td name="h">550</td>
+        <td name="r">280</td>
+        <td name="er">254</td>
+        <td name="bb">147</td>
+        <td name="so">364</td>
+        <td name="cg">6</td>
+        <td name="sho">2</td>
+        <td name="era">4.53</td>
+        <td name="whip">1.38</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853540">Classic City  Crazy Eights</a></td>
+        <td name="w">27</td>
+        <td name="l">30</td>
+        <td name="s">12</td>
+        <td name="bs">5</td>
+        <td name="ip">519.2</td>
+        <td name="h">493</td>
+        <td name="r">237</td>
+        <td name="er">216</td>
+        <td name="bb">177</td>
+        <td name="so">364</td>
+        <td name="cg">9</td>
+        <td name="sho">3</td>
+        <td name="era">3.74</td>
+        <td name="whip">1.29</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853550">Boquete Bombers</a></td>
+        <td name="w">29</td>
+        <td name="l">28</td>
+        <td name="s">19</td>
+        <td name="bs">5</td>
+        <td name="ip">523.0</td>
+        <td name="h">431</td>
+        <td name="r">201</td>
+        <td name="er">176</td>
+        <td name="bb">184</td>
+        <td name="so">391</td>
+        <td name="cg">4</td>
+        <td name="sho">1</td>
+        <td name="era">3.03</td>
+        <td name="whip">1.18</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853594">Funk Brothers </a></td>
+        <td name="w">26</td>
+        <td name="l">31</td>
+        <td name="s">21</td>
+        <td name="bs">8</td>
+        <td name="ip">503.2</td>
+        <td name="h">466</td>
+        <td name="r">234</td>
+        <td name="er">208</td>
+        <td name="bb">201</td>
+        <td name="so">400</td>
+        <td name="cg">3</td>
+        <td name="sho">1</td>
+        <td name="era">3.72</td>
+        <td name="whip">1.32</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853598">New York Highlanders</a></td>
+        <td name="w">22</td>
+        <td name="l">35</td>
+        <td name="s">12</td>
+        <td name="bs">7</td>
+        <td name="ip">519.2</td>
+        <td name="h">455</td>
+        <td name="r">235</td>
+        <td name="er">205</td>
+        <td name="bb">181</td>
+        <td name="so">316</td>
+        <td name="cg">3</td>
+        <td name="sho">1</td>
+        <td name="era">3.55</td>
+        <td name="whip">1.22</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853667">Fresno Raisin Eaters</a></td>
+        <td name="w">25</td>
+        <td name="l">32</td>
+        <td name="s">11</td>
+        <td name="bs">6</td>
+        <td name="ip">516.1</td>
+        <td name="h">468</td>
+        <td name="r">198</td>
+        <td name="er">167</td>
+        <td name="bb">177</td>
+        <td name="so">366</td>
+        <td name="cg">9</td>
+        <td name="sho">2</td>
+        <td name="era">2.91</td>
+        <td name="whip">1.25</td>
+    </tr>
+        <tr>
+        <td class="tleft"><a href="/team/1853674">RainRain 80's Mustache</a></td>
+        <td name="w">35</td>
+        <td name="l">22</td>
+        <td name="s">16</td>
+        <td name="bs">6</td>
+        <td name="ip">519.2</td>
+        <td name="h">411</td>
+        <td name="r">198</td>
+        <td name="er">156</td>
+        <td name="bb">233</td>
+        <td name="so">357</td>
+        <td name="cg">2</td>
+        <td name="sho">1</td>
+        <td name="era">2.70</td>
+        <td name="whip">1.24</td>
+    </tr>
+    
+    <tfoot>
+    <tr class="ui-widget-content b">
+        <td class="tleft">TOTALS</td>
+        <td name="w">342</td>
+        <td name="l">342</td>
+        <td name="s">173</td>
+        <td name="bs">67</td>
+        <td name="ip">6,183.1</td>
+        <td name="h">5499</td>
+        <td name="r">2588</td>
+        <td name="er">2265</td>
+        <td name="bb">2097</td>
+        <td name="so">4383</td>
+        <td name="cg">91</td>
+        <td name="sho">30</td>
+        <td name="era">3.30</td>
+        <td name="whip">1.23</td>
+    </tr>
+    </tfoot>
+
+</table>    
+
+<br /><br /><br /><br /><br /><br />
+
+
+        </div>     <!-- container-content -->
+
+</div>      <!-- container -->
+
+<br clear="all" />
+
+<div style="width: 100%; height: 16px; background-color: #d9782d;"></div>
+
+<div style="width: 100%; min-height: 400px; background-color: black; color: grey;">
+    <div class="text16" style="width: 1013px; padding: 20px 10px; margin-left: auto; margin-right: auto;">
+        <div style="float: left;">
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="/help">Contact Us</a>
+            <a class="b" style="color: #d9782d; margin-right: 30px;" href="https://forum-365.strat-o-matic.com/community/">Discussion Forum</a>
+            <a class="b" style="color: #d9782d;" href="/help/rules">Info/Help</a>
+        </div>
+        <div id="footerSocialMedia" style="float: right;">
+            <a target="_blank" href="http://www.facebook.com/pages/Strat-O-Matic-Games/184660618996"><img src="https://s3.amazonaws.com/som.com/images/icon_facebook.png" /></a>
+            <a target="_blank" href="https://twitter.com/StratOMatic"><img src="https://s3.amazonaws.com/som.com/images/icon_twitter.png" /></a>
+            <a target="_blank" href="http://instagram.com/stratomatic/"><img src="https://s3.amazonaws.com/som.com/images/icon_instagram.png" /></a>
+            <a target="_blank" href="http://www.youtube.com/user/StratOMaticMarketing/videos"><img src="https://s3.amazonaws.com/som.com/images/icon_youtube.png" /></a>
+            <a target="_blank" href="http://pinterest.com/stratpinterest/"><img src="https://s3.amazonaws.com/som.com/images/icon_pinterest.png" /></a>
+        </div>
+        <br clear="all" />
+    </div>
+
+    <center>© 2026 Strat-O-Matic Media, LLC - All rights reserved.</center>
+
+</div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-awards",
+  "sourceFamily": "leagueAwards",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/awards/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/awards/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:23.461768+00:00",
+  "byteCount": 28522,
+  "sha256": "322D3F042965C8C28625CFA55D78D386F2850F1A7AC0868354EABD9DF535FFA0",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

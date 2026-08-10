@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-team-fielding",
+  "sourceFamily": "leagueTeamFielding",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/teams/fielding/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/teams/fielding/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:22.857346+00:00",
+  "byteCount": 34252,
+  "sha256": "59176E646947B5EE17A508B7FBE86176AAB07D2D1FC146A28FD02BD2A32E93B0",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

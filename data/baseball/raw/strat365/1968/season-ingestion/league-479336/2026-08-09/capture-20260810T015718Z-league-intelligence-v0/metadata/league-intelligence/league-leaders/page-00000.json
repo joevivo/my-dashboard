@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-leaders",
+  "sourceFamily": "leagueLeaders",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/leaders/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/leaders/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:22.124191+00:00",
+  "byteCount": 48573,
+  "sha256": "02CF577433AAD87864A016E00711832C2DA6822B27FC280315473DFC94033EA9",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/leaders/479431
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:28 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=Kb15sSp1fS37EmjDw61loB2K4QZSBgzzSicpJd0UEYSTfHzdMHa6rLLCbv974lj8LPpjAvxbTO7cEgODahgTtNRPQGKrjxE2Y4bUe58vf4J3KQj1BGRGpHTrW9UudeQT1XJKcdXHckpqgAVUWMgdKYDofzh8iy6NpIAB65pABr7pgWzM5lDJFoJCgfepVjkdNq8qVtekb1gZW06QNNblv5BD%2FOy2j0ta1RFWSoBZG7etto9wS03CmsEchIwsqj2tn1DJAQTiu%2F7FY%2Bb9f0L%2BJlcogh0giJrVD7rBuevzam%2BemgANvW31rCY%2BGQmg9n2ay5WMJCT3ynQLsXA2sd%2FO2C6yHGSiHJLnMShf%2BUwQNzjsiHIUTE3H6lrfRyD9I7PaoFiAHgYDkkrgYww8s8TXuacZBietRPHvB%2B9tAQGQMOdIJ%2BYSVS8hmW%2FaTS7MVJb3x%2Fi7GLa%2BbT9Pe7h%2FpIZPpGn7NF87SUu5OfmOcfUuA35VSSUl1xhZv3e0euzwIPkujd%2BG26dXUXWfbXnkB9HMQAOcdkZa8Mx17yqeRji2ibs%3D; expires=Tue, 11-Aug-2026 01:57:28 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

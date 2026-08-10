@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/teams/fielding/479336
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:23 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=dDtBFoSE7SJwUaaNAAwvlkhDURBzs7k7%2FEiO%2FMx3d2rZdbDBJGJzJ4%2BOYg8hrpMpsgDzt6W2zhbDzCC5FOIAGDE8l%2FGhk6yR6lKUAJkULUdrxgyQRHDiDxmQ2JfDvdfZfmIf0sg2fsVGUU4luIG07iM7MJvd4pVpLwS97h5PF8b19qyjZuujJVDw0DDfR269OTvjJBm3Rte7MNyabld%2FcLmfYRiLl%2BYZfEYOgu3Vcp3i8ZO0IRze17eJYQfGE5nyojlaHwZK1F%2BdoGWh1%2F%2FfWRxi1tQI1I%2FBu74jAJ1hZLQLQCCQ%2Fse728%2BegJEQfCUipTyUx4CQGfwe3J%2FxCfS29T7GeA13RP9bUyJjNI5leJ7jYOG3dkqOLgnG47GQe9blmoNPpPhLmKMSakZJ2M%2BbDhgjqG%2BS%2BabTb4LZnY9H%2BsqYAmSYxdcZKy0VPXX1S932pkf%2F1QUhbLOL05MB6M9%2F%2FcLsmeft%2B0%2Fc%2BlK0QmjwWYl1ApzAkvRtv7UwOB8zO2J9ZHJi4%2Fll3WtVIaRB8umgPjecsN0bQEpnxy9uaI1S59Q%3D; expires=Tue, 11-Aug-2026 01:57:23 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

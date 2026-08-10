@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/players/pitching/479336/all/era/1
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:22 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=JMgLIA5ruozoOoHOpLENGRkiBACOCiWCB3Dtu5c4dw%2FFfVXbyAgy9oxvzMDseGVCV%2BA%2Ff0X5mPfqXrjP1z0movxVj8eKI6X%2FD4e%2Fg22PApp6tp8uv3vtBDjv8cfKq%2BcLzQLEuWGXMKEXUaWHPB4LPRHWps%2FLVI5%2BAczuJ1PYyKxQ%2B735T3DfbE2BZQZxjnoO8Kii3NMtdmPxfZdMBQGKhJZi2ogE7kbSvCZDHbD9yuc4JeqV79yesbVpmeetDJC9aAJQFMb%2BB7u8nNDzS3vXT7qZqHWP%2FUR%2BH64I3uD86ZAGEg5Urh9iRnCNjbWhz3PZG6zkalhZtix61iLwS9OKFWDXXmIPpTOfB6TXhjVtPd964Ffu%2FynRz24JSKFxkYqKPLQuZbwgpwBRJmzpd28YIy65xcbC%2FuCH1BX9QsrWX3rYv9Y8dFT9E2ACH05VaHSOFik3YzA4matYtcXi%2FedwE7UwIDh6belnmVJaH1Hnij%2FZqRrmTfB43P%2F8XkUxbDtv%2Fhgq83wKcsOfxmaN6r9cl8fDoMkURy4c79UXdas2S7U%3D; expires=Tue, 11-Aug-2026 01:57:22 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

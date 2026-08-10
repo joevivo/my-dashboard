@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/479431
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:25 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=GsaAeL6qS9IXkGwSUqa5KM%2BcYzBiSsEq5GxriJ6isa4t5IEkycJDhMF9QmGNDJNWG8E2keFaxRSbrPMJ09nDcLJQMJihkVHIOyrYFF0Uej7q6WeGJumeQZI0Zm%2BcLMfZ5z85San09uQN33NB0QWCbjOwlSQ2K%2FtHyGG3kk4hdSqqwzyE6AF4Z%2BYeSIBE4TLuGN5pfrkATpqFQHrgpLJ7ZGxabvdxbDsvXmNSV%2Frvap2c1S9pwTpuVrmQgGPnqPj2Ke0SFg0cewJzPt6tEnbtHBBP2Ca%2FSg6DYgUiaonqxln8EsPUngi%2FJQet8CCHKlxP%2FpJc05JszGHIdYHEyD8m7KPjBBe1SBY0ANSuWz0WpY8X955huv5JWUpvOpm0I17uCRFFHR%2BIORtv2Bjpfg%2BrHLH6kx4U15vbMzuPek7HQtkeKjPNON0fXTB%2FvmhLwXHQK9GTSPFNx5k55Uzla2dd4bGECCSTDl40X2oMgv6SIrWMgy7I%2BPzeK4op8dLpD0QhJUiNqclS9GowKn13Nrh%2FdXpyjUWke96YGjOWsew6QTs%3D; expires=Tue, 11-Aug-2026 01:57:24 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

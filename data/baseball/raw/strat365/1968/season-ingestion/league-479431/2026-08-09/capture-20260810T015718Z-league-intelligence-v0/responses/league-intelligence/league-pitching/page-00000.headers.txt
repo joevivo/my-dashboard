@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/players/pitching/479431/all/era/1
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:28 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=MnmXXHRrkFpqC6c%2FG%2Fc5%2BJqoShX%2FNStgdBK4PYY5%2B%2BJfXSWEG1w4%2Be3gqLsC5JLbjJsZ28XjTpiOTE%2Bk2hpRT7aVPVQCw47%2Bmza%2FWCR6DiQnYM5ARUv9J%2BsOOXoT0DEPTrs%2BtgyirogxahciIAbyNtayrSr88DEnMsIK7IES6c0EUgHin9ER3nqkqvhW%2B8YJkxxCJwSk90LQZ8zDdyAScCFwJBjlUjuGWMbjfhZMj4jhdLxqHhU3vm%2BXV1O8%2FT7wIrvMRG%2BCLxN0CNuKrPmO7ywwLmAWqXi6J5JsGvWwFSeUMH8rdJUK0GUV5rZSOSJ9sO1GAFwMgBa0h7oPC5epAtBxhoRxgt%2BLzg9cXmvqfndcvUiWfDjs2ulY4c%2BXC6NNBEb20FyXDo1q%2BY%2BeqELJPbe%2BPh7%2FMn3ZBQAJrsCQ%2BVIJhY%2FxiRAtf9MlixTKR13h5mvuBKHw0rtvjdF5%2Bt7nkf%2FZcQsN4BHgc9i9MPD4X5k12ZB3%2FoIMZmPJR1IuWBn7EKsep1fDsqsxB90dZp1lW86%2BxgwCv56woGgiufKWzrQ%3D; expires=Tue, 11-Aug-2026 01:57:28 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

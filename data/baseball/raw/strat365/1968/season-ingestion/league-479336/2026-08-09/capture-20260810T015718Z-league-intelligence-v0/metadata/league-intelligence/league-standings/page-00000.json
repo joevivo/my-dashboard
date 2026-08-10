@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-standings",
+  "sourceFamily": "leagueStandings",
+  "requestedUrl": "https://365.strat-o-matic.com/league/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:20.564319+00:00",
+  "byteCount": 742108,
+  "sha256": "644C7D5F47ABFA87C928ACBA67337B39EA1232078C4F35606E36EEF7261E3D9A",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

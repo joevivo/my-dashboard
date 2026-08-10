@@ -1,0 +1,9 @@
+HTTP-Status: 200
+Effective-URL: https://365.strat-o-matic.com/league/stats/teams/479336
+Connection: close
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 10 Aug 2026 01:57:22 GMT
+Server: nginx/1.16.1
+Set-Cookie: og_session=nL9FFa3y3jq1rA6nV3%2FBDrPeOlDYVc1tveY0TWThv5LtX%2F4kJaXyynp2ZZUV0A5pBJ%2Fh7tiacn6nxqW2qUkVyzD39KSxLEfzoySUIGwN2azqUw71svMzb40HVDprzemBoDzB41Tr2qB6FldxlQOstzGIs28hi5K19PWcD9x11raAjYcEPrqWO2RTt9jxnpLV%2FtizdKk0yYz1SU7bLjYGjsMtvR7gfuNqUpPc54wYYWOwiEaKxAFSLTjz0yFTREQcXpc%2B%2F2YaNZNRSciXp%2FjF3tL8wiVZkdYVaURnTfEn8SRymCE%2FfHWw%2B3OJw%2BrfNXxSq%2FWD8ikWdmq0PbpR4lQ76hMJlZ80bFOHXn194XlWtZtVE3vC49YNAnpeW4q0JUl6RHR7V42Ywoums2uISq7Uhkx7opaEQ3rPsx8ACX4fZiUxfCyy50TmojGChkRrkk9V3aSFuuvcKlj1rWMCSyLS3Zfrvnlzo51LwNJuDcXU5sX66lHYle1W0MBMd1PFaaln9lxe272O4%2FTsYrXxsx58cXYxStHgL9IznFeY68DiCD8%3D; expires=Tue, 11-Aug-2026 01:57:22 GMT; Max-Age=86400; path=/; domain=.strat-o-matic.com
+Transfer-Encoding: chunked
+X-Powered-By: PHP/5.6.40

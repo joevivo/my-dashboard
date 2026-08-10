@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-batting",
+  "sourceFamily": "leagueBatting",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/players/batting/479431/all/ops/1/50",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/players/batting/479431/all/ops/1/50",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:27.536124+00:00",
+  "byteCount": 59331,
+  "sha256": "A2D10372AC6E7E2227146EF956614DE6F90D3D2156E7E125DCC41B452DC251CB",
+  "pageOffset": 50,
+  "tableColumns": [
+    "Name",
+    "Tm",
+    "B",
+    "P",
+    "Def.",
+    "AB",
+    "R",
+    "H",
+    "2B",
+    "3B",
+    "HR",
+    "RBI",
+    "BB",
+    "SO",
+    "SB",
+    "CS",
+    "E",
+    "BA",
+    "OBP",
+    "SLG",
+    "OPS",
+    "BAL",
+    "Salary"
+  ],
+  "tableRowCount": 31,
+  "discoveredOffsets": [
+    0
+  ],
+  "captureMode": "completePaginatedTable",
+  "transportResult": "PASS"
+}

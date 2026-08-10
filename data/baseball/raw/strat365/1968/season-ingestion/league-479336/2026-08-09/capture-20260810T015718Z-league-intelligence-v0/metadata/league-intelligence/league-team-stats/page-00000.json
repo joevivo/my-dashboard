@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-team-stats",
+  "sourceFamily": "leagueTeamStats",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/teams/479336",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/teams/479336",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:22.508808+00:00",
+  "byteCount": 40572,
+  "sha256": "BA17C2758E4D3EFF77A0D635B17A9D0773C62896C9587510E325B90989B2683F",
+  "pageOffset": 0,
+  "captureMode": "singlePage",
+  "transportResult": "PASS"
+}

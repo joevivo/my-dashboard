@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "strat365-league-intelligence-raw-response-metadata-v0",
+  "requestId": "league-intelligence-league-pitching",
+  "sourceFamily": "leaguePitching",
+  "requestedUrl": "https://365.strat-o-matic.com/league/stats/players/pitching/479336/all/era/1",
+  "effectiveUrl": "https://365.strat-o-matic.com/league/stats/players/pitching/479336/all/era/1",
+  "httpStatus": 200,
+  "capturedAtUtc": "2026-08-10T01:57:21.794149+00:00",
+  "byteCount": 74636,
+  "sha256": "B021E121A6F96B03DEF744EA8CBE837446FDC5CFDB81E3A095838CC3EE335272",
+  "pageOffset": 0,
+  "tableColumns": [
+    "Name",
+    "Tm",
+    "T",
+    "End.",
+    "G",
+    "GS",
+    "W",
+    "L",
+    "S",
+    "BS",
+    "IP",
+    "H",
+    "R",
+    "ER",
+    "BB",
+    "SO",
+    "HR",
+    "ERA",
+    "WHIP",
+    "BAL",
+    "Salary"
+  ],
+  "tableRowCount": 50,
+  "discoveredOffsets": [
+    0
+  ],
+  "captureMode": "completePaginatedTable",
+  "transportResult": "PASS"
+}
