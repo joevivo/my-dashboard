@@ -21,10 +21,52 @@ import QueryWorkbench from "./QueryWorkbench";
 import ArtistIntelligence from "./ArtistIntelligence";
 import PlaylistIntelligence from "./PlaylistIntelligence";
 import ScrollToTopButton from "./ScrollToTopButton";
+
+const ACTIVE_STRAT_TEAMS = [
+  {
+    teamId: "1851052",
+    leagueId: "479336",
+    teamName: "Aquarium Drinkers",
+    season: "1968",
+    teamUrl: "https://365.strat-o-matic.com/team/1851052",
+    scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1851052",
+    bie: {
+      record: "34-26",
+      runDifferential: "+29",
+      nextOpponent: "Boquete Bombers",
+      nextSeriesDate: "Aug 10",
+      homeAway: "Away",
+      gameCount: 3,
+      refreshedAt: "Aug 10",
+    },
+  },
+  {
+    teamId: "1853975",
+    leagueId: "479431",
+    teamName: "Aquarium Drinkers",
+    season: "1968",
+    teamUrl: "https://365.strat-o-matic.com/team/1853975",
+    scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1853975",
+    bie: {
+      record: "21-12",
+      runDifferential: "+41",
+      nextOpponent: "Crystal Sky Chanticleers",
+      nextSeriesDate: "Aug 10",
+      homeAway: "Away",
+      gameCount: 3,
+      refreshedAt: "Aug 10",
+    },
+  },
+];
+
 export default function App() {
-  const [activeView, setActiveView] = useState("IntelligenceHome");
+  const [activeView, setActiveView] = useState("StratHome");
   const [selectedArtistForIntelligence, setSelectedArtistForIntelligence] = useState("Billie Holiday");
   const [queryWorkbenchArtist, setQueryWorkbenchArtist] = useState("");
+  const [stratTeamData, setStratTeamData] = useState({});
+  const [stratTeamStatus, setStratTeamStatus] = useState({});
+  const [stratActionMessage, setStratActionMessage] = useState("");
+
   const [queryWorkbenchSource, setQueryWorkbenchSource] = useState("");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("dashboardTheme") || "light";
@@ -40,7 +82,85 @@ export default function App() {
   const toggleTheme = () => {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
   };
+
+  const refreshStratTeam = async (teamId) => {
+    setStratTeamStatus((current) => ({
+      ...current,
+      [teamId]: "loading",
+    }));
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/strat/team/${teamId}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Team refresh failed: ${response.status}`);
+      }
+
+      const payload = await response.json();
+
+      setStratTeamData((current) => ({
+        ...current,
+        [teamId]: payload,
+      }));
+
+      setStratTeamStatus((current) => ({
+        ...current,
+        [teamId]: "ready",
+      }));
+    } catch (error) {
+      console.error("Active team refresh failed:", teamId, error);
+
+      setStratTeamStatus((current) => ({
+        ...current,
+        [teamId]: "error",
+      }));
+    }
+  };
+
+  const refreshAllStratTeams = () => {
+    ACTIVE_STRAT_TEAMS.forEach((team) => {
+      refreshStratTeam(team.teamId);
+    });
+
+    setStratActionMessage(
+      "Refreshing current team information from Strat365."
+    );
+  };
+
+  const updateUpcomingSeries = (team) => {
+    refreshStratTeam(team.teamId);
+
+    window.open(
+      team.scheduleUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    setStratActionMessage(
+      `${team.teamName} · League ${team.leagueId}: live team refreshed and current schedule opened.`
+    );
+  };
+
+  useEffect(() => {
+    ACTIVE_STRAT_TEAMS.forEach((team) => {
+      refreshStratTeam(team.teamId);
+    });
+  }, []);
+
   const navSections = [
+    {
+      title: "Operations",
+      groups: [
+        {
+          title: "StratOperations",
+          items: [
+            ["StratHome", "Active Teams"],
+          ],
+        },
+      ],
+    },
     {
       title: "Intelligence",
       groups: [
@@ -50,8 +170,7 @@ export default function App() {
             ["IntelligenceHome", "Intelligence Home"],
             ["MusicDashboard", "Music Dashboard"],
             ["QueryWorkbench", "Query Workbench"],
-            ["Music", "Music Library"],
-            ["MusicTimeMachine", "Music Time Machine"],
+            ["Music", "Music Intelligence"],
             ["PlaylistIntelligence", "Playlist Intelligence"],
             ["Books", "Books"],
             ["Notes", "Notes"],
@@ -73,34 +192,17 @@ export default function App() {
       ],
     },
     {
-      title: "Strat Tools",
+      title: "Utilities",
       groups: [
         {
-          title: "Simulation",
+          title: "Tools",
           items: [
-            ["Lineup", "Lineup Analyzer"],
-            ["GameSim", "Game Simulator"],
-            ["Pitching", "Pitching Analyzer"],
-          ],
-        },
-        {
-          title: "Preparation",
-          items: [
-            ["Series", "Series Planner"],
-            ["Matchup", "Matchup Analyzer"],
-            ["Opponents", "Opponent Manager"],
-          ],
-        },
-        {
-          title: "Administration",
-          items: [
-            ["LeagueManager", "League Manager"],
             ["CardImporter", "Card Importer"],
           ],
         },
       ],
     },
-  ]
+  ];
 
   const navButton = (view, label) => (
     <button
@@ -122,6 +224,215 @@ export default function App() {
     >
       {label}
     </button>
+  );
+
+
+  const StratHome = () => (
+    <div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              StratOperations
+            </p>
+
+            <h2 className="mt-2 text-3xl font-black tracking-tight">
+              Active Teams
+            </h2>
+
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+              Current teams, current position, and what comes next.
+              The underlying BIE machinery stays out of the way until you need it.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={refreshAllStratTeams}
+            className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white"
+          >
+            Refresh All Teams
+          </button>
+        </div>
+
+        {stratActionMessage && (
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-300">
+            {stratActionMessage}
+          </div>
+        )}
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-2">
+        {ACTIVE_STRAT_TEAMS.map((team) => {
+          const live = stratTeamData[team.teamId];
+          const liveStatus =
+            stratTeamStatus[team.teamId] || "loading";
+
+          return (
+            <article
+              key={team.teamId}
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-sm dark:border-slate-800 dark:bg-slate-900/90"
+            >
+              <div className="border-b border-slate-200 p-5 dark:border-slate-800">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                      {team.season} · League {team.leagueId}
+                    </p>
+
+                    <h3 className="mt-2 text-2xl font-black">
+                      {team.teamName}
+                    </h3>
+                  </div>
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${
+                      liveStatus === "ready"
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                        : liveStatus === "error"
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                          : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                    }`}
+                  >
+                    {liveStatus === "ready"
+                      ? "Live"
+                      : liveStatus === "error"
+                        ? "BIE snapshot"
+                        : "Refreshing"}
+                  </span>
+                </div>
+
+                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
+                    <p className="text-xs font-semibold text-slate-500">
+                      Record
+                    </p>
+                    <p className="mt-1 text-xl font-black">
+                      {live?.record || team.bie.record}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
+                    <p className="text-xs font-semibold text-slate-500">
+                      Run Diff
+                    </p>
+                    <p className="mt-1 text-xl font-black">
+                      {team.bie.runDifferential}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
+                    <p className="text-xs font-semibold text-slate-500">
+                      Roster
+                    </p>
+                    <p className="mt-1 text-xl font-black">
+                      {live
+                        ? live.hitterCount + live.pitcherCount
+                        : "—"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
+                    <p className="text-xs font-semibold text-slate-500">
+                      Cash
+                    </p>
+                    <p className="mt-1 text-xl font-black">
+                      {live?.cashAvailable || "—"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                  Upcoming Series
+                </p>
+
+                <p className="mt-2 text-xl font-black">
+                  {team.bie.homeAway} · {team.bie.nextOpponent}
+                </p>
+
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  {team.bie.nextSeriesDate} · {team.bie.gameCount} games
+                </p>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
+                    <p className="text-xs font-semibold text-slate-500">
+                      Ballpark
+                    </p>
+                    <p className="mt-1 font-bold">
+                      {live?.homeBallpark || "Loading…"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
+                    <p className="text-xs font-semibold text-slate-500">
+                      BIE snapshot
+                    </p>
+                    <p className="mt-1 font-bold">
+                      {team.bie.refreshedAt}
+                    </p>
+                  </div>
+                </div>
+
+                {liveStatus === "error" && (
+                  <p className="mt-3 text-xs font-semibold text-amber-700 dark:text-amber-300">
+                    Live Strat data is unavailable. The latest BIE snapshot
+                    remains visible.
+                  </p>
+                )}
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updateUpcomingSeries(team)}
+                    className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-500"
+                  >
+                    Update Upcoming Series
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => refreshStratTeam(team.teamId)}
+                    className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                  >
+                    Refresh Team
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(
+                        team.teamUrl,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                  >
+                    Open Strat
+                  </button>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+        <h3 className="text-lg font-black">
+          BIE Operations
+        </h3>
+
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+          Series capture, parsing, League Intelligence, card analysis,
+          simulation, and other internal engines are no longer exposed as
+          primary navigation. They remain available in the codebase while
+          this operating view becomes the normal way to use BIE.
+        </p>
+      </section>
+    </div>
   );
 
 
@@ -190,7 +501,7 @@ export default function App() {
 
           <div className="flex items-center gap-4">
             <div className="text-xs text-slate-400">
-              Strat / Finance / News / Calendar
+              Active teams / intelligence / signals
             </div>
 
             <button
@@ -242,7 +553,11 @@ export default function App() {
 
         <main className="flex-1 p-6">
           <div className="max-w-screen-2xl mx-auto px-4">
-            {activeView === "MusicDashboard" ? (
+            {activeView === "StratHome" ? (
+
+              <StratHome />
+
+            ) : activeView === "MusicDashboard" ? (
               <MusicDashboard
                 onOpenArtist={(artist) => {
                   setQueryWorkbenchArtist(artist);
