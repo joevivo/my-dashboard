@@ -351,6 +351,547 @@ def compare_recent_signals(
     }
 
 
+def summarize_league_profile(
+    team: dict[str, Any],
+) -> dict[str, Any]:
+    standings = as_dict(
+        team.get("standings")
+    )
+    standings_metrics = as_dict(
+        standings.get("metrics")
+    )
+
+    offense = as_dict(
+        team.get("offense")
+    )
+    offense_metrics = as_dict(
+        offense.get("metrics")
+    )
+
+    pitching = as_dict(
+        team.get("pitching")
+    )
+    pitching_metrics = as_dict(
+        pitching.get("metrics")
+    )
+
+    fielding = as_dict(
+        team.get("fielding")
+    )
+    fielding_metrics = as_dict(
+        fielding.get("metrics")
+    )
+
+    manager = as_dict(
+        team.get("manager")
+    )
+    manager_metrics = as_dict(
+        manager.get("metrics")
+    )
+
+    derived = as_dict(
+        team.get("derived")
+    )
+    ranks = as_dict(
+        derived.get("ranks")
+    )
+
+    return {
+        "teamId": str(
+            team.get("teamId") or ""
+        ),
+        "teamName": str(
+            team.get("teamName") or ""
+        ),
+        "record": {
+            "wins": int(
+                as_number(
+                    standings_metrics.get("wins")
+                )
+            ),
+            "losses": int(
+                as_number(
+                    standings_metrics.get("losses")
+                )
+            ),
+        },
+        "runDifferential": int(
+            as_number(
+                standings_metrics.get(
+                    "runDifferential"
+                )
+            )
+        ),
+        "runDifferentialRank": (
+            int(
+                as_number(
+                    ranks.get(
+                        "runDifferentialRank"
+                    )
+                )
+            )
+            if ranks.get(
+                "runDifferentialRank"
+            ) is not None
+            else None
+        ),
+        "offense": {
+            "runsScored": int(
+                as_number(
+                    offense_metrics.get("R")
+                )
+            ),
+            "runsScoredRank": int(
+                as_number(
+                    ranks.get("runsScoredRank")
+                )
+            ),
+            "ops": as_number(
+                offense_metrics.get("OPS")
+            ),
+            "opsRank": int(
+                as_number(
+                    ranks.get("opsRank")
+                )
+            ),
+        },
+        "pitching": {
+            "runsAllowed": int(
+                as_number(
+                    pitching_metrics.get("R")
+                )
+            ),
+            "runsAllowedRank": int(
+                as_number(
+                    ranks.get("runsAllowedRank")
+                )
+            ),
+            "era": as_number(
+                pitching_metrics.get("ERA")
+            ),
+            "eraRank": int(
+                as_number(
+                    ranks.get("eraRank")
+                )
+            ),
+            "whip": as_number(
+                pitching_metrics.get("WHIP")
+            ),
+            "whipRank": int(
+                as_number(
+                    ranks.get("whipRank")
+                )
+            ),
+        },
+        "defense": {
+            "errors": int(
+                as_number(
+                    fielding_metrics.get("E")
+                )
+            ),
+            "fewestErrorsRank": int(
+                as_number(
+                    ranks.get("fewestErrorsRank")
+                )
+            ),
+            "fieldingAverage": as_number(
+                fielding_metrics.get("AVG")
+            ),
+            "fieldingAverageRank": int(
+                as_number(
+                    ranks.get(
+                        "fieldingAverageRank"
+                    )
+                )
+            ),
+            "unearnedRunsAllowed": int(
+                as_number(
+                    derived.get(
+                        "unearnedRunsAllowed"
+                    )
+                )
+            ),
+            "unearnedRunsPerGame": as_number(
+                derived.get(
+                    "unearnedRunsPerGame"
+                )
+            ),
+            "fewestUnearnedRunsAllowedRank": int(
+                as_number(
+                    ranks.get(
+                        "fewestUnearnedRunsAllowedRank"
+                    )
+                )
+            ),
+            "lowestUnearnedRunsPerGameRank": int(
+                as_number(
+                    ranks.get(
+                        "lowestUnearnedRunsPerGameRank"
+                    )
+                )
+            ),
+        },
+        "managerTendencies": {
+            "stolenBases": int(
+                as_number(
+                    manager_metrics.get(
+                        "stolenBases"
+                    )
+                )
+            ),
+            "caughtStealing": int(
+                as_number(
+                    manager_metrics.get(
+                        "caughtStealing"
+                    )
+                )
+            ),
+            "stolenBasePct": as_number(
+                manager_metrics.get(
+                    "stolenBasePct"
+                )
+            ),
+            "sacrifices": int(
+                as_number(
+                    manager_metrics.get(
+                        "sacrifices"
+                    )
+                )
+            ),
+            "hitAndRuns": int(
+                as_number(
+                    manager_metrics.get(
+                        "hitAndRuns"
+                    )
+                )
+            ),
+            "intentionalWalks": int(
+                as_number(
+                    manager_metrics.get(
+                        "intentionalWalks"
+                    )
+                )
+            ),
+        },
+    }
+
+
+def find_league_team(
+    league_payload: dict[str, Any],
+    *,
+    team_id: str | None,
+    team_name: str | None,
+) -> dict[str, Any] | None:
+    teams = [
+        as_dict(item)
+        for item in as_list(
+            league_payload.get("teams")
+        )
+    ]
+
+    normalized_team_id = str(
+        team_id or ""
+    ).strip()
+
+    if normalized_team_id:
+        matches = [
+            team
+            for team in teams
+            if str(
+                team.get("teamId") or ""
+            ).strip() == normalized_team_id
+        ]
+
+        if len(matches) != 1:
+            raise ValueError(
+                "League Intelligence team ID "
+                f"{normalized_team_id!r} resolved "
+                f"{len(matches)} teams"
+            )
+
+        return matches[0]
+
+    normalized_name = str(
+        team_name or ""
+    ).strip()
+
+    if normalized_name:
+        matches = [
+            team
+            for team in teams
+            if str(
+                team.get("teamName") or ""
+            ).strip() == normalized_name
+        ]
+
+        if len(matches) != 1:
+            raise ValueError(
+                "League Intelligence team name "
+                f"{normalized_name!r} resolved "
+                f"{len(matches)} teams"
+            )
+
+        return matches[0]
+
+    return None
+
+
+def metric_delta(
+    left: Any,
+    right: Any,
+    digits: int = 4,
+) -> float | None:
+    if left is None or right is None:
+        return None
+
+    return round(
+        as_number(left) - as_number(right),
+        digits,
+    )
+
+
+def rank_advantage(
+    team_rank: Any,
+    opponent_rank: Any,
+) -> int | None:
+    if (
+        team_rank is None
+        or opponent_rank is None
+    ):
+        return None
+
+    return int(
+        as_number(opponent_rank)
+        - as_number(team_rank)
+    )
+
+
+def compare_league_profiles(
+    team: dict[str, Any],
+    opponent: dict[str, Any],
+) -> dict[str, Any]:
+    team_offense = as_dict(
+        team.get("offense")
+    )
+    opp_offense = as_dict(
+        opponent.get("offense")
+    )
+
+    team_pitching = as_dict(
+        team.get("pitching")
+    )
+    opp_pitching = as_dict(
+        opponent.get("pitching")
+    )
+
+    team_defense = as_dict(
+        team.get("defense")
+    )
+    opp_defense = as_dict(
+        opponent.get("defense")
+    )
+
+    return {
+        "deltaConvention": (
+            "TEAM_MINUS_OPPONENT_FOR_METRICS"
+        ),
+        "rankAdvantageConvention": (
+            "POSITIVE_MEANS_TEAM_RANKS_BETTER"
+        ),
+        "runDifferentialDelta": metric_delta(
+            team.get("runDifferential"),
+            opponent.get("runDifferential"),
+            0,
+        ),
+        "opsDelta": metric_delta(
+            team_offense.get("ops"),
+            opp_offense.get("ops"),
+        ),
+        "eraDelta": metric_delta(
+            team_pitching.get("era"),
+            opp_pitching.get("era"),
+        ),
+        "whipDelta": metric_delta(
+            team_pitching.get("whip"),
+            opp_pitching.get("whip"),
+        ),
+        "fieldingAverageDelta": metric_delta(
+            team_defense.get(
+                "fieldingAverage"
+            ),
+            opp_defense.get(
+                "fieldingAverage"
+            ),
+        ),
+        "unearnedRunsPerGameDelta": metric_delta(
+            team_defense.get(
+                "unearnedRunsPerGame"
+            ),
+            opp_defense.get(
+                "unearnedRunsPerGame"
+            ),
+        ),
+        "rankAdvantages": {
+            "ops": rank_advantage(
+                team_offense.get("opsRank"),
+                opp_offense.get("opsRank"),
+            ),
+            "era": rank_advantage(
+                team_pitching.get("eraRank"),
+                opp_pitching.get("eraRank"),
+            ),
+            "whip": rank_advantage(
+                team_pitching.get("whipRank"),
+                opp_pitching.get("whipRank"),
+            ),
+            "fieldingAverage": rank_advantage(
+                team_defense.get(
+                    "fieldingAverageRank"
+                ),
+                opp_defense.get(
+                    "fieldingAverageRank"
+                ),
+            ),
+            "unearnedRunsAllowed": rank_advantage(
+                team_defense.get(
+                    "fewestUnearnedRunsAllowedRank"
+                ),
+                opp_defense.get(
+                    "fewestUnearnedRunsAllowedRank"
+                ),
+            ),
+            "unearnedRunsPerGame": rank_advantage(
+                team_defense.get(
+                    "lowestUnearnedRunsPerGameRank"
+                ),
+                opp_defense.get(
+                    "lowestUnearnedRunsPerGameRank"
+                ),
+            ),
+        },
+    }
+
+
+def build_league_context(
+    team_payload: dict[str, Any],
+    team_schedule_payload: dict[str, Any] | None,
+    upcoming_series: dict[str, Any],
+    league_payload: dict[str, Any] | None,
+) -> dict[str, Any]:
+    if league_payload is None:
+        return {
+            "status": "NOT_PROVIDED",
+            "teamProfile": None,
+            "opponentProfile": None,
+            "comparison": None,
+        }
+
+    readiness_league_id = str(
+        team_payload.get("leagueId") or ""
+    ).strip()
+
+    intelligence_league_id = str(
+        league_payload.get("leagueId") or ""
+    ).strip()
+
+    if (
+        readiness_league_id
+        and intelligence_league_id
+        and readiness_league_id
+        != intelligence_league_id
+    ):
+        raise ValueError(
+            "Team readiness and League Intelligence "
+            "league IDs do not match: "
+            f"{readiness_league_id!r} != "
+            f"{intelligence_league_id!r}"
+        )
+
+    schedule_team_id = None
+
+    if team_schedule_payload is not None:
+        raw_team_id = (
+            team_schedule_payload.get("teamId")
+        )
+
+        if raw_team_id is not None:
+            schedule_team_id = str(
+                raw_team_id
+            ).strip() or None
+
+    team = find_league_team(
+        league_payload,
+        team_id=schedule_team_id,
+        team_name=str(
+            team_payload.get("teamName") or ""
+        ).strip(),
+    )
+
+    if team is None:
+        raise ValueError(
+            "Unable to resolve team in "
+            "League Intelligence"
+        )
+
+    team_profile = summarize_league_profile(
+        team
+    )
+
+    opponent_id = str(
+        upcoming_series.get(
+            "opponentTeamId"
+        ) or ""
+    ).strip()
+
+    if not opponent_id:
+        return {
+            "status": "TEAM_PROFILE_ONLY",
+            "teamProfile": team_profile,
+            "opponentProfile": None,
+            "comparison": None,
+        }
+
+    opponent = find_league_team(
+        league_payload,
+        team_id=opponent_id,
+        team_name=None,
+    )
+
+    if opponent is None:
+        return {
+            "status": "TEAM_PROFILE_ONLY",
+            "teamProfile": team_profile,
+            "opponentProfile": None,
+            "comparison": None,
+        }
+
+    opponent_profile = summarize_league_profile(
+        opponent
+    )
+
+    if (
+        opponent_profile["teamId"]
+        == team_profile["teamId"]
+    ):
+        raise ValueError(
+            "League Intelligence opponent "
+            "resolved to team itself"
+        )
+
+    return {
+        "status": "AVAILABLE",
+        "classification": (
+            "SEASON_TO_DATE_LEAGUE_CONTEXT"
+        ),
+        "teamProfile": team_profile,
+        "opponentProfile": opponent_profile,
+        "comparison": compare_league_profiles(
+            team_profile,
+            opponent_profile,
+        ),
+    }
+
+
 def build_engine(
     team_payload: dict[str, Any],
     team_source: Path,
@@ -358,6 +899,8 @@ def build_engine(
     team_schedule_source: Path | None,
     opponent_payload: dict[str, Any] | None,
     opponent_source: Path | None,
+    league_intelligence_payload: dict[str, Any] | None,
+    league_intelligence_source: Path | None,
     explicit_opponent_name: str | None,
 ) -> dict[str, Any]:
     team_name = str(team_payload.get("teamName") or "").strip()
@@ -396,6 +939,13 @@ def build_engine(
         )
 
     opponent_name = schedule_opponent_name or explicit_name
+
+    league_context = build_league_context(
+        team_payload,
+        team_schedule_payload,
+        upcoming_series,
+        league_intelligence_payload,
+    )
 
     opponent_recent: dict[str, Any] | None = None
     matchup: dict[str, Any]
@@ -450,6 +1000,17 @@ def build_engine(
             "comparison": None,
         }
 
+    matchup["leagueComparison"] = (
+        league_context.get("comparison")
+    )
+
+    if league_context["status"] == "AVAILABLE":
+        matchup["status"] = (
+            "RECENT_AND_LEAGUE_COMPARISON_AVAILABLE"
+            if opponent_payload is not None
+            else "LEAGUE_COMPARISON_AVAILABLE"
+        )
+
     missing_evidence: list[str] = []
 
     if upcoming_series["status"] != "FOUND":
@@ -457,9 +1018,13 @@ def build_engine(
             "upcoming opponent schedule identity"
         )
 
-    if opponent_payload is None:
+    if (
+        opponent_payload is None
+        and league_context["status"] != "AVAILABLE"
+    ):
         missing_evidence.append(
-            "upcoming opponent recent-series readiness"
+            "upcoming opponent recent-series or "
+            "League Intelligence evidence"
         )
 
     missing_evidence.extend(
@@ -491,6 +1056,11 @@ def build_engine(
                 if opponent_source is not None
                 else None
             ),
+            "leagueIntelligence": (
+                str(league_intelligence_source)
+                if league_intelligence_source is not None
+                else None
+            ),
         },
         "previousSeries": {
             "gameIds": as_list(team_payload.get("gameIds")),
@@ -499,6 +1069,7 @@ def build_engine(
         "upcomingSeries": upcoming_series,
         "recentTeamSignals": team_recent,
         "recentOpponentSignals": opponent_recent,
+        "leagueContext": league_context,
         "matchupAssessment": matchup,
         "managerialWatchlist": build_watchlist(team_recent),
         "managerRecommendations": {
@@ -506,9 +1077,12 @@ def build_engine(
             "items": [],
             "missingEvidence": missing_evidence,
             "note": (
-                "Series Engine v0 does not convert a three-game sample "
-                "into lineup, pitching, bullpen, or tactical prescriptions "
-                "without explicit opponent and roster/card evidence."
+                "Series Engine v0 keeps short-sample readiness and "
+                "season-to-date League Intelligence distinct. League "
+                "context can establish opponent performance evidence, "
+                "but lineup, pitching, bullpen, and tactical prescriptions "
+                "remain gated by probable-starter, roster/card, and "
+                "bullpen-availability evidence."
             ),
         },
         "sampleGovernance": {
@@ -520,6 +1094,16 @@ def build_engine(
                 "Recent-series signals may identify watch items and "
                 "questions. They are not stable rates or standalone "
                 "managerial recommendations."
+            ),
+            "leagueIntelligenceClassification": (
+                "SEASON_TO_DATE_LEAGUE_CONTEXT"
+                if league_intelligence_payload is not None
+                else "NOT_PROVIDED"
+            ),
+            "leagueIntelligencePolicy": (
+                "League-relative season evidence may support matchup "
+                "assessment but does not substitute for player-card, "
+                "probable-starter, or bullpen-availability evidence."
             ),
         },
     }
@@ -547,6 +1131,10 @@ def main() -> int:
         type=Path,
     )
     parser.add_argument(
+        "--league-intelligence",
+        type=Path,
+    )
+    parser.add_argument(
         "--opponent-name",
     )
     parser.add_argument(
@@ -571,6 +1159,12 @@ def main() -> int:
         else None
     )
 
+    league_intelligence_payload = (
+        load_json(args.league_intelligence)
+        if args.league_intelligence
+        else None
+    )
+
     output = build_engine(
         team_payload=team_payload,
         team_source=args.team_readiness,
@@ -578,6 +1172,8 @@ def main() -> int:
         team_schedule_source=args.team_schedule,
         opponent_payload=opponent_payload,
         opponent_source=args.opponent_readiness,
+        league_intelligence_payload=league_intelligence_payload,
+        league_intelligence_source=args.league_intelligence,
         explicit_opponent_name=args.opponent_name,
     )
 
