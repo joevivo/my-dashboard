@@ -1,350 +1,310 @@
 {
-    "schemaVersion":  "strat365-active-team-registry-v0",
-    "artifactType":  "strat365-active-team-registry",
-    "sourceSystem":  "Strat-O-Matic 365",
-    "registryPurpose":  "Configure active user teams for spoiler-safe nightly discovery, capture, replay analysis, series wrapups, and league intelligence.",
-    "identityPolicy":  {
-                           "canonicalTeamKey":  "leagueId:teamId",
-                           "teamNameIsDisplayOnly":  true,
-                           "ownerRegistryRemainsSeparate":  true,
-                           "thirdTeamRequiresConfigurationOnly":  true
-                       },
-    "spoilerPolicy":  {
-                          "defaultState":  "SEALED",
-                          "automaticOutcomeDisclosure":  false,
-                          "gameUnlockRequiresExplicitUserAction":  true,
-                          "seriesWrapupRequiresAllSeriesGamesUnlocked":  true,
-                          "discoverySummaryMayExposeGameIds":  true,
-                          "discoverySummaryMayExposeScores":  false,
-                          "discoverySummaryMayExposeWinners":  false,
-                          "discoverySummaryMayExposeUpdatedRecords":  false,
-                          "discoverySummaryMayExposeSeriesOutcome":  false
-                      },
-    "nightlyWorkflow":  {
-                            "pregamePacketEnabled":  true,
-                            "silentPostgameDiscoveryEnabled":  true,
-                            "gameByGameReplayEnabled":  true,
-                            "seriesWrapupEnabled":  true,
-                            "leagueIntelligenceEnabled":  true,
-                            "expectedGamesPerSeries":  3
-                        },
-    "teams":  [
-                  {
-                      "teamKey":  "479336:1851052",
-                      "active":  true,
-                      "leagueId":  "479336",
-                      "teamId":  "1851052",
-                      "teamName":  "Aquarium Drinkers",
-                      "season":  1968,
-                      "playerSetYear":  1968,
-                      "ballpark":  "Astrodome 1965",
-                      "strategyProfile":  "astrodome-run-prevention",
-                      "strategyDescription":  "Deep starting pitching, efficient relief, defense, park fit, and sufficient offense. Pitcher hitting is not a roster-construction objective.",
-                      "leagueUrl":  "https://365.strat-o-matic.com/league/479336",
-                      "teamUrl":  "https://365.strat-o-matic.com/team/1851052",
-                      "scheduleUrl":  "https://365.strat-o-matic.com/team/schedule/1851052",
-                      "pregameSources":  [
-                                             {
-                                                 "sourceFamily":  "leagueStandings",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueBattingOps",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueBattingRuns",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/r/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leaguePitchingEra",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leaguePitchingInnings",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/ip/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueLeaders",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTeamStats",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTeamFielding",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueManagers",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueAwards",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTransactions",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
-                                                 "required":  false
-                                             }
-                                         ],
-                      "postgameLeagueSources":  [
-                                                    {
-                                                        "sourceFamily":  "leagueStandings",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueBattingOps",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueBattingRuns",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/r/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leaguePitchingEra",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leaguePitchingInnings",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/ip/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueLeaders",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTeamStats",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTeamFielding",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueManagers",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueAwards",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTransactions",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
-                                                        "required":  false
-                                                    }
-                                                ],
-                      "gameSources":  [
-                                          {
-                                              "sourceFamily":  "gameRecap",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
-                                              "required":  true
-                                          },
-                                          {
-                                              "sourceFamily":  "gamePlayByPlay",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
-                                              "required":  true
-                                          },
-                                          {
-                                              "sourceFamily":  "gameReplay",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
-                                              "required":  true
-                                          }
-                                      ],
-                      "analysisProfile":  {
-                                              "primaryQuestions":  [
-                                                                       "Is elite run prevention continuing to offset below-average offensive volume?",
-                                                                       "Are rotation depth and park fit protecting the bullpen?",
-                                                                       "Are weak relief tiers or expensive underperforming hitters becoming actionable risks?"
-                                                                   ],
-                                              "pitcherHittingEvaluation":  "incidental-only"
-                                          }
-                  },
-                  {
-                      "teamKey":  "479431:1853975",
-                      "active":  true,
-                      "leagueId":  "479431",
-                      "teamId":  "1853975",
-                      "teamName":  "Aquarium Drinkers",
-                      "season":  1968,
-                      "playerSetYear":  1968,
-                      "ballpark":  "Comiskey Park 1968",
-                      "strategyProfile":  "comiskey-pitchers-who-hit",
-                      "strategyDescription":  "Strong starting pitching, balanced card-based offense, selective real-card power, Comiskey fit, and pitcher offense as an incremental strategic advantage.",
-                      "leagueUrl":  "https://365.strat-o-matic.com/league/479431",
-                      "teamUrl":  "https://365.strat-o-matic.com/team/1853975",
-                      "scheduleUrl":  "https://365.strat-o-matic.com/team/schedule/1853975",
-                      "pregameSources":  [
-                                             {
-                                                 "sourceFamily":  "leagueStandings",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueBattingOps",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueBattingRuns",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/r/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leaguePitchingEra",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leaguePitchingInnings",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/ip/1",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueLeaders",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTeamStats",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTeamFielding",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueManagers",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueAwards",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
-                                                 "required":  true
-                                             },
-                                             {
-                                                 "sourceFamily":  "leagueTransactions",
-                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
-                                                 "required":  false
-                                             }
-                                         ],
-                      "postgameLeagueSources":  [
-                                                    {
-                                                        "sourceFamily":  "leagueStandings",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueBattingOps",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueBattingRuns",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/r/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leaguePitchingEra",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leaguePitchingInnings",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/ip/1",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueLeaders",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTeamStats",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTeamFielding",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueManagers",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueAwards",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
-                                                        "required":  true
-                                                    },
-                                                    {
-                                                        "sourceFamily":  "leagueTransactions",
-                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
-                                                        "required":  false
-                                                    }
-                                                ],
-                      "gameSources":  [
-                                          {
-                                              "sourceFamily":  "gameRecap",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
-                                              "required":  true
-                                          },
-                                          {
-                                              "sourceFamily":  "gamePlayByPlay",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
-                                              "required":  true
-                                          },
-                                          {
-                                              "sourceFamily":  "gameReplay",
-                                              "urlTemplate":  "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
-                                              "required":  true
-                                          }
-                                      ],
-                      "analysisProfile":  {
-                                              "primaryQuestions":  [
-                                                                       "Is pitcher offense producing measurable incremental value?",
-                                                                       "Is the roster maintaining sufficient offense and defense around the pitching core?",
-                                                                       "Are bullpen depth and Comiskey fit supporting or undermining the construction thesis?"
-                                                                   ],
-                                              "pitcherHittingEvaluation":  "primary-strategy-signal"
-                                          }
-                  }
-              ],
-    "validation":  {
-                       "expectedActiveTeamCount":  2,
-                       "expectedUniqueLeagueCount":  2,
-                       "expectedUniqueTeamCount":  2,
-                       "expectedUniqueStrategyProfileCount":  2,
-                       "requiredGameSourceFamilyCount":  3,
-                       "requiredLeagueIntelligenceSourceFamilyCount":  10,
-                       "status":  "PASS"
-                   }
+    "schemaVersion": "strat365-active-team-registry-v0",
+    "artifactType": "strat365-active-team-registry",
+    "sourceSystem": "Strat-O-Matic 365",
+    "registryPurpose": "Configure active user teams for spoiler-safe nightly discovery, capture, replay analysis, series wrapups, and league intelligence.",
+    "identityPolicy": {
+        "canonicalTeamKey": "leagueId:teamId",
+        "teamNameIsDisplayOnly": true,
+        "ownerRegistryRemainsSeparate": true,
+        "thirdTeamRequiresConfigurationOnly": true
+    },
+    "spoilerPolicy": {
+        "defaultState": "SEALED",
+        "automaticOutcomeDisclosure": false,
+        "gameUnlockRequiresExplicitUserAction": true,
+        "seriesWrapupRequiresAllSeriesGamesUnlocked": true,
+        "discoverySummaryMayExposeGameIds": true,
+        "discoverySummaryMayExposeScores": false,
+        "discoverySummaryMayExposeWinners": false,
+        "discoverySummaryMayExposeUpdatedRecords": false,
+        "discoverySummaryMayExposeSeriesOutcome": false
+    },
+    "nightlyWorkflow": {
+        "pregamePacketEnabled": true,
+        "silentPostgameDiscoveryEnabled": true,
+        "gameByGameReplayEnabled": true,
+        "seriesWrapupEnabled": true,
+        "leagueIntelligenceEnabled": true,
+        "expectedGamesPerSeries": 3
+    },
+    "teams": [
+        {
+            "teamKey": "479336:1851052",
+            "active": true,
+            "leagueId": "479336",
+            "teamId": "1851052",
+            "teamName": "Aquarium Drinkers",
+            "season": 1968,
+            "playerSetYear": 1968,
+            "ballpark": "Astrodome 1965",
+            "strategyProfile": "astrodome-run-prevention",
+            "strategyDescription": "Deep starting pitching, efficient relief, defense, park fit, and sufficient offense. Pitcher hitting is not a roster-construction objective.",
+            "leagueUrl": "https://365.strat-o-matic.com/league/479336",
+            "teamUrl": "https://365.strat-o-matic.com/team/1851052",
+            "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1851052",
+            "pregameSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "postgameLeagueSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "gameSources": [
+                {
+                    "sourceFamily": "gameRecap",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gamePlayByPlay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gameReplay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
+                    "required": true
+                }
+            ],
+            "analysisProfile": {
+                "primaryQuestions": [
+                    "Is elite run prevention continuing to offset below-average offensive volume?",
+                    "Are rotation depth and park fit protecting the bullpen?",
+                    "Are weak relief tiers or expensive underperforming hitters becoming actionable risks?"
+                ],
+                "pitcherHittingEvaluation": "incidental-only"
+            }
+        },
+        {
+            "teamKey": "479431:1853975",
+            "active": true,
+            "leagueId": "479431",
+            "teamId": "1853975",
+            "teamName": "Aquarium Drinkers",
+            "season": 1968,
+            "playerSetYear": 1968,
+            "ballpark": "Comiskey Park 1968",
+            "strategyProfile": "comiskey-pitchers-who-hit",
+            "strategyDescription": "Strong starting pitching, balanced card-based offense, selective real-card power, Comiskey fit, and pitcher offense as an incremental strategic advantage.",
+            "leagueUrl": "https://365.strat-o-matic.com/league/479431",
+            "teamUrl": "https://365.strat-o-matic.com/team/1853975",
+            "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1853975",
+            "pregameSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "postgameLeagueSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "gameSources": [
+                {
+                    "sourceFamily": "gameRecap",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gamePlayByPlay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gameReplay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
+                    "required": true
+                }
+            ],
+            "analysisProfile": {
+                "primaryQuestions": [
+                    "Is pitcher offense producing measurable incremental value?",
+                    "Is the roster maintaining sufficient offense and defense around the pitching core?",
+                    "Are bullpen depth and Comiskey fit supporting or undermining the construction thesis?"
+                ],
+                "pitcherHittingEvaluation": "primary-strategy-signal"
+            }
+        }
+    ],
+    "validation": {
+        "expectedActiveTeamCount": 2,
+        "expectedUniqueLeagueCount": 2,
+        "expectedUniqueTeamCount": 2,
+        "expectedUniqueStrategyProfileCount": 2,
+        "requiredGameSourceFamilyCount": 3,
+        "requiredLeagueIntelligenceSourceFamilyCount": 10,
+        "status": "PASS"
+    }
 }
