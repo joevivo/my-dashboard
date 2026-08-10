@@ -296,13 +296,147 @@
                 ],
                 "pitcherHittingEvaluation": "primary-strategy-signal"
             }
+        },
+        {
+            "teamKey": "479610:1854215",
+            "active": true,
+            "leagueId": "479610",
+            "teamId": "1854215",
+            "teamName": "Aquarium Drinkers",
+            "season": 1968,
+            "playerSetYear": 1968,
+            "ballpark": "Busch Stadium 1968",
+            "strategyProfile": "busch-preseason-environment",
+            "strategyDescription": "Preseason environment profile. Preserve durable league, opponent, manager, schedule, and ballpark intelligence while treating the Aquarium Drinkers roster as provisional until waivers are complete.",
+            "leagueUrl": "https://365.strat-o-matic.com/league/479610",
+            "teamUrl": "https://365.strat-o-matic.com/team/1854215",
+            "scheduleUrl": "https://365.strat-o-matic.com/team/schedule/1854215",
+            "pregameSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "postgameLeagueSources": [
+                {
+                    "sourceFamily": "leagueStandings",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueBatting",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leaguePitching",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueLeaders",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamStats",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTeamFielding",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueManagers",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueAwards",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "leagueTransactions",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                    "required": false
+                }
+            ],
+            "gameSources": [
+                {
+                    "sourceFamily": "gameRecap",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gamePlayByPlay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
+                    "required": true
+                },
+                {
+                    "sourceFamily": "gameReplay",
+                    "urlTemplate": "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
+                    "required": true
+                }
+            ],
+            "analysisProfile": {
+                "primaryQuestions": [
+                    "Which opponent ballparks materially change run-scoring, power, defense, and pitching expectations?",
+                    "Which opposing managers show recurring roster-construction or in-game tendencies worth tracking?",
+                    "After waivers are complete, how well does the final roster fit Busch Stadium and the league environment?"
+                ],
+                "pitcherHittingEvaluation": "incidental-only"
+            }
         }
     ],
     "validation": {
-        "expectedActiveTeamCount": 2,
-        "expectedUniqueLeagueCount": 2,
-        "expectedUniqueTeamCount": 2,
-        "expectedUniqueStrategyProfileCount": 2,
+        "expectedActiveTeamCount": 3,
+        "expectedUniqueLeagueCount": 3,
+        "expectedUniqueTeamCount": 3,
+        "expectedUniqueStrategyProfileCount": 3,
         "requiredGameSourceFamilyCount": 3,
         "requiredLeagueIntelligenceSourceFamilyCount": 10,
         "status": "PASS"
