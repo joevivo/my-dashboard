@@ -127,6 +127,19 @@ def find_team_payload(
     return None
 
 
+def recursive_first(
+    payload: Any,
+    names: list[str],
+) -> Any:
+    for obj in walk_objects(payload):
+        for name in names:
+            value = obj.get(name)
+            if value not in (None, "", [], {}):
+                return value
+
+    return None
+
+
 def build_position(
     *,
     state: dict[str, Any],
@@ -190,6 +203,166 @@ def build_position(
             metrics.get("losses"),
         ),
         "sourceStatus": lifecycle.get("status"),
+    }
+
+
+def build_opposition(
+    *,
+    team_id: str,
+    schedule_path: Path | None,
+    league_intelligence_path: Path | None,
+    preseason: bool,
+) -> dict[str, Any]:
+    if schedule_path is None:
+        return {
+            "status": (
+                "PRESEASON_NOT_MATERIALIZED"
+                if preseason
+                else "NOT_MATERIALIZED"
+            ),
+            "opponentTeamId": None,
+            "opponentTeamName": None,
+            "opponentRecord": None,
+            "opponentStanding": None,
+            "opponentStandingStatus": "NOT_MATERIALIZED",
+            "opponentGamesBehind": None,
+            "opponentRunDifferential": None,
+            "upcomingSeries": None,
+        }
+
+    schedule = read_json(schedule_path)
+
+    subject_team_id = schedule.get("teamId")
+    if (
+        subject_team_id is not None
+        and str(subject_team_id) != team_id
+    ):
+        raise ValueError(
+            f"Schedule team mismatch: expected {team_id}, "
+            f"found {subject_team_id}"
+        )
+
+    opponent_team_id = recursive_first(
+        schedule,
+        [
+            "opponentTeamId",
+            "nextOpponentTeamId",
+        ],
+    )
+
+    if opponent_team_id is None:
+        raise ValueError(
+            f"Schedule contract lacks opponentTeamId: "
+            f"{schedule_path}"
+        )
+
+    opponent_team_id = str(opponent_team_id)
+
+    schedule_name = recursive_first(
+        schedule,
+        [
+            "opponentTeamName",
+            "opponentName",
+            "nextOpponent",
+        ],
+    )
+
+    if league_intelligence_path is None:
+        return {
+            "status": (
+                "PRESEASON_IDENTITY_AVAILABLE"
+                if preseason
+                else "IDENTITY_AVAILABLE"
+            ),
+            "opponentTeamId": opponent_team_id,
+            "opponentTeamName": schedule_name,
+            "opponentRecord": None,
+            "opponentStanding": None,
+            "opponentStandingStatus": (
+                "PRESEASON"
+                if preseason
+                else "NOT_MATERIALIZED"
+            ),
+            "opponentGamesBehind": None,
+            "opponentRunDifferential": None,
+            "upcomingSeries": schedule,
+        }
+
+    league_payload = read_json(
+        league_intelligence_path
+    )
+
+    opponent = find_team_payload(
+        league_payload,
+        team_id=opponent_team_id,
+    )
+
+    if opponent is None:
+        raise ValueError(
+            f"Opponent {opponent_team_id} not found in "
+            f"{league_intelligence_path}"
+        )
+
+    standings = opponent.get("standings", {})
+    metrics = standings.get("metrics", standings)
+
+    wins = first_nonempty(
+        standings.get("wins"),
+        metrics.get("wins"),
+    )
+    losses = first_nonempty(
+        standings.get("losses"),
+        metrics.get("losses"),
+    )
+
+    games_behind = first_nonempty(
+        standings.get("gamesBehind"),
+        metrics.get("gamesBehind"),
+    )
+
+    run_differential = first_nonempty(
+        standings.get("runDifferential"),
+        metrics.get("runDifferential"),
+    )
+
+    standing = first_nonempty(
+        standings.get("standing"),
+        standings.get("position"),
+        standings.get("rank"),
+    )
+
+    if wins is None or losses is None:
+        raise ValueError(
+            f"Opponent {opponent_team_id} lacks record evidence"
+        )
+
+    if games_behind is None:
+        raise ValueError(
+            f"Opponent {opponent_team_id} lacks games-behind evidence"
+        )
+
+    if run_differential is None:
+        raise ValueError(
+            f"Opponent {opponent_team_id} lacks run-differential evidence"
+        )
+
+    return {
+        "status": "AVAILABLE",
+        "opponentTeamId": opponent_team_id,
+        "opponentTeamName": first_nonempty(
+            opponent.get("teamName"),
+            schedule_name,
+        ),
+        "opponentRecord": f"{wins}-{losses}",
+        "opponentStanding": standing,
+        "opponentStandingStatus": (
+            "AVAILABLE"
+            if standing is not None
+            else "NOT_EXPOSED_BY_NORMALIZER"
+        ),
+        "opponentGamesBehind": games_behind,
+        "opponentRunDifferential": run_differential,
+        "upcomingSeries": schedule,
     }
 
 
@@ -264,6 +437,7 @@ def build_team(
     state_path: Path,
     league_intelligence_paths: dict[str, Path],
     series_engine_paths: dict[str, Path],
+    schedule_paths: dict[str, Path],
 ) -> tuple[dict[str, Any], list[str]]:
     state = read_json(state_path)
 
@@ -296,6 +470,7 @@ def build_team(
 
     league_path = league_intelligence_paths.get(league_id)
     series_path = series_engine_paths.get(team_id)
+    schedule_path = schedule_paths.get(team_id)
 
     position = build_position(
         state=state,
@@ -307,6 +482,13 @@ def build_team(
     series_intelligence = build_series_intelligence(
         team_id=team_id,
         series_engine_path=series_path,
+        preseason=preseason,
+    )
+
+    opposition = build_opposition(
+        team_id=team_id,
+        schedule_path=schedule_path,
+        league_intelligence_path=league_path,
         preseason=preseason,
     )
 
@@ -346,18 +528,7 @@ def build_team(
             "leagueIntelligenceStatus": league_intel.get("status"),
         },
         "position": position,
-        "opposition": {
-            "status": (
-                "AVAILABLE"
-                if series_intelligence.get("upcomingSeries")
-                else "NOT_MATERIALIZED"
-            ),
-            "upcomingSeries": series_intelligence.get(
-                "upcomingSeries"
-            ),
-            "opponentRecord": None,
-            "opponentStanding": None,
-        },
+        "opposition": opposition,
         "keyPlayerSignals": {
             "status": (
                 "AVAILABLE"
@@ -388,6 +559,11 @@ def build_team(
             "seriesEngine": (
                 str(series_path)
                 if series_path
+                else None
+            ),
+            "scheduleContract": (
+                str(schedule_path)
+                if schedule_path
                 else None
             ),
         },
@@ -427,6 +603,13 @@ def main() -> int:
     )
 
     parser.add_argument(
+        "--schedule",
+        action="append",
+        default=[],
+        metavar="TEAM_ID=PATH",
+    )
+
+    parser.add_argument(
         "--output",
         type=Path,
         required=True,
@@ -443,6 +626,9 @@ def main() -> int:
     series_paths = parse_path_mapping(
         args.series_engine
     )
+    schedule_paths = parse_path_mapping(
+        args.schedule
+    )
 
     teams: list[dict[str, Any]] = []
     freshness_values: list[str] = []
@@ -457,6 +643,7 @@ def main() -> int:
             state_path=state_path,
             league_intelligence_paths=league_paths,
             series_engine_paths=series_paths,
+            schedule_paths=schedule_paths,
         )
 
         identity = team["identity"]
