@@ -820,6 +820,237 @@ def capture_paginated_table(
         }
 
 
+
+def capture_paginated_pages(
+    *,
+    request: dict[str, Any],
+    output_root: Path,
+) -> dict[str, Any]:
+    family = str(
+        request["sourceFamily"]
+    )
+
+    slug = safe_slug(family)
+
+    artifact_root = (
+        output_root
+        / "responses"
+        / "league-intelligence"
+        / slug
+    )
+
+    metadata_root = (
+        output_root
+        / "metadata"
+        / "league-intelligence"
+        / slug
+    )
+
+    requested_url = str(
+        request["requestedUrl"]
+    )
+
+    policy = request[
+        "paginationPolicy"
+    ]
+
+    page_size = int(
+        policy["pageSize"]
+    )
+
+    queue: list[tuple[int, str]] = [
+        (0, requested_url)
+    ]
+
+    queued: set[int] = {0}
+    captured: set[int] = set()
+
+    physical_count = 0
+
+    try:
+        while queue:
+            queue.sort(
+                key=lambda item: item[0]
+            )
+
+            offset, url = queue.pop(0)
+
+            if offset in captured:
+                continue
+
+            if len(captured) >= MAX_PAGINATED_PAGES:
+                raise ValueError(
+                    "Pagination exceeded safety limit "
+                    f"of {MAX_PAGINATED_PAGES} pages."
+                )
+
+            (
+                status,
+                effective_url,
+                headers,
+                body,
+            ) = fetch(url)
+
+            physical_count += 1
+
+            html_text = body.decode(
+                "utf-8",
+                errors="replace",
+            )
+
+            body_path = (
+                artifact_root
+                / f"page-{offset:05d}.html"
+            )
+
+            headers_path = (
+                artifact_root
+                / f"page-{offset:05d}.headers.txt"
+            )
+
+            metadata_path = (
+                metadata_root
+                / f"page-{offset:05d}.json"
+            )
+
+            body_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            body_path.write_bytes(body)
+
+            write_headers(
+                headers_path,
+                status=status,
+                effective_url=effective_url,
+                headers=headers,
+            )
+
+            discovered = discover_offsets(
+                html_text,
+                initial_url=requested_url,
+                current_url=effective_url,
+                page_size=page_size,
+            )
+
+            metadata = {
+                "schemaVersion": (
+                    "strat365-league-intelligence-"
+                    "raw-response-metadata-v0"
+                ),
+                "requestId": request[
+                    "requestId"
+                ],
+                "sourceFamily": family,
+                "requestedUrl": url,
+                "effectiveUrl": effective_url,
+                "httpStatus": status,
+                "capturedAtUtc": utc_now(),
+                "byteCount": len(body),
+                "sha256": sha256_bytes(body),
+                "pageOffset": offset,
+                "discoveredOffsets": sorted(
+                    discovered
+                ),
+                "captureMode": (
+                    "completePaginatedPages"
+                ),
+                "transportResult": "PASS",
+            }
+
+            write_json(
+                metadata_path,
+                metadata,
+            )
+
+            captured.add(offset)
+
+            for (
+                discovered_offset,
+                discovered_url,
+            ) in discovered.items():
+                if (
+                    discovered_offset
+                    not in captured
+                    and discovered_offset
+                    not in queued
+                ):
+                    queue.append(
+                        (
+                            discovered_offset,
+                            discovered_url,
+                        )
+                    )
+
+                    queued.add(
+                        discovered_offset
+                    )
+
+        if not captured:
+            raise ValueError(
+                f"{family} captured no pages."
+            )
+
+        return {
+            "requestId": request[
+                "requestId"
+            ],
+            "sourceFamily": family,
+            "required": bool(
+                request["required"]
+            ),
+            "captureMode": (
+                "completePaginatedPages"
+            ),
+            "requestStatus": "captured",
+            "physicalRequestCount": (
+                physical_count
+            ),
+            "capturedPageCount": len(
+                captured
+            ),
+            "pageOffsets": sorted(
+                captured
+            ),
+            "rowCount": None,
+            "columns": None,
+            "error": None,
+        }
+
+    except (
+        HTTPError,
+        URLError,
+        TimeoutError,
+        OSError,
+        ValueError,
+    ) as exc:
+        return {
+            "requestId": request[
+                "requestId"
+            ],
+            "sourceFamily": family,
+            "required": bool(
+                request["required"]
+            ),
+            "captureMode": (
+                "completePaginatedPages"
+            ),
+            "requestStatus": "failed",
+            "physicalRequestCount": (
+                physical_count
+            ),
+            "capturedPageCount": len(
+                captured
+            ),
+            "pageOffsets": sorted(
+                captured
+            ),
+            "rowCount": None,
+            "columns": None,
+            "error": str(exc),
+        }
+
 def execute(
     *,
     plan_path: Path,
@@ -884,6 +1115,12 @@ def execute(
 
         elif mode == "completePaginatedTable":
             result = capture_paginated_table(
+                request=request,
+                output_root=output_root,
+            )
+
+        elif mode == "completePaginatedPages":
+            result = capture_paginated_pages(
                 request=request,
                 output_root=output_root,
             )

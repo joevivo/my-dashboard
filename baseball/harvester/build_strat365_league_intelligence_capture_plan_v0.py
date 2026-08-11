@@ -31,6 +31,7 @@ PAGINATED_FAMILIES = {
     "leagueTransactions": {
         "pageSize": 100,
         "acquisitionSort": "native",
+        "captureMode": "completePaginatedPages",
     },
     "leagueBatting": {
         "pageSize": 50,
@@ -173,8 +174,9 @@ def build_request(
     if family in PAGINATED_FAMILIES:
         policy = PAGINATED_FAMILIES[family]
 
-        request["captureMode"] = (
-            "completePaginatedTable"
+        request["captureMode"] = str(
+            policy.get("captureMode")
+            or "completePaginatedTable"
         )
 
         request["paginationPolicy"] = {
@@ -251,10 +253,7 @@ def validate_plan(
     paginated = [
         request["sourceFamily"]
         for request in requests
-        if (
-            request.get("captureMode")
-            == "completePaginatedTable"
-        )
+        if "paginationPolicy" in request
     ]
 
     if paginated != [
