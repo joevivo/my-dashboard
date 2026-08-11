@@ -85,6 +85,11 @@
                     "required": true
                 },
                 {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
+                },
+                {
                     "sourceFamily": "leagueTransactions",
                     "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
                     "required": false
@@ -130,6 +135,11 @@
                     "sourceFamily": "leagueAwards",
                     "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
                     "required": true
+                },
+                {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
                 },
                 {
                     "sourceFamily": "leagueTransactions",
@@ -219,6 +229,11 @@
                     "required": true
                 },
                 {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
+                },
+                {
                     "sourceFamily": "leagueTransactions",
                     "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
                     "required": false
@@ -264,6 +279,11 @@
                     "sourceFamily": "leagueAwards",
                     "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
                     "required": true
+                },
+                {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
                 },
                 {
                     "sourceFamily": "leagueTransactions",
@@ -353,6 +373,11 @@
                     "required": true
                 },
                 {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
+                },
+                {
                     "sourceFamily": "leagueTransactions",
                     "urlTemplate": "https://365.strat-o-matic.com/league/transactions/{leagueId}",
                     "required": false
@@ -398,6 +423,11 @@
                     "sourceFamily": "leagueAwards",
                     "urlTemplate": "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
                     "required": true
+                },
+                {
+                    "sourceFamily": "leagueInjuries",
+                    "urlTemplate": "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                    "required": false
                 },
                 {
                     "sourceFamily": "leagueTransactions",

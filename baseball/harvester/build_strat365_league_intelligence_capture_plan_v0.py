@@ -23,10 +23,15 @@ EXPECTED_FAMILIES = [
     "leagueTeamFielding",
     "leagueManagers",
     "leagueAwards",
+    "leagueInjuries",
     "leagueTransactions",
 ]
 
 PAGINATED_FAMILIES = {
+    "leagueTransactions": {
+        "pageSize": 100,
+        "acquisitionSort": "native",
+    },
     "leagueBatting": {
         "pageSize": 50,
         "acquisitionSort": "ops",
@@ -203,9 +208,9 @@ def validate_plan(
             "Plan requests collection is missing."
         )
 
-    if len(requests) != 9:
+    if len(requests) != 10:
         raise ValueError(
-            "Expected 9 logical league sources; "
+            "Expected 10 logical league sources; "
             f"found {len(requests)}."
         )
 
@@ -255,6 +260,7 @@ def validate_plan(
     if paginated != [
         "leagueBatting",
         "leaguePitching",
+        "leagueTransactions",
     ]:
         raise ValueError(
             "Unexpected paginated datasets: "
