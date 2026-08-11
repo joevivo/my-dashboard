@@ -1,0 +1,30 @@
+{
+  "asOfDate": "2026-08-10",
+  "governance": {
+    "resultFieldsConsumed": false,
+    "scheduleIdentityOnly": true,
+    "scoreFieldsConsumed": false
+  },
+  "leagueId": "479610",
+  "nextSeries": {
+    "gameCount": 3,
+    "homeAway": "AWAY",
+    "opponentDisplayName": "Peaches",
+    "opponentTeamId": "1855876",
+    "scheduleGameNumbers": [
+      1,
+      2,
+      3
+    ],
+    "scheduledDate": "2026-08-13",
+    "status": "FOUND"
+  },
+  "scheduleRowCount": 162,
+  "schema": "bie.strat365.team-schedule.v0",
+  "source": {
+    "path": "data\\baseball\\raw\\strat365\\1968\\nightly-baseline\\2026-08-10\\capture-20260810T215336838Z\\league-479610\\team-1854215\\responses\\team-schedule.html",
+    "sourceType": "strat365_team_schedule_html"
+  },
+  "teamId": "1854215",
+  "teamName": "Aquarium Drinkers"
+}

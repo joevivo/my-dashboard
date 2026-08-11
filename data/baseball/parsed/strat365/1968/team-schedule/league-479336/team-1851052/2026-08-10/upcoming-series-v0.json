@@ -1,0 +1,30 @@
+{
+  "asOfDate": "2026-08-10",
+  "governance": {
+    "resultFieldsConsumed": false,
+    "scheduleIdentityOnly": true,
+    "scoreFieldsConsumed": false
+  },
+  "leagueId": "479336",
+  "nextSeries": {
+    "gameCount": 3,
+    "homeAway": "AWAY",
+    "opponentDisplayName": "Arkinals\u2122",
+    "opponentTeamId": "1853519",
+    "scheduleGameNumbers": [
+      64,
+      65,
+      66
+    ],
+    "scheduledDate": "2026-08-11",
+    "status": "FOUND"
+  },
+  "scheduleRowCount": 162,
+  "schema": "bie.strat365.team-schedule.v0",
+  "source": {
+    "path": "data\\baseball\\raw\\strat365\\1968\\nightly-discovery\\2026-08-03\\capture-20260804T041415019Z\\league-479336\\team-1851052\\responses\\team-schedule.html",
+    "sourceType": "strat365_team_schedule_html"
+  },
+  "teamId": "1851052",
+  "teamName": "Aquarium Drinkers"
+}
