@@ -387,10 +387,10 @@ def main() -> int:
             f"{collection_name}"
         )
 
-    if len(sources) != 9:
+    if len(sources) != 10:
         raise ValueError(
             f"{collection_name} must contain "
-            "9 normalized sources; found "
+            "10 normalized sources; found "
             f"{len(sources)}."
         )
 
