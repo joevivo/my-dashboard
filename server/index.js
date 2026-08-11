@@ -868,6 +868,457 @@ app.get(
   }
 );
 
+
+const stratRotationCache = new Map();
+const STRAT_ROTATION_CACHE_TTL_MS = 10 * 60 * 1000;
+
+function escapeRegex(value) {
+  return String(value).replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+}
+
+function stratVisibleText(rawHtml) {
+  return String(rawHtml || "")
+    .replace(
+      /<script\b[^>]*>[\s\S]*?<\/script>/gi,
+      " "
+    )
+    .replace(
+      /<style\b[^>]*>[\s\S]*?<\/style>/gi,
+      " "
+    )
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&trade;|&#8482;/gi, "™")
+    .replace(/&amp;/gi, "&")
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractStratScheduleGameIds(html, leagueId) {
+  const pattern = new RegExp(
+    `href=["']\\/game\\/${escapeRegex(
+      leagueId
+    )}\\/(\\d+)["']`,
+    "gi"
+  );
+
+  const ids = [];
+  const seen = new Set();
+
+  for (const match of html.matchAll(pattern)) {
+    const gameId = Number(match[1]);
+
+    if (
+      Number.isInteger(gameId) &&
+      !seen.has(gameId)
+    ) {
+      seen.add(gameId);
+      ids.push(gameId);
+    }
+  }
+
+  return ids.reverse();
+}
+
+function extractStratStarter(html, teamName) {
+  const text = stratVisibleText(html);
+  const cleanTeamName = String(teamName || "")
+    .replace(/™/g, "")
+    .trim();
+
+  const teamPattern = new RegExp(
+    `${escapeRegex(cleanTeamName)}(?:™)?\\s+Hitters\\b`,
+    "i"
+  );
+
+  const teamMatch = teamPattern.exec(text);
+
+  if (!teamMatch) {
+    return "";
+  }
+
+  let section = text.slice(
+    teamMatch.index + teamMatch[0].length
+  );
+
+  const nextTeamMatch =
+    /\b[A-Za-z0-9][A-Za-z0-9 '&.\-™]+\s+Hitters\b/i.exec(
+      section
+    );
+
+  if (nextTeamMatch) {
+    section = section.slice(
+      0,
+      nextTeamMatch.index
+    );
+  }
+
+  const marker =
+    /Pitchers\s+Decision\s+IP\s+H\s+R\s+ER\s+BB\s+SO\s+HR\s+PC\s+ERA/i.exec(
+      section
+    );
+
+  if (!marker) {
+    return "";
+  }
+
+  const tail = section.slice(
+    marker.index + marker[0].length,
+    marker.index + marker[0].length + 700
+  );
+
+  const pitcher =
+    /([A-Za-zÀ-ÿ'.-]+(?:\s+[A-Za-zÀ-ÿ'.-]+)*,\s*[A-Za-zÀ-ÿ'.-]+(?:\s+[A-Za-zÀ-ÿ'.-]+)*)(?:\s+[WL],\s*\d+-\d+)?\s+\d/.exec(
+      tail
+    );
+
+  return pitcher ? pitcher[1].trim() : "";
+}
+
+function classifyRotationConfidence(
+  samples,
+  dominance
+) {
+  if (samples >= 3 && dominance >= 0.75) {
+    return "HIGH";
+  }
+
+  if (samples >= 2 && dominance >= 0.6) {
+    return "MEDIUM";
+  }
+
+  if (samples >= 1) {
+    return "LOW";
+  }
+
+  return "NONE";
+}
+
+function lowestRotationConfidence(values) {
+  const rank = {
+    NONE: 0,
+    LOW: 1,
+    MEDIUM: 2,
+    HIGH: 3,
+  };
+
+  return values.reduce(
+    (lowest, value) =>
+      rank[value] < rank[lowest]
+        ? value
+        : lowest,
+    "HIGH"
+  );
+}
+
+function buildStratRotationProjection(
+  chronologicalStarters
+) {
+  if (!chronologicalStarters.length) {
+    return [];
+  }
+
+  const transitions = new Map();
+
+  for (
+    let index = 0;
+    index < chronologicalStarters.length - 1;
+    index += 1
+  ) {
+    const current =
+      chronologicalStarters[index].pitcher;
+
+    const next =
+      chronologicalStarters[index + 1].pitcher;
+
+    if (!transitions.has(current)) {
+      transitions.set(current, []);
+    }
+
+    transitions.get(current).push(next);
+  }
+
+  let current =
+    chronologicalStarters[
+      chronologicalStarters.length - 1
+    ].pitcher;
+
+  const projections = [];
+  const confidenceChain = [];
+
+  for (let slot = 1; slot <= 3; slot += 1) {
+    const observations =
+      transitions.get(current) || [];
+
+    if (!observations.length) {
+      projections.push({
+        slot,
+        pitcher: null,
+        status: "EVIDENCE_GATED",
+        afterStarter: current,
+        transitionSamples: 0,
+        dominance: 0,
+        directConfidence: "NONE",
+        effectiveConfidence: "NONE",
+        conditional: slot > 1,
+      });
+
+      break;
+    }
+
+    const counts = new Map();
+
+    observations.forEach((pitcher) => {
+      counts.set(
+        pitcher,
+        (counts.get(pitcher) || 0) + 1
+      );
+    });
+
+    const ranked = [...counts.entries()].sort(
+      (a, b) =>
+        b[1] - a[1] ||
+        a[0].localeCompare(b[0])
+    );
+
+    const [pitcher, topCount] = ranked[0];
+    const samples = observations.length;
+    const dominance = topCount / samples;
+
+    const directConfidence =
+      classifyRotationConfidence(
+        samples,
+        dominance
+      );
+
+    confidenceChain.push(directConfidence);
+
+    const effectiveConfidence =
+      lowestRotationConfidence(
+        confidenceChain
+      );
+
+    projections.push({
+      slot,
+      pitcher,
+      status: "PROJECTED",
+      afterStarter: current,
+      transitionSamples: samples,
+      dominance: Number(
+        dominance.toFixed(2)
+      ),
+      directConfidence,
+      effectiveConfidence,
+      conditional: slot > 1,
+    });
+
+    current = pitcher;
+  }
+
+  return projections;
+}
+
+app.get(
+  "/api/strat/league/:leagueId/team/:teamId/rotation",
+  async (req, res) => {
+    try {
+      const { leagueId, teamId } = req.params;
+
+      if (
+        !/^\d+$/.test(leagueId) ||
+        !/^\d+$/.test(teamId)
+      ) {
+        return res.status(400).json({
+          error: "Invalid league or team ID",
+        });
+      }
+
+      const cacheKey = `${leagueId}:${teamId}`;
+      const cached =
+        stratRotationCache.get(cacheKey);
+
+      if (
+        cached &&
+        Date.now() - cached.cachedAt <
+          STRAT_ROTATION_CACHE_TTL_MS
+      ) {
+        return res.json({
+          ...cached.payload,
+          cache: "HIT",
+        });
+      }
+
+      const leagueUrl =
+        `https://365.strat-o-matic.com/league/${leagueId}`;
+
+      const leagueResponse = await fetch(
+        leagueUrl
+      );
+
+      if (!leagueResponse.ok) {
+        throw new Error(
+          `League fetch failed: ${leagueResponse.status}`
+        );
+      }
+
+      const leagueHtml =
+        await leagueResponse.text();
+
+      const standings =
+        parseStratStandings(leagueHtml);
+
+      const teamStanding = standings.find(
+        (team) => team.teamId === teamId
+      );
+
+      if (!teamStanding) {
+        throw new Error(
+          `Team ${teamId} not found in league ${leagueId}`
+        );
+      }
+
+      const scheduleUrl =
+        `https://365.strat-o-matic.com/team/schedule/${teamId}`;
+
+      const scheduleResponse =
+        await fetch(scheduleUrl);
+
+      if (!scheduleResponse.ok) {
+        throw new Error(
+          `Schedule fetch failed: ${scheduleResponse.status}`
+        );
+      }
+
+      const scheduleHtml =
+        await scheduleResponse.text();
+
+      const recentGameIds =
+        extractStratScheduleGameIds(
+          scheduleHtml,
+          leagueId
+        ).slice(0, 36);
+
+      const newestStarts = [];
+
+      for (const gameId of recentGameIds) {
+        const gameUrl =
+          `https://365.strat-o-matic.com/game/${leagueId}/${gameId}`;
+
+        const gameResponse = await fetch(
+          gameUrl
+        );
+
+        if (!gameResponse.ok) {
+          continue;
+        }
+
+        const gameHtml =
+          await gameResponse.text();
+
+        if (
+          !/Pitchers\s+Decision/i.test(gameHtml)
+        ) {
+          continue;
+        }
+
+        const pitcher =
+          extractStratStarter(
+            gameHtml,
+            teamStanding.teamName
+          );
+
+        if (!pitcher) {
+          continue;
+        }
+
+        newestStarts.push({
+          gameId,
+          pitcher,
+        });
+
+        if (newestStarts.length >= 24) {
+          break;
+        }
+      }
+
+      const chronologicalStarts =
+        [...newestStarts].reverse();
+
+      const projections =
+        buildStratRotationProjection(
+          chronologicalStarts
+        );
+
+      const overallConfidence =
+        projections.length
+          ? projections[0].effectiveConfidence
+          : "NONE";
+
+      const payload = {
+        schema:
+          "bie.strat365.rotation-projection.v0",
+        source: {
+          league: leagueUrl,
+          schedule: scheduleUrl,
+          gameLinkContract:
+            "/game/{leagueId}/{gameId}",
+          starterExtraction:
+            "first pitcher in target team's Pitchers Decision table",
+        },
+        importedAt: new Date().toISOString(),
+        leagueId,
+        teamId,
+        teamName: teamStanding.teamName,
+        evidence: {
+          startHistoryCount:
+            chronologicalStarts.length,
+          currentLastStarter:
+            chronologicalStarts.length
+              ? chronologicalStarts[
+                  chronologicalStarts.length - 1
+                ].pitcher
+              : null,
+          recentStartsNewestFirst:
+            newestStarts.slice(0, 8),
+        },
+        projections,
+        overallConfidence,
+        status:
+          projections.length &&
+          projections[0].pitcher
+            ? "PROJECTED"
+            : "EVIDENCE_GATED",
+        spoilerSafe: true,
+      };
+
+      stratRotationCache.set(cacheKey, {
+        cachedAt: Date.now(),
+        payload,
+      });
+
+      res.json({
+        ...payload,
+        cache: "MISS",
+      });
+    } catch (error) {
+      console.error(
+        "Strat rotation projection error:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Failed to build Strat rotation projection",
+      });
+    }
+  }
+);
+
 app.get("/api/strat/team/:teamId", async (req, res) => {
   try {
     const { teamId } = req.params;
