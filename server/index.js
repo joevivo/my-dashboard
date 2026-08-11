@@ -707,6 +707,167 @@ function parseRosterRows(html) {
     .filter(Boolean);
 }
 
+function parseStratStandings(html) {
+  const tableRows = [
+    ...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi),
+  ];
+
+  let division = "";
+  let headers = null;
+  const rows = [];
+  const divisionRanks = new Map();
+
+  for (const rowMatch of tableRows) {
+    const rowHtml = rowMatch[1];
+
+    const cells = [
+      ...rowHtml.matchAll(
+        /<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi
+      ),
+    ].map((cell) => cleanText(cell[1]));
+
+    if (!cells.length) {
+      continue;
+    }
+
+    if (
+      cells.includes("Owner") &&
+      cells.includes("W") &&
+      cells.includes("L") &&
+      cells.includes("PCT") &&
+      cells.includes("GB")
+    ) {
+      division = cells[0];
+
+      const ownerIndex = cells.indexOf("Owner");
+
+      headers = [
+        "Team",
+        "Owner",
+        ...cells.slice(ownerIndex + 1),
+      ];
+
+      divisionRanks.set(division, 0);
+      continue;
+    }
+
+    if (!headers) {
+      continue;
+    }
+
+    const teamMatch = rowHtml.match(
+      /(?:\/index\.php)?\/team\/(\d+)/i
+    );
+
+    if (!teamMatch) {
+      continue;
+    }
+
+    const values = cells.slice(0, headers.length);
+
+    if (values.length < headers.length) {
+      continue;
+    }
+
+    const record = Object.fromEntries(
+      headers.map((header, index) => [
+        header,
+        values[index] || "",
+      ])
+    );
+
+    const divisionRank =
+      (divisionRanks.get(division) || 0) + 1;
+
+    divisionRanks.set(division, divisionRank);
+
+    rows.push({
+      teamId: teamMatch[1],
+      teamName: record.Team || "",
+      owner: record.Owner || "",
+      division,
+      divisionRank,
+      wins: record.W || "",
+      losses: record.L || "",
+      pct: record.PCT || "",
+      gamesBehind: record.GB || "",
+      last10: record.L10 || "",
+      streak: record.Strk || "",
+      homeRecord: record.HM || "",
+      roadRecord: record.RD || "",
+      vsLeft: record["vs.L"] || "",
+      vsRight: record["vs.R"] || "",
+      runsScored: record.RS || "",
+      runsAllowed: record.RA || "",
+      runDifferential: record.Diff || "",
+    });
+  }
+
+  const divisionSizes = rows.reduce((counts, row) => {
+    counts[row.division] =
+      (counts[row.division] || 0) + 1;
+    return counts;
+  }, {});
+
+  return rows.map((row) => ({
+    ...row,
+    divisionTeamCount:
+      divisionSizes[row.division] || 0,
+  }));
+}
+
+app.get(
+  "/api/strat/league/:leagueId/standings",
+  async (req, res) => {
+    try {
+      const { leagueId } = req.params;
+
+      if (!/^\d+$/.test(leagueId)) {
+        return res.status(400).json({
+          error: "Invalid league ID",
+        });
+      }
+
+      const url =
+        `https://365.strat-o-matic.com/league/${leagueId}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          `Strat league fetch failed: ${response.status}`
+        );
+      }
+
+      const html = await response.text();
+      const standings = parseStratStandings(html);
+
+      if (!standings.length) {
+        throw new Error(
+          "No Strat standings rows were parsed"
+        );
+      }
+
+      res.json({
+        source: url,
+        importedAt: new Date().toISOString(),
+        leagueId,
+        teamCount: standings.length,
+        standings,
+      });
+    } catch (error) {
+      console.error(
+        "Strat standings import error:",
+        error
+      );
+
+      res.status(500).json({
+        error: "Failed to import Strat standings",
+      });
+    }
+  }
+);
+
 app.get("/api/strat/team/:teamId", async (req, res) => {
   try {
     const { teamId } = req.params;
