@@ -928,7 +928,9 @@ function extractStratScheduleGameIds(html, leagueId) {
 function extractStratStarter(html, teamName) {
   const text = stratVisibleText(html);
   const cleanTeamName = String(teamName || "")
-    .replace(/™/g, "")
+    .replace(/\s+tr\s*-->\s*$/i, "")
+    .replace(/[^A-Za-z0-9 '&.\-]+/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 
   const teamPattern = new RegExp(
@@ -1219,13 +1221,6 @@ app.get(
 
         const gameHtml =
           await gameResponse.text();
-
-        if (
-          !/Pitchers\s+Decision/i.test(gameHtml)
-        ) {
-          continue;
-        }
-
         const pitcher =
           extractStratStarter(
             gameHtml,
