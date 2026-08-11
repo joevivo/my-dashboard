@@ -8,6 +8,11 @@ import unicodedata
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from parse_strat365_league_state_changes_v0 import (
+    TRANSACTION_SCHEMA,
+    normalize_injury_snapshot,
+    normalize_transaction_pages,
+)
 
 
 SCHEMA_VERSION = "bie.strat365.league-intelligence.v0"
@@ -768,10 +773,130 @@ def build(
         / "page-00000.html"
     )
 
-    transaction_tables = parse_tables(
+    manifest_requests = {
+        str(item.get(
+            "sourceFamily",
+            "",
+        )): item
+        for item in manifest.get(
+            "requests",
+            [],
+        )
+        if isinstance(
+            item,
+            dict,
+        )
+    }
+
+    transaction_root = (
         responses
         / "league-transactions"
+    )
+
+    transaction_pages = sorted(
+        transaction_root.glob(
+            "page-*.html"
+        )
+    )
+
+    transaction_request = (
+        manifest_requests.get(
+            "leagueTransactions"
+        )
+    )
+
+    transaction_capture_valid = (
+        isinstance(
+            transaction_request,
+            dict,
+        )
+        and transaction_request.get(
+            "requestStatus"
+        ) == "captured"
+        and transaction_request.get(
+            "captureMode"
+        ) == "completePaginatedPages"
+        and len(transaction_pages) > 0
+        and int(
+            transaction_request.get(
+                "capturedPageCount",
+                0,
+            )
+        ) == len(transaction_pages)
+    )
+
+    if transaction_capture_valid:
+        transaction_events = (
+            normalize_transaction_pages(
+                league_id=str(
+                    manifest["leagueId"]
+                ),
+                pages=transaction_pages,
+            )
+        )
+        transaction_source_coverage = (
+            "NORMALIZED_COMPLETE_PAGINATION"
+        )
+    else:
+        transaction_events = {
+            "schemaVersion": TRANSACTION_SCHEMA,
+            "leagueId": str(manifest["leagueId"]),
+            "capturePageCount": 0,
+            "rawTransactionRowCount": 0,
+            "deduplicatedEventCount": 0,
+            "duplicateEventCount": 0,
+            "events": [],
+        }
+        transaction_source_coverage = (
+            "SOURCE_CAPTURE_INVALID_OR_UNAVAILABLE"
+        )
+
+    injury_page = (
+        responses
+        / "league-injuries"
         / "page-00000.html"
+    )
+
+    injury_request = (
+        manifest_requests.get(
+            "leagueInjuries"
+        )
+    )
+
+    injury_capture_valid = (
+        isinstance(
+            injury_request,
+            dict,
+        )
+        and injury_request.get(
+            "requestStatus"
+        ) == "captured"
+        and injury_request.get(
+            "captureMode"
+        ) == "singlePage"
+        and int(
+            injury_request.get(
+                "capturedPageCount",
+                0,
+            )
+        ) == 1
+        and injury_page.exists()
+    )
+
+    injury_snapshot = normalize_injury_snapshot(
+        league_id=str(manifest["leagueId"]),
+        page=injury_page,
+        capture_valid=injury_capture_valid,
+    )
+
+    injury_source_coverage = (
+        "NORMALIZED_CURRENT_STATE_SNAPSHOT"
+        if injury_snapshot.get(
+            "snapshotValid"
+        )
+        else (
+            "SOURCE_CAPTURE_INVALID_OR_UNAVAILABLE"
+        )
     )
 
     standings_table = find_table(
@@ -1107,15 +1232,6 @@ def build(
         ),
     )
 
-    transaction_navigation_only = (
-        len(transaction_tables) == 1
-        and bool(transaction_tables[0])
-        and transaction_tables[0][0]
-        and transaction_tables[0][0][0].startswith(
-            "Pages:"
-        )
-    )
-
     return {
         "schemaVersion": SCHEMA_VERSION,
         "leagueId": str(
@@ -1133,6 +1249,10 @@ def build(
         "teamCount": len(teams),
         "batterCount": len(batters),
         "pitcherCount": len(pitchers),
+        "leagueStateChanges": {
+            "transactions": transaction_events,
+            "activeInjuries": injury_snapshot,
+        },
         "sourceCoverage": {
             "leagueStandings": "NORMALIZED",
             "leagueBatting": "NORMALIZED_COMPLETE_DATASET",
@@ -1150,10 +1270,11 @@ def build(
                 if len(awards_tables) == 0
                 else "CAPTURED_REQUIRES_REVIEW"
             ),
+            "leagueInjuries": (
+                injury_source_coverage
+            ),
             "leagueTransactions": (
-                "CAPTURED_PARSER_PENDING_PAGINATION_ONLY"
-                if transaction_navigation_only
-                else "CAPTURED_REQUIRES_REVIEW"
+                transaction_source_coverage
             ),
         },
         "governance": {
