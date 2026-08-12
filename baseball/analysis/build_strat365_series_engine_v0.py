@@ -902,6 +902,8 @@ def build_engine(
     league_intelligence_payload: dict[str, Any] | None,
     league_intelligence_source: Path | None,
     explicit_opponent_name: str | None,
+    player_intelligence_payload: dict[str, Any] | None = None,
+    player_intelligence_source: Path | None = None,
 ) -> dict[str, Any]:
     team_name = str(team_payload.get("teamName") or "").strip()
 
@@ -915,6 +917,94 @@ def build_engine(
         team_payload,
         team_schedule_payload,
     )
+
+    if player_intelligence_payload is None:
+        player_intelligence = {
+            "status": "EVIDENCE_GATED",
+            "team": {
+                "teamId": str(team_payload.get("teamId") or ""),
+                "evidenceStatus": "EVIDENCE_GATED",
+            },
+            "opponent": {
+                "teamId": str(
+                    upcoming_series.get("opponentTeamId") or ""
+                ),
+                "evidenceStatus": "EVIDENCE_GATED",
+            },
+            "missingEvidence": ["seriesPlayerIntelligence"],
+        }
+    else:
+        player_team = as_dict(
+            player_intelligence_payload.get("team")
+        )
+        player_opponent = as_dict(
+            player_intelligence_payload.get("opponent")
+        )
+
+        expected_league_id = str(
+            team_payload.get("leagueId") or ""
+        ).strip()
+        actual_league_id = str(
+            player_intelligence_payload.get("leagueId") or ""
+        ).strip()
+
+        expected_team_id = str(
+            team_payload.get("teamId") or ""
+        ).strip()
+        actual_team_id = str(
+            player_team.get("teamId") or ""
+        ).strip()
+
+        expected_opponent_id = str(
+            upcoming_series.get("opponentTeamId") or ""
+        ).strip()
+        actual_opponent_id = str(
+            player_opponent.get("teamId") or ""
+        ).strip()
+
+        if (
+            expected_league_id
+            and actual_league_id
+            and expected_league_id != actual_league_id
+        ):
+            raise ValueError(
+                "Player intelligence leagueId does not match "
+                "team readiness leagueId"
+            )
+
+        if (
+            expected_team_id
+            and actual_team_id
+            and expected_team_id != actual_team_id
+        ):
+            raise ValueError(
+                "Player intelligence teamId does not match "
+                "team readiness teamId"
+            )
+
+        if (
+            expected_opponent_id
+            and actual_opponent_id
+            and expected_opponent_id != actual_opponent_id
+        ):
+            raise ValueError(
+                "Player intelligence opponent teamId does not "
+                "match upcoming series opponentTeamId"
+            )
+
+        player_intelligence = dict(
+            player_intelligence_payload
+        )
+
+        player_intelligence["status"] = (
+            "AVAILABLE"
+            if (
+                player_team.get("evidenceStatus") == "AVAILABLE"
+                and player_opponent.get("evidenceStatus")
+                == "AVAILABLE"
+            )
+            else "EVIDENCE_GATED"
+        )
 
     schedule_opponent_name = (
         upcoming_series["opponentDisplayName"]
@@ -1045,6 +1135,11 @@ def build_engine(
             "leagueDate": team_payload.get("leagueDate"),
         },
         "sourceEvidence": {
+            "playerIntelligence": (
+                str(player_intelligence_source)
+                if player_intelligence_source is not None
+                else None
+            ),
             "teamReadiness": str(team_source),
             "teamSchedule": (
                 str(team_schedule_source)
@@ -1070,6 +1165,7 @@ def build_engine(
         "recentTeamSignals": team_recent,
         "recentOpponentSignals": opponent_recent,
         "leagueContext": league_context,
+        "playerIntelligence": player_intelligence,
         "matchupAssessment": matchup,
         "managerialWatchlist": build_watchlist(team_recent),
         "managerRecommendations": {
@@ -1135,6 +1231,10 @@ def main() -> int:
         type=Path,
     )
     parser.add_argument(
+        "--player-intelligence",
+        type=Path,
+    )
+    parser.add_argument(
         "--opponent-name",
     )
     parser.add_argument(
@@ -1165,6 +1265,12 @@ def main() -> int:
         else None
     )
 
+    player_intelligence_payload = (
+        load_json(args.player_intelligence)
+        if args.player_intelligence
+        else None
+    )
+
     output = build_engine(
         team_payload=team_payload,
         team_source=args.team_readiness,
@@ -1175,6 +1281,8 @@ def main() -> int:
         league_intelligence_payload=league_intelligence_payload,
         league_intelligence_source=args.league_intelligence,
         explicit_opponent_name=args.opponent_name,
+        player_intelligence_payload=player_intelligence_payload,
+        player_intelligence_source=args.player_intelligence,
     )
 
     write_json(args.output, output)
