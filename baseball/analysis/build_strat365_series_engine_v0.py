@@ -892,6 +892,402 @@ def build_league_context(
     }
 
 
+
+def build_executive_outlook(
+    *,
+    team_name: str,
+    upcoming_series: dict[str, Any],
+    league_context: dict[str, Any],
+    player_intelligence: dict[str, Any],
+    recent_team_signals: dict[str, Any],
+    recent_opponent_signals: dict[str, Any],
+) -> dict[str, Any]:
+    opponent_name = str(
+        as_dict(player_intelligence.get("opponent")).get("teamName")
+        or upcoming_series.get("opponentDisplayName")
+        or "upcoming opponent"
+    ).strip()
+
+    comparison = as_dict(league_context.get("comparison"))
+    player_status = str(
+        player_intelligence.get("status") or "EVIDENCE_GATED"
+    )
+    league_status = str(
+        league_context.get("status") or "NOT_PROVIDED"
+    )
+
+    recent_team_signals = as_dict(recent_team_signals)
+    recent_opponent_signals = as_dict(recent_opponent_signals)
+
+    team_recent_games = int(
+        recent_team_signals.get("gameCount") or 0
+    )
+    opponent_recent_games = int(
+        recent_opponent_signals.get("gameCount") or 0
+    )
+
+    missing_evidence: list[str] = []
+
+    if team_recent_games == 0:
+        missing_evidence.append("recentTeamForm")
+    if opponent_recent_games == 0:
+        missing_evidence.append("recentOpponentForm")
+
+    if (
+        player_status != "AVAILABLE"
+        or league_status != "AVAILABLE"
+        or not comparison
+    ):
+        if player_status != "AVAILABLE":
+            missing_evidence.append("playerIntelligence")
+        if league_status != "AVAILABLE" or not comparison:
+            missing_evidence.append("leagueComparison")
+
+        return {
+            "status": "EVIDENCE_GATED",
+            "classification": "EVIDENCE_GATED",
+            "confidence": "INSUFFICIENT_EVIDENCE",
+            "synopsis": (
+                f"Series outlook unavailable. {opponent_name} is the "
+                "upcoming opponent, but league-comparison and "
+                "player-performance evidence is not yet available."
+            ),
+            "hot": {
+                "status": "EVIDENCE_GATED",
+                "text": None,
+            },
+            "edge": {
+                "status": "EVIDENCE_GATED",
+                "text": None,
+            },
+            "watch": {
+                "status": "EVIDENCE_GATED",
+                "text": None,
+            },
+            "missingEvidence": sorted(set(missing_evidence)),
+            "evidenceBasis": [],
+        }
+
+    def number(key: str) -> float | None:
+        value = comparison.get(key)
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    metric_specs = [
+        (
+            "runDifferentialDelta",
+            "RUN_DIFFERENTIAL",
+            10.0,
+            1.0,
+        ),
+        ("opsDelta", "OPS", 0.025, 1.0),
+        ("eraDelta", "ERA", 0.25, -1.0),
+        ("whipDelta", "WHIP", 0.05, -1.0),
+        (
+            "fieldingAverageDelta",
+            "FIELDING_AVERAGE",
+            0.004,
+            1.0,
+        ),
+        (
+            "unearnedRunsPerGameDelta",
+            "UNEARNED_RUNS_PER_GAME",
+            0.10,
+            -1.0,
+        ),
+    ]
+
+    signals: list[dict[str, Any]] = []
+
+    for key, metric, threshold, direction in metric_specs:
+        delta = number(key)
+        if delta is None:
+            continue
+
+        advantage = (delta * direction) / threshold
+
+        signals.append(
+            {
+                "metric": metric,
+                "delta": delta,
+                "advantageStrength": advantage,
+            }
+        )
+
+    score = sum(
+        1 if signal["advantageStrength"] >= 1.0
+        else -1 if signal["advantageStrength"] <= -1.0
+        else 0
+        for signal in signals
+    )
+
+    if score >= 2:
+        classification = "FAVORABLE"
+    elif score <= -2:
+        classification = "CHALLENGING"
+    else:
+        classification = "BALANCED"
+
+    positive = [
+        row for row in signals
+        if row["advantageStrength"] > 0
+    ]
+    negative = [
+        row for row in signals
+        if row["advantageStrength"] < 0
+    ]
+
+    edge_signal = (
+        max(
+            positive,
+            key=lambda row: row["advantageStrength"],
+        )
+        if positive
+        else None
+    )
+
+    risk_signal = (
+        min(
+            negative,
+            key=lambda row: row["advantageStrength"],
+        )
+        if negative
+        else None
+    )
+
+    def describe(
+        signal: dict[str, Any] | None,
+        *,
+        favorable: bool,
+    ) -> str:
+        if signal is None:
+            return (
+                "No single season-to-date statistical advantage "
+                "clearly separates the clubs."
+                if favorable
+                else
+                "No single season-to-date statistical disadvantage "
+                "clearly separates the clubs."
+            )
+
+        metric = signal["metric"]
+        delta = float(signal["delta"])
+        magnitude = abs(delta)
+
+        if metric == "RUN_DIFFERENTIAL":
+            if favorable:
+                return (
+                    f"{team_name} holds a {magnitude:.0f}-run "
+                    f"run-differential advantage over {opponent_name}."
+                )
+            return (
+                f"{opponent_name} holds a {magnitude:.0f}-run "
+                f"run-differential advantage over {team_name}."
+            )
+
+        if metric == "OPS":
+            if favorable:
+                return (
+                    f"Team OPS edge: {team_name} is {magnitude:.3f} "
+                    f"higher than {opponent_name}."
+                )
+            return (
+                f"Team OPS risk: {opponent_name} is {magnitude:.3f} "
+                f"higher than {team_name}."
+            )
+
+        if metric == "ERA":
+            if favorable:
+                return (
+                    f"Pitching edge: {team_name} carries an ERA "
+                    f"{magnitude:.2f} lower than {opponent_name}."
+                )
+            return (
+                f"Pitching risk: {opponent_name} carries an ERA "
+                f"{magnitude:.2f} lower than {team_name}."
+            )
+
+        if metric == "WHIP":
+            if favorable:
+                return (
+                    f"WHIP edge: {team_name} is {magnitude:.2f} "
+                    f"lower than {opponent_name}."
+                )
+            return (
+                f"WHIP risk: {opponent_name} is {magnitude:.2f} "
+                f"lower than {team_name}."
+            )
+
+        if metric == "FIELDING_AVERAGE":
+            if favorable:
+                return (
+                    f"Fielding edge: {team_name} is {magnitude:.3f} "
+                    f"higher than {opponent_name}."
+                )
+            return (
+                f"Fielding risk: {opponent_name} is {magnitude:.3f} "
+                f"higher than {team_name}."
+            )
+
+        if favorable:
+            return (
+                f"{team_name} allows {magnitude:.2f} fewer "
+                f"unearned runs per game than {opponent_name}."
+            )
+
+        return (
+            f"Defensive-execution watch: {team_name} has allowed "
+            f"{magnitude:.2f} more unearned runs per game than "
+            f"{opponent_name}."
+        )
+
+    team_pi = as_dict(player_intelligence.get("team"))
+    opponent_pi = as_dict(player_intelligence.get("opponent"))
+
+    streak_candidates: list[dict[str, Any]] = []
+
+    for side, payload in (
+        ("TEAM", team_pi),
+        ("OPPONENT", opponent_pi),
+    ):
+        rows = payload.get("currentHittingStreaks")
+        if not isinstance(rows, list):
+            continue
+
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            if not row.get("isCurrent"):
+                continue
+
+            try:
+                games = int(row.get("streakGames") or 0)
+            except (TypeError, ValueError):
+                continue
+
+            streak_candidates.append(
+                {
+                    "side": side,
+                    "playerName": row.get("playerName"),
+                    "teamAbbreviation": row.get("teamAbbreviation"),
+                    "streakGames": games,
+                }
+            )
+
+    if streak_candidates:
+        hot_row = max(
+            streak_candidates,
+            key=lambda row: row["streakGames"],
+        )
+
+        hot = {
+            "status": "AVAILABLE",
+            **hot_row,
+            "text": (
+                f"{hot_row['playerName']} "
+                f"({hot_row['teamAbbreviation']}) carries an active "
+                f"{hot_row['streakGames']}-game hitting streak."
+            ),
+        }
+    else:
+        hot = {
+            "status": "NO_CURRENT_STREAK_LISTED",
+            "text": None,
+        }
+
+    opponent_top_hitters = opponent_pi.get("topHittersByOPS")
+    opponent_top_hitter = None
+
+    if (
+        isinstance(opponent_top_hitters, list)
+        and opponent_top_hitters
+        and isinstance(opponent_top_hitters[0], dict)
+    ):
+        opponent_top_hitter = opponent_top_hitters[0]
+
+    opponent_top_ops = None
+
+    if opponent_top_hitter is not None:
+        try:
+            opponent_top_ops = float(
+                opponent_top_hitter.get("OPS")
+            )
+        except (TypeError, ValueError):
+            opponent_top_ops = None
+
+    edge = {
+        "status": "AVAILABLE",
+        "metric": (
+            edge_signal["metric"]
+            if edge_signal is not None
+            else None
+        ),
+        "text": describe(edge_signal, favorable=True),
+    }
+
+    if opponent_top_ops is not None and opponent_top_ops >= 0.900:
+        watch = {
+            "status": "AVAILABLE",
+            "category": "OPPONENT_TOP_HITTER",
+            "playerName": opponent_top_hitter.get("playerName"),
+            "OPS": opponent_top_ops,
+            "text": (
+                f"{opponent_top_hitter.get('playerName')} is "
+                f"{opponent_name}'s leading qualified hitter in this "
+                f"evidence set at {opponent_top_ops:.3f} OPS."
+            ),
+        }
+    else:
+        watch = {
+            "status": "AVAILABLE",
+            "category": (
+                risk_signal["metric"]
+                if risk_signal is not None
+                else "NO_CLEAR_RISK_SIGNAL"
+            ),
+            "text": describe(risk_signal, favorable=False),
+        }
+
+    confidence = (
+        "SEASON_AND_RECENT_CONTEXT"
+        if team_recent_games > 0 and opponent_recent_games > 0
+        else "SEASON_TO_DATE_ONLY"
+    )
+
+    classification_label = classification.capitalize()
+
+    synopsis = (
+        f"{classification_label}. "
+        f"{edge['text']} {watch['text']}"
+    )
+
+    if confidence == "SEASON_TO_DATE_ONLY":
+        synopsis += (
+            " This read is season-to-date only; recent-form evidence "
+            "is not yet available."
+        )
+
+    return {
+        "status": "AVAILABLE",
+        "classification": classification,
+        "classificationScore": score,
+        "confidence": confidence,
+        "synopsis": synopsis,
+        "hot": hot,
+        "edge": edge,
+        "watch": watch,
+        "missingEvidence": missing_evidence,
+        "evidenceBasis": [
+            "leagueContext.comparison",
+            "playerIntelligence",
+        ],
+    }
+
+
 def build_engine(
     team_payload: dict[str, Any],
     team_source: Path,
@@ -1166,6 +1562,14 @@ def build_engine(
         "recentOpponentSignals": opponent_recent,
         "leagueContext": league_context,
         "playerIntelligence": player_intelligence,
+        "executiveOutlook": build_executive_outlook(
+            team_name=team_name,
+            upcoming_series=upcoming_series,
+            league_context=league_context,
+            player_intelligence=player_intelligence,
+            recent_team_signals=team_recent,
+            recent_opponent_signals=opponent_recent,
+        ),
         "matchupAssessment": matchup,
         "managerialWatchlist": build_watchlist(team_recent),
         "managerRecommendations": {
