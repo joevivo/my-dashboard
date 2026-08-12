@@ -417,6 +417,26 @@ def build(
                     ]
                 )
 
+            player_intelligence = (
+                repo_root
+                / "data"
+                / "baseball"
+                / "state"
+                / "strat365"
+                / "series-player-intelligence-v1"
+                / f"league-{row['leagueId']}"
+                / f"team-{row['teamId']}"
+                / "series-player-intelligence-v1.json"
+            )
+
+            if player_intelligence.exists():
+                arguments.extend(
+                    [
+                        "--player-intelligence",
+                        str(player_intelligence),
+                    ]
+                )
+
             arguments.extend(
                 [
                     "--output",
