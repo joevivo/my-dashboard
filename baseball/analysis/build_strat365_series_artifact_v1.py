@@ -289,12 +289,38 @@ def build_artifact(
 
     replay = {
         "status": "NOT_CAPTURED",
+        "sequencePolicy": {
+            "mode": "STRICT_SERIES_ORDER",
+            "captureIndependentOfReveal": True,
+            "futureGameIsolation": True,
+            "serverSideRedactionRequired": True,
+        },
         "games": [
             {
                 "ordinal": index + 1,
                 "scheduleGameNumber": game_number,
                 "gameId": None,
                 "evidenceStatus": "NOT_CAPTURED",
+                "captureState": {
+                    "status": "NOT_CAPTURED",
+                    "capturedAtUtc": None,
+                    "parsedAtUtc": None,
+                    "reviewReadyAtUtc": None,
+                    "sourceEvidence": [],
+                },
+                "revealState": {
+                    "status": "LOCKED",
+                    "revealedThroughEventSequence": None,
+                    "revealedThroughInning": None,
+                    "startedAtUtc": None,
+                    "completedAtUtc": None,
+                },
+                "reviewState": {
+                    "status": "LOCKED",
+                    "spoilerSafeThroughEventSequence": None,
+                    "postgameAvailable": False,
+                    "completedAtUtc": None,
+                },
             }
             for index, game_number in enumerate(game_numbers)
         ],

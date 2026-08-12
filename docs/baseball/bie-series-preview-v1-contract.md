@@ -704,6 +704,71 @@ Each replay game should retain:
 - ordinal within the series
 - spoiler-safe reveal state in the UI
 
+### Durable capture, reveal, and review state
+
+Spoiler safety requires three independent per-game state families.
+
+`captureState` is system-owned and describes what BIE has ingested and
+normalized. Its v1 progression is:
+
+`NOT_CAPTURED -> CAPTURED -> PARSED -> REVIEW_READY`
+
+Background capture may advance through this progression without changing what
+the user is allowed to see.
+
+`revealState` is user-controlled and describes what has been deliberately
+revealed. Its v1 progression is:
+
+`LOCKED -> UNVIEWED -> IN_PROGRESS -> REVEALED`
+
+A later game remains `LOCKED` until the prior game has been deliberately
+revealed. Capture completion must never implicitly advance `revealState`.
+
+`reviewState` describes how much BIE analysis may safely be exposed. Its v1
+progression is:
+
+`LOCKED -> REPLAY_READY -> IN_PROGRESS -> POSTGAME_READY -> COMPLETE`
+
+`reviewState` may never expose evidence beyond the user's current
+`revealState` boundary.
+
+Each replay game therefore carries:
+
+- `captureState.status`
+- `captureState.capturedAtUtc`
+- `captureState.parsedAtUtc`
+- `captureState.reviewReadyAtUtc`
+- `captureState.sourceEvidence`
+- `revealState.status`
+- `revealState.revealedThroughEventSequence`
+- `revealState.revealedThroughInning`
+- `revealState.startedAtUtc`
+- `revealState.completedAtUtc`
+- `reviewState.status`
+- `reviewState.spoilerSafeThroughEventSequence`
+- `reviewState.postgameAvailable`
+- `reviewState.completedAtUtc`
+
+The replay object also carries `sequencePolicy` with:
+
+- `mode = STRICT_SERIES_ORDER`
+- `captureIndependentOfReveal = true`
+- `futureGameIsolation = true`
+- `serverSideRedactionRequired = true`
+
+Result-bearing data for unrevealed events or games must be omitted from the
+API response. Hiding already-delivered spoiler data only in the browser is not
+sufficient.
+
+The first game may transition from `LOCKED` to `UNVIEWED` only after its
+capture reaches `REVIEW_READY`. Game 2 and later additionally require the
+preceding game's `revealState` to be `REVEALED`.
+
+When a replay begins, `revealState` and `reviewState` advance only to the
+event or inning boundary explicitly reached by the user. The final score,
+winner, updated record, and postgame assessment become eligible only after the
+final event has been deliberately revealed.
+
 Game identity must not require changing the parent series route.
 
 ### Review and learning identity

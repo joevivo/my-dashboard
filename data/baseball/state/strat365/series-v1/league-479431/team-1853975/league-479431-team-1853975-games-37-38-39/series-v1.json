@@ -194,22 +194,88 @@
         "evidenceStatus": "NOT_CAPTURED",
         "gameId": null,
         "ordinal": 1,
-        "scheduleGameNumber": 37
+        "scheduleGameNumber": 37,
+        "captureState": {
+          "status": "NOT_CAPTURED",
+          "capturedAtUtc": null,
+          "parsedAtUtc": null,
+          "reviewReadyAtUtc": null,
+          "sourceEvidence": []
+        },
+        "revealState": {
+          "status": "LOCKED",
+          "revealedThroughEventSequence": null,
+          "revealedThroughInning": null,
+          "startedAtUtc": null,
+          "completedAtUtc": null
+        },
+        "reviewState": {
+          "status": "LOCKED",
+          "spoilerSafeThroughEventSequence": null,
+          "postgameAvailable": false,
+          "completedAtUtc": null
+        }
       },
       {
         "evidenceStatus": "NOT_CAPTURED",
         "gameId": null,
         "ordinal": 2,
-        "scheduleGameNumber": 38
+        "scheduleGameNumber": 38,
+        "captureState": {
+          "status": "NOT_CAPTURED",
+          "capturedAtUtc": null,
+          "parsedAtUtc": null,
+          "reviewReadyAtUtc": null,
+          "sourceEvidence": []
+        },
+        "revealState": {
+          "status": "LOCKED",
+          "revealedThroughEventSequence": null,
+          "revealedThroughInning": null,
+          "startedAtUtc": null,
+          "completedAtUtc": null
+        },
+        "reviewState": {
+          "status": "LOCKED",
+          "spoilerSafeThroughEventSequence": null,
+          "postgameAvailable": false,
+          "completedAtUtc": null
+        }
       },
       {
         "evidenceStatus": "NOT_CAPTURED",
         "gameId": null,
         "ordinal": 3,
-        "scheduleGameNumber": 39
+        "scheduleGameNumber": 39,
+        "captureState": {
+          "status": "NOT_CAPTURED",
+          "capturedAtUtc": null,
+          "parsedAtUtc": null,
+          "reviewReadyAtUtc": null,
+          "sourceEvidence": []
+        },
+        "revealState": {
+          "status": "LOCKED",
+          "revealedThroughEventSequence": null,
+          "revealedThroughInning": null,
+          "startedAtUtc": null,
+          "completedAtUtc": null
+        },
+        "reviewState": {
+          "status": "LOCKED",
+          "spoilerSafeThroughEventSequence": null,
+          "postgameAvailable": false,
+          "completedAtUtc": null
+        }
       }
     ],
-    "status": "NOT_CAPTURED"
+    "status": "NOT_CAPTURED",
+    "sequencePolicy": {
+      "mode": "STRICT_SERIES_ORDER",
+      "captureIndependentOfReveal": true,
+      "futureGameIsolation": true,
+      "serverSideRedactionRequired": true
+    }
   },
   "review": {
     "artifact": null,
