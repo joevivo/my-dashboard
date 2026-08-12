@@ -13,6 +13,7 @@ import MatchupAnalyzer from "./MatchupAnalyzer";
 import FinanceView from "./FinanceView";
 
 import SeriesPlanner from "./SeriesPlanner";
+import SeriesPreview from "./SeriesPreview";
 
 import GameSimulator from "./GameSimulator";
 
@@ -332,6 +333,7 @@ function rotationConfidenceClasses(value) {
 export default function App() {
 
   const [activeView, setActiveView] = useState("StratHome");
+  const [selectedSeriesPreview, setSelectedSeriesPreview] = useState(null);
 
   const [selectedArtistForIntelligence, setSelectedArtistForIntelligence] = useState("Billie Holiday");
 
@@ -520,17 +522,37 @@ export default function App() {
     );
   };
 
-  const updateUpcomingSeries = (team) => {
+  const openSeriesPreview = (team) => {
     refreshStratTeamAndOpponent(team);
 
-    window.open(
-      team.scheduleUrl,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    const canonicalSeriesByTeamId = {
+      "1851052": "league-479336-team-1851052-games-64-65-66",
+      "1853975": "league-479431-team-1853975-games-37-38-39",
+      "1854215": "league-479610-team-1854215-games-1-2-3",
+    };
+
+    const seriesId =
+      canonicalSeriesByTeamId[String(team.teamId)] || null;
+
+    if (!seriesId) {
+      setStratActionMessage(
+        `${team.teamName} · League ${team.leagueId}: no canonical BIE Series Preview artifact is available.`
+      );
+      return;
+    }
+
+    setSelectedSeriesPreview({
+      leagueId: String(team.leagueId),
+      teamId: String(team.teamId),
+      seriesId,
+      scheduleUrl: team.scheduleUrl,
+      opponentDisplayName: team.bie?.nextOpponent || null,
+    });
+
+    setActiveView("SeriesPreview");
 
     setStratActionMessage(
-      `${team.teamName} · League ${team.leagueId}: live team refreshed and current schedule opened.`
+      `${team.teamName} · League ${team.leagueId}: canonical BIE Series Preview opened.`
     );
   };
 
@@ -1159,10 +1181,10 @@ export default function App() {
                 <div className="mt-5 flex flex-wrap gap-2">
                   <button
                     type="button"
-                    onClick={() => updateUpcomingSeries(team)}
+                    onClick={() => openSeriesPreview(team)}
                     className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-500"
                   >
-                    Open Series Schedule
+                    Open Series Preview
                   </button>
 
                   <button
@@ -1514,9 +1536,19 @@ export default function App() {
 
               <MatchupAnalyzer />
 
-            ) : activeView === "Series" ? (
+            ) : activeView === "SeriesPreview" ? (
 
-              <SeriesPlanner />
+        <SeriesPreview
+          selection={selectedSeriesPreview}
+          onBack={() => {
+            setSelectedSeriesPreview(null);
+            setActiveView("StratHome");
+          }}
+        />
+
+      ) : activeView === "Series" ? (
+
+        <SeriesPlanner />
 
             ) : activeView === "GameSim" ? (
 
