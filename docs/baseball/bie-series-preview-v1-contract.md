@@ -536,3 +536,186 @@ explicit evidence-bearing artifact.
 
 The feedback loop must not leak completed-game information backward into a
 spoiler-safe replay or into the historical pre-series view.
+
+## Series Route, API, and Durable Identity
+
+A BIE series requires one durable identity that remains stable across:
+
+**Preview -> Spoiler-Free Replay -> Series Review -> Learning**
+
+Opponent identity or scheduled date alone is not sufficient because the same
+clubs may meet again later in the season.
+
+### Canonical seriesId
+
+The canonical BIE `seriesId` is derived from:
+
+- leagueId
+- subject teamId
+- the complete ordered `scheduleGameNumbers` sequence
+
+Format:
+
+`league-{leagueId}-team-{teamId}-games-{game1}-{game2}-{game3}`
+
+Examples:
+
+- `league-479336-team-1851052-games-64-65-66`
+- `league-479431-team-1853975-games-37-38-39`
+- `league-479610-team-1854215-games-1-2-3`
+
+The implementation must use the complete ordered game-number sequence rather
+than assuming every series is exactly three games.
+
+The following are descriptive metadata, not primary identity fields:
+
+- opponentTeamId
+- opponentDisplayName
+- scheduledDate
+- homeAway
+- gameCount
+
+A later rematch against the same opponent therefore receives a different
+`seriesId`.
+
+### Frontend navigation contract
+
+The existing custom `activeView` application-navigation model remains in use.
+
+Do not introduce React Router solely for Series Preview.
+
+The BIE destination view is:
+
+`SeriesPreview`
+
+Opening a Series Preview should establish a selected series identity containing
+at minimum:
+
+- leagueId
+- teamId
+- seriesId
+
+The Active Teams action should eventually become:
+
+**Open Series Preview**
+
+The current external Strat-O-Matic schedule link may remain available from
+inside the Series Preview as a secondary source/action. It is not the canonical
+BIE destination.
+
+The existing legacy `SeriesPlanner` remains a separate tool and must not be
+silently repurposed as the BIE Series Preview.
+
+### Backend API contract
+
+The canonical series-specific endpoint is:
+
+`GET /api/strat/league/:leagueId/team/:teamId/series/:seriesId`
+
+The endpoint identifies one durable BIE series and is suitable for both current
+and historical series.
+
+The response should preserve the lifecycle sections needed by the same series
+surface:
+
+- seriesIdentity
+- lifecycle
+- preSeriesSnapshot
+- replay
+- review
+- learning
+- evidence
+
+Sections that are not yet available must use evidence/lifecycle status rather
+than fabricated content.
+
+### seriesIdentity
+
+`seriesIdentity` should include:
+
+- seriesId
+- leagueId
+- teamId
+- opponentTeamId
+- opponentDisplayName
+- scheduleGameNumbers
+- scheduledDate
+- homeAway
+- gameCount
+
+The API must validate that route parameters agree with the persisted
+`seriesIdentity`.
+
+### Lifecycle state
+
+The lifecycle object should describe availability without exposing spoiler
+content.
+
+It may include:
+
+- stage
+- previewAvailable
+- replayAvailable
+- completedGameCount
+- reviewAvailable
+- learningAvailable
+
+Lifecycle metadata must not contain scores, winners, updated records, series
+outcomes, or future-game results when the user is still in spoiler-safe replay.
+
+### Immutable preSeriesSnapshot
+
+The evidence BIE possessed before the series must be preserved as an immutable
+`preSeriesSnapshot`.
+
+Once the first game of the series begins or is captured as completed, the
+pre-series snapshot must not be rewritten from later season state.
+
+This is required for two reasons:
+
+1. **Spoiler safety** — completed-game information must not leak backward into
+   the historical preview.
+2. **Feedback-loop integrity** — Series Review must compare what actually
+   happened against what BIE genuinely knew and surfaced beforehand.
+
+The snapshot should retain:
+
+- Executive Outlook
+- team context
+- opponent context
+- player intelligence
+- matchup evidence
+- evidence gates
+- missing evidence
+- source provenance
+- generation timestamp
+
+Subsequent game captures may add replay, review, and learning evidence, but they
+must not mutate the historical pre-series evidence basis.
+
+### Replay identity
+
+Replay games remain children of the same `seriesId`.
+
+Each replay game should retain:
+
+- scheduleGameNumber
+- captured gameId when available
+- ordinal within the series
+- spoiler-safe reveal state in the UI
+
+Game identity must not require changing the parent series route.
+
+### Review and learning identity
+
+Series Review and Learning artifacts remain attached to the same `seriesId`.
+
+This makes it possible to trace:
+
+- a pre-series signal
+- the games in which it did or did not matter
+- the post-series assessment
+- any evidence-bearing learning promoted into future preparation
+
+No learned signal may be promoted solely because an outcome occurred. It must
+remain traceable to supporting game evidence.
