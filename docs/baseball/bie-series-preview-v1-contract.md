@@ -351,3 +351,188 @@ Series Preview v1 is ready when:
    a matchup conclusion.
 9. The full preview can be opened from the team card.
 10. Preview regeneration can advance automatically when the next series changes.
+
+## Series Preview v1 Information Architecture
+
+The Series Preview is an evidence product, not a collection of equally weighted
+widgets. Evidence-rich modules are surfaced prominently. Evidence-gated modules
+remain compact and explicit rather than displaying empty or speculative content.
+
+### Above the fold
+
+1. **Series Identity**
+   - opponent
+   - series and venue context
+   - team record and standing when available
+
+2. **Executive Outlook**
+   - classification
+   - two- or three-sentence evidence synthesis
+   - confidence and evidence posture
+
+3. **Hot / Edge / Watch**
+   - current player or streak signal when actually supported
+   - strongest evidence-backed advantage
+   - most material evidence-backed risk
+   - omit empty signals rather than manufacture filler
+
+4. **Team vs. Opponent Snapshot**
+   - record
+   - standing and games behind
+   - run differential
+   - offense
+   - pitching
+   - defense
+   - recent form only when recent-form evidence exists
+
+5. **Key Players**
+   - top hitters
+   - top pitchers
+   - current hitting streaks
+   - other performance signals only when captured
+
+### Matchup detail
+
+6. **Tactical Context**
+   - running game
+   - sacrifice behavior
+   - hit-and-run behavior
+   - intentional-walk behavior
+   - other supported manager tendencies
+
+7. **Pitching Matchup**
+   - probable starters
+   - starter matchups
+   - rotation assessment
+   - bullpen quality
+   - bullpen recent usage
+   - bullpen availability and workload
+
+8. **Lineup Matchups**
+   - projected team lineup
+   - projected opponent lineup
+   - platoon edges
+   - card-split edges
+   - vulnerable matchups
+   - bench implications
+
+9. **Availability & Environment**
+   - injuries
+   - unavailable players
+   - roster constraints
+   - ballpark
+   - park effects
+   - relevant home/road context
+
+10. **Manager's Notebook**
+    - advantages to exploit
+    - risks to protect against
+    - players to watch
+    - tactical questions
+    - watchlist
+    - render only when guidance is traceable to evidence
+
+11. **Evidence & Gaps**
+    - evidence-family gate status
+    - material missing evidence
+    - source provenance
+
+### Rendering rules
+
+- Do not fabricate content to fill a module.
+- Do not convert missing recent evidence into a statement about recent form.
+- Do not interpret absence from a leader list as proof that no underlying
+  signal exists.
+- Projected lineups and starters must be labeled as projected.
+- Managerial guidance must retain evidence traceability.
+- Gated modules remain compact and do not visually compete with available
+  intelligence.
+- Detailed provenance belongs in Evidence & Gaps rather than being repeated
+  throughout the page.
+
+## Series Lifecycle and Spoiler-Free Replay
+
+The Series Preview is the canonical internal destination for a series.
+
+The Active Teams experience should link to this surface once the real internal
+Series Preview route exists.
+
+The surface is lifecycle-aware rather than being discarded once games begin.
+
+### Before the series
+
+The primary mode is **Series Preview**.
+
+It presents only evidence knowable before the series and preserves all evidence
+gates defined by this contract.
+
+### During or after captured games
+
+The same series surface may expose **Spoiler-Free Replay**.
+
+Spoiler-Free Replay should:
+
+- preserve the scheduled order of the three-game series
+- begin with Game 1 and progress sequentially
+- hide final scores, winners, updated records, series outcomes, and future-game
+  results until deliberately revealed
+- prevent Game 2 or Game 3 information from spoiling an earlier game
+- support inning-level or event-level progression when play-by-play evidence
+  exists
+- explain material turning points without exposing unrevealed future events
+- explain managerial decisions, substitutions, pitcher usage, tactical events,
+  and run-production or run-prevention mechanisms when supported
+- permit a spoiler-safe BIE postgame assessment after each completed game
+- unlock the complete Series Wrap-Up only after Game 3 has been completed or
+  deliberately revealed
+
+### Series Wrap-Up
+
+After spoiler-safe progression is complete, BIE may compare:
+
+- the pre-series Executive Outlook
+- expected advantages and risks
+- what actually occurred
+- which signals proved material
+- which assumptions were unsupported
+- which evidence was missing
+- new tendencies or player signals learned from the series
+
+### Navigation intent
+
+The Active Teams homepage remains concise.
+
+Its internal action should lead to **Open Series Preview** once the destination
+route exists.
+
+Replay and review navigation belong inside the series surface rather than
+adding competing actions to the Active Teams card.
+
+## BIE Feedback Loop
+
+Series intelligence should form a closed evidence loop:
+
+**Preview -> Spoiler-Free Replay -> Series Review -> Learning**
+
+The purpose of the loop is not to grade BIE on whether a predicted outcome
+occurred. BIE does not predict game winners.
+
+The loop evaluates whether the evidence and managerial signals surfaced before
+the series were useful.
+
+After a series, BIE should be able to determine:
+
+- which pre-series edges actually became material
+- which identified risks actually affected games
+- which player signals persisted, disappeared, or changed
+- which tactical tendencies appeared in game play
+- which expected matchup factors were irrelevant
+- which uncaptured evidence would have materially improved preparation
+- which new evidence should influence the next Series Preview
+
+Learning produced by a completed series should remain traceable to the source
+games and should be eligible to inform future BIE preparation only through an
+explicit evidence-bearing artifact.
+
+The feedback loop must not leak completed-game information backward into a
+spoiler-safe replay or into the historical pre-series view.
