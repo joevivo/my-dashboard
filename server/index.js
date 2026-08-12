@@ -836,6 +836,81 @@ app.get("/api/strat/active-teams", (req, res) => {
 });
 
 app.get(
+  "/api/strat/league/:leagueId/team/:teamId/series/:seriesId",
+  (req, res) => {
+    try {
+      const { leagueId, teamId, seriesId } = req.params;
+
+      if (!/^\d+$/.test(leagueId)) {
+        return res.status(400).json({
+          error: "Invalid league ID",
+        });
+      }
+
+      if (!/^\d+$/.test(teamId)) {
+        return res.status(400).json({
+          error: "Invalid team ID",
+        });
+      }
+
+      const seriesMatch = seriesId.match(
+        /^league-(\d+)-team-(\d+)-games-(\d+(?:-\d+)*)$/
+      );
+
+      if (!seriesMatch) {
+        return res.status(400).json({
+          error: "Invalid BIE series ID",
+        });
+      }
+
+      const [, seriesLeagueId, seriesTeamId] = seriesMatch;
+
+      if (
+        seriesLeagueId !== leagueId ||
+        seriesTeamId !== teamId
+      ) {
+        return res.status(400).json({
+          error: "Series ID does not match route identity",
+        });
+      }
+
+      const seriesFile =
+        `data/baseball/state/strat365/series-v1/` +
+        `league-${leagueId}/team-${teamId}/` +
+        `${seriesId}/series-v1.json`;
+
+      const raw = fs.readFileSync(seriesFile, "utf8");
+      const payload = JSON.parse(raw);
+
+      const identity = payload?.seriesIdentity;
+
+      if (
+        !identity ||
+        String(identity.seriesId) !== seriesId ||
+        String(identity.leagueId) !== leagueId ||
+        String(identity.teamId) !== teamId
+      ) {
+        return res.status(409).json({
+          error: "Persisted BIE series identity mismatch",
+        });
+      }
+
+      res.json(payload);
+    } catch (error) {
+      console.error(
+        "Failed to read canonical BIE series artifact:",
+        error
+      );
+
+      res.status(error?.code === "ENOENT" ? 404 : 500).json({
+        error: "BIE series artifact unavailable",
+        detail: error?.message ?? String(error),
+      });
+    }
+  }
+);
+
+app.get(
   "/api/strat/league/:leagueId/standings",
   async (req, res) => {
     try {
