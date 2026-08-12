@@ -1,0 +1,238 @@
+{
+  "evidence": {
+    "sources": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479610\\team-1854215\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": null,
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479610\\team-1854215\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479610\\1854215\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479610\\team-1854215\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "status": "AVAILABLE"
+  },
+  "generatedAtUtc": "2026-08-12T20:19:40Z",
+  "learning": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "lifecycle": {
+    "completedGameCount": 0,
+    "learningAvailable": false,
+    "previewAvailable": true,
+    "replayAvailable": false,
+    "reviewAvailable": false,
+    "stage": "PRE_SERIES"
+  },
+  "preSeriesSnapshot": {
+    "certifiedPreSeries": true,
+    "frozenAtUtc": "2026-08-12T20:19:40Z",
+    "missingEvidence": [],
+    "payload": {
+      "executiveOutlook": {
+        "classification": "EVIDENCE_GATED",
+        "confidence": "INSUFFICIENT_EVIDENCE",
+        "edge": {
+          "status": "EVIDENCE_GATED",
+          "text": null
+        },
+        "evidenceBasis": [],
+        "hot": {
+          "status": "EVIDENCE_GATED",
+          "text": null
+        },
+        "missingEvidence": [
+          "leagueComparison",
+          "playerIntelligence",
+          "recentOpponentForm",
+          "recentTeamForm"
+        ],
+        "status": "EVIDENCE_GATED",
+        "synopsis": "Series outlook unavailable. Peaches is the upcoming opponent, but league-comparison and player-performance evidence is not yet available.",
+        "watch": {
+          "status": "EVIDENCE_GATED",
+          "text": null
+        }
+      },
+      "leagueContext": {
+        "comparison": null,
+        "opponentProfile": null,
+        "status": "NOT_PROVIDED",
+        "teamProfile": null
+      },
+      "managerRecommendations": {
+        "items": [],
+        "missingEvidence": [
+          "upcoming opponent recent-series or League Intelligence evidence",
+          "upcoming probable starting pitchers",
+          "opponent roster and card/split evidence",
+          "team roster and card/split evidence",
+          "bullpen availability and recent usage"
+        ],
+        "note": "Series Engine v0 keeps short-sample readiness and season-to-date League Intelligence distinct. League context can establish opponent performance evidence, but lineup, pitching, bullpen, and tactical prescriptions remain gated by probable-starter, roster/card, and bullpen-availability evidence.",
+        "status": "EVIDENCE_GATED"
+      },
+      "managerialWatchlist": [],
+      "matchupAssessment": {
+        "comparison": null,
+        "leagueComparison": null,
+        "opponentName": "Peaches",
+        "opponentTeamId": "1855876",
+        "status": "UPCOMING_SERIES_IDENTIFIED"
+      },
+      "playerIntelligence": {
+        "artifactType": "series-preview-player-intelligence",
+        "evidenceGates": {
+          "activeHittingStreaks": "EVIDENCE_GATED",
+          "bullpenAvailability": "NOT_YET_NORMALIZED",
+          "injuryAvailability": "NOT_YET_NORMALIZED",
+          "probableStarters": "NOT_YET_NORMALIZED",
+          "recentPlayerForm": "NOT_YET_NORMALIZED",
+          "seasonPlayerPerformance": "EVIDENCE_GATED"
+        },
+        "generatedAtUtc": "2026-08-12T17:26:40.7775058Z",
+        "leagueDate": null,
+        "leagueId": "479610",
+        "missingEvidence": [
+          "leagueIntelligence",
+          "leagueLeaders"
+        ],
+        "opponent": {
+          "evidenceStatus": "EVIDENCE_GATED",
+          "teamId": "1855876"
+        },
+        "schemaVersion": "strat365-series-player-intelligence-v1",
+        "sourceEvidence": {
+          "hittingStreaks": null,
+          "leagueIntelligence": null,
+          "seriesEngine": "data/baseball/state/strat365/series-preview-v0/league-479610/team-1854215/series-engine-v0.json"
+        },
+        "status": "EVIDENCE_GATED",
+        "team": {
+          "evidenceStatus": "EVIDENCE_GATED",
+          "teamId": "1854215"
+        }
+      },
+      "previousSeries": {
+        "gameIds": [],
+        "opponents": []
+      },
+      "recentOpponentSignals": null,
+      "recentTeamSignals": {
+        "catastrophicOutcomes": {
+          "byType": {},
+          "eventCount": 0
+        },
+        "defenseErrors": {
+          "byType": {},
+          "eventCount": 0
+        },
+        "gameCount": 0,
+        "gameIds": [],
+        "lowestRecentDefensePreventionStates": [],
+        "lowestRecentOffenseStates": [],
+        "runMechanisms": {},
+        "tacticalEvents": {},
+        "twoOutConversion": {
+          "conversionRate": 0.0,
+          "converted": 0,
+          "opportunities": 0,
+          "runsToInningEnd": 0
+        },
+        "winMechanismDiversityCount": 0
+      },
+      "sampleGovernance": {
+        "classification": "SHORT_SAMPLE_CONTEXT",
+        "leagueIntelligenceClassification": "NOT_PROVIDED",
+        "leagueIntelligencePolicy": "League-relative season evidence may support matchup assessment but does not substitute for player-card, probable-starter, or bullpen-availability evidence.",
+        "policy": "Recent-series signals may identify watch items and questions. They are not stable rates or standalone managerial recommendations.",
+        "recentSeriesGameCount": 0
+      },
+      "schema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": null,
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479610\\team-1854215\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479610\\1854215\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479610\\team-1854215\\2026-08-10\\upcoming-series-v0.json"
+      },
+      "team": {
+        "leagueDate": null,
+        "leagueId": "479610",
+        "season": null,
+        "teamName": "Aquarium Drinkers"
+      },
+      "upcomingSeries": {
+        "gameCount": 3,
+        "homeAway": "AWAY",
+        "opponentDisplayName": "Peaches",
+        "opponentTeamId": "1855876",
+        "scheduleGameNumbers": [
+          1,
+          2,
+          3
+        ],
+        "scheduledDate": "2026-08-13",
+        "status": "FOUND"
+      }
+    },
+    "provenance": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479610\\team-1854215\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": null,
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479610\\team-1854215\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479610\\1854215\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479610\\team-1854215\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "snapshotClassification": "IMMUTABLE_PRE_SERIES",
+    "status": "AVAILABLE"
+  },
+  "replay": {
+    "games": [
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 1,
+        "scheduleGameNumber": 1
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 2,
+        "scheduleGameNumber": 2
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 3,
+        "scheduleGameNumber": 3
+      }
+    ],
+    "status": "NOT_CAPTURED"
+  },
+  "review": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "schemaVersion": "bie.strat365.series-artifact.v1",
+  "seriesIdentity": {
+    "gameCount": 3,
+    "homeAway": "AWAY",
+    "leagueId": "479610",
+    "opponentDisplayName": "Peaches",
+    "opponentTeamId": "1855876",
+    "scheduleGameNumbers": [
+      1,
+      2,
+      3
+    ],
+    "scheduledDate": "2026-08-13",
+    "seriesId": "league-479610-team-1854215-games-1-2-3",
+    "teamId": "1854215"
+  }
+}

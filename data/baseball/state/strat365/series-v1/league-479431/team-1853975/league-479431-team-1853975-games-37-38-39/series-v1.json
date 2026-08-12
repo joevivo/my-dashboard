@@ -1,0 +1,234 @@
+{
+  "evidence": {
+    "sources": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479431\\team-1853975\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\league-state\\league-479431\\2026-08-10\\bie-current-league-intelligence-v0.json",
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479431\\team-1853975\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479431\\1853975\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479431\\team-1853975\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "status": "PARTIAL"
+  },
+  "generatedAtUtc": "2026-08-12T20:19:39Z",
+  "learning": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "lifecycle": {
+    "completedGameCount": null,
+    "learningAvailable": false,
+    "previewAvailable": false,
+    "replayAvailable": false,
+    "reviewAvailable": false,
+    "stage": "POST_SCHEDULED_DATE_CAPTURE_STATE_UNKNOWN"
+  },
+  "preSeriesSnapshot": {
+    "certifiedPreSeries": false,
+    "frozenAtUtc": null,
+    "missingEvidence": [
+      "complete immutable pre-series Series Preview snapshot",
+      "preserved pre-series provenance for hitting-streak/player-intelligence evidence"
+    ],
+    "payload": null,
+    "provenance": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479431\\team-1853975\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\league-state\\league-479431\\2026-08-10\\bie-current-league-intelligence-v0.json",
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479431\\team-1853975\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479431\\1853975\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479431\\team-1853975\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "reconstructionEvidence": {
+      "leagueContext": {
+        "classification": "SEASON_TO_DATE_LEAGUE_CONTEXT",
+        "comparison": {
+          "deltaConvention": "TEAM_MINUS_OPPONENT_FOR_METRICS",
+          "eraDelta": -0.47,
+          "fieldingAverageDelta": -0.006,
+          "opsDelta": -0.008,
+          "rankAdvantageConvention": "POSITIVE_MEANS_TEAM_RANKS_BETTER",
+          "rankAdvantages": {
+            "era": 4,
+            "fieldingAverage": -3,
+            "ops": -1,
+            "unearnedRunsAllowed": 0,
+            "unearnedRunsPerGame": 0,
+            "whip": 3
+          },
+          "runDifferentialDelta": 34.0,
+          "unearnedRunsPerGameDelta": 0.0,
+          "whipDelta": -0.06
+        },
+        "opponentProfile": {
+          "defense": {
+            "errors": 16,
+            "fewestErrorsRank": 2,
+            "fewestUnearnedRunsAllowedRank": 4,
+            "fieldingAverage": 0.988,
+            "fieldingAverageRank": 2,
+            "lowestUnearnedRunsPerGameRank": 4,
+            "unearnedRunsAllowed": 12,
+            "unearnedRunsPerGame": 0.3636
+          },
+          "managerTendencies": {
+            "caughtStealing": 1,
+            "hitAndRuns": 0,
+            "intentionalWalks": 13,
+            "sacrifices": 10,
+            "stolenBasePct": 0.667,
+            "stolenBases": 2
+          },
+          "offense": {
+            "ops": 0.694,
+            "opsRank": 5,
+            "runsScored": 133,
+            "runsScoredRank": 4
+          },
+          "pitching": {
+            "era": 3.37,
+            "eraRank": 7,
+            "runsAllowed": 126,
+            "runsAllowedRank": 6,
+            "whip": 1.23,
+            "whipRank": 5
+          },
+          "record": {
+            "losses": 17,
+            "wins": 16
+          },
+          "runDifferential": 7,
+          "runDifferentialRank": 5,
+          "teamId": "1854468",
+          "teamName": "Hey Jude"
+        },
+        "status": "AVAILABLE",
+        "teamProfile": {
+          "defense": {
+            "errors": 24,
+            "fewestErrorsRank": 5,
+            "fewestUnearnedRunsAllowedRank": 4,
+            "fieldingAverage": 0.982,
+            "fieldingAverageRank": 5,
+            "lowestUnearnedRunsPerGameRank": 4,
+            "unearnedRunsAllowed": 12,
+            "unearnedRunsPerGame": 0.3636
+          },
+          "managerTendencies": {
+            "caughtStealing": 2,
+            "hitAndRuns": 0,
+            "intentionalWalks": 8,
+            "sacrifices": 17,
+            "stolenBasePct": 0.9,
+            "stolenBases": 18
+          },
+          "offense": {
+            "ops": 0.686,
+            "opsRank": 6,
+            "runsScored": 151,
+            "runsScoredRank": 1
+          },
+          "pitching": {
+            "era": 2.9,
+            "eraRank": 3,
+            "runsAllowed": 110,
+            "runsAllowedRank": 3,
+            "whip": 1.17,
+            "whipRank": 2
+          },
+          "record": {
+            "losses": 12,
+            "wins": 21
+          },
+          "runDifferential": 41,
+          "runDifferentialRank": 1,
+          "teamId": "1853975",
+          "teamName": "Aquarium Drinkers"
+        }
+      },
+      "matchupAssessment": {
+        "comparison": null,
+        "leagueComparison": {
+          "deltaConvention": "TEAM_MINUS_OPPONENT_FOR_METRICS",
+          "eraDelta": -0.47,
+          "fieldingAverageDelta": -0.006,
+          "opsDelta": -0.008,
+          "rankAdvantageConvention": "POSITIVE_MEANS_TEAM_RANKS_BETTER",
+          "rankAdvantages": {
+            "era": 4,
+            "fieldingAverage": -3,
+            "ops": -1,
+            "unearnedRunsAllowed": 0,
+            "unearnedRunsPerGame": 0,
+            "whip": 3
+          },
+          "runDifferentialDelta": 34.0,
+          "unearnedRunsPerGameDelta": 0.0,
+          "whipDelta": -0.06
+        },
+        "opponentName": "Jude",
+        "opponentTeamId": "1854468",
+        "status": "LEAGUE_COMPARISON_AVAILABLE"
+      },
+      "sampleGovernance": {
+        "classification": "SHORT_SAMPLE_CONTEXT",
+        "leagueIntelligenceClassification": "SEASON_TO_DATE_LEAGUE_CONTEXT",
+        "leagueIntelligencePolicy": "League-relative season evidence may support matchup assessment but does not substitute for player-card, probable-starter, or bullpen-availability evidence.",
+        "policy": "Recent-series signals may identify watch items and questions. They are not stable rates or standalone managerial recommendations.",
+        "recentSeriesGameCount": 0
+      }
+    },
+    "snapshotClassification": "HISTORICAL_RECONSTRUCTION_NOT_CERTIFIED",
+    "status": "PARTIAL",
+    "warning": "Core evidence predates the scheduled series, but the complete current Series Engine payload cannot be certified as the view BIE possessed before Game 1. It must not be used as an immutable historical preview."
+  },
+  "replay": {
+    "games": [
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 1,
+        "scheduleGameNumber": 37
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 2,
+        "scheduleGameNumber": 38
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 3,
+        "scheduleGameNumber": 39
+      }
+    ],
+    "status": "NOT_CAPTURED"
+  },
+  "review": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "schemaVersion": "bie.strat365.series-artifact.v1",
+  "seriesIdentity": {
+    "gameCount": 3,
+    "homeAway": "HOME",
+    "leagueId": "479431",
+    "opponentDisplayName": "Hey Jude",
+    "opponentTeamId": "1854468",
+    "scheduleGameNumbers": [
+      37,
+      38,
+      39
+    ],
+    "scheduledDate": "2026-08-11",
+    "seriesId": "league-479431-team-1853975-games-37-38-39",
+    "teamId": "1853975"
+  }
+}

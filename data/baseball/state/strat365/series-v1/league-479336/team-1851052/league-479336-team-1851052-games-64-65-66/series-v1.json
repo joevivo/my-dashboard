@@ -1,0 +1,234 @@
+{
+  "evidence": {
+    "sources": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479336\\team-1851052\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\league-state\\league-479336\\2026-08-10\\bie-current-league-intelligence-v0.json",
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479336\\team-1851052\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479336\\1851052\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479336\\team-1851052\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "status": "PARTIAL"
+  },
+  "generatedAtUtc": "2026-08-12T20:19:38Z",
+  "learning": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "lifecycle": {
+    "completedGameCount": null,
+    "learningAvailable": false,
+    "previewAvailable": false,
+    "replayAvailable": false,
+    "reviewAvailable": false,
+    "stage": "POST_SCHEDULED_DATE_CAPTURE_STATE_UNKNOWN"
+  },
+  "preSeriesSnapshot": {
+    "certifiedPreSeries": false,
+    "frozenAtUtc": null,
+    "missingEvidence": [
+      "complete immutable pre-series Series Preview snapshot",
+      "preserved pre-series provenance for hitting-streak/player-intelligence evidence"
+    ],
+    "payload": null,
+    "provenance": {
+      "seriesEngine": "data\\baseball\\state\\strat365\\series-preview-v0\\league-479336\\team-1851052\\series-engine-v0.json",
+      "seriesEngineSchema": "bie.strat365.series-engine.v0",
+      "sourceEvidence": {
+        "leagueIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\league-state\\league-479336\\2026-08-10\\bie-current-league-intelligence-v0.json",
+        "opponentReadiness": null,
+        "playerIntelligence": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\series-player-intelligence-v1\\league-479336\\team-1851052\\series-player-intelligence-v1.json",
+        "teamReadiness": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\state\\strat365\\nightly\\479336\\1851052\\nightly-team-state-v0.json",
+        "teamSchedule": "C:\\Users\\joevi\\my-dashboard\\data\\baseball\\parsed\\strat365\\1968\\team-schedule\\league-479336\\team-1851052\\2026-08-10\\upcoming-series-v0.json"
+      }
+    },
+    "reconstructionEvidence": {
+      "leagueContext": {
+        "classification": "SEASON_TO_DATE_LEAGUE_CONTEXT",
+        "comparison": {
+          "deltaConvention": "TEAM_MINUS_OPPONENT_FOR_METRICS",
+          "eraDelta": -0.29,
+          "fieldingAverageDelta": -0.007,
+          "opsDelta": 0.041,
+          "rankAdvantageConvention": "POSITIVE_MEANS_TEAM_RANKS_BETTER",
+          "rankAdvantages": {
+            "era": 2,
+            "fieldingAverage": -4,
+            "ops": 5,
+            "unearnedRunsAllowed": -7,
+            "unearnedRunsPerGame": -7,
+            "whip": 1
+          },
+          "runDifferentialDelta": -15.0,
+          "unearnedRunsPerGameDelta": 0.25,
+          "whipDelta": -0.02
+        },
+        "opponentProfile": {
+          "defense": {
+            "errors": 35,
+            "fewestErrorsRank": 3,
+            "fewestUnearnedRunsAllowedRank": 1,
+            "fieldingAverage": 0.985,
+            "fieldingAverageRank": 1,
+            "lowestUnearnedRunsPerGameRank": 1,
+            "unearnedRunsAllowed": 15,
+            "unearnedRunsPerGame": 0.25
+          },
+          "managerTendencies": {
+            "caughtStealing": 17,
+            "hitAndRuns": 4,
+            "intentionalWalks": 19,
+            "sacrifices": 25,
+            "stolenBasePct": 0.717,
+            "stolenBases": 43
+          },
+          "offense": {
+            "ops": 0.635,
+            "opsRank": 9,
+            "runsScored": 232,
+            "runsScoredRank": 4
+          },
+          "pitching": {
+            "era": 2.83,
+            "eraRank": 3,
+            "runsAllowed": 188,
+            "runsAllowedRank": 2,
+            "whip": 1.14,
+            "whipRank": 2
+          },
+          "record": {
+            "losses": 27,
+            "wins": 33
+          },
+          "runDifferential": 44,
+          "runDifferentialRank": 1,
+          "teamId": "1853519",
+          "teamName": "Busch League Arkinals™"
+        },
+        "status": "AVAILABLE",
+        "teamProfile": {
+          "defense": {
+            "errors": 53,
+            "fewestErrorsRank": 8,
+            "fewestUnearnedRunsAllowedRank": 8,
+            "fieldingAverage": 0.978,
+            "fieldingAverageRank": 5,
+            "lowestUnearnedRunsPerGameRank": 8,
+            "unearnedRunsAllowed": 30,
+            "unearnedRunsPerGame": 0.5
+          },
+          "managerTendencies": {
+            "caughtStealing": 14,
+            "hitAndRuns": 1,
+            "intentionalWalks": 4,
+            "sacrifices": 28,
+            "stolenBasePct": 0.576,
+            "stolenBases": 19
+          },
+          "offense": {
+            "ops": 0.676,
+            "opsRank": 4,
+            "runsScored": 214,
+            "runsScoredRank": 9
+          },
+          "pitching": {
+            "era": 2.54,
+            "eraRank": 1,
+            "runsAllowed": 185,
+            "runsAllowedRank": 1,
+            "whip": 1.12,
+            "whipRank": 1
+          },
+          "record": {
+            "losses": 26,
+            "wins": 34
+          },
+          "runDifferential": 29,
+          "runDifferentialRank": 3,
+          "teamId": "1851052",
+          "teamName": "Aquarium Drinkers"
+        }
+      },
+      "matchupAssessment": {
+        "comparison": null,
+        "leagueComparison": {
+          "deltaConvention": "TEAM_MINUS_OPPONENT_FOR_METRICS",
+          "eraDelta": -0.29,
+          "fieldingAverageDelta": -0.007,
+          "opsDelta": 0.041,
+          "rankAdvantageConvention": "POSITIVE_MEANS_TEAM_RANKS_BETTER",
+          "rankAdvantages": {
+            "era": 2,
+            "fieldingAverage": -4,
+            "ops": 5,
+            "unearnedRunsAllowed": -7,
+            "unearnedRunsPerGame": -7,
+            "whip": 1
+          },
+          "runDifferentialDelta": -15.0,
+          "unearnedRunsPerGameDelta": 0.25,
+          "whipDelta": -0.02
+        },
+        "opponentName": "Arkinals™",
+        "opponentTeamId": "1853519",
+        "status": "LEAGUE_COMPARISON_AVAILABLE"
+      },
+      "sampleGovernance": {
+        "classification": "SHORT_SAMPLE_CONTEXT",
+        "leagueIntelligenceClassification": "SEASON_TO_DATE_LEAGUE_CONTEXT",
+        "leagueIntelligencePolicy": "League-relative season evidence may support matchup assessment but does not substitute for player-card, probable-starter, or bullpen-availability evidence.",
+        "policy": "Recent-series signals may identify watch items and questions. They are not stable rates or standalone managerial recommendations.",
+        "recentSeriesGameCount": 0
+      }
+    },
+    "snapshotClassification": "HISTORICAL_RECONSTRUCTION_NOT_CERTIFIED",
+    "status": "PARTIAL",
+    "warning": "Core evidence predates the scheduled series, but the complete current Series Engine payload cannot be certified as the view BIE possessed before Game 1. It must not be used as an immutable historical preview."
+  },
+  "replay": {
+    "games": [
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 1,
+        "scheduleGameNumber": 64
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 2,
+        "scheduleGameNumber": 65
+      },
+      {
+        "evidenceStatus": "NOT_CAPTURED",
+        "gameId": null,
+        "ordinal": 3,
+        "scheduleGameNumber": 66
+      }
+    ],
+    "status": "NOT_CAPTURED"
+  },
+  "review": {
+    "artifact": null,
+    "status": "NOT_CAPTURED"
+  },
+  "schemaVersion": "bie.strat365.series-artifact.v1",
+  "seriesIdentity": {
+    "gameCount": 3,
+    "homeAway": "AWAY",
+    "leagueId": "479336",
+    "opponentDisplayName": "Busch League Arkinals™",
+    "opponentTeamId": "1853519",
+    "scheduleGameNumbers": [
+      64,
+      65,
+      66
+    ],
+    "scheduledDate": "2026-08-11",
+    "seriesId": "league-479336-team-1851052-games-64-65-66",
+    "teamId": "1851052"
+  }
+}
