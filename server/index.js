@@ -816,6 +816,25 @@ function parseStratStandings(html) {
   }));
 }
 
+app.get("/api/strat/active-teams", (req, res) => {
+  try {
+    const aggregateFile =
+      "data/baseball/state/strat365/active-teams-v0/active-team-aggregate-v0.json";
+
+    const raw = fs.readFileSync(aggregateFile, "utf8");
+    const payload = JSON.parse(raw);
+
+    res.json(payload);
+  } catch (error) {
+    console.error("Failed to read BIE active-team aggregate:", error);
+
+    res.status(error?.code === "ENOENT" ? 404 : 500).json({
+      error: "BIE active-team aggregate unavailable",
+      detail: error?.message ?? String(error),
+    });
+  }
+});
+
 app.get(
   "/api/strat/league/:leagueId/standings",
   async (req, res) => {
