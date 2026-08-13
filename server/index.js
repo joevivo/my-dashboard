@@ -163,6 +163,16 @@ function buildFamilyMetrics(family, runArtistQuery) {
   return metrics;
 }
 const app = express();
+import {
+  SeriesReplayError,
+  loadCanonicalSeriesArtifact,
+  writeCanonicalSeriesArtifact,
+  redactSeriesForClient,
+  transitionCaptureState,
+  transitionRevealState,
+  transitionReviewState,
+} from "./strat-series-replay.js";
+
 const PORT = 4000;
 const parser = new Parser();
 const FEEDS_FILE = path.join(__dirname, "rss-feeds.json");
@@ -835,77 +845,148 @@ app.get("/api/strat/active-teams", (req, res) => {
   }
 });
 
+const BIE_REPO_ROOT = path.join(__dirname, "..");
+
+function sendBieSeriesError(res, error) {
+  if (error instanceof SeriesReplayError) {
+    return res.status(error.statusCode).json({
+      error: error.message,
+    });
+  }
+
+  console.error(
+    "BIE series replay API failure:",
+    error
+  );
+
+  return res.status(
+    error?.code === "ENOENT" ? 404 : 500
+  ).json({
+    error: "BIE series artifact operation failed",
+    detail: error?.message ?? String(error),
+  });
+}
+
+function loadBieSeriesFromRequest(req) {
+  const { leagueId, teamId, seriesId } =
+    req.params;
+
+  return loadCanonicalSeriesArtifact(
+    BIE_REPO_ROOT,
+    leagueId,
+    teamId,
+    seriesId
+  );
+}
+
 app.get(
   "/api/strat/league/:leagueId/team/:teamId/series/:seriesId",
   (req, res) => {
     try {
-      const { leagueId, teamId, seriesId } = req.params;
+      const { payload } =
+        loadBieSeriesFromRequest(req);
 
-      if (!/^\d+$/.test(leagueId)) {
-        return res.status(400).json({
-          error: "Invalid league ID",
-        });
-      }
-
-      if (!/^\d+$/.test(teamId)) {
-        return res.status(400).json({
-          error: "Invalid team ID",
-        });
-      }
-
-      const seriesMatch = seriesId.match(
-        /^league-(\d+)-team-(\d+)-games-(\d+(?:-\d+)*)$/
+      return res.json(
+        redactSeriesForClient(payload)
       );
-
-      if (!seriesMatch) {
-        return res.status(400).json({
-          error: "Invalid BIE series ID",
-        });
-      }
-
-      const [, seriesLeagueId, seriesTeamId] = seriesMatch;
-
-      if (
-        seriesLeagueId !== leagueId ||
-        seriesTeamId !== teamId
-      ) {
-        return res.status(400).json({
-          error: "Series ID does not match route identity",
-        });
-      }
-
-      const seriesFile =
-        `data/baseball/state/strat365/series-v1/` +
-        `league-${leagueId}/team-${teamId}/` +
-        `${seriesId}/series-v1.json`;
-
-      const raw = fs.readFileSync(seriesFile, "utf8");
-      const payload = JSON.parse(raw);
-
-      const identity = payload?.seriesIdentity;
-
-      if (
-        !identity ||
-        String(identity.seriesId) !== seriesId ||
-        String(identity.leagueId) !== leagueId ||
-        String(identity.teamId) !== teamId
-      ) {
-        return res.status(409).json({
-          error: "Persisted BIE series identity mismatch",
-        });
-      }
-
-      res.json(payload);
     } catch (error) {
-      console.error(
-        "Failed to read canonical BIE series artifact:",
+      return sendBieSeriesError(
+        res,
         error
       );
+    }
+  }
+);
 
-      res.status(error?.code === "ENOENT" ? 404 : 500).json({
-        error: "BIE series artifact unavailable",
-        detail: error?.message ?? String(error),
-      });
+app.post(
+  "/api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/capture-state",
+  (req, res) => {
+    try {
+      const { seriesFile, payload } =
+        loadBieSeriesFromRequest(req);
+
+      const updated =
+        transitionCaptureState(
+          payload,
+          req.params.ordinal,
+          req.body || {}
+        );
+
+      writeCanonicalSeriesArtifact(
+        seriesFile,
+        updated
+      );
+
+      return res.json(
+        redactSeriesForClient(updated)
+      );
+    } catch (error) {
+      return sendBieSeriesError(
+        res,
+        error
+      );
+    }
+  }
+);
+
+app.post(
+  "/api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/reveal-state",
+  (req, res) => {
+    try {
+      const { seriesFile, payload } =
+        loadBieSeriesFromRequest(req);
+
+      const updated =
+        transitionRevealState(
+          payload,
+          req.params.ordinal,
+          req.body || {}
+        );
+
+      writeCanonicalSeriesArtifact(
+        seriesFile,
+        updated
+      );
+
+      return res.json(
+        redactSeriesForClient(updated)
+      );
+    } catch (error) {
+      return sendBieSeriesError(
+        res,
+        error
+      );
+    }
+  }
+);
+
+app.post(
+  "/api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/review-state",
+  (req, res) => {
+    try {
+      const { seriesFile, payload } =
+        loadBieSeriesFromRequest(req);
+
+      const updated =
+        transitionReviewState(
+          payload,
+          req.params.ordinal,
+          req.body || {}
+        );
+
+      writeCanonicalSeriesArtifact(
+        seriesFile,
+        updated
+      );
+
+      return res.json(
+        redactSeriesForClient(updated)
+      );
+    } catch (error) {
+      return sendBieSeriesError(
+        res,
+        error
+      );
     }
   }
 );

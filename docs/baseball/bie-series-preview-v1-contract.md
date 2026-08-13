@@ -769,6 +769,24 @@ event or inning boundary explicitly reached by the user. The final score,
 winner, updated record, and postgame assessment become eligible only after the
 final event has been deliberately revealed.
 
+### Replay state transition API
+
+The local BIE service exposes state-transition operations beneath the durable
+series route:
+
+- `POST /api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/capture-state`
+- `POST /api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/reveal-state`
+- `POST /api/strat/league/:leagueId/team/:teamId/series/:seriesId/games/:ordinal/review-state`
+
+Capture-state transitions are system-owned and may advance independently of
+user reveal state. Reveal-state transitions enforce strict series order.
+Review-state transitions cannot complete before the corresponding game has
+been deliberately revealed.
+
+Every transition response passes through the same server-side spoiler
+redaction used by the canonical series GET endpoint. Persistence of a
+transition must not mutate `preSeriesSnapshot`.
+
 Game identity must not require changing the parent series route.
 
 ### Review and learning identity
