@@ -460,23 +460,349 @@ export default function SeriesPreview({
         </p>
 
         <div className="grid gap-3 md:grid-cols-2">
-          <GatedModule
-            title="Pitching Matchup"
-            detail="Probable starters, bullpen availability, and workload remain evidence gated until captured."
-          />
-          <GatedModule
-            title="Lineup Matchups"
-            detail="Projected lineups, platoon edges, and card-split matchups remain evidence gated."
-          />
-          <GatedModule
-            title="Availability & Environment"
-            status="NOT_CAPTURED"
-            detail="Injuries, roster constraints, and park effects are not yet captured in the canonical series artifact."
-          />
-          <GatedModule
-            title="Manager's Notebook"
-            detail="Managerial recommendations will appear only when they are traceable to supporting evidence."
-          />
+          {payload?.pitchingMatchup?.status === "CURRENT_PROJECTED" ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Pitching Matchup
+                </p>
+                <Pill status="PROJECTED">
+                  BIE projected
+                </Pill>
+              </div>
+
+              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                BIE rotation projection based on observed starter sequencing.
+                These are not published probable starters.
+              </p>
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                {[
+                  payload.pitchingMatchup.team,
+                  payload.pitchingMatchup.opponent,
+                ].map((side) => (
+                  <div
+                    key={side.role}
+                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-black text-slate-900 dark:text-white">
+                        {side.displayName}
+                      </p>
+
+                      <Pill status={side.overallConfidence}>
+                        {side.overallConfidence} confidence
+                      </Pill>
+                    </div>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Last starter: {side.currentLastStarter || "Unknown"}
+                      {" / "}
+                      {side.startHistoryCount ?? 0} starts observed
+                    </p>
+
+                    <div className="mt-3 space-y-2">
+                      {(side.projections || []).map((projection) => {
+                        const scheduleGameNumber =
+                          identity.scheduleGameNumbers?.[
+                            projection.slot - 1
+                          ] ?? projection.slot;
+
+                        return (
+                          <div
+                            key={`${side.role}-${projection.slot}`}
+                            className="rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
+                          >
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                                  Game {scheduleGameNumber}
+                                </p>
+
+                                <p className="mt-0.5 text-sm font-black text-slate-800 dark:text-slate-100">
+                                  {projection.pitcher}
+                                </p>
+                              </div>
+
+                              <Pill status={projection.effectiveConfidence}>
+                                {projection.effectiveConfidence}
+                              </Pill>
+                            </div>
+
+                            <p className="mt-1 text-[11px] leading-4 text-slate-400">
+                              {projection.transitionSamples} transition samples
+                              {" / "}
+                              dominance{" "}
+                              {Number(projection.dominance).toFixed(2)}
+                              {projection.conditional
+                                ? " / conditional sequence"
+                                : ""}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <GatedModule
+              title="Pitching Matchup"
+              detail="Probable starters, bullpen availability, and workload remain evidence gated until captured."
+            />
+          )}
+          {payload?.lineupMatchups?.status === "CURRENT_OFFENSIVE_PROFILE" ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Lineup Matchups
+                </p>
+
+                <Pill status="CURRENT">
+                  Current offensive profile
+                </Pill>
+              </div>
+
+              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                Top current offensive threats by OPS, minimum 100 AB.
+                This is not a projected batting order. Batting hand and card
+                balance are shown as evidence; platoon edges remain unresolved.
+              </p>
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                {[
+                  payload.lineupMatchups.team,
+                  payload.lineupMatchups.opponent,
+                ].map((side) => (
+                  <div
+                    key={side.role}
+                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                  >
+                    <p className="font-black text-slate-900 dark:text-white">
+                      {side.displayName}
+                    </p>
+
+                    <div className="mt-3 space-y-2">
+                      {(side.threats || []).map((player, index) => (
+                        <div
+                          key={`${side.role}-${player.name}`}
+                          className="rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                                Threat {index + 1}
+                              </p>
+
+                              <p className="mt-0.5 text-sm font-black text-slate-800 dark:text-slate-100">
+                                {player.name}
+                              </p>
+
+                              <p className="mt-0.5 text-[11px] text-slate-400">
+                                {player.position || "N/A"}
+                                {" / "}
+                                Bats {player.bats || "N/A"}
+                                {" / "}
+                                Balance {player.balance || "N/A"}
+                                {" / "}
+                                {player.ab} AB
+                              </p>
+                            </div>
+
+                            <div className="text-right">
+                              <p className="text-sm font-black text-slate-900 dark:text-white">
+                                OPS {Number(player.ops).toFixed(3)}
+                              </p>
+
+                              <p className="mt-0.5 text-[11px] text-slate-400">
+                                {Number(player.ba).toFixed(3)}
+                                {" / "}
+                                {Number(player.obp).toFixed(3)}
+                                {" / "}
+                                {Number(player.slg).toFixed(3)}
+                              </p>
+
+                              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-400">
+                                BA / OBP / SLG
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <GatedModule
+              title="Lineup Matchups"
+              detail="Projected lineups, platoon edges, and card-split matchups remain evidence gated."
+            />
+          )}
+          {payload?.availabilityEnvironment?.status === "CURRENT_PARTIAL" ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Availability & Environment
+                </p>
+
+                <Pill status="CURRENT">
+                  Current partial
+                </Pill>
+              </div>
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-3">
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                    Series Environment
+                  </p>
+
+                  <p className="mt-1 text-base font-black text-slate-900 dark:text-white">
+                    {payload.availabilityEnvironment.series.ballpark}
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {payload.availabilityEnvironment.series.homeAway} series
+                  </p>
+
+                  <p className="mt-2 text-[11px] leading-4 text-slate-400">
+                    Park identity is captured. Park-factor effects remain unresolved.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                    Aquarium Roster State
+                  </p>
+
+                  <p className="mt-1 text-base font-black text-slate-900 dark:text-white">
+                    {payload.availabilityEnvironment.team.record}
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {payload.availabilityEnvironment.team.hitterCount} hitters
+                    {" / "}
+                    {payload.availabilityEnvironment.team.pitcherCount} pitchers
+                  </p>
+
+                  <p className="mt-2 text-[11px] leading-4 text-slate-400">
+                    Roster value {payload.availabilityEnvironment.team.rosterValue}
+                    {" / "}
+                    Cash {payload.availabilityEnvironment.team.cashAvailable}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                    Opponent Roster State
+                  </p>
+
+                  <p className="mt-1 text-base font-black text-slate-900 dark:text-white">
+                    {payload.availabilityEnvironment.opponent.record}
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {payload.availabilityEnvironment.opponent.hitterCount} hitters
+                    {" / "}
+                    {payload.availabilityEnvironment.opponent.pitcherCount} pitchers
+                  </p>
+
+                  <p className="mt-2 text-[11px] leading-4 text-slate-400">
+                    Roster value {payload.availabilityEnvironment.opponent.rosterValue}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Live injury-page check
+                  </p>
+
+                  <Pill status={
+                    payload.availabilityEnvironment.injuries.relevantRowCount > 0
+                      ? "CURRENT"
+                      : "CLEAR"
+                  }>
+                    {payload.availabilityEnvironment.injuries.relevantRowCount > 0
+                      ? `${payload.availabilityEnvironment.injuries.relevantRowCount} relevant row(s)`
+                      : "No relevant rows found"}
+                  </Pill>
+                </div>
+
+                <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                  {payload.availabilityEnvironment.injuries.note}
+                </p>
+              </div>
+
+              <p className="mt-3 text-[11px] leading-4 text-slate-400">
+                Recent transaction implications and quantified park effects remain evidence gated.
+              </p>
+            </div>
+          ) : (
+            <GatedModule
+              title="Availability & Environment"
+              status="NOT_CAPTURED"
+              detail="Injuries, roster constraints, and park effects are not yet captured in the canonical series artifact."
+            />
+          )}
+          {payload?.managerNotebook?.status === "CURRENT_EVIDENCE_BASED" ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Manager's Notebook
+                </p>
+
+                <Pill status="CURRENT">
+                  Evidence based
+                </Pill>
+              </div>
+
+              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                {payload.managerNotebook.note}
+              </p>
+
+              <div className="mt-4 space-y-3">
+                {(payload.managerNotebook.items || []).map((item) => (
+                  <div
+                    key={item.priority}
+                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                          Priority {item.priority}
+                        </p>
+
+                        <p className="mt-1 text-sm font-black text-slate-900 dark:text-white">
+                          {item.title}
+                        </p>
+                      </div>
+
+                      <Pill status={item.confidence}>
+                        {item.confidence}
+                      </Pill>
+                    </div>
+
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      {item.recommendation}
+                    </p>
+
+                    <p className="mt-2 text-[11px] leading-4 text-slate-400">
+                      Evidence: {item.evidence}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <GatedModule
+              title="Manager's Notebook"
+              detail="Managerial recommendations will appear only when they are traceable to supporting evidence."
+            />
+          )}
         </div>
       </section>
 

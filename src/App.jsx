@@ -55,11 +55,6 @@ const ACTIVE_STRAT_TEAMS = [
     scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1851052",
     bie: {
       phase: "ACTIVE_SEASON",
-      opponentTeamId: "1853519",
-      nextOpponent: "Busch League Arkinals™",
-      nextSeriesDate: "Aug 11",
-      homeAway: "Away",
-      gameCount: 3,
     },
   },
   {
@@ -71,11 +66,6 @@ const ACTIVE_STRAT_TEAMS = [
     scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1853975",
     bie: {
       phase: "ACTIVE_SEASON",
-      opponentTeamId: "1854468",
-      nextOpponent: "Hey Jude",
-      nextSeriesDate: "Aug 11",
-      homeAway: "Home",
-      gameCount: 3,
     },
   },
   {
@@ -86,12 +76,7 @@ const ACTIVE_STRAT_TEAMS = [
     teamUrl: "https://365.strat-o-matic.com/team/1854215",
     scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1854215",
     bie: {
-      phase: "PRESEASON",
-      opponentTeamId: "1855876",
-      nextOpponent: "Georgia Peaches",
-      nextSeriesDate: "Aug 13",
-      homeAway: "Away",
-      gameCount: 3,
+      phase: "ACTIVE_SEASON",
     },
   },
 ];
@@ -414,11 +399,30 @@ export default function App() {
     }
   };
 
-  const refreshStratTeamAndOpponent = (team) => {
+  const refreshStratTeamAndOpponent = async (team) => {
     refreshStratTeam(team.teamId);
-    refreshStratTeam(team.bie.opponentTeamId);
-  };
 
+    const rotation =
+      await refreshStratRotation(
+        team.leagueId,
+        team.teamId
+      );
+
+    const opponentTeamId =
+      rotation?.currentSeries?.opponentTeamId ||
+      null;
+
+    if (opponentTeamId) {
+      refreshStratTeam(opponentTeamId);
+
+      refreshStratRotation(
+        team.leagueId,
+        opponentTeamId
+      );
+    }
+
+    return rotation;
+  };
   const refreshStratLeague = async (leagueId) => {
     setStratLeagueStatus((current) => ({
       ...current,
@@ -491,6 +495,8 @@ export default function App() {
         ...current,
         [key]: "ready",
       }));
+
+      return payload;
     } catch (error) {
       console.error(
         "Rotation projection refresh failed:",
@@ -503,40 +509,35 @@ export default function App() {
         ...current,
         [key]: "error",
       }));
+
+      return null;
     }
   };
-
   const refreshAllStratTeams = () => {
     ACTIVE_STRAT_TEAMS.forEach((team) => {
-      refreshStratTeamAndOpponent(team);
+      void refreshStratTeamAndOpponent(team);
       refreshStratLeague(team.leagueId);
-      refreshStratRotation(team.leagueId, team.teamId);
-      refreshStratRotation(
-        team.leagueId,
-        team.bie.opponentTeamId
-      );
     });
 
     setStratActionMessage(
-      "Refreshing current teams, opponents, and standings from Strat365."
+      "Refreshing current teams, opponents, schedules, rotations, and standings from Strat365."
     );
   };
+  const openSeriesPreview = async (team) => {
+    const rotation =
+      await refreshStratTeamAndOpponent(team);
 
-  const openSeriesPreview = (team) => {
-    refreshStratTeamAndOpponent(team);
-
-    const canonicalSeriesByTeamId = {
-      "1851052": "league-479336-team-1851052-games-64-65-66",
-      "1853975": "league-479431-team-1853975-games-37-38-39",
-      "1854215": "league-479610-team-1854215-games-1-2-3",
-    };
+    const currentSeries =
+      rotation?.currentSeries ||
+      null;
 
     const seriesId =
-      canonicalSeriesByTeamId[String(team.teamId)] || null;
+      currentSeries?.seriesId ||
+      null;
 
     if (!seriesId) {
       setStratActionMessage(
-        `${team.teamName} · League ${team.leagueId}: no canonical BIE Series Preview artifact is available.`
+        `${team.teamName} · League ${team.leagueId}: current BIE Series Preview is not yet resolved.`
       );
       return;
     }
@@ -546,28 +547,23 @@ export default function App() {
       teamId: String(team.teamId),
       seriesId,
       scheduleUrl: team.scheduleUrl,
-      opponentDisplayName: team.bie?.nextOpponent || null,
+      opponentDisplayName:
+        currentSeries?.opponentTeamName ||
+        null,
     });
 
     setActiveView("SeriesPreview");
 
     setStratActionMessage(
-      `${team.teamName} · League ${team.leagueId}: canonical BIE Series Preview opened.`
+      `${team.teamName} · League ${team.leagueId}: current BIE Series Preview opened.`
     );
   };
-
   useEffect(() => {
     ACTIVE_STRAT_TEAMS.forEach((team) => {
-      refreshStratTeamAndOpponent(team);
+      void refreshStratTeamAndOpponent(team);
       refreshStratLeague(team.leagueId);
-      refreshStratRotation(team.leagueId, team.teamId);
-      refreshStratRotation(
-        team.leagueId,
-        team.bie.opponentTeamId
-      );
     });
   }, []);
-
   const navSections = [
     {
       title: "Operations",
@@ -717,10 +713,30 @@ export default function App() {
           const liveStatus =
             stratTeamStatus[team.teamId] || "loading";
 
+          const currentSeries =
+            stratRotationData[
+              `${team.leagueId}:${team.teamId}`
+            ]?.currentSeries || null;
+
+          const currentOpponentTeamId =
+            currentSeries?.opponentTeamId || null;
+
+          const currentOpponentName =
+            currentSeries?.opponentTeamName || "Resolving...";
+
+          const currentSeriesDate =
+            currentSeries?.nextSeriesDate || "Resolving...";
+
+          const currentGameCount =
+            currentSeries?.gameCount ?? null;
+
+          const currentHomeAway =
+            currentSeries?.homeAway || "—";
+
           const opponentLive =
-            stratTeamData[team.bie.opponentTeamId];
+            currentOpponentTeamId ? stratTeamData[currentOpponentTeamId] : null;
           const opponentStatus =
-            stratTeamStatus[team.bie.opponentTeamId] || "loading";
+            currentOpponentTeamId ? stratTeamStatus[currentOpponentTeamId] || "loading" : "loading";
 
           const league =
             stratLeagueData[team.leagueId];
@@ -738,24 +754,24 @@ export default function App() {
           const opponentStanding =
             standings.find(
               (row) =>
-                row.teamId === team.bie.opponentTeamId
+                row.teamId === currentOpponentTeamId
             );
 
           const isPreseason =
             team.bie.phase === "PRESEASON";
 
           const seriesBallpark =
-            team.bie.homeAway === "Away"
+            currentHomeAway === "Away"
               ? opponentLive?.homeBallpark
               : live?.homeBallpark;
 
           const teamVenueRecord =
-            team.bie.homeAway === "Away"
+            currentHomeAway === "Away"
               ? teamStanding?.roadRecord
               : teamStanding?.homeRecord;
 
           const opponentVenueRecord =
-            team.bie.homeAway === "Away"
+            currentHomeAway === "Away"
               ? opponentStanding?.homeRecord
               : opponentStanding?.roadRecord;
 
@@ -763,7 +779,7 @@ export default function App() {
             `${team.leagueId}:${team.teamId}`;
 
           const opponentRotationKey =
-            `${team.leagueId}:${team.bie.opponentTeamId}`;
+            currentOpponentTeamId ? `${team.leagueId}:${currentOpponentTeamId}` : null;
 
           const teamRotation =
             stratRotationData[teamRotationKey];
@@ -791,7 +807,7 @@ export default function App() {
 
           const seriesRead = buildSeriesRead({
             isPreseason,
-            homeAway: team.bie.homeAway,
+            homeAway: currentHomeAway,
             teamStanding,
             opponentStanding,
           });
@@ -928,11 +944,11 @@ export default function App() {
                 </p>
 
                 <p className="mt-2 text-xl font-black">
-                  {team.bie.homeAway} · {team.bie.nextOpponent}
+                  {currentHomeAway} · {currentOpponentName}
                 </p>
 
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  {team.bie.nextSeriesDate} · {team.bie.gameCount} games
+                  {currentSeriesDate} · {currentGameCount ?? "—"} games
                 </p>
 
                 <div className="mt-4 grid grid-cols-3 gap-3">
@@ -1022,8 +1038,8 @@ export default function App() {
                       {isPreseason
                         ? "—"
                         : teamVenueRecord && opponentVenueRecord
-                          ? `${team.bie.homeAway} ${teamVenueRecord} · Opp ${
-                              team.bie.homeAway === "Away"
+                          ? `${currentHomeAway} ${teamVenueRecord} · Opp ${
+                              currentHomeAway === "Away"
                                 ? "Home"
                                 : "Road"
                             } ${opponentVenueRecord}`
@@ -1113,7 +1129,7 @@ export default function App() {
                       <div className="mt-3 space-y-2">
                         {[
                           ["Aquarium", teamRotation],
-                          [team.bie.nextOpponent, opponentRotation],
+                          [currentOpponentName, opponentRotation],
                         ].map(([label, rotation]) => {
                           const projections =
                             rotation?.projections?.slice(0, 3) || [];

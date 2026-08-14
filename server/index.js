@@ -1193,6 +1193,254 @@ function lowestRotationConfidence(values) {
   );
 }
 
+function decodeStratScheduleText(value) {
+  return String(value ?? "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&trade;/gi, "™")
+    .replace(
+      /&#x([0-9a-f]+);/gi,
+      (_, value) =>
+        String.fromCodePoint(
+          Number.parseInt(value, 16)
+        )
+    )
+    .replace(
+      /&#(\d+);/g,
+      (_, value) =>
+        String.fromCodePoint(
+          Number.parseInt(value, 10)
+        )
+    );
+}
+
+function stripStratScheduleHtml(value) {
+  return decodeStratScheduleText(
+    String(value ?? "")
+      .replace(/<br\s*\/?>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function parseStratUpcomingSeries(
+  html,
+  leagueId,
+  subjectTeamId
+) {
+  const source = String(html ?? "");
+  const rows = [];
+
+  for (
+    const match of source.matchAll(
+      /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi
+    )
+  ) {
+    const rowHtml = match[1];
+
+    const gameCell =
+      rowHtml.match(
+        /<td\b[^>]*name=["']gamenum["'][^>]*>([\s\S]*?)<\/td>/i
+      );
+
+    if (!gameCell) {
+      continue;
+    }
+
+    const gameText =
+      stripStratScheduleHtml(
+        gameCell[1]
+      );
+
+    const gameMatch =
+      gameText.match(/\d+/);
+
+    if (!gameMatch) {
+      continue;
+    }
+
+    const scheduleGameNumber =
+      Number(gameMatch[0]);
+
+    const opponentCell =
+      rowHtml.match(
+        /<td\b[^>]*name=["']opp["'][^>]*>([\s\S]*?)<\/td>/i
+      );
+
+    if (!opponentCell) {
+      continue;
+    }
+
+    const opponentLink =
+      opponentCell[1].match(
+        /<a\b[^>]*href=["']\/team\/(\d+)["'][^>]*>([\s\S]*?)<\/a>/i
+      );
+
+    if (!opponentLink) {
+      continue;
+    }
+
+    const opponentTeamId =
+      String(opponentLink[1]);
+
+    if (
+      opponentTeamId ===
+      String(subjectTeamId)
+    ) {
+      continue;
+    }
+
+    const opponentTeamName =
+      stripStratScheduleHtml(
+        opponentLink[2]
+      );
+
+    const opponentText =
+      stripStratScheduleHtml(
+        opponentCell[1]
+      );
+
+    const homeAway =
+      opponentText
+        .trim()
+        .startsWith("@")
+        ? "Away"
+        : "Home";
+
+    const dateCell =
+      rowHtml.match(
+        /<td\b[^>]*name=["']date["'][^>]*>([\s\S]*?)<\/td>/i
+      );
+
+    const date =
+      dateCell
+        ? stripStratScheduleHtml(
+            dateCell[1]
+          )
+        : null;
+
+    const completed =
+      new RegExp(
+        `/game/${leagueId}/\\d+`,
+        "i"
+      ).test(rowHtml);
+
+    rows.push({
+      scheduleGameNumber,
+      opponentTeamId,
+      opponentTeamName,
+      date,
+      homeAway,
+      completed,
+    });
+  }
+
+  rows.sort(
+    (left, right) =>
+      left.scheduleGameNumber -
+      right.scheduleGameNumber
+  );
+
+  const completedNumbers =
+    rows
+      .filter(
+        (row) => row.completed
+      )
+      .map(
+        (row) =>
+          row.scheduleGameNumber
+      );
+
+  const lastCompletedGameNumber =
+    completedNumbers.length
+      ? Math.max(
+          ...completedNumbers
+        )
+      : 0;
+
+  const futureRows =
+    rows.filter(
+      (row) =>
+        row.scheduleGameNumber >
+        lastCompletedGameNumber
+    );
+
+  if (!futureRows.length) {
+    return {
+      status: "NOT_FOUND",
+      opponentTeamId: null,
+      opponentTeamName: null,
+      scheduleGameNumbers: [],
+      gameCount: 0,
+      nextSeriesDate: null,
+      ballpark: null,
+      probableStarters: [],
+      seriesId: null,
+      lastCompletedGameNumber,
+    };
+  }
+
+  const first =
+    futureRows[0];
+
+  const seriesRows =
+    futureRows
+      .filter(
+        (row) =>
+          row.opponentTeamId ===
+            first.opponentTeamId &&
+          row.scheduleGameNumber >=
+            first.scheduleGameNumber &&
+          row.scheduleGameNumber <=
+            first.scheduleGameNumber + 2
+      )
+      .slice(0, 3);
+
+  const scheduleGameNumbers =
+    seriesRows.map(
+      (row) =>
+        row.scheduleGameNumber
+    );
+
+  return {
+    status:
+      scheduleGameNumbers.length
+        ? "FOUND"
+        : "NOT_FOUND",
+
+    opponentTeamId:
+      first.opponentTeamId,
+
+    opponentTeamName:
+      first.opponentTeamName,
+
+    homeAway:
+      first.homeAway,
+
+    scheduleGameNumbers,
+
+    gameCount:
+      scheduleGameNumbers.length,
+
+    nextSeriesDate:
+      first.date,
+
+    ballpark: null,
+
+    probableStarters: [],
+
+    seriesId:
+      scheduleGameNumbers.length
+        ? `league-${leagueId}-team-${subjectTeamId}-games-${scheduleGameNumbers.join("-")}`
+        : null,
+
+    lastCompletedGameNumber,
+  };
+}
+
 function buildStratRotationProjection(
   chronologicalStarters
 ) {
@@ -1374,6 +1622,14 @@ app.get(
       const scheduleHtml =
         await scheduleResponse.text();
 
+
+      const currentSeries =
+        parseStratUpcomingSeries(
+          scheduleHtml,
+          leagueId,
+          teamId
+        );
+
       const recentGameIds =
         extractStratScheduleGameIds(
           scheduleHtml,
@@ -1430,8 +1686,8 @@ app.get(
           : "NONE";
 
       const payload = {
-        schema:
-          "bie.strat365.rotation-projection.v0",
+        schema: "bie.strat365.rotation-projection.v0",
+        currentSeries,
         source: {
           league: leagueUrl,
           schedule: scheduleUrl,

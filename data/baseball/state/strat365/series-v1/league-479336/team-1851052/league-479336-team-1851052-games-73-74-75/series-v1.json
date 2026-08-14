@@ -1,0 +1,774 @@
+{
+    "evidence":  {
+                     "status":  "PARTIAL_CURRENT",
+                     "sources":  [
+                                     "live-current-series",
+                                     "live-team-rotation",
+                                     "live-opponent-rotation",
+                                     "live-standings"
+                                 ]
+                 },
+    "generatedAtUtc":  "2026-08-14T14:47:41.5324594Z",
+    "learning":  {
+                     "status":  "NOT_AVAILABLE",
+                     "artifact":  null
+                 },
+    "lifecycle":  {
+                      "completedGameCount":  0,
+                      "learningAvailable":  false,
+                      "previewAvailable":  true,
+                      "replayAvailable":  false,
+                      "reviewAvailable":  false,
+                      "stage":  "PRE_SERIES"
+                  },
+    "preSeriesSnapshot":  {
+                              "certifiedPreSeries":  false,
+                              "frozenAtUtc":  "2026-08-14T13:36:39.6173340Z",
+                              "missingEvidence":  [
+                                                      "Full current-series analytical rebuild pending."
+                                                  ],
+                              "payload":  {
+                                              "schema":  "bie.strat365.series-engine.v0",
+                                              "team":  {
+                                                           "leagueDate":  "Fri, 8/14",
+                                                           "leagueId":  "479336",
+                                                           "season":  "1968",
+                                                           "teamName":  "Aquarium Drinkers"
+                                                       },
+                                              "upcomingSeries":  {
+                                                                     "status":  "CURRENT",
+                                                                     "gameCount":  3,
+                                                                     "homeAway":  "Home",
+                                                                     "opponentDisplayName":  "Hogs",
+                                                                     "opponentTeamId":  "1853534",
+                                                                     "scheduleGameNumbers":  [
+                                                                                                 73,
+                                                                                                 74,
+                                                                                                 75
+                                                                                             ],
+                                                                     "scheduledDate":  "Fri, 8/14"
+                                                                 },
+                                              "executiveOutlook":  {
+                                                                       "status":  "LIMITED_CURRENT_PREVIEW",
+                                                                       "classification":  "CURRENT_SERIES_RESOLVED",
+                                                                       "classificationScore":  null,
+                                                                       "confidence":  "HIGH_IDENTITY_LIMITED_ANALYSIS",
+                                                                       "edge":  null,
+                                                                       "hot":  [
+
+                                                                               ],
+                                                                       "watch":  [
+
+                                                                                 ],
+                                                                       "missingEvidence":  [
+                                                                                               "Full current-series intelligence packet has not yet been regenerated."
+                                                                                           ],
+                                                                       "evidenceBasis":  [
+                                                                                             "Live team schedule",
+                                                                                             "Live BIE rotation projection",
+                                                                                             "Live league standings endpoint"
+                                                                                         ],
+                                                                       "synopsis":  "Aquarium Drinkers host Hogs for Games 73-74-75 on Fri, 8/14. Current series identity is live; deeper matchup intelligence remains to be rebuilt."
+                                                                   },
+                                              "leagueContext":  {
+                                                                    "status":  "CURRENT",
+                                                                    "standings":  {
+                                                                                      "source":  "https://365.strat-o-matic.com/league/479336",
+                                                                                      "importedAt":  "2026-08-14T13:36:39.548Z",
+                                                                                      "leagueId":  "479336",
+                                                                                      "teamCount":  12,
+                                                                                      "standings":  [
+                                                                                                        {
+                                                                                                            "teamId":  "1851052",
+                                                                                                            "teamName":  "Aquarium Drinkers tr --\u003e",
+                                                                                                            "owner":  "JoeGinto",
+                                                                                                            "division":  "East",
+                                                                                                            "divisionRank":  1,
+                                                                                                            "wins":  "41",
+                                                                                                            "losses":  "31",
+                                                                                                            "pct":  ".569",
+                                                                                                            "gamesBehind":  "-",
+                                                                                                            "last10":  "7-3",
+                                                                                                            "streak":  "W1",
+                                                                                                            "homeRecord":  "22-11",
+                                                                                                            "roadRecord":  "19-20",
+                                                                                                            "vsLeft":  "11-8",
+                                                                                                            "vsRight":  "30-23",
+                                                                                                            "runsScored":  "253",
+                                                                                                            "runsAllowed":  "236",
+                                                                                                            "runDifferential":  "+17",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853550",
+                                                                                                            "teamName":  "Boquete Bombers tr --\u003e",
+                                                                                                            "owner":  "SteveWeiss",
+                                                                                                            "division":  "East",
+                                                                                                            "divisionRank":  2,
+                                                                                                            "wins":  "37",
+                                                                                                            "losses":  "35",
+                                                                                                            "pct":  ".514",
+                                                                                                            "gamesBehind":  "4",
+                                                                                                            "last10":  "3-7",
+                                                                                                            "streak":  "W2",
+                                                                                                            "homeRecord":  "24-15",
+                                                                                                            "roadRecord":  "13-20",
+                                                                                                            "vsLeft":  "8-7",
+                                                                                                            "vsRight":  "29-28",
+                                                                                                            "runsScored":  "281",
+                                                                                                            "runsAllowed":  "261",
+                                                                                                            "runDifferential":  "+20",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853594",
+                                                                                                            "teamName":  "Funk Brothers tr --\u003e",
+                                                                                                            "owner":  "John Unrein",
+                                                                                                            "division":  "East",
+                                                                                                            "divisionRank":  3,
+                                                                                                            "wins":  "31",
+                                                                                                            "losses":  "41",
+                                                                                                            "pct":  ".431",
+                                                                                                            "gamesBehind":  "10",
+                                                                                                            "last10":  "2-8",
+                                                                                                            "streak":  "L3",
+                                                                                                            "homeRecord":  "17-19",
+                                                                                                            "roadRecord":  "14-22",
+                                                                                                            "vsLeft":  "4-9",
+                                                                                                            "vsRight":  "27-32",
+                                                                                                            "runsScored":  "242",
+                                                                                                            "runsAllowed":  "293",
+                                                                                                            "runDifferential":  "-51",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853667",
+                                                                                                            "teamName":  "Fresno Raisin Eaters tr --\u003e",
+                                                                                                            "owner":  "rmmbaseball",
+                                                                                                            "division":  "East",
+                                                                                                            "divisionRank":  4,
+                                                                                                            "wins":  "28",
+                                                                                                            "losses":  "44",
+                                                                                                            "pct":  ".389",
+                                                                                                            "gamesBehind":  "13",
+                                                                                                            "last10":  "2-8",
+                                                                                                            "streak":  "W1",
+                                                                                                            "homeRecord":  "13-20",
+                                                                                                            "roadRecord":  "15-24",
+                                                                                                            "vsLeft":  "6-13",
+                                                                                                            "vsRight":  "22-31",
+                                                                                                            "runsScored":  "223",
+                                                                                                            "runsAllowed":  "261",
+                                                                                                            "runDifferential":  "-38",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853674",
+                                                                                                            "teamName":  "RainRain 80\u0027s Mustache tr --\u003e",
+                                                                                                            "owner":  "Lambdaddy",
+                                                                                                            "division":  "Central",
+                                                                                                            "divisionRank":  1,
+                                                                                                            "wins":  "44",
+                                                                                                            "losses":  "28",
+                                                                                                            "pct":  ".611",
+                                                                                                            "gamesBehind":  "-",
+                                                                                                            "last10":  "7-3",
+                                                                                                            "streak":  "L1",
+                                                                                                            "homeRecord":  "23-13",
+                                                                                                            "roadRecord":  "21-15",
+                                                                                                            "vsLeft":  "11-6",
+                                                                                                            "vsRight":  "33-22",
+                                                                                                            "runsScored":  "296",
+                                                                                                            "runsAllowed":  "248",
+                                                                                                            "runDifferential":  "+48",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853519",
+                                                                                                            "teamName":  "Busch League ArkinalsÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ tr --\u003e",
+                                                                                                            "owner":  "divad",
+                                                                                                            "division":  "Central",
+                                                                                                            "divisionRank":  2,
+                                                                                                            "wins":  "40",
+                                                                                                            "losses":  "32",
+                                                                                                            "pct":  ".556",
+                                                                                                            "gamesBehind":  "4",
+                                                                                                            "last10":  "6-4",
+                                                                                                            "streak":  "W3",
+                                                                                                            "homeRecord":  "19-17",
+                                                                                                            "roadRecord":  "21-15",
+                                                                                                            "vsLeft":  "10-8",
+                                                                                                            "vsRight":  "30-24",
+                                                                                                            "runsScored":  "269",
+                                                                                                            "runsAllowed":  "216",
+                                                                                                            "runDifferential":  "+53",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853506",
+                                                                                                            "teamName":  "Norwich Not Flatlanders tr --\u003e",
+                                                                                                            "owner":  "rknorthvt",
+                                                                                                            "division":  "Central",
+                                                                                                            "divisionRank":  3,
+                                                                                                            "wins":  "36",
+                                                                                                            "losses":  "36",
+                                                                                                            "pct":  ".500",
+                                                                                                            "gamesBehind":  "8",
+                                                                                                            "last10":  "5-5",
+                                                                                                            "streak":  "L1",
+                                                                                                            "homeRecord":  "19-20",
+                                                                                                            "roadRecord":  "17-16",
+                                                                                                            "vsLeft":  "13-9",
+                                                                                                            "vsRight":  "23-27",
+                                                                                                            "runsScored":  "303",
+                                                                                                            "runsAllowed":  "299",
+                                                                                                            "runDifferential":  "+4",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853598",
+                                                                                                            "teamName":  "New York Highlanders tr --\u003e",
+                                                                                                            "owner":  "GDP",
+                                                                                                            "division":  "Central",
+                                                                                                            "divisionRank":  4,
+                                                                                                            "wins":  "33",
+                                                                                                            "losses":  "39",
+                                                                                                            "pct":  ".458",
+                                                                                                            "gamesBehind":  "11",
+                                                                                                            "last10":  "7-3",
+                                                                                                            "streak":  "L2",
+                                                                                                            "homeRecord":  "18-18",
+                                                                                                            "roadRecord":  "15-21",
+                                                                                                            "vsLeft":  "7-6",
+                                                                                                            "vsRight":  "26-33",
+                                                                                                            "runsScored":  "244",
+                                                                                                            "runsAllowed":  "277",
+                                                                                                            "runDifferential":  "-33",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853443",
+                                                                                                            "teamName":  "Mighty Yankees tr --\u003e",
+                                                                                                            "owner":  "maestro1",
+                                                                                                            "division":  "West",
+                                                                                                            "divisionRank":  1,
+                                                                                                            "wins":  "39",
+                                                                                                            "losses":  "33",
+                                                                                                            "pct":  ".542",
+                                                                                                            "gamesBehind":  "-",
+                                                                                                            "last10":  "6-4",
+                                                                                                            "streak":  "L1",
+                                                                                                            "homeRecord":  "19-14",
+                                                                                                            "roadRecord":  "20-19",
+                                                                                                            "vsLeft":  "12-11",
+                                                                                                            "vsRight":  "27-22",
+                                                                                                            "runsScored":  "264",
+                                                                                                            "runsAllowed":  "234",
+                                                                                                            "runDifferential":  "+30",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853540",
+                                                                                                            "teamName":  "Classic City Crazy Eights tr --\u003e",
+                                                                                                            "owner":  "the splinter",
+                                                                                                            "division":  "West",
+                                                                                                            "divisionRank":  2,
+                                                                                                            "wins":  "36",
+                                                                                                            "losses":  "36",
+                                                                                                            "pct":  ".500",
+                                                                                                            "gamesBehind":  "3",
+                                                                                                            "last10":  "6-4",
+                                                                                                            "streak":  "W1",
+                                                                                                            "homeRecord":  "18-18",
+                                                                                                            "roadRecord":  "18-18",
+                                                                                                            "vsLeft":  "7-7",
+                                                                                                            "vsRight":  "29-29",
+                                                                                                            "runsScored":  "259",
+                                                                                                            "runsAllowed":  "283",
+                                                                                                            "runDifferential":  "-24",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853382",
+                                                                                                            "teamName":  "Iowa bombers tr --\u003e",
+                                                                                                            "owner":  "cubjim",
+                                                                                                            "division":  "West",
+                                                                                                            "divisionRank":  3,
+                                                                                                            "wins":  "34",
+                                                                                                            "losses":  "38",
+                                                                                                            "pct":  ".472",
+                                                                                                            "gamesBehind":  "5",
+                                                                                                            "last10":  "5-5",
+                                                                                                            "streak":  "L1",
+                                                                                                            "homeRecord":  "19-20",
+                                                                                                            "roadRecord":  "15-18",
+                                                                                                            "vsLeft":  "9-11",
+                                                                                                            "vsRight":  "25-27",
+                                                                                                            "runsScored":  "251",
+                                                                                                            "runsAllowed":  "266",
+                                                                                                            "runDifferential":  "-15",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "teamId":  "1853534",
+                                                                                                            "teamName":  "Northside Hogs tr --\u003e",
+                                                                                                            "owner":  "Skaks22",
+                                                                                                            "division":  "West",
+                                                                                                            "divisionRank":  4,
+                                                                                                            "wins":  "33",
+                                                                                                            "losses":  "39",
+                                                                                                            "pct":  ".458",
+                                                                                                            "gamesBehind":  "6",
+                                                                                                            "last10":  "4-6",
+                                                                                                            "streak":  "W1",
+                                                                                                            "homeRecord":  "18-18",
+                                                                                                            "roadRecord":  "15-21",
+                                                                                                            "vsLeft":  "7-10",
+                                                                                                            "vsRight":  "26-29",
+                                                                                                            "runsScored":  "337",
+                                                                                                            "runsAllowed":  "348",
+                                                                                                            "runDifferential":  "-11",
+                                                                                                            "divisionTeamCount":  4
+                                                                                                        }
+                                                                                                    ]
+                                                                                  }
+                                                                },
+                                              "managerRecommendations":  {
+                                                                             "status":  "CURRENT_LIMITED",
+                                                                             "items":  [
+                                                                                           {
+                                                                                               "classification":  "CURRENT_SERIES",
+                                                                                               "recommendation":  "Prepare for Hogs in Games 73, 74, 75.",
+                                                                                               "evidence":  "Current team schedule resolved live by BIE."
+                                                                                           },
+                                                                                           {
+                                                                                               "classification":  "TEAM_ROTATION",
+                                                                                               "recommendation":  "Aquarium rotation projection is not available.",
+                                                                                               "evidence":  "BIE rotation projection endpoint."
+                                                                                           },
+                                                                                           {
+                                                                                               "classification":  "OPPONENT_ROTATION",
+                                                                                               "recommendation":  "Opponent rotation projection is not available.",
+                                                                                               "evidence":  "BIE rotation projection endpoint."
+                                                                                           }
+                                                                                       ],
+                                                                             "missingEvidence":  [
+                                                                                                     "Current hitter matchup-pressure analysis",
+                                                                                                     "Current bullpen leverage analysis"
+                                                                                                 ],
+                                                                             "note":  "This preview intentionally uses only current live evidence and does not recycle stale prior-series analysis."
+                                                                         },
+                                              "managerialWatchlist":  {
+                                                                          "status":  "NOT_YET_BUILT",
+                                                                          "items":  [
+
+                                                                                    ]
+                                                                      },
+                                              "matchupAssessment":  {
+                                                                        "status":  "CURRENT_LIMITED",
+                                                                        "opponentName":  "Hogs",
+                                                                        "opponentTeamId":  "1853534",
+                                                                        "comparison":  null,
+                                                                        "leagueComparison":  null
+                                                                    },
+                                              "playerIntelligence":  {
+                                                                         "status":  "NOT_YET_BUILT",
+                                                                         "items":  [
+
+                                                                                   ]
+                                                                     },
+                                              "previousSeries":  {
+                                                                     "status":  "NOT_INCLUDED"
+                                                                 },
+                                              "recentOpponentSignals":  {
+                                                                            "status":  "NOT_YET_BUILT",
+                                                                            "items":  [
+
+                                                                                      ]
+                                                                        },
+                                              "recentTeamSignals":  {
+                                                                        "status":  "NOT_YET_BUILT",
+                                                                        "items":  [
+
+                                                                                  ]
+                                                                    },
+                                              "sampleGovernance":  {
+                                                                       "classification":  "SHORT_SAMPLE_CONTEXT",
+                                                                       "leagueIntelligenceClassification":  "SEASON_TO_DATE_LEAGUE_CONTEXT",
+                                                                       "leagueIntelligencePolicy":  "League-relative season evidence may support matchup assessment but does not substitute for player-card, probable-starter, or bullpen-availability evidence.",
+                                                                       "policy":  "Recent-series signals may identify watch items and questions. They are not stable rates or standalone managerial recommendations.",
+                                                                       "recentSeriesGameCount":  0
+                                                                   },
+                                              "sourceEvidence":  {
+                                                                     "status":  "CURRENT",
+                                                                     "generatedAtUtc":  "2026-08-14T13:36:39.6173340Z",
+                                                                     "sources":  [
+                                                                                     "http://localhost:4000/api/strat/league/479336/team/1851052/rotation",
+                                                                                     "http://localhost:4000/api/strat/league/479336/team/1853534/rotation",
+                                                                                     "http://localhost:4000/api/strat/league/479336/standings"
+                                                                                 ]
+                                                                 },
+                                              "pitchingMatchup":  {
+                                                                      "status":  "CURRENT_PROJECTED",
+                                                                      "evidenceClassification":  "BIE_ROTATION_PROJECTION",
+                                                                      "publishedProbableStarters":  false,
+                                                                      "note":  "BIE rotation projection based on observed starter sequencing. These are not published probable starters.",
+                                                                      "generatedAtUtc":  "2026-08-14T14:27:01.3493599Z",
+                                                                      "team":  {
+                                                                                   "role":  "TEAM",
+                                                                                   "displayName":  "Aquarium Drinkers",
+                                                                                   "teamId":  "1851052",
+                                                                                   "overallConfidence":  "HIGH",
+                                                                                   "startHistoryCount":  24,
+                                                                                   "currentLastStarter":  "Singer, Bill",
+                                                                                   "projections":  [
+                                                                                                       {
+                                                                                                           "slot":  1,
+                                                                                                           "pitcher":  "Perry, Gaylord",
+                                                                                                           "status":  "PROJECTED",
+                                                                                                           "afterStarter":  "Singer, Bill",
+                                                                                                           "transitionSamples":  6,
+                                                                                                           "dominance":  1,
+                                                                                                           "directConfidence":  "HIGH",
+                                                                                                           "effectiveConfidence":  "HIGH",
+                                                                                                           "conditional":  false
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "slot":  2,
+                                                                                                           "pitcher":  "Chance, Dean",
+                                                                                                           "status":  "PROJECTED",
+                                                                                                           "afterStarter":  "Perry, Gaylord",
+                                                                                                           "transitionSamples":  6,
+                                                                                                           "dominance":  0.83,
+                                                                                                           "directConfidence":  "HIGH",
+                                                                                                           "effectiveConfidence":  "HIGH",
+                                                                                                           "conditional":  true
+                                                                                                       },
+                                                                                                       {
+                                                                                                           "slot":  3,
+                                                                                                           "pitcher":  "Washburn, Ray",
+                                                                                                           "status":  "PROJECTED",
+                                                                                                           "afterStarter":  "Chance, Dean",
+                                                                                                           "transitionSamples":  5,
+                                                                                                           "dominance":  1,
+                                                                                                           "directConfidence":  "HIGH",
+                                                                                                           "effectiveConfidence":  "HIGH",
+                                                                                                           "conditional":  true
+                                                                                                       }
+                                                                                                   ]
+                                                                               },
+                                                                      "opponent":  {
+                                                                                       "role":  "OPPONENT",
+                                                                                       "displayName":  "Hogs",
+                                                                                       "teamId":  "1853534",
+                                                                                       "overallConfidence":  "MEDIUM",
+                                                                                       "startHistoryCount":  24,
+                                                                                       "currentLastStarter":  "Cuellar, Mike",
+                                                                                       "projections":  [
+                                                                                                           {
+                                                                                                               "slot":  1,
+                                                                                                               "pitcher":  "Nelson, Mel",
+                                                                                                               "status":  "PROJECTED",
+                                                                                                               "afterStarter":  "Cuellar, Mike",
+                                                                                                               "transitionSamples":  3,
+                                                                                                               "dominance":  0.67,
+                                                                                                               "directConfidence":  "MEDIUM",
+                                                                                                               "effectiveConfidence":  "MEDIUM",
+                                                                                                               "conditional":  false
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "slot":  2,
+                                                                                                               "pitcher":  "Pappas, Milt",
+                                                                                                               "status":  "PROJECTED",
+                                                                                                               "afterStarter":  "Nelson, Mel",
+                                                                                                               "transitionSamples":  3,
+                                                                                                               "dominance":  0.67,
+                                                                                                               "directConfidence":  "MEDIUM",
+                                                                                                               "effectiveConfidence":  "MEDIUM",
+                                                                                                               "conditional":  true
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "slot":  3,
+                                                                                                               "pitcher":  "Hunter, Catfish",
+                                                                                                               "status":  "PROJECTED",
+                                                                                                               "afterStarter":  "Pappas, Milt",
+                                                                                                               "transitionSamples":  5,
+                                                                                                               "dominance":  0.4,
+                                                                                                               "directConfidence":  "LOW",
+                                                                                                               "effectiveConfidence":  "LOW",
+                                                                                                               "conditional":  true
+                                                                                                           }
+                                                                                                       ]
+                                                                                   }
+                                                                  },
+                                              "lineupMatchups":  {
+                                                                     "status":  "CURRENT_OFFENSIVE_PROFILE",
+                                                                     "evidenceClassification":  "CURRENT_TEAM_ROSTER_STATS",
+                                                                     "generatedAtUtc":  "2026-08-14T14:39:23.0393662Z",
+                                                                     "projectedLineups":  false,
+                                                                     "platoonEdges":  false,
+                                                                     "minimumAtBats":  100,
+                                                                     "note":  "Current offensive threats ranked by OPS among hitters with at least 100 AB. This is not a projected batting order. Batting hand and Strat card balance are displayed as evidence but are not interpreted here as a platoon edge.",
+                                                                     "team":  {
+                                                                                  "role":  "TEAM",
+                                                                                  "displayName":  "Aquarium Drinkers",
+                                                                                  "teamId":  "1851052",
+                                                                                  "threats":  [
+                                                                                                  {
+                                                                                                      "name":  "Alou, F.",
+                                                                                                      "position":  "CF",
+                                                                                                      "bats":  "R",
+                                                                                                      "balance":  "3R",
+                                                                                                      "ab":  310,
+                                                                                                      "ba":  0.323,
+                                                                                                      "obp":  0.373,
+                                                                                                      "slg":  0.503,
+                                                                                                      "ops":  0.876
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "name":  "Alyea, B.",
+                                                                                                      "position":  "RF",
+                                                                                                      "bats":  "R",
+                                                                                                      "balance":  "3L",
+                                                                                                      "ab":  216,
+                                                                                                      "ba":  0.273,
+                                                                                                      "obp":  0.346,
+                                                                                                      "slg":  0.463,
+                                                                                                      "ops":  0.80899999999999994
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "name":  "Freehan, B.",
+                                                                                                      "position":  "C",
+                                                                                                      "bats":  "R",
+                                                                                                      "balance":  "1L",
+                                                                                                      "ab":  272,
+                                                                                                      "ba":  0.25,
+                                                                                                      "obp":  0.347,
+                                                                                                      "slg":  0.386,
+                                                                                                      "ops":  0.733
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "name":  "Harper, T.",
+                                                                                                      "position":  "LF",
+                                                                                                      "bats":  "R",
+                                                                                                      "balance":  "3L",
+                                                                                                      "ab":  111,
+                                                                                                      "ba":  0.243,
+                                                                                                      "obp":  0.323,
+                                                                                                      "slg":  0.396,
+                                                                                                      "ops":  0.71900000000000008
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "name":  "Robinson, B.",
+                                                                                                      "position":  "3B",
+                                                                                                      "bats":  "R",
+                                                                                                      "balance":  "2R",
+                                                                                                      "ab":  276,
+                                                                                                      "ba":  0.243,
+                                                                                                      "obp":  0.293,
+                                                                                                      "slg":  0.409,
+                                                                                                      "ops":  0.702
+                                                                                                  },
+                                                                                                  {
+                                                                                                      "name":  "Spangler, A.",
+                                                                                                      "position":  "RF",
+                                                                                                      "bats":  "L",
+                                                                                                      "balance":  "5R",
+                                                                                                      "ab":  156,
+                                                                                                      "ba":  0.224,
+                                                                                                      "obp":  0.301,
+                                                                                                      "slg":  0.365,
+                                                                                                      "ops":  0.66599999999999993
+                                                                                                  }
+                                                                                              ]
+                                                                              },
+                                                                     "opponent":  {
+                                                                                      "role":  "OPPONENT",
+                                                                                      "displayName":  "Hogs",
+                                                                                      "teamId":  "1853534",
+                                                                                      "threats":  [
+                                                                                                      {
+                                                                                                          "name":  "Wynn, J.",
+                                                                                                          "position":  "CF",
+                                                                                                          "bats":  "R",
+                                                                                                          "balance":  "3L",
+                                                                                                          "ab":  247,
+                                                                                                          "ba":  0.32,
+                                                                                                          "obp":  0.425,
+                                                                                                          "slg":  0.676,
+                                                                                                          "ops":  1.101
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "name":  "Yastrzemski, C.",
+                                                                                                          "position":  "LF",
+                                                                                                          "bats":  "L",
+                                                                                                          "balance":  "2R",
+                                                                                                          "ab":  233,
+                                                                                                          "ba":  0.313,
+                                                                                                          "obp":  0.436,
+                                                                                                          "slg":  0.532,
+                                                                                                          "ops":  0.968
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "name":  "Sudakis, B.",
+                                                                                                          "position":  "3B",
+                                                                                                          "bats":  "S",
+                                                                                                          "balance":  "3L",
+                                                                                                          "ab":  211,
+                                                                                                          "ba":  0.289,
+                                                                                                          "obp":  0.359,
+                                                                                                          "slg":  0.564,
+                                                                                                          "ops":  0.92299999999999993
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "name":  "Oliva, T.",
+                                                                                                          "position":  "RF",
+                                                                                                          "bats":  "L",
+                                                                                                          "balance":  "5R",
+                                                                                                          "ab":  273,
+                                                                                                          "ba":  0.293,
+                                                                                                          "obp":  0.349,
+                                                                                                          "slg":  0.517,
+                                                                                                          "ops":  0.866
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "name":  "Bench, J.",
+                                                                                                          "position":  "C",
+                                                                                                          "bats":  "R",
+                                                                                                          "balance":  "1R",
+                                                                                                          "ab":  256,
+                                                                                                          "ba":  0.305,
+                                                                                                          "obp":  0.349,
+                                                                                                          "slg":  0.504,
+                                                                                                          "ops":  0.853
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "name":  "Petrocelli, R.",
+                                                                                                          "position":  "SS",
+                                                                                                          "bats":  "R",
+                                                                                                          "balance":  "1R",
+                                                                                                          "ab":  183,
+                                                                                                          "ba":  0.219,
+                                                                                                          "obp":  0.301,
+                                                                                                          "slg":  0.404,
+                                                                                                          "ops":  0.70500000000000007
+                                                                                                      }
+                                                                                                  ]
+                                                                                  }
+                                                                 },
+                                              "managerNotebook":  {
+                                                                      "status":  "CURRENT_EVIDENCE_BASED",
+                                                                      "generatedAtUtc":  "2026-08-14T14:42:42.6094801Z",
+                                                                      "classification":  "PRE_SERIES_DECISION_SUPPORT",
+                                                                      "note":  "Recommendations are derived only from current roster production and BIE starter-sequence evidence. They do not assume a projected batting order, resolved platoon edge, or published probable starters.",
+                                                                      "items":  [
+                                                                                    {
+                                                                                        "priority":  1,
+                                                                                        "title":  "Control the top of the Hogs threat profile",
+                                                                                        "recommendation":  "The Hogs\u0027 strongest current offensive threats are Wynn, J. (1.101 OPS), Yastrzemski, C. (0.968 OPS), Sudakis, B. (0.923 OPS). Avoid creating unnecessary baserunners in front of this group and manage high-leverage pitching decisions with their top-end production in mind.",
+                                                                                        "evidence":  "Current opponent offensive profile ranked by OPS, minimum 100 AB.",
+                                                                                        "confidence":  "HIGH"
+                                                                                    },
+                                                                                    {
+                                                                                        "priority":  2,
+                                                                                        "title":  "Build run creation around the strongest current Aquarium bats",
+                                                                                        "recommendation":  "Aquarium\u0027s leading current offensive threats are Alou, F. (0.876 OPS), Alyea, B. (0.809 OPS), Freehan, B. (0.733 OPS). These hitters represent the strongest demonstrated on-base/power production in the current roster evidence and should anchor run-creation planning.",
+                                                                                        "evidence":  "Current Aquarium offensive profile ranked by OPS, minimum 100 AB.",
+                                                                                        "confidence":  "HIGH"
+                                                                                    },
+                                                                                    {
+                                                                                        "priority":  3,
+                                                                                        "title":  "Trust the Aquarium starter path more than the opponent path",
+                                                                                        "recommendation":  "BIE projects Perry -\u003e Chance -\u003e Washburn with HIGH overall confidence. The Hogs projection is only MEDIUM overall, so Aquarium\u0027s own starter preparation can be treated as relatively stable while opponent-specific preparation should remain adaptable.",
+                                                                                        "evidence":  "BIE starter-sequence projection using 24 observed starts for each club.",
+                                                                                        "confidence":  "HIGH"
+                                                                                    },
+                                                                                    {
+                                                                                        "priority":  4,
+                                                                                        "title":  "Keep Game 75 preparation flexible",
+                                                                                        "recommendation":  "Hunter is currently the BIE projection for Game 75, but that individual projection is LOW confidence with dominance 0.4. Treat Hunter as a planning hypothesis rather than a settled probable starter.",
+                                                                                        "evidence":  "Opponent rotation projection; Game 75 effective confidence LOW.",
+                                                                                        "confidence":  "HIGH"
+                                                                                    }
+                                                                                ]
+                                                                  },
+                                              "availabilityEnvironment":  {
+                                                                              "status":  "CURRENT_PARTIAL",
+                                                                              "generatedAtUtc":  "2026-08-14T14:47:41.5324594Z",
+                                                                              "series":  {
+                                                                                             "homeAway":  "Home",
+                                                                                             "ballpark":  "Astrodome 1968",
+                                                                                             "parkEffectsCaptured":  false,
+                                                                                             "parkEffectsStatus":  "NOT_YET_ANALYZED"
+                                                                                         },
+                                                                              "team":  {
+                                                                                           "teamId":  "1851052",
+                                                                                           "displayName":  "Aquarium Drinkers",
+                                                                                           "record":  "41-31",
+                                                                                           "hitterCount":  16,
+                                                                                           "pitcherCount":  10,
+                                                                                           "rosterValue":  "$79,730,000",
+                                                                                           "cashAvailable":  "$270,000"
+                                                                                       },
+                                                                              "opponent":  {
+                                                                                               "teamId":  "1853534",
+                                                                                               "displayName":  "Hogs",
+                                                                                               "record":  "33-39",
+                                                                                               "hitterCount":  14,
+                                                                                               "pitcherCount":  10,
+                                                                                               "rosterValue":  "$79,639,999",
+                                                                                               "cashAvailable":  "$171,001"
+                                                                                           },
+                                                                              "injuries":  {
+                                                                                               "source":  "https://365.strat-o-matic.com/league/injuries/479336",
+                                                                                               "httpStatus":  200,
+                                                                                               "relevantRowCount":  0,
+                                                                                               "rows":  [
+
+                                                                                                        ],
+                                                                                               "status":  "NO_RELEVANT_ROWS_FOUND",
+                                                                                               "note":  "No Aquarium Drinkers or Hogs rows were found on the live Strat365 league injury page at capture time. This records only what that source displayed and is not broader proof of player availability."
+                                                                                           },
+                                                                              "recentTransactionsCaptured":  false,
+                                                                              "note":  "Current venue, records, roster counts, roster economics, and live league injury-page evidence are captured. Park effects and recent transaction implications remain unresolved."
+                                                                          }
+                                          },
+                              "provenance":  {
+                                                 "classification":  "LIVE_CURRENT_SERIES_FALLBACK",
+                                                 "generatedAtUtc":  "2026-08-14T13:36:39.6173340Z"
+                                             },
+                              "reconstructionEvidence":  [
+
+                                                         ],
+                              "snapshotClassification":  "LIVE_CURRENT_SERIES_FALLBACK",
+                              "status":  "AVAILABLE",
+                              "warning":  "Current series identity and rotations are live. Deeper analytical sections have not yet been regenerated."
+                          },
+    "replay":  {
+                   "games":  [
+
+                             ],
+                   "status":  "NOT_STARTED",
+                   "sequencePolicy":  "PRE_SERIES"
+               },
+    "review":  {
+                   "status":  "NOT_AVAILABLE",
+                   "artifact":  null
+               },
+    "schemaVersion":  "bie.strat365.series-artifact.v1",
+    "seriesIdentity":  {
+                           "gameCount":  3,
+                           "homeAway":  "Home",
+                           "leagueId":  "479336",
+                           "opponentDisplayName":  "Hogs",
+                           "opponentTeamId":  "1853534",
+                           "scheduleGameNumbers":  [
+                                                       73,
+                                                       74,
+                                                       75
+                                                   ],
+                           "scheduledDate":  "Fri, 8/14",
+                           "seriesId":  "league-479336-team-1851052-games-73-74-75",
+                           "teamId":  "1851052"
+                       }
+}
