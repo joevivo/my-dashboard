@@ -1,0 +1,93 @@
+{
+    "evidence":  {
+                     "status":  "PARTIAL",
+                     "sources":  {
+                                     "sourceContract":  "league schedule -\u003e team schedule -\u003e team game number -\u003e Strat game ID -\u003e box score + play-by-play",
+                                     "leagueSchedule":  "https://365.strat-o-matic.com/league/schedule/479336",
+                                     "teamSchedule":  "https://365.strat-o-matic.com/team/schedule/1851052",
+                                     "games":  [
+                                                   {
+                                                       "scheduleGameNumber":  70,
+                                                       "stratGameId":  417,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/417",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/417"
+                                                   },
+                                                   {
+                                                       "scheduleGameNumber":  71,
+                                                       "stratGameId":  423,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/423",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/423"
+                                                   },
+                                                   {
+                                                       "scheduleGameNumber":  72,
+                                                       "stratGameId":  429,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/429",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/429"
+                                                   }
+                                               ]
+                                 }
+                 },
+    "generatedAtUtc":  "2026-08-14T18:54:42.2301708Z",
+    "learning":  {
+                     "status":  "AVAILABLE",
+                     "artifact":  "data/baseball/state/strat365/series-v1/league-479336/team-1851052/league-479336-team-1851052-games-70-71-72/series-learning-v1.json"
+                 },
+    "lifecycle":  {
+                      "completedGameCount":  3,
+                      "learningAvailable":  true,
+                      "previewAvailable":  false,
+                      "replayAvailable":  false,
+                      "reviewAvailable":  false,
+                      "stage":  "POST_SERIES_LEARNING_CAPTURED"
+                  },
+    "preSeriesSnapshot":  {
+                              "certifiedPreSeries":  false,
+                              "frozenAtUtc":  null,
+                              "missingEvidence":  [
+                                                      "Certified immutable pre-series snapshot for Games 70-72."
+                                                  ],
+                              "payload":  null,
+                              "provenance":  {
+                                                 "leagueSchedule":  "https://365.strat-o-matic.com/league/schedule/479336",
+                                                 "teamSchedule":  "https://365.strat-o-matic.com/team/schedule/1851052"
+                                             },
+                              "reconstructionEvidence":  [
+
+                                                         ],
+                              "snapshotClassification":  "HISTORICAL_RECONSTRUCTION_NOT_CERTIFIED",
+                              "status":  "PARTIAL",
+                              "warning":  "Completed-series evidence exists, but no certified pre-series snapshot exists. Postgame evidence must not be presented as pre-series knowledge."
+                          },
+    "replay":  {
+                   "games":  [
+
+                             ],
+                   "status":  "NOT_CAPTURED",
+                   "sequencePolicy":  {
+                                          "mode":  "STRICT_SERIES_ORDER",
+                                          "captureIndependentOfReveal":  true,
+                                          "futureGameIsolation":  true,
+                                          "serverSideRedactionRequired":  true
+                                      }
+               },
+    "review":  {
+                   "artifact":  null,
+                   "status":  "NOT_CAPTURED"
+               },
+    "schemaVersion":  "bie.strat365.series-artifact.v1",
+    "seriesIdentity":  {
+                           "gameCount":  3,
+                           "homeAway":  "AWAY",
+                           "leagueId":  "479336",
+                           "opponentDisplayName":  "Norwich Not Flatlanders",
+                           "opponentTeamId":  "1853506",
+                           "scheduleGameNumbers":  [
+                                                       70,
+                                                       71,
+                                                       72
+                                                   ],
+                           "scheduledDate":  "2026-08-13",
+                           "seriesId":  "league-479336-team-1851052-games-70-71-72",
+                           "teamId":  "1851052"
+                       }
+}

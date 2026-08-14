@@ -96,6 +96,138 @@ def latest_file(
     )
 
 
+
+def resolve_prior_series_learning(
+    repo_root: Path,
+    *,
+    league_id: str,
+    team_id: str,
+    schedule_path: Path,
+) -> Path | None:
+    schedule_payload = read_json(schedule_path)
+
+    if not isinstance(schedule_payload, dict):
+        raise ValueError(
+            f"Team schedule is not a JSON object: "
+            f"{schedule_path}"
+        )
+
+    next_series = schedule_payload.get("nextSeries")
+
+    if not isinstance(next_series, dict):
+        return None
+
+    raw_current_numbers = next_series.get(
+        "scheduleGameNumbers"
+    )
+
+    if (
+        not isinstance(raw_current_numbers, list)
+        or not raw_current_numbers
+    ):
+        return None
+
+    try:
+        current_numbers = sorted(
+            int(value)
+            for value in raw_current_numbers
+        )
+    except (TypeError, ValueError) as exc:
+        raise ValueError(
+            "Upcoming series contains non-numeric "
+            "schedule game numbers."
+        ) from exc
+
+    learning_root = (
+        repo_root
+        / "data"
+        / "baseball"
+        / "state"
+        / "strat365"
+        / "series-v1"
+        / f"league-{league_id}"
+        / f"team-{team_id}"
+    )
+
+    if not learning_root.exists():
+        return None
+
+    candidates: list[tuple[int, Path]] = []
+
+    for learning_path in learning_root.glob(
+        "*/series-learning-v1.json"
+    ):
+        payload = read_json(learning_path)
+
+        if not isinstance(payload, dict):
+            continue
+
+        if (
+            payload.get("schemaVersion")
+            != "bie.strat365.series-learning.v1"
+        ):
+            continue
+
+        identity = payload.get("seriesIdentity")
+
+        if not isinstance(identity, dict):
+            continue
+
+        if (
+            str(identity.get("leagueId") or "")
+            != league_id
+        ):
+            continue
+
+        if (
+            str(identity.get("teamId") or "")
+            != team_id
+        ):
+            continue
+
+        raw_prior_numbers = identity.get(
+            "scheduleGameNumbers"
+        )
+
+        if (
+            not isinstance(raw_prior_numbers, list)
+            or not raw_prior_numbers
+        ):
+            continue
+
+        try:
+            prior_numbers = sorted(
+                int(value)
+                for value in raw_prior_numbers
+            )
+        except (TypeError, ValueError):
+            continue
+
+        # Hard temporal firewall:
+        # learning must end before new series begins.
+        if max(prior_numbers) >= min(current_numbers):
+            continue
+
+        candidates.append(
+            (
+                max(prior_numbers),
+                learning_path,
+            )
+        )
+
+    if not candidates:
+        return None
+
+    candidates.sort(
+        key=lambda item: (
+            item[0],
+            str(item[1]),
+        )
+    )
+
+    return candidates[-1][1]
+
+
 def resolve_inputs(
     *,
     repo_root: Path,
@@ -436,6 +568,24 @@ def build(
                         str(player_intelligence),
                     ]
                 )
+
+
+        prior_series_learning = (
+            resolve_prior_series_learning(
+                repo_root,
+                league_id=str(row["leagueId"]),
+                team_id=str(row["teamId"]),
+                schedule_path=row["schedule"],
+            )
+        )
+
+        if prior_series_learning is not None:
+            arguments.extend(
+                [
+                    "--prior-series-learning",
+                    str(prior_series_learning),
+                ]
+            )
 
             arguments.extend(
                 [

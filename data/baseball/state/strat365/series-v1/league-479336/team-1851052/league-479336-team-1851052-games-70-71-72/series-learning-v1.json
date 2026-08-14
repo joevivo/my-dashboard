@@ -1,0 +1,191 @@
+{
+    "schemaVersion":  "bie.strat365.series-learning.v1",
+    "generatedAtUtc":  "2026-08-14T18:54:42.2301708Z",
+    "seriesIdentity":  {
+                           "gameCount":  3,
+                           "homeAway":  "AWAY",
+                           "leagueId":  "479336",
+                           "opponentDisplayName":  "Norwich Not Flatlanders",
+                           "opponentTeamId":  "1853506",
+                           "scheduleGameNumbers":  [
+                                                       70,
+                                                       71,
+                                                       72
+                                                   ],
+                           "scheduledDate":  "2026-08-13",
+                           "seriesId":  "league-479336-team-1851052-games-70-71-72",
+                           "teamId":  "1851052"
+                       },
+    "evidence":  {
+                     "status":  "AVAILABLE",
+                     "sources":  {
+                                     "sourceContract":  "league schedule -\u003e team schedule -\u003e team game number -\u003e Strat game ID -\u003e box score + play-by-play",
+                                     "leagueSchedule":  "https://365.strat-o-matic.com/league/schedule/479336",
+                                     "teamSchedule":  "https://365.strat-o-matic.com/team/schedule/1851052",
+                                     "games":  [
+                                                   {
+                                                       "scheduleGameNumber":  70,
+                                                       "stratGameId":  417,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/417",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/417"
+                                                   },
+                                                   {
+                                                       "scheduleGameNumber":  71,
+                                                       "stratGameId":  423,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/423",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/423"
+                                                   },
+                                                   {
+                                                       "scheduleGameNumber":  72,
+                                                       "stratGameId":  429,
+                                                       "boxScore":  "https://365.strat-o-matic.com/game/479336/429",
+                                                       "playByPlay":  "https://365.strat-o-matic.com/game/playbyplay/479336/429"
+                                                   }
+                                               ]
+                                 },
+                     "frozenPreviewComparison":  {
+                                                     "status":  "NOT_AVAILABLE",
+                                                     "reason":  "No certified immutable pre-series snapshot exists for Games 70-72. Historical preview performance must not be reconstructed as if known pre-series."
+                                                 }
+                 },
+    "seriesOutcome":  {
+                          "teamSeriesWins":  2,
+                          "teamSeriesLosses":  1,
+                          "teamRuns":  14,
+                          "opponentRuns":  21,
+                          "runDifferential":  -7,
+                          "finalTeamRecord":  "41-31",
+                          "interpretation":  "Aquarium won the series 2-1 despite a negative aggregate run differential driven by the 15-0 Game 71 outlier."
+                      },
+    "games":  [
+                  {
+                      "scheduleGameNumber":  70,
+                      "stratGameId":  417,
+                      "result":  "W",
+                      "score":  "8-1",
+                      "gameShape":  "STARTER_DOMINATION_LATE_BREAKAWAY",
+                      "findings":  [
+                                       "Dean Chance completed 9 innings, allowing 6 hits and 1 earned run.",
+                                       "Aquarium led only 3-1 through seven before scoring four runs in the eighth.",
+                                       "Chance completed the game, preserving the bullpen for the remainder of the series.",
+                                       "Aquarium produced 14 hits with broad offensive contribution rather than dependence on one hitter."
+                                   ],
+                      "managerialAssessment":  "Strong starter management and maximum bullpen preservation."
+                  },
+                  {
+                      "scheduleGameNumber":  71,
+                      "stratGameId":  423,
+                      "result":  "L",
+                      "score":  "0-15",
+                      "gameShape":  "TWO_OUT_STARTER_COLLAPSE_MIDDLE_RELIEF_RESOURCE_PRESERVATION",
+                      "findings":  [
+                                       "Norwich scored five runs in the second inning after Washburn recorded the first two outs.",
+                                       "Washburn finished with 1.2 innings and 5 earned runs; the practical hook window developed rapidly during a two-out rally.",
+                                       "Jerry Nyman stopped the second-inning rally but was pinch-hit for because his batting position arrived in a no-DH game with Aquarium trailing 5-0.",
+                                       "John Boozer absorbed 2 innings and 8 earned runs as the game became noncompetitive.",
+                                       "Aquarium created baserunners but failed to convert six hits and three walks into a run.",
+                                       "Duke Sims drove in six Norwich runs.",
+                                       "Premium late-game bullpen resources were not consumed attempting to reduce the margin of an effectively lost game."
+                                   ],
+                      "managerialAssessment":  "Tactically ugly but strategically defensible bullpen-resource preservation after the game became noncompetitive."
+                  },
+                  {
+                      "scheduleGameNumber":  72,
+                      "stratGameId":  429,
+                      "result":  "W",
+                      "score":  "6-5",
+                      "gameShape":  "SEESAW_TWO_OUT_COMEBACK_BULLPEN_LOCK",
+                      "findings":  [
+                                       "Aquarium entered the seventh inning trailing 5-3.",
+                                       "With two outs, Al Spangler hit a two-run triple to tie the game.",
+                                       "Jim Fregosi followed with the go-ahead RBI single against Jeff James.",
+                                       "Darold Knowles pitched a perfect seventh inning after Aquarium took the lead.",
+                                       "Knowles was then pinch-hit for in the eighth, reflecting the no-DH pitcher-slot tradeoff.",
+                                       "Steve Hamilton pitched the final two innings, allowing one hit and no runs.",
+                                       "Knowles and Hamilton combined for three scoreless leverage innings after being preserved during the Game 71 blowout.",
+                                       "Duke Sims was injured for three additional games; Jake Gibbs replaced him and produced a two-run single in the current game."
+                                   ],
+                      "managerialAssessment":  "Strong comeback management and excellent conversion of preserved bullpen resources into high-leverage outs."
+                  }
+              ],
+    "learnedSignals":  [
+                           {
+                               "id":  "SERIES_BULLPEN_RESOURCE_CARRYOVER",
+                               "classification":  "TEAM_MANAGERIAL",
+                               "confidence":  "HIGH",
+                               "persistence":  "CARRY_FORWARD",
+                               "finding":  "Bullpen availability has series-level value. Preserving premium relievers in a noncompetitive game can directly improve the probability of converting a later close game.",
+                               "evidence":  "Chance preserved the bullpen in Game 70; lower-leverage arms absorbed the Game 71 blowout; Knowles and Hamilton then produced three scoreless leverage innings in the 6-5 Game 72 win.",
+                               "futureUse":  "Future previews and in-series decisions should show reliever freshness and cross-game resource value, not only season ERA and static bullpen role."
+                           },
+                           {
+                               "id":  "GAME_SHAPE_OVER_FINAL_SCORE",
+                               "classification":  "ANALYTICAL_MODEL",
+                               "confidence":  "HIGH",
+                               "persistence":  "CARRY_FORWARD",
+                               "finding":  "Final score alone is insufficient to describe how a game was decided.",
+                               "evidence":  "The three games represented starter domination with late breakaway, a two-out collapse followed by resource preservation, and a two-out comeback followed by a bullpen lock.",
+                               "futureUse":  "Classify completed games by shape and expose the decisive transition rather than relying on final margin."
+                           },
+                           {
+                               "id":  "HOOK_WINDOW_CONTEXT",
+                               "classification":  "MANAGERIAL_EVALUATION",
+                               "confidence":  "HIGH",
+                               "persistence":  "CARRY_FORWARD",
+                               "finding":  "Pitcher-hook evaluation must measure when actionable deterioration became visible, not judge solely from the final pitching line.",
+                               "evidence":  "Washburn reached two outs with nobody on in the second before the five-run rally developed rapidly.",
+                               "futureUse":  "Evaluate hook opportunities event-by-event using score, outs, baserunners, pitcher deterioration, bullpen state, and series context."
+                           },
+                           {
+                               "id":  "TWO_OUT_INNING_EXTENSION",
+                               "classification":  "GAME_PATTERN",
+                               "confidence":  "HIGH",
+                               "persistence":  "MONITOR",
+                               "finding":  "Two-out inning extension materially influenced multiple decisive innings in this series.",
+                               "evidence":  "Norwich created the five-run Game 71 second after two outs; Norwich also extended the Game 72 sixth with two outs; Aquarium scored all three decisive Game 72 seventh-inning runs after two outs.",
+                               "futureUse":  "Track two-out baserunners, runs, inning extensions, and damage allowed as a distinct recent-series signal while governing against overreaction to small samples."
+                           },
+                           {
+                               "id":  "OPPORTUNITY_VS_CONVERSION",
+                               "classification":  "OFFENSIVE_DIAGNOSTIC",
+                               "confidence":  "HIGH",
+                               "persistence":  "CARRY_FORWARD",
+                               "finding":  "Baserunner creation and run conversion should be measured separately.",
+                               "evidence":  "Aquarium produced six hits and three walks in the 15-0 loss but scored zero, while Game 72 converted traffic into the decisive rally.",
+                               "futureUse":  "Separate offensive opportunity creation from sequencing/conversion when diagnosing recent performance."
+                           },
+                           {
+                               "id":  "BLOWOUT_OUTLIER_CONTROL",
+                               "classification":  "SAMPLE_GOVERNANCE",
+                               "confidence":  "HIGH",
+                               "persistence":  "CARRY_FORWARD",
+                               "finding":  "A single extreme blowout should remain visible as downside-tail evidence without dominating series-level evaluation.",
+                               "evidence":  "Norwich outscored Aquarium 21-14 across the series, but Aquarium won two of three games.",
+                               "futureUse":  "Preserve extreme losses as volatility/risk evidence while weighting individual game shape and series outcome separately."
+                           },
+                           {
+                               "id":  "OPPONENT_INJURY_SHORT_LIVED",
+                               "classification":  "OPPONENT_SPECIFIC",
+                               "confidence":  "HIGH",
+                               "persistence":  "REVALIDATE",
+                               "finding":  "Duke Sims was injured for three additional games in Game 72.",
+                               "evidence":  "The Game 72 play-by-play explicitly recorded the injury following a hit-by-pitch.",
+                               "futureUse":  "Retain as short-lived opponent availability intelligence only; revalidate against the live injury source before any future Norwich matchup."
+                           },
+                           {
+                               "id":  "CANONICAL_GAME_IDENTITY_CHAIN",
+                               "classification":  "SYSTEM_PROVENANCE",
+                               "confidence":  "HIGH",
+                               "persistence":  "PERMANENT",
+                               "finding":  "Team schedule game numbers must not be equated with league-scoped Strat game IDs.",
+                               "evidence":  "Aquarium Games 70-72 resolved to Strat game IDs 417, 423, and 429.",
+                               "futureUse":  "Always resolve game identity through /league/schedule/{leagueId}, then team schedule, then actual Strat game ID before box-score or play-by-play ingestion."
+                           }
+                       ],
+    "governance":  {
+                       "immutableHistoricalPreviewAvailable":  false,
+                       "shortSamplePolicy":  "Recent-series signals may create watch items, questions, and resource-state intelligence. They must not be promoted into stable performance rates from one three-game series.",
+                       "outlierPolicy":  "Extreme single-game outcomes remain downside-tail evidence but must not overwrite broader series or season evidence.",
+                       "nextPreviewPolicy":  "This learning may inform future Series Previews created after this artifact. It must not be injected retroactively into the already-frozen Games 73-75 Hogs preview."
+                   }
+}

@@ -1288,6 +1288,159 @@ def build_executive_outlook(
     }
 
 
+
+def summarize_prior_series_learning(
+    payload: dict[str, Any] | None,
+) -> dict[str, Any]:
+    empty_counts = {
+        "CARRY_FORWARD": 0,
+        "MONITOR": 0,
+        "REVALIDATE": 0,
+        "PERMANENT": 0,
+    }
+
+    if payload is None:
+        return {
+            "status": "NOT_PROVIDED",
+            "sourceSeriesId": None,
+            "sourceLeagueId": None,
+            "sourceTeamId": None,
+            "sourceScheduleGameNumbers": [],
+            "eligiblePreviewSignals": [],
+            "watchItems": [],
+            "revalidationRequired": [],
+            "permanentRules": [],
+            "counts": empty_counts,
+            "policy": (
+                "No completed prior-series learning "
+                "artifact was provided."
+            ),
+        }
+
+    schema = str(
+        payload.get("schemaVersion") or ""
+    ).strip()
+
+    if schema != "bie.strat365.series-learning.v1":
+        raise ValueError(
+            "Prior-series learning schema mismatch: "
+            f"{schema!r}"
+        )
+
+    identity = as_dict(
+        payload.get("seriesIdentity")
+    )
+
+    source_numbers: list[int] = []
+
+    for value in as_list(
+        identity.get("scheduleGameNumbers")
+    ):
+        try:
+            source_numbers.append(int(value))
+        except (TypeError, ValueError):
+            continue
+
+    buckets: dict[str, list[dict[str, Any]]] = {
+        "CARRY_FORWARD": [],
+        "MONITOR": [],
+        "REVALIDATE": [],
+        "PERMANENT": [],
+    }
+
+    for raw_signal in as_list(
+        payload.get("learnedSignals")
+    ):
+        if not isinstance(raw_signal, dict):
+            continue
+
+        persistence = str(
+            raw_signal.get("persistence") or ""
+        ).strip().upper()
+
+        if persistence not in buckets:
+            raise ValueError(
+                "Unsupported prior-series learning "
+                f"persistence: {persistence!r}"
+            )
+
+        signal = {
+            "id": str(
+                raw_signal.get("id") or ""
+            ).strip(),
+            "classification": str(
+                raw_signal.get("classification") or ""
+            ).strip(),
+            "confidence": str(
+                raw_signal.get("confidence") or ""
+            ).strip(),
+            "persistence": persistence,
+            "finding": str(
+                raw_signal.get("finding") or ""
+            ).strip(),
+            "evidence": str(
+                raw_signal.get("evidence") or ""
+            ).strip(),
+            "futureUse": str(
+                raw_signal.get("futureUse") or ""
+            ).strip(),
+        }
+
+        buckets[persistence].append(signal)
+
+    watch_items = [
+        {
+            "classification":
+                "PRIOR_SERIES_MONITOR",
+            "signalId": signal["id"],
+            "title": signal["finding"],
+            "finding": signal["finding"],
+            "evidence": signal["evidence"],
+            "confidence": signal["confidence"],
+            "governance":
+                "MONITOR_ONLY_NOT_STABLE_RATE",
+        }
+        for signal in buckets["MONITOR"]
+    ]
+
+    return {
+        "status": "AVAILABLE",
+        "sourceSeriesId": str(
+            identity.get("seriesId") or ""
+        ).strip()
+        or None,
+        "sourceLeagueId": str(
+            identity.get("leagueId") or ""
+        ).strip()
+        or None,
+        "sourceTeamId": str(
+            identity.get("teamId") or ""
+        ).strip()
+        or None,
+        "sourceScheduleGameNumbers":
+            sorted(source_numbers),
+        "eligiblePreviewSignals":
+            buckets["CARRY_FORWARD"],
+        "watchItems": watch_items,
+        "revalidationRequired":
+            buckets["REVALIDATE"],
+        "permanentRules":
+            buckets["PERMANENT"],
+        "counts": {
+            key: len(value)
+            for key, value in buckets.items()
+        },
+        "policy": (
+            "CARRY_FORWARD signals may inform future "
+            "preview context. MONITOR signals remain "
+            "watch items rather than stable tendencies. "
+            "REVALIDATE signals require fresh evidence. "
+            "PERMANENT signals are system/provenance "
+            "rules rather than baseball recommendations."
+        ),
+    }
+
+
 def build_engine(
     team_payload: dict[str, Any],
     team_source: Path,
@@ -1300,6 +1453,9 @@ def build_engine(
     explicit_opponent_name: str | None,
     player_intelligence_payload: dict[str, Any] | None = None,
     player_intelligence_source: Path | None = None,
+
+    prior_series_learning_payload: dict[str, Any] | None = None,
+    prior_series_learning_source: Path | None = None,
 ) -> dict[str, Any]:
     team_name = str(team_payload.get("teamName") or "").strip()
 
@@ -1313,6 +1469,98 @@ def build_engine(
         team_payload,
         team_schedule_payload,
     )
+
+    prior_series_learning = (
+        summarize_prior_series_learning(
+            prior_series_learning_payload
+        )
+    )
+
+    if (
+        prior_series_learning["status"]
+        == "AVAILABLE"
+    ):
+        expected_league_id = str(
+            team_payload.get("leagueId") or ""
+        ).strip()
+
+        expected_team_id = str(
+            team_payload.get("teamId") or ""
+        ).strip()
+
+        source_league_id = str(
+            prior_series_learning.get(
+                "sourceLeagueId"
+            )
+            or ""
+        ).strip()
+
+        source_team_id = str(
+            prior_series_learning.get(
+                "sourceTeamId"
+            )
+            or ""
+        ).strip()
+
+        if (
+            expected_league_id
+            and source_league_id
+            and expected_league_id
+            != source_league_id
+        ):
+            raise ValueError(
+                "Prior-series learning league ID "
+                "does not match current team."
+            )
+
+        if (
+            expected_team_id
+            and source_team_id
+            and expected_team_id
+            != source_team_id
+        ):
+            raise ValueError(
+                "Prior-series learning team ID "
+                "does not match current team."
+            )
+
+        current_numbers: list[int] = []
+
+        for value in as_list(
+            upcoming_series.get(
+                "scheduleGameNumbers"
+            )
+        ):
+            try:
+                current_numbers.append(int(value))
+            except (TypeError, ValueError):
+                continue
+
+        prior_numbers: list[int] = []
+
+        for value in as_list(
+            prior_series_learning.get(
+                "sourceScheduleGameNumbers"
+            )
+        ):
+            try:
+                prior_numbers.append(int(value))
+            except (TypeError, ValueError):
+                continue
+
+        # Second contamination firewall, independent
+        # of orchestrator discovery.
+        if (
+            current_numbers
+            and prior_numbers
+            and max(prior_numbers)
+            >= min(current_numbers)
+        ):
+            raise ValueError(
+                "Prior-series learning does not "
+                "strictly precede upcoming series."
+            )
+
 
     if player_intelligence_payload is None:
         player_intelligence = {
@@ -1536,6 +1784,13 @@ def build_engine(
                 if player_intelligence_source is not None
                 else None
             ),
+
+            "priorSeriesLearning": (
+                str(prior_series_learning_source)
+                if prior_series_learning_source
+                is not None
+                else None
+            ),
             "teamReadiness": str(team_source),
             "teamSchedule": (
                 str(team_schedule_source)
@@ -1557,6 +1812,9 @@ def build_engine(
             "gameIds": as_list(team_payload.get("gameIds")),
             "opponents": previous_opponents,
         },
+
+        "priorSeriesLearning":
+            prior_series_learning,
         "upcomingSeries": upcoming_series,
         "recentTeamSignals": team_recent,
         "recentOpponentSignals": opponent_recent,
@@ -1571,7 +1829,15 @@ def build_engine(
             recent_opponent_signals=opponent_recent,
         ),
         "matchupAssessment": matchup,
-        "managerialWatchlist": build_watchlist(team_recent),
+
+        "managerialWatchlist": (
+            build_watchlist(team_recent)
+            + as_list(
+                prior_series_learning.get(
+                    "watchItems"
+                )
+            )
+        ),
         "managerRecommendations": {
             "status": "EVIDENCE_GATED",
             "items": [],
@@ -1590,6 +1856,11 @@ def build_engine(
                 as_number(team_payload.get("gameCount"))
             ),
             "classification": "SHORT_SAMPLE_CONTEXT",
+
+            "priorSeriesLearningStatus":
+                prior_series_learning["status"],
+            "priorSeriesLearningPolicy":
+                prior_series_learning["policy"],
             "policy": (
                 "Recent-series signals may identify watch items and "
                 "questions. They are not stable rates or standalone "
@@ -1638,6 +1909,11 @@ def main() -> int:
         "--player-intelligence",
         type=Path,
     )
+
+    parser.add_argument(
+        "--prior-series-learning",
+        type=Path,
+    )
     parser.add_argument(
         "--opponent-name",
     )
@@ -1675,6 +1951,13 @@ def main() -> int:
         else None
     )
 
+
+    prior_series_learning_payload = (
+        load_json(args.prior_series_learning)
+        if args.prior_series_learning
+        else None
+    )
+
     output = build_engine(
         team_payload=team_payload,
         team_source=args.team_readiness,
@@ -1687,6 +1970,11 @@ def main() -> int:
         explicit_opponent_name=args.opponent_name,
         player_intelligence_payload=player_intelligence_payload,
         player_intelligence_source=args.player_intelligence,
+
+        prior_series_learning_payload=
+            prior_series_learning_payload,
+        prior_series_learning_source=
+            args.prior_series_learning,
     )
 
     write_json(args.output, output)
