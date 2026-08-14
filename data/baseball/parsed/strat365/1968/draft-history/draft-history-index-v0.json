@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "bie.strat365.draft-history-index.v0",
+  "recordType": "draft-history-index",
+  "season": 1968,
+  "purpose": "Preserve Aquarium Drinkers draft intent, Auto Draft outcomes, waiver decisions, opening rosters, and transactions for cross-team BIE learning.",
+  "teams": [
+    {
+      "leagueId": "479336",
+      "teamId": "1851052",
+      "status": "DRAFT_AND_WAIVERS_CAPTURED",
+      "artifact": "data/baseball/parsed/strat365/1968/draft-history/league-479336-team-1851052-draft-history-v0.json"
+    },
+    {
+      "leagueId": "479640",
+      "teamId": "1856033",
+      "status": "POST_DRAFT_PRE_WAIVERS",
+      "artifact": "data/baseball/parsed/strat365/1968/draft-history/league-479640-team-1856033-draft-history-v0.json"
+    }
+  ],
+  "knownHistoryGaps": [
+    {
+      "leagueId": "479431",
+      "teamId": "1853975",
+      "status": "NO_ORDERED_DRAFT_HISTORY_ARTIFACT"
+    },
+    {
+      "leagueId": "479610",
+      "teamId": "1854215",
+      "status": "NO_ORDERED_DRAFT_HISTORY_ARTIFACT"
+    }
+  ]
+}

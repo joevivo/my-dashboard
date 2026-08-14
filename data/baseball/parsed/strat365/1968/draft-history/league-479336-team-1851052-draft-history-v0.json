@@ -1,0 +1,382 @@
+{
+  "schemaVersion": "bie.strat365.draft-history.v0",
+  "recordType": "team-draft-history",
+  "season": 1968,
+  "team": {
+    "leagueId": "479336",
+    "teamId": "1851052",
+    "teamName": "Aquarium Drinkers"
+  },
+  "state": "DRAFT_AND_WAIVERS_CAPTURED",
+  "source": {
+    "type": "NORMALIZED_EXISTING_ARTIFACT",
+    "artifact": "data/baseball/parsed/strat365/1968/post-draft/1968.aquarium-drinkers.league-479336.auto-draft-results-v0.json"
+  },
+  "draft": {
+    "priorityBoardStatus": "COMPLETE_ORDERED_RESULTS",
+    "resultCount": 25,
+    "results": [
+      {
+        "rank": 1,
+        "requestedPlayer": "Freehan, B.",
+        "requestedPosition": "C",
+        "requestedSalary": 8210000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Freehan, B.",
+        "actualPosition": "C",
+        "actualSalary": 8210000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 2,
+        "requestedPlayer": "Alou, F.",
+        "requestedPosition": "CF",
+        "requestedSalary": 8170000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Alou, F.",
+        "actualPosition": "CF",
+        "actualSalary": 8170000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 3,
+        "requestedPlayer": "Chance, D.",
+        "requestedPosition": "P (S7*/R3)",
+        "requestedSalary": 6180000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Chance, D.",
+        "actualPosition": "P (S7*/R3)",
+        "actualSalary": 6180000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 4,
+        "requestedPlayer": "Fregosi, J.",
+        "requestedPosition": "SS",
+        "requestedSalary": 5430000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Fregosi, J.",
+        "actualPosition": "SS",
+        "actualSalary": 5430000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 5,
+        "requestedPlayer": "Santo, R.",
+        "requestedPosition": "3B",
+        "requestedSalary": 7460000,
+        "takenBy": "Iowa bombers",
+        "takenAtRank": 1,
+        "actualPlayer": "Robinson, Brooks",
+        "actualPosition": "3B",
+        "actualSalary": 6730000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 6,
+        "requestedPlayer": "Niekro, P.",
+        "requestedPosition": "P (S8*/R3)",
+        "requestedSalary": 3220000,
+        "takenBy": "Norwich Not Flatlanders",
+        "takenAtRank": 1,
+        "actualPlayer": "Bunker, Wally",
+        "actualPosition": "P (S5/R3)",
+        "actualSalary": 3020000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 7,
+        "requestedPlayer": "McAuliffe, D.",
+        "requestedPosition": "2B",
+        "requestedSalary": 7340000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "McAuliffe, D.",
+        "actualPosition": "2B",
+        "actualSalary": 7340000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 8,
+        "requestedPlayer": "Parker, W.",
+        "requestedPosition": "1B",
+        "requestedSalary": 2820000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Parker, W.",
+        "actualPosition": "1B",
+        "actualSalary": 2820000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 9,
+        "requestedPlayer": "Moose, B.",
+        "requestedPosition": "P (S7/R3)",
+        "requestedSalary": 2600000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Moose, B.",
+        "actualPosition": "P (S7/R3)",
+        "actualSalary": 2600000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 10,
+        "requestedPlayer": "Singer, B.",
+        "requestedPosition": "P (S7*)",
+        "requestedSalary": 2250000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Singer, B.",
+        "actualPosition": "P (S7*)",
+        "actualSalary": 2250000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 11,
+        "requestedPlayer": "Washburn, R.",
+        "requestedPosition": "P (S7*)",
+        "requestedSalary": 3580000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Washburn, R.",
+        "actualPosition": "P (S7*)",
+        "actualSalary": 3580000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 12,
+        "requestedPlayer": "McDaniel, L.",
+        "requestedPosition": "P (R3)",
+        "requestedSalary": 2700000,
+        "takenBy": "Mighty Yankees",
+        "takenAtRank": 5,
+        "actualPlayer": "Wills, Ron",
+        "actualPosition": "P (R3)",
+        "actualSalary": 660000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 13,
+        "requestedPlayer": "Hoerner, J.",
+        "requestedPosition": "P (R2)",
+        "requestedSalary": 1710000,
+        "takenBy": "Boquete Bombers",
+        "takenAtRank": 3,
+        "actualPlayer": "Baldwin, Dave",
+        "actualPosition": "P (R2)",
+        "actualSalary": 500000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 14,
+        "requestedPlayer": "Wilhelm, H.",
+        "requestedPosition": "P (R2)",
+        "requestedSalary": 1620000,
+        "takenBy": "New York Highlanders",
+        "takenAtRank": 7,
+        "actualPlayer": "Fisher, Eddie",
+        "actualPosition": "P (R3)",
+        "actualSalary": 500000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 15,
+        "requestedPlayer": "Hamilton, S.",
+        "requestedPosition": "P (R2)",
+        "requestedSalary": 1530000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Hamilton, S.",
+        "actualPosition": "P (R2)",
+        "actualSalary": 1530000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 16,
+        "requestedPlayer": "Mota, M.",
+        "requestedPosition": "LF",
+        "requestedSalary": 1940000,
+        "takenBy": "Norwich Not Flatlanders",
+        "takenAtRank": 14,
+        "actualPlayer": "Harper, Tommy",
+        "actualPosition": "LF,RF,CF,2B",
+        "actualSalary": 1850000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 17,
+        "requestedPlayer": "Fernandez, F.",
+        "requestedPosition": "C",
+        "requestedSalary": 1960000,
+        "takenBy": "Classic City Crazy Eights",
+        "takenAtRank": 11,
+        "actualPlayer": "Tillman, Bob",
+        "actualPosition": "C",
+        "actualSalary": 1560000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 18,
+        "requestedPlayer": "Knowles, D.",
+        "requestedPosition": "P (R3)",
+        "requestedSalary": 500000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Knowles, D.",
+        "actualPosition": "P (R3)",
+        "actualSalary": 500000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 19,
+        "requestedPlayer": "Aguirre, H.",
+        "requestedPosition": "P (R2)",
+        "requestedSalary": 1350000,
+        "takenBy": "Funk Brothers",
+        "takenAtRank": 9,
+        "actualPlayer": "Lasher, Fred",
+        "actualPosition": "P (R3)",
+        "actualSalary": 500000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 20,
+        "requestedPlayer": "Jimenez, M.",
+        "requestedPosition": "LF",
+        "requestedSalary": 3310000,
+        "takenBy": "Funk Brothers",
+        "takenAtRank": 17,
+        "actualPlayer": "Shamsky, Art",
+        "actualPosition": "LF,1B,RF",
+        "actualSalary": 2420000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 21,
+        "requestedPlayer": "Tartabull, J.",
+        "requestedPosition": "RF",
+        "requestedSalary": 2380000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Tartabull, J.",
+        "actualPosition": "RF",
+        "actualSalary": 2380000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 22,
+        "requestedPlayer": "Schaal, P.",
+        "requestedPosition": "3B",
+        "requestedSalary": 1970000,
+        "takenBy": "Fresno Raisin Eaters",
+        "takenAtRank": 14,
+        "actualPlayer": "Bailey, Bob",
+        "actualPosition": "3B,SS",
+        "actualSalary": 1670000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 23,
+        "requestedPlayer": "Gosger, J.",
+        "requestedPosition": "LF",
+        "requestedSalary": 500000,
+        "takenBy": null,
+        "takenAtRank": null,
+        "actualPlayer": "Gosger, J.",
+        "actualPosition": "LF",
+        "actualSalary": 500000,
+        "outcome": "selected"
+      },
+      {
+        "rank": 24,
+        "requestedPlayer": "Brinkman, E.",
+        "requestedPosition": "SS",
+        "requestedSalary": 500000,
+        "takenBy": "RainRain 80's Mustache",
+        "takenAtRank": 15,
+        "actualPlayer": "Harrelson, Bud",
+        "actualPosition": "SS",
+        "actualSalary": 500000,
+        "outcome": "replacement"
+      },
+      {
+        "rank": 25,
+        "requestedPlayer": "Torres, H.",
+        "requestedPosition": "SS",
+        "requestedSalary": 500000,
+        "takenBy": "Norwich Not Flatlanders",
+        "takenAtRank": 23,
+        "actualPlayer": "Matchick, Tommy",
+        "actualPosition": "SS,2B,1B",
+        "actualSalary": 500000,
+        "outcome": "replacement"
+      }
+    ]
+  },
+  "waivers": {
+    "status": "CAPTURED",
+    "resultCount": 4,
+    "results": [
+      {
+        "priority": 1,
+        "claimedPlayer": "Perry, G.",
+        "claimedPosition": "P (S8*/R3)",
+        "claimedSalary": 6880000,
+        "droppedPlayer": "Fisher, Eddie",
+        "droppedPosition": "P (R3)",
+        "droppedSalary": 500000,
+        "result": "picked_up",
+        "reason": null
+      },
+      {
+        "priority": 2,
+        "claimedPlayer": "Nyman, J.",
+        "claimedPosition": "P (S5/R3)",
+        "claimedSalary": 990000,
+        "droppedPlayer": "Lasher, Fred",
+        "droppedPosition": "P (R3)",
+        "droppedSalary": 500000,
+        "result": "picked_up",
+        "reason": null
+      },
+      {
+        "priority": 3,
+        "claimedPlayer": "Stahl, L.",
+        "claimedPosition": "CF",
+        "claimedSalary": 1180000,
+        "droppedPlayer": "Baldwin, Dave",
+        "droppedPosition": "P (R2)",
+        "droppedSalary": 500000,
+        "result": "picked_up",
+        "reason": null
+      },
+      {
+        "priority": 4,
+        "claimedPlayer": "Hamilton, J.",
+        "claimedPosition": "P (S5/R3)",
+        "claimedSalary": 660000,
+        "droppedPlayer": null,
+        "droppedPosition": null,
+        "droppedSalary": null,
+        "result": "rejected",
+        "reason": "Too few pure relievers"
+      }
+    ]
+  },
+  "legacySummary": {
+    "submittedPlayerCount": 25,
+    "directSelectionCount": 13,
+    "replacementCount": 12,
+    "submittedSalary": 79730000,
+    "actualDraftSalary": 71900000,
+    "salaryReduction": 7830000,
+    "successfulWaiverCount": 3,
+    "rejectedWaiverCount": 1,
+    "postWaiverSalary": 79450000
+  }
+}
