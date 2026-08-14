@@ -1,10 +1,42 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { getStratTeamMark } from "./strat/teamIdentityRegistry";
 
 function humanize(value) {
   return String(value || "")
     .replaceAll("_", " ")
     .toLowerCase()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatRotationEvidence(projection = {}) {
+  const samples =
+    Number(projection.transitionSamples);
+
+  const consistency =
+    Number(projection.dominance);
+
+  const sampleText =
+    Number.isFinite(samples)
+      ? `${samples} rotation observation${samples === 1 ? "" : "s"}`
+      : null;
+
+  const consistencyText =
+    Number.isFinite(consistency)
+      ? `${Math.round(consistency * 100)}% rotation consistency`
+      : null;
+
+  const conditionalText =
+    projection.conditional
+      ? "conditional pattern"
+      : null;
+
+  return [
+    sampleText,
+    consistencyText,
+    conditionalText,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function statusClasses(status) {
@@ -37,6 +69,40 @@ function Pill({ children, status }) {
     >
       {children}
     </span>
+  );
+}
+
+
+function TeamIdentityMark({
+  mark,
+  tone = "teal",
+}) {
+  const [imageFailed, setImageFailed] =
+    useState(false);
+
+  const palette =
+    tone === "rose"
+      ? "border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200"
+      : "border-cyan-200 bg-cyan-50 text-cyan-800 dark:border-cyan-900/60 dark:bg-cyan-950/40 dark:text-cyan-200";
+
+  return (
+    <div
+      className={`flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border shadow-sm ${palette}`}
+      aria-label={`${mark?.teamName || "Team"} mark`}
+    >
+      {mark?.logoPath && !imageFailed ? (
+        <img
+          src={mark.logoPath}
+          alt=""
+          className="h-full w-full object-contain p-2"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <span className="text-xl font-black tracking-tight">
+          {mark?.monogram || "?"}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -224,21 +290,101 @@ export default function SeriesPreview({
   const snapshot = series.preSeriesSnapshot || {};
   const payload = snapshot.payload || null;
 
+  const sourceOpponentDisplayName =
+    identity.opponentDisplayName ||
+    selection?.opponentDisplayName ||
+    "Opponent";
+
+  const opponentTeamId =
+    identity.opponentTeamId ||
+    selection?.opponentTeamId ||
+    identity?.opponent?.teamId ||
+    null;
+
+  const teamMark = getStratTeamMark(
+    selection?.teamId,
+    "Aquarium Drinkers",
+  );
+
+  const opponentMark = getStratTeamMark(
+    opponentTeamId,
+    sourceOpponentDisplayName,
+  );
+
   const canonicalOpponentDisplayName =
-    identity.opponentDisplayName || "Opponent";
+    opponentMark?.teamName ||
+    sourceOpponentDisplayName;
 
   const opponentDisplayName =
-    selection?.opponentDisplayName ||
     canonicalOpponentDisplayName;
 
+  const normalizePreviewText = (value) => {
+    if (value === null || value === undefined) {
+      return value;
+    }
+
+    let normalized = String(value);
+
+    if (
+      sourceOpponentDisplayName &&
+      opponentDisplayName &&
+      sourceOpponentDisplayName !==
+        opponentDisplayName &&
+      !normalized.includes(
+        opponentDisplayName
+      )
+    ) {
+      normalized = normalized.replaceAll(
+        sourceOpponentDisplayName,
+        opponentDisplayName,
+      );
+    }
+
+    normalized = normalized.replace(
+      /\bdominance\s+([0-9]+(?:\.[0-9]+)?)/gi,
+      (match, rawValue) => {
+        const numericValue =
+          Number(rawValue);
+
+        if (!Number.isFinite(numericValue)) {
+          return match;
+        }
+
+        return `${Math.round(
+          numericValue * 100
+        )}% rotation consistency`;
+      },
+    );
+
+    return normalized;
+  };
+
+  const aquariumDisplayName =
+    teamMark?.teamName ||
+    "Aquarium Drinkers";
+
+  const aquariumIsHome =
+    String(identity.homeAway || "")
+      .trim()
+      .toUpperCase()
+      .startsWith("HOME");
+
+  const homeTeamDisplayName =
+    aquariumIsHome
+      ? aquariumDisplayName
+      : opponentDisplayName;
+
+  const awayTeamDisplayName =
+    aquariumIsHome
+      ? opponentDisplayName
+      : aquariumDisplayName;
+
   const displayOutlookSynopsis =
-    payload?.executiveOutlook?.synopsis &&
-    canonicalOpponentDisplayName !== opponentDisplayName
-      ? payload.executiveOutlook.synopsis.replace(
-          canonicalOpponentDisplayName,
-          opponentDisplayName
+    payload?.executiveOutlook?.synopsis
+      ? normalizePreviewText(
+          payload.executiveOutlook.synopsis
         )
-      : payload?.executiveOutlook?.synopsis;
+      : null;
 
   const outlook = payload?.executiveOutlook || null;
   const leagueContext = payload?.leagueContext || null;
@@ -263,60 +409,135 @@ export default function SeriesPreview({
     "HISTORICAL_RECONSTRUCTION_NOT_CERTIFIED";
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
-      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+    <div className="min-h-full space-y-6 bg-slate-100/70 p-4 sm:p-6 dark:bg-slate-950">
+      <header
+        data-bie-surface="series-hero"
+        className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-gradient-to-r from-cyan-950/90 via-slate-950 to-rose-950/80 px-5 py-3 sm:px-6">
+          <div className="flex flex-wrap items-center gap-3">
             {onBack ? (
               <button
                 type="button"
                 onClick={onBack}
-                className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-blue-600 hover:text-blue-500"
+                className="text-xs font-black uppercase tracking-[0.14em] text-cyan-300 transition hover:text-cyan-200"
               >
                 ← Active Teams
               </button>
             ) : null}
 
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+            <span className="hidden h-4 w-px bg-slate-700 sm:block" />
+
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
               BIE Series Preview
-            </p>
-
-            <h1 className="mt-1 text-2xl font-black text-slate-950 dark:text-white">
-              Aquarium Drinkers vs.{" "}
-              {opponentDisplayName}
-            </h1>
-
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              {identity.homeAway || "Venue TBD"} ·{" "}
-              {identity.scheduledDate || "Date TBD"} ·{" "}
-              {identity.gameCount || replayGames.length || "—"} games
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                Snapshot
-              </p>
-              <Pill status={snapshot.snapshotClassification}>
-                {humanize(snapshot.snapshotClassification)}
-              </Pill>
+          <div className="flex flex-wrap items-center gap-2">
+            <Pill status={snapshot.snapshotClassification}>
+              {humanize(snapshot.snapshotClassification)}
+            </Pill>
+
+            <Pill status={lifecycle.stage}>
+              {humanize(lifecycle.stage)}
+            </Pill>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden px-5 py-8 sm:px-6 lg:px-8">
+          <div
+            className="pointer-events-none absolute inset-0"
+            aria-hidden="true"
+          >
+            <div className="absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/15 blur-3xl" />
+            <div className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
+          </div>
+
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_minmax(320px,0.9fr)_1fr]">
+            <div className="flex items-center gap-5">
+              <TeamIdentityMark
+                key={teamMark?.teamId || "aquarium"}
+                mark={teamMark}
+                tone="teal"
+              />
+
+              <div className="min-w-0">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                  Home Team
+                </p>
+
+                <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
+                  {teamMark?.teamName || "Aquarium Drinkers"}
+                </h2>
+
+                <p className="mt-1 text-xs font-semibold text-slate-400">
+                  BIE-backed team
+                </p>
+              </div>
             </div>
 
-            <div>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                Lifecycle
+            <div className="text-center">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
+                Current Matchup
               </p>
-              <Pill status={lifecycle.stage}>
-                {humanize(lifecycle.stage)}
-              </Pill>
+
+              <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-white">
+                <span className="block whitespace-nowrap">
+                  {homeTeamDisplayName}
+                </span>
+
+                <span className="mt-1 block whitespace-nowrap">
+                  <span className="mr-2 font-semibold text-cyan-300">
+                    vs.
+                  </span>
+                  {awayTeamDisplayName}
+                </span>
+              </h1>
+
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-semibold text-slate-400">
+                <span>{identity.homeAway || "Venue TBD"}</span>
+                <span aria-hidden="true">·</span>
+                <span>{identity.scheduledDate || "Date TBD"}</span>
+                <span aria-hidden="true">·</span>
+                <span>
+                  {identity.gameCount || replayGames.length || "—"} games
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-5">
+              <div className="min-w-0 text-right">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-300">
+                  Away Team
+                </p>
+
+                <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
+                  {opponentDisplayName}
+                </h2>
+
+                <p className="mt-1 text-xs font-semibold text-slate-400">
+                  League {selection?.leagueId}
+                </p>
+              </div>
+
+              <TeamIdentityMark
+                key={opponentMark?.teamId || opponentDisplayName}
+                mark={opponentMark}
+                tone="rose"
+              />
             </div>
           </div>
         </div>
 
-        <p className="mt-4 break-all text-[10px] text-slate-400">
-          {identity.seriesId}
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 bg-slate-950/90 px-5 py-3 sm:px-6">
+          <p className="truncate text-[10px] font-semibold text-slate-500">
+            {identity.seriesId}
+          </p>
+
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-400">
+            Feedback loop active
+          </p>
+        </div>
       </header>
 
       {historicalOnly ? (
@@ -332,13 +553,17 @@ export default function SeriesPreview({
       ) : null}
 
       {outlook ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <section
+          data-bie-surface="series-intelligence"
+          className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 bg-gradient-to-r from-cyan-950/80 via-slate-950 to-rose-950/40 px-5 py-5 sm:px-6">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                Series Outlook
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                Series Intelligence
               </p>
-              <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">
+
+              <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
                 {humanize(outlook.classification)}
               </h2>
             </div>
@@ -348,16 +573,42 @@ export default function SeriesPreview({
             </Pill>
           </div>
 
-          <p className="mt-4 max-w-4xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-            {displayOutlookSynopsis}
-          </p>
+          <div className="p-5 sm:p-6">
+            <p className="max-w-4xl text-sm leading-6 text-slate-300">
+              {displayOutlookSynopsis}
+            </p>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {outlook.hot?.text ? (
-              <Metric label="Hot" value={outlook.hot.text} />
-            ) : null}
-            <Metric label="Edge" value={outlook.edge?.text || "Evidence gated"} />
-            <Metric label="Watch" value={outlook.watch?.text || "Evidence gated"} />
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-cyan-900/70 bg-cyan-950/50 p-4">
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-300">
+                  Series State
+                </p>
+
+                <p className="mt-2 text-sm font-black text-white">
+                  {humanize(outlook.classification)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
+                  Edge
+                </p>
+
+                <p className="mt-2 text-sm font-black text-white">
+                  {outlook.edge?.text || "Evidence gated"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-900/70 bg-amber-950/30 p-4">
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-300">
+                  Watch
+                </p>
+
+                <p className="mt-2 text-sm font-black text-white">
+                  {outlook.watch?.text || "Evidence gated"}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       ) : null}
@@ -456,52 +707,85 @@ export default function SeriesPreview({
 
       <section>
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-          Matchup Detail
+          Matchup Intelligence
         </p>
 
         <div className="grid gap-3 md:grid-cols-2">
           {payload?.pitchingMatchup?.status === "CURRENT_PROJECTED" ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Pitching Matchup
-                </p>
+            <div
+              data-bie-surface="projected-starters"
+              className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl md:col-span-2"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 px-5 py-5 sm:px-6">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                    Rotation Intelligence
+                  </p>
+
+                  <h2 className="mt-1 text-xl font-black text-white">
+                    Projected Starters
+                  </h2>
+
+                  <p className="mt-2 text-xs leading-5 text-slate-400">
+                    BIE projection from observed starter sequencing. These are
+                    not published probable starters.
+                  </p>
+                </div>
+
                 <Pill status="PROJECTED">
                   BIE projected
                 </Pill>
               </div>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                BIE rotation projection based on observed starter sequencing.
-                These are not published probable starters.
-              </p>
-
-              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-2">
                 {[
                   payload.pitchingMatchup.team,
                   payload.pitchingMatchup.opponent,
-                ].map((side) => (
-                  <div
+                ].map((side, sideIndex) => (
+                  <article
                     key={side.role}
-                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                    className={
+                      sideIndex === 0
+                        ? "rounded-2xl border-2 border-cyan-300 bg-cyan-50 p-4 text-slate-950 shadow-md"
+                        : "rounded-2xl border-2 border-rose-300 bg-rose-50 p-4 text-slate-950 shadow-md"
+                    }
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="font-black text-slate-900 dark:text-white">
-                        {side.displayName}
-                      </p>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={
+                              sideIndex === 0
+                                ? "h-2.5 w-2.5 rounded-full bg-cyan-500"
+                                : "h-2.5 w-2.5 rounded-full bg-rose-500"
+                            }
+                            aria-hidden="true"
+                          />
+
+                          <h3
+                            className={
+                              sideIndex === 0
+                                ? "text-lg font-black text-cyan-950"
+                                : "text-lg font-black text-rose-950"
+                            }
+                          >
+                            {normalizePreviewText(side.displayName)}
+                          </h3>
+                        </div>
+
+                        <p className="mt-1 text-[11px] font-medium text-slate-500">
+                          Last starter: {side.currentLastStarter || "Unknown"}
+                          {" · "}
+                          {side.startHistoryCount ?? 0} starts observed
+                        </p>
+                      </div>
 
                       <Pill status={side.overallConfidence}>
                         {side.overallConfidence} confidence
                       </Pill>
                     </div>
 
-                    <p className="mt-1 text-xs text-slate-400">
-                      Last starter: {side.currentLastStarter || "Unknown"}
-                      {" / "}
-                      {side.startHistoryCount ?? 0} starts observed
-                    </p>
-
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-4 space-y-2.5">
                       {(side.projections || []).map((projection) => {
                         const scheduleGameNumber =
                           identity.scheduleGameNumbers?.[
@@ -511,15 +795,19 @@ export default function SeriesPreview({
                         return (
                           <div
                             key={`${side.role}-${projection.slot}`}
-                            className="rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
+                            className={
+                              sideIndex === 0
+                                ? "rounded-xl border border-cyan-100 bg-white px-3 py-3 shadow-sm"
+                                : "rounded-xl border border-rose-100 bg-white px-3 py-3 shadow-sm"
+                            }
                           >
-                            <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
                               <div>
-                                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
                                   Game {scheduleGameNumber}
                                 </p>
 
-                                <p className="mt-0.5 text-sm font-black text-slate-800 dark:text-slate-100">
+                                <p className="mt-1 text-base font-black text-slate-950">
                                   {projection.pitcher}
                                 </p>
                               </div>
@@ -529,38 +817,42 @@ export default function SeriesPreview({
                               </Pill>
                             </div>
 
-                            <p className="mt-1 text-[11px] leading-4 text-slate-400">
-                              {projection.transitionSamples} transition samples
-                              {" / "}
-                              dominance{" "}
-                              {Number(projection.dominance).toFixed(2)}
-                              {projection.conditional
-                                ? " / conditional sequence"
-                                : ""}
+                            <p
+                              className="mt-2 text-[10px] font-medium leading-4 text-slate-500"
+                              title="Rotation evidence used by BIE to estimate the likelihood that the observed starter sequence repeats."
+                            >
+                              {formatRotationEvidence(projection)}
                             </p>
                           </div>
                         );
                       })}
                     </div>
-                  </div>
+                  </article>
                 ))}
               </div>
-            </div>
-          ) : (
+
+              <div className="border-t border-slate-800 bg-slate-900/70 px-5 py-3 sm:px-6">
+                <p className="text-[10px] leading-4 text-slate-500">
+                  Rotation consistency describes how consistently the observed
+                  starter sequence repeats; it is not a measure of pitcher
+                  performance.
+                </p>
+              </div>
+            </div>          ) : (
             <GatedModule
               title="Pitching Matchup"
               detail="Probable starters, bullpen availability, and workload remain evidence gated until captured."
             />
           )}
           {payload?.lineupMatchups?.status === "CURRENT_OFFENSIVE_PROFILE" ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Lineup Matchups
+                  Current Offensive Threats
                 </p>
 
                 <Pill status="CURRENT">
-                  Current offensive profile
+                  Current OPS profile
                 </Pill>
               </div>
 
@@ -574,20 +866,44 @@ export default function SeriesPreview({
                 {[
                   payload.lineupMatchups.team,
                   payload.lineupMatchups.opponent,
-                ].map((side) => (
+                ].map((side, sideIndex) => (
                   <div
                     key={side.role}
-                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                    className={
+                      sideIndex === 0
+                        ? "rounded-2xl border border-cyan-200 bg-gradient-to-b from-cyan-50/80 to-white p-4 dark:border-cyan-900/60 dark:from-cyan-950/25 dark:to-slate-900"
+                        : "rounded-2xl border border-rose-200 bg-gradient-to-b from-rose-50/80 to-white p-4 dark:border-rose-900/60 dark:from-rose-950/25 dark:to-slate-900"
+                    }
                   >
-                    <p className="font-black text-slate-900 dark:text-white">
-                      {side.displayName}
-                    </p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p
+                        className={
+                          sideIndex === 0
+                            ? "font-black text-cyan-900 dark:text-cyan-100"
+                            : "font-black text-rose-900 dark:text-rose-100"
+                        }
+                      >
+                        {normalizePreviewText(side.displayName)}
+                      </p>
+
+                      <span
+                        className={
+                          sideIndex === 0
+                            ? "rounded-full bg-cyan-100 px-2 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300"
+                            : "rounded-full bg-rose-100 px-2 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                        }
+                      >
+                        {sideIndex === 0
+                          ? "Aquarium"
+                          : "Opponent"}
+                      </span>
+                    </div>
 
                     <div className="mt-3 space-y-2">
                       {(side.threats || []).map((player, index) => (
                         <div
                           key={`${side.role}-${player.name}`}
-                          className="rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
+                          className="rounded-xl border border-slate-200/80 bg-white/90 px-3 py-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-950/60"
                         >
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
@@ -637,24 +953,24 @@ export default function SeriesPreview({
             </div>
           ) : (
             <GatedModule
-              title="Lineup Matchups"
+              title="Current Offensive Threats"
               detail="Projected lineups, platoon edges, and card-split matchups remain evidence gated."
             />
           )}
           {payload?.availabilityEnvironment?.status === "CURRENT_PARTIAL" ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Availability & Environment
+                  Readiness & Environment
                 </p>
 
                 <Pill status="CURRENT">
-                  Current partial
+                  Partial current evidence
                 </Pill>
               </div>
 
               <div className="mt-4 grid gap-4 lg:grid-cols-3">
-                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                <div className="rounded-2xl border border-sky-200 bg-gradient-to-b from-sky-50/80 to-white p-4 dark:border-sky-900/60 dark:from-sky-950/25 dark:to-slate-900">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                     Series Environment
                   </p>
@@ -672,7 +988,7 @@ export default function SeriesPreview({
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                <div className="rounded-2xl border border-cyan-200 bg-gradient-to-b from-cyan-50/80 to-white p-4 dark:border-cyan-900/60 dark:from-cyan-950/25 dark:to-slate-900">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                     Aquarium Roster State
                   </p>
@@ -694,7 +1010,7 @@ export default function SeriesPreview({
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+                <div className="rounded-2xl border border-rose-200 bg-gradient-to-b from-rose-50/80 to-white p-4 dark:border-rose-900/60 dark:from-rose-950/25 dark:to-slate-900">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                     Opponent Roster State
                   </p>
@@ -743,58 +1059,128 @@ export default function SeriesPreview({
             </div>
           ) : (
             <GatedModule
-              title="Availability & Environment"
+              title="Readiness & Environment"
               status="NOT_CAPTURED"
               detail="Injuries, roster constraints, and park effects are not yet captured in the canonical series artifact."
             />
           )}
           {payload?.managerNotebook?.status === "CURRENT_EVIDENCE_BASED" ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Manager's Notebook
-                </p>
+            <div className="overflow-hidden rounded-3xl bg-slate-950 shadow-xl ring-1 ring-slate-800 md:col-span-2">
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 bg-gradient-to-r from-slate-950 via-slate-950 to-cyan-950/60 px-5 py-5 sm:px-6">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-400 text-lg font-black text-slate-950"
+                      aria-hidden="true"
+                    >
+                      B
+                    </span>
 
-                <Pill status="CURRENT">
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                        Series Intelligence
+                      </p>
+
+                      <h2 className="mt-0.5 text-xl font-black tracking-tight text-white">
+                        Manager's Notebook
+                      </h2>
+                    </div>
+                  </div>
+
+                  <p className="mt-3 max-w-4xl text-xs leading-5 text-slate-400">
+                    {normalizePreviewText(
+                      payload.managerNotebook.note
+                    )}
+                  </p>
+                </div>
+
+                <div className="rounded-full border border-emerald-700/60 bg-emerald-950/70 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-300">
                   Evidence based
-                </Pill>
+                </div>
               </div>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                {payload.managerNotebook.note}
-              </p>
+              <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-2">
+                {(payload.managerNotebook.items || []).map(
+                  (item) => (
+                    <article
+                      key={item.priority}
+                      className={
+                        Number(item.priority) === 1
+                          ? "group relative overflow-hidden rounded-2xl border border-rose-200 bg-white p-5 shadow-sm transition dark:border-rose-900/60 dark:bg-slate-900"
+                          : Number(item.priority) === 2
+                            ? "group relative overflow-hidden rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm transition dark:border-cyan-900/60 dark:bg-slate-900"
+                            : Number(item.priority) === 3
+                              ? "group relative overflow-hidden rounded-2xl border border-indigo-200 bg-white p-5 shadow-sm transition dark:border-indigo-900/60 dark:bg-slate-900"
+                              : "group relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-5 shadow-sm transition dark:border-amber-900/60 dark:bg-slate-900"
+                      }
+                    >
+                      <div
+                        className={
+                          Number(item.priority) === 1
+                            ? "absolute inset-x-0 top-0 h-1 bg-rose-500"
+                            : Number(item.priority) === 2
+                              ? "absolute inset-x-0 top-0 h-1 bg-cyan-500"
+                              : Number(item.priority) === 3
+                                ? "absolute inset-x-0 top-0 h-1 bg-indigo-500"
+                                : "absolute inset-x-0 top-0 h-1 bg-amber-500"
+                        }
+                      />
 
-              <div className="mt-4 space-y-3">
-                {(payload.managerNotebook.items || []).map((item) => (
-                  <div
-                    key={item.priority}
-                    className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                          Priority {item.priority}
-                        </p>
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={
+                            Number(item.priority) === 1
+                              ? "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-100 text-xl font-black text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                              : Number(item.priority) === 2
+                                ? "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-cyan-100 text-xl font-black text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300"
+                                : Number(item.priority) === 3
+                                  ? "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-xl font-black text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                                  : "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-xl font-black text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                          }
+                        >
+                          {item.priority}
+                        </div>
 
-                        <p className="mt-1 text-sm font-black text-slate-900 dark:text-white">
-                          {item.title}
-                        </p>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
+                                Decision Priority
+                              </p>
+
+                              <h3 className="mt-1 text-base font-black leading-snug text-slate-950 dark:text-white">
+                                {normalizePreviewText(
+                                  item.title
+                                )}
+                              </h3>
+                            </div>
+
+                            <Pill status={item.confidence}>
+                              {item.confidence}
+                            </Pill>
+                          </div>
+
+                          <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                            {normalizePreviewText(
+                              item.recommendation
+                            )}
+                          </p>
+                        </div>
                       </div>
 
-                      <Pill status={item.confidence}>
-                        {item.confidence}
-                      </Pill>
-                    </div>
-
-                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                      {item.recommendation}
-                    </p>
-
-                    <p className="mt-2 text-[11px] leading-4 text-slate-400">
-                      Evidence: {item.evidence}
-                    </p>
-                  </div>
-                ))}
+                      <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-800">
+                        <p className="text-[10px] font-medium leading-4 text-slate-400">
+                          <span className="mr-1 font-black uppercase tracking-[0.12em]">
+                            Evidence
+                          </span>
+                          {normalizePreviewText(
+                            item.evidence
+                          )}
+                        </p>
+                      </div>
+                    </article>
+                  )
+                )}
               </div>
             </div>
           ) : (
@@ -806,84 +1192,225 @@ export default function SeriesPreview({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-              Spoiler-Free Replay
+      <section className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
+        <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl">
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 px-5 py-5 sm:px-6">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                Series Workflow
+              </p>
+
+              <h2 className="mt-1 text-xl font-black">
+                Preview to Learning
+              </h2>
+
+              <p className="mt-2 max-w-2xl text-xs leading-5 text-slate-400">
+                The preview stays frozen. Game evidence is revealed deliberately,
+                reviewed after the series, then carried forward into the next
+                matchup.
+              </p>
+            </div>
+
+            <Pill status={series?.replay?.status}>
+              {humanize(series?.replay?.status)}
+            </Pill>
+          </div>
+
+          <div className="p-5 sm:p-6">
+            <div className="grid gap-3 md:grid-cols-4">
+              <div className="relative rounded-2xl border border-cyan-500/70 bg-cyan-950/60 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-400 text-sm font-black text-slate-950">
+                    1
+                  </span>
+
+                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
+                    Current
+                  </span>
+                </div>
+
+                <p className="mt-4 text-sm font-black text-white">
+                  Series Preview
+                </p>
+
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">
+                  Frozen pre-series decision baseline.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-sm font-black text-slate-300">
+                    2
+                  </span>
+
+                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+                    Controlled
+                  </span>
+                </div>
+
+                <p className="mt-4 text-sm font-black text-white">
+                  Spoiler-Free Replay
+                </p>
+
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">
+                  Game evidence stays hidden until deliberately revealed.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-sm font-black text-slate-300">
+                    3
+                  </span>
+
+                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+                    After Series
+                  </span>
+                </div>
+
+                <p className="mt-4 text-sm font-black text-white">
+                  Series Review
+                </p>
+
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">
+                  Actual game shape is compared with the frozen preview.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-900/80 bg-emerald-950/40 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-emerald-700 text-sm font-black text-emerald-300">
+                    4
+                  </span>
+
+                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-emerald-400">
+                    Feedback
+                  </span>
+                </div>
+
+                <p className="mt-4 text-sm font-black text-white">
+                  Learning
+                </p>
+
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">
+                  Supported signals carry into the next series preview.
+                </p>
+              </div>
+            </div>
+
+            {replayGames.length ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {replayGames.map((game) => (
+                  <div
+                    key={`${identity.seriesId}-${game.ordinal}`}
+                    className="rounded-2xl border border-slate-700 bg-slate-900/80 p-4"
+                  >
+                    <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
+                      Game {game.ordinal}
+                    </p>
+
+                    <p className="mt-1 text-sm font-black text-white">
+                      Schedule #{game.scheduleGameNumber}
+                    </p>
+
+                    <p className="mt-2 text-[11px] text-slate-400">
+                      {humanize(game.evidenceStatus)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-5 rounded-2xl border border-dashed border-slate-700 bg-slate-900/60 px-4 py-4">
+                <p className="text-xs font-semibold text-slate-300">
+                  No replay evidence has been deliberately revealed yet.
+                </p>
+
+                <p className="mt-1 text-[11px] leading-4 text-slate-500">
+                  Scores, winners, updated records, series outcomes, and
+                  future-game information remain protected.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <aside className="overflow-hidden rounded-3xl border border-cyan-900/60 bg-gradient-to-b from-slate-900 to-cyan-950 text-white shadow-xl">
+          <div className="border-b border-cyan-900/60 px-5 py-5">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+              Provenance
             </p>
-            <h2 className="mt-1 text-lg font-black text-slate-950 dark:text-white">
-              Series progression
+
+            <h2 className="mt-1 text-lg font-black">
+              Evidence Integrity
             </h2>
           </div>
 
-          <Pill status={series?.replay?.status}>
-            {humanize(series?.replay?.status)}
-          </Pill>
-        </div>
+          <div className="space-y-5 p-5">
+            <div>
+              <p className="mb-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+                Artifact Evidence
+              </p>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {replayGames.map((game) => (
-            <div
-              key={`${identity.seriesId}-${game.ordinal}`}
-              className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
-            >
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
-                Game {game.ordinal}
+              <Pill status={series?.evidence?.status}>
+                {humanize(series?.evidence?.status)}
+              </Pill>
+            </div>
+
+            <div>
+              <p className="mb-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+                Snapshot Integrity
               </p>
-              <p className="mt-1 text-sm font-bold text-slate-800 dark:text-slate-200">
-                Schedule #{game.scheduleGameNumber}
+
+              <Pill status={snapshot.status}>
+                {humanize(snapshot.status)}
+              </Pill>
+            </div>
+
+            <div className="border-t border-cyan-900/60 pt-4">
+              <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
+                Certification
               </p>
-              <p className="mt-2 text-xs text-slate-500">
-                {humanize(game.evidenceStatus)}
+
+              {missingEvidence.length ? (
+                <ul className="mt-3 space-y-2">
+                  {missingEvidence.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-2 text-xs leading-5 text-slate-300"
+                    >
+                      <span className="mt-0.5 text-amber-400">
+                        •
+                      </span>
+
+                      <span>
+                        {normalizePreviewText(item)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mt-3 rounded-xl border border-emerald-800/70 bg-emerald-950/50 p-3">
+                  <p className="text-xs font-semibold leading-5 text-emerald-200">
+                    Pre-series snapshot integrity is intact.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-cyan-800/60 bg-cyan-950/60 p-4">
+              <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
+                BIE Contract
+              </p>
+
+              <p className="mt-2 text-xs leading-5 text-slate-300">
+                Unsupported intelligence remains evidence gated rather than
+                being presented as known before Game 1.
               </p>
             </div>
-          ))}
-        </div>
-
-        <p className="mt-4 text-xs leading-5 text-slate-400">
-          Scores, winners, updated records, series outcomes, and future-game
-          information remain hidden until deliberately revealed.
-        </p>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-          Evidence & Snapshot Integrity
-        </p>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Pill status={series?.evidence?.status}>
-            Artifact Evidence {humanize(series?.evidence?.status)}
-          </Pill>
-          <Pill status={snapshot.status}>
-            Snapshot Integrity {humanize(snapshot.status)}
-          </Pill>
-        </div>
-
-        {missingEvidence.length ? (
-          <div className="mt-4">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
-              Snapshot certification gaps
-            </p>
-            <ul className="mt-2 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              {missingEvidence.map((item) => (
-                <li key={item}>• {item}</li>
-              ))}
-            </ul>
           </div>
-        ) : (
-          <p className="mt-4 text-sm leading-6 text-slate-500 dark:text-slate-400">
-            Pre-series snapshot integrity is intact. Baseball intelligence
-            remains evidence gated wherever supporting data has not yet been
-            captured.
-          </p>
-        )}
+        </aside>
       </section>
-
-      <footer className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">
-        Preview → Spoiler-Free Replay → Series Review → Learning
-      </footer>
     </div>
   );
 }

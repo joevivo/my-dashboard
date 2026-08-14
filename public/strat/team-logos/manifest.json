@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "bie.strat365.team-logo-manifest.v1",
+  "teamCount": 33,
+  "leagues": ["479336", "479431", "479610"],
+  "specialRules": {
+    "arkinals": "1853519 and 1854378 intentionally reuse the same approved sad, beat-up cardinal artwork.",
+    "sixtiesHippies": "1855828 uses the earlier approved Sixties Hippies artwork, not the later alternate.",
+    "heyJudes": "1854054 is intentionally visually distinct from Hey Jude team 1854468.",
+    "grantPark": "1855976 uses the approved Chicago-specific Grant Park treatment."
+  },
+  "teams": [
+    {"leagueId":"479336","teamId":"1853382","teamName":"Iowa bombers","logoPath":"/strat/team-logos/1853382.png"},
+    {"leagueId":"479336","teamId":"1853443","teamName":"Mighty Yankees","logoPath":"/strat/team-logos/1853443.png"},
+    {"leagueId":"479336","teamId":"1853506","teamName":"Norwich Not Flatlanders","logoPath":"/strat/team-logos/1853506.png"},
+    {"leagueId":"479336","teamId":"1853519","teamName":"Busch League Arkinals™","logoPath":"/strat/team-logos/1853519.png"},
+    {"leagueId":"479336","teamId":"1853534","teamName":"Northside Hogs","logoPath":"/strat/team-logos/1853534.png"},
+    {"leagueId":"479336","teamId":"1853540","teamName":"Classic City Crazy Eights","logoPath":"/strat/team-logos/1853540.png"},
+    {"leagueId":"479336","teamId":"1853550","teamName":"Boquete Bombers","logoPath":"/strat/team-logos/1853550.png"},
+    {"leagueId":"479336","teamId":"1853594","teamName":"Funk Brothers","logoPath":"/strat/team-logos/1853594.png"},
+    {"leagueId":"479336","teamId":"1853598","teamName":"New York Highlanders","logoPath":"/strat/team-logos/1853598.png"},
+    {"leagueId":"479336","teamId":"1853667","teamName":"Fresno Raisin Eaters","logoPath":"/strat/team-logos/1853667.png"},
+    {"leagueId":"479336","teamId":"1853674","teamName":"RainRain 80's Mustache","logoPath":"/strat/team-logos/1853674.png"},
+
+    {"leagueId":"479431","teamId":"1854055","teamName":"Gashouse Gorillas","logoPath":"/strat/team-logos/1854055.png"},
+    {"leagueId":"479431","teamId":"1854297","teamName":"Milan Azzurri","logoPath":"/strat/team-logos/1854297.png"},
+    {"leagueId":"479431","teamId":"1854324","teamName":"Toledo Knights","logoPath":"/strat/team-logos/1854324.png"},
+    {"leagueId":"479431","teamId":"1854355","teamName":"Ohio Players","logoPath":"/strat/team-logos/1854355.png"},
+    {"leagueId":"479431","teamId":"1854376","teamName":"Ukrainian Drones","logoPath":"/strat/team-logos/1854376.png"},
+    {"leagueId":"479431","teamId":"1854378","teamName":"MemorialCardnal Arkinals™","logoPath":"/strat/team-logos/1854378.png"},
+    {"leagueId":"479431","teamId":"1854429","teamName":"Crystal Sky Chanticleers","logoPath":"/strat/team-logos/1854429.png"},
+    {"leagueId":"479431","teamId":"1854461","teamName":"Willis Towers","logoPath":"/strat/team-logos/1854461.png"},
+    {"leagueId":"479431","teamId":"1854468","teamName":"Hey Jude","logoPath":"/strat/team-logos/1854468.png"},
+    {"leagueId":"479431","teamId":"1854491","teamName":"Atlanta Crew","logoPath":"/strat/team-logos/1854491.png"},
+    {"leagueId":"479431","teamId":"1854501","teamName":"Brooklyn Bombers","logoPath":"/strat/team-logos/1854501.png"},
+
+    {"leagueId":"479610","teamId":"1851199","teamName":"Cabrillo Beach rhino rats","logoPath":"/strat/team-logos/1851199.png"},
+    {"leagueId":"479610","teamId":"1851816","teamName":"MotorCity Mashers","logoPath":"/strat/team-logos/1851816.png"},
+    {"leagueId":"479610","teamId":"1854054","teamName":"Hey Judes","logoPath":"/strat/team-logos/1854054.png"},
+    {"leagueId":"479610","teamId":"1855742","teamName":"Cape Coral Dabblers-80","logoPath":"/strat/team-logos/1855742.png"},
+    {"leagueId":"479610","teamId":"1855828","teamName":"Sixties Hippies","logoPath":"/strat/team-logos/1855828.png"},
+    {"leagueId":"479610","teamId":"1855876","teamName":"Georgia Peaches","logoPath":"/strat/team-logos/1855876.png"},
+    {"leagueId":"479610","teamId":"1855893","teamName":"Tulsa Drillers","logoPath":"/strat/team-logos/1855893.png"},
+    {"leagueId":"479610","teamId":"1855969","teamName":"Napa Valley Crushers","logoPath":"/strat/team-logos/1855969.png"},
+    {"leagueId":"479610","teamId":"1855976","teamName":"Grant Park Weathermen","logoPath":"/strat/team-logos/1855976.png"},
+    {"leagueId":"479610","teamId":"1855985","teamName":"Virginia Outlaws","logoPath":"/strat/team-logos/1855985.png"},
+    {"leagueId":"479610","teamId":"1856003","teamName":"Taguig Moto Kings","logoPath":"/strat/team-logos/1856003.png"}
+  ]
+}
