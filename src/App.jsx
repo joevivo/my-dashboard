@@ -25,7 +25,6 @@ import WeatherBug from "./WeatherBug";
 
 import NewsView from "./NewsView";
 
-import CardImporter from "./CardImporter";
 
 import MusicLibrary from "./MusicLibrary";
 
@@ -85,7 +84,7 @@ function formatOrdinal(value) {
   const number = Number(value);
 
   if (!Number.isFinite(number) || number < 1) {
-    return "—";
+    return "ΓÇö";
   }
 
   const mod100 = number % 100;
@@ -284,7 +283,7 @@ function buildSeriesRead({
     tone,
     summary:
       evidence.length > 0
-        ? evidence.slice(0, 3).join(" · ")
+        ? evidence.slice(0, 3).join(" ┬╖ ")
         : "No meaningful statistical separation detected.",
   };
 }
@@ -296,7 +295,7 @@ function formatRotationPitcher(value) {
 
   return parts.length >= 2
     ? `${parts.slice(1).join(" ")} ${parts[0]}`
-    : value || "—";
+    : value || "ΓÇö";
 }
 
 function rotationConfidenceClasses(value) {
@@ -537,7 +536,7 @@ export default function App() {
 
     if (!seriesId) {
       setStratActionMessage(
-        `${team.teamName} · League ${team.leagueId}: current BIE Series Preview is not yet resolved.`
+        `${team.teamName} ┬╖ League ${team.leagueId}: current BIE Series Preview is not yet resolved.`
       );
       return;
     }
@@ -555,7 +554,7 @@ export default function App() {
     setActiveView("SeriesPreview");
 
     setStratActionMessage(
-      `${team.teamName} · League ${team.leagueId}: current BIE Series Preview opened.`
+      `${team.teamName} ┬╖ League ${team.leagueId}: current BIE Series Preview opened.`
     );
   };
   useEffect(() => {
@@ -606,17 +605,7 @@ export default function App() {
         },
       ],
     },
-    {
-      title: "Utilities",
-      groups: [
-        {
-          title: "Tools",
-          items: [
-            ["CardImporter", "Card Importer"],
-          ],
-        },
-      ],
-    },
+
   ];
 
   const navButton = (view, label) => (
@@ -731,7 +720,7 @@ export default function App() {
             currentSeries?.gameCount ?? null;
 
           const currentHomeAway =
-            currentSeries?.homeAway || "—";
+            currentSeries?.homeAway || "ΓÇö";
 
           const opponentLive =
             currentOpponentTeamId ? stratTeamData[currentOpponentTeamId] : null;
@@ -832,7 +821,7 @@ export default function App() {
 
                     <div>
                       <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-800/70 dark:text-cyan-200/65">
-                        {team.season} · League {team.leagueId}
+                        {team.season} ┬╖ League {team.leagueId}
                       </p>
 
                       <h3 className="mt-1 text-2xl font-black text-[#06172f] dark:text-white">
@@ -875,7 +864,7 @@ export default function App() {
                       {live?.record ||
                         (liveStatus === "error"
                           ? "Unavailable"
-                          : "Loading…")}
+                          : "LoadingΓÇª")}
                     </p>
                   </div>
 
@@ -885,14 +874,14 @@ export default function App() {
                     </p>
                     <p className="mt-1 text-lg font-black">
                       {isPreseason
-                        ? "—"
+                        ? "ΓÇö"
                         : teamStanding
                           ? `${formatOrdinal(
                               teamStanding.divisionRank
                             )} ${teamStanding.division}`
                           : leagueStatus === "error"
                             ? "Unavailable"
-                            : "Loading…"}
+                            : "LoadingΓÇª"}
                     </p>
 
                     {!isPreseason && teamStanding && (
@@ -910,11 +899,11 @@ export default function App() {
                     </p>
                     <p className="mt-1 text-xl font-black">
                       {isPreseason
-                        ? "—"
+                        ? "ΓÇö"
                         : teamStanding?.runDifferential ||
                           (leagueStatus === "error"
                             ? "Unavailable"
-                            : "Loading…")}
+                            : "LoadingΓÇª")}
                     </p>
                   </div>
                 </div>
@@ -927,11 +916,11 @@ export default function App() {
                   ) : (
                     <>
                       <span>
-                        L10 {teamStanding?.last10 || "…"}
+                        L10 {teamStanding?.last10 || "ΓÇª"}
                       </span>
-                      <span>·</span>
+                      <span>┬╖</span>
                       <span>
-                        Streak {teamStanding?.streak || "…"}
+                        Streak {teamStanding?.streak || "ΓÇª"}
                       </span>
                     </>
                   )}
@@ -944,11 +933,11 @@ export default function App() {
                 </p>
 
                 <p className="mt-2 text-xl font-black">
-                  {currentHomeAway} · {currentOpponentName}
+                  {currentHomeAway} ┬╖ {currentOpponentName}
                 </p>
 
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  {currentSeriesDate} · {currentGameCount ?? "—"} games
+                  {currentSeriesDate} ┬╖ {currentGameCount ?? "ΓÇö"} games
                 </p>
 
                 <div className="mt-4 grid grid-cols-3 gap-3">
@@ -960,7 +949,7 @@ export default function App() {
                       {opponentLive?.record ||
                         (opponentStatus === "error"
                           ? "Unavailable"
-                          : "Loading…")}
+                          : "LoadingΓÇª")}
                     </p>
                   </div>
 
@@ -970,14 +959,14 @@ export default function App() {
                     </p>
                     <p className="mt-1 font-black">
                       {isPreseason
-                        ? "—"
+                        ? "ΓÇö"
                         : opponentStanding
                           ? `${formatOrdinal(
                               opponentStanding.divisionRank
                             )} ${opponentStanding.division}`
                           : leagueStatus === "error"
                             ? "Unavailable"
-                            : "Loading…"}
+                            : "LoadingΓÇª"}
                     </p>
 
                     {!isPreseason && opponentStanding && (
@@ -995,11 +984,11 @@ export default function App() {
                     </p>
                     <p className="mt-1 font-black">
                       {isPreseason
-                        ? "—"
+                        ? "ΓÇö"
                         : opponentStanding?.runDifferential ||
                           (leagueStatus === "error"
                             ? "Unavailable"
-                            : "Loading…")}
+                            : "LoadingΓÇª")}
                     </p>
                   </div>
                 </div>
@@ -1007,11 +996,11 @@ export default function App() {
                 {!isPreseason && (
                   <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
                     <span>
-                      Opp L10 {opponentStanding?.last10 || "…"}
+                      Opp L10 {opponentStanding?.last10 || "ΓÇª"}
                     </span>
-                    <span>·</span>
+                    <span>┬╖</span>
                     <span>
-                      Streak {opponentStanding?.streak || "…"}
+                      Streak {opponentStanding?.streak || "ΓÇª"}
                     </span>
                   </div>
                 )}
@@ -1026,7 +1015,7 @@ export default function App() {
                         (liveStatus === "error" ||
                         opponentStatus === "error"
                           ? "Unavailable"
-                          : "Loading…")}
+                          : "LoadingΓÇª")}
                     </p>
                   </div>
 
@@ -1036,16 +1025,16 @@ export default function App() {
                     </p>
                     <p className="mt-1 font-bold">
                       {isPreseason
-                        ? "—"
+                        ? "ΓÇö"
                         : teamVenueRecord && opponentVenueRecord
-                          ? `${currentHomeAway} ${teamVenueRecord} · Opp ${
+                          ? `${currentHomeAway} ${teamVenueRecord} ┬╖ Opp ${
                               currentHomeAway === "Away"
                                 ? "Home"
                                 : "Road"
                             } ${opponentVenueRecord}`
                           : leagueStatus === "error"
                             ? "Unavailable"
-                            : "Loading…"}
+                            : "LoadingΓÇª"}
                     </p>
                   </div>
                 </div>
@@ -1119,7 +1108,7 @@ export default function App() {
                       </p>
                     ) : rotationLoading ? (
                       <p className="mt-2 text-sm font-semibold text-slate-400">
-                        Loading rotation evidence…
+                        Loading rotation evidenceΓÇª
                       </p>
                     ) : !rotationReady ? (
                       <p className="mt-2 text-sm font-semibold text-slate-400 dark:text-slate-500">
@@ -1356,7 +1345,7 @@ export default function App() {
 
             <h1 className="text-xl font-bold tracking-tight">
 
-              Defending Sisyphus · Strat-O-Matic
+              Defending Sisyphus ┬╖ Strat-O-Matic
 
             </h1>
 
@@ -1577,10 +1566,6 @@ export default function App() {
 ) : activeView === "Opponents" ? (
 
   <OpponentManager />
-
-) : activeView === "Cards" ? (
-
-  <CardImporter />
 
 ) : activeView === "News" ? (
 
