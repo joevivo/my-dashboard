@@ -128,42 +128,392 @@ function formatRecord(profile) {
   return `${wins}-${losses}`;
 }
 
-function PlayerList({ title, rows, metric, digits = 3 }) {
-  const safeRows = Array.isArray(rows) ? rows.slice(0, 3) : [];
+const HITTER_KEY_PLAYER_METRICS = [
+  {
+    key: "OPS",
+    label: "OPS",
+    digits: 3,
+    direction: "desc",
+  },
+  {
+    key: "OBP",
+    label: "OBP",
+    digits: 3,
+    direction: "desc",
+  },
+  {
+    key: "SLG",
+    label: "SLG",
+    digits: 3,
+    direction: "desc",
+  },
+  {
+    key: "BA",
+    label: "BA",
+    digits: 3,
+    direction: "desc",
+  },
+  {
+    key: "HR",
+    label: "HR",
+    digits: 0,
+    direction: "desc",
+  },
+  {
+    key: "RBI",
+    label: "RBI",
+    digits: 0,
+    direction: "desc",
+  },
+];
+
+const PITCHER_KEY_PLAYER_METRICS = [
+  {
+    key: "ERA",
+    label: "ERA",
+    digits: 2,
+    direction: "asc",
+  },
+  {
+    key: "WHIP",
+    label: "WHIP",
+    digits: 2,
+    direction: "asc",
+  },
+  {
+    key: "SO",
+    label: "SO",
+    digits: 0,
+    direction: "desc",
+  },
+  {
+    key: "W",
+    label: "W",
+    digits: 0,
+    direction: "desc",
+  },
+  {
+    key: "S",
+    label: "S",
+    digits: 0,
+    direction: "desc",
+  },
+];
+
+function numericPlayerMetric(row, metricKey) {
+  const rawValue = row?.[metricKey];
+
+  if (
+    rawValue === null ||
+    rawValue === undefined ||
+    rawValue === ""
+  ) {
+    return null;
+  }
+
+  const numericValue = Number(rawValue);
+
+  return Number.isFinite(numericValue)
+    ? numericValue
+    : null;
+}
+
+function rankPlayerRows(rows, metricConfig) {
+  const safeRows =
+    Array.isArray(rows) ? rows : [];
+
+  return safeRows
+    .map((row) => ({
+      row,
+      value: numericPlayerMetric(
+        row,
+        metricConfig.key,
+      ),
+    }))
+    .filter(({ value }) => value !== null)
+    .sort((left, right) => {
+      const delta =
+        metricConfig.direction === "asc"
+          ? left.value - right.value
+          : right.value - left.value;
+
+      if (delta !== 0) {
+        return delta;
+      }
+
+      return String(
+        left.row?.playerName ||
+          left.row?.name ||
+          "",
+      ).localeCompare(
+        String(
+          right.row?.playerName ||
+            right.row?.name ||
+            "",
+        ),
+      );
+    })
+    .slice(0, 3)
+    .map(({ row }) => row);
+}
+
+function formatPlayerMetric(row, metricConfig) {
+  const value =
+    numericPlayerMetric(
+      row,
+      metricConfig.key,
+    );
+
+  if (value === null) {
+    return "—";
+  }
+
+  return value.toFixed(
+    metricConfig.digits,
+  );
+}
+
+function KeyPlayerMetricSelector({
+  label,
+  metrics,
+  selectedKey,
+  onChange,
+}) {
+  return (
+    <div>
+      <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+        {label}
+      </p>
+
+      <div className="flex flex-wrap gap-1.5">
+        {metrics.map((metric) => {
+          const active =
+            metric.key === selectedKey;
+
+          return (
+            <button
+              key={metric.key}
+              type="button"
+              aria-pressed={active}
+              onClick={() =>
+                onChange(metric.key)
+              }
+              className={
+                active
+                  ? "rounded-full border border-cyan-500 bg-cyan-500 px-2.5 py-1 text-[11px] font-black text-slate-950 shadow-sm"
+                  : "rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
+              }
+            >
+              {metric.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function PlayerList({
+  title,
+  rows,
+  metricConfig,
+}) {
+  const safeRows =
+    rankPlayerRows(
+      rows,
+      metricConfig,
+    );
 
   return (
     <div>
-      <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-        {title}
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+          {title}
+        </p>
+
+        <span className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+          {metricConfig.direction === "asc"
+            ? "Low"
+            : "High"}
+        </span>
+      </div>
 
       {safeRows.length ? (
         <div className="mt-2 space-y-2">
-          {safeRows.map((row, index) => {
-            const value = Number(row?.[metric]);
+          {safeRows.map((row, index) => (
+            <div
+              key={`${row?.playerName || row?.name || "player"}-${index}`}
+              className="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
+            >
+              <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                {row?.playerName ||
+                  row?.name ||
+                  "Unknown player"}
+              </span>
 
-            return (
-              <div
-                key={`${row?.playerName || row?.name || "player"}-${index}`}
-                className="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-950/50"
-              >
-                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  {row?.playerName || row?.name || "Unknown player"}
+              <div className="text-right">
+                <span className="text-sm font-bold tabular-nums text-slate-700 dark:text-slate-200">
+                  {formatPlayerMetric(
+                    row,
+                    metricConfig,
+                  )}
                 </span>
-                <span className="text-sm font-bold tabular-nums text-slate-600 dark:text-slate-300">
-                  {Number.isFinite(value) ? value.toFixed(digits) : "—"}
+
+                <span className="ml-1.5 text-[9px] font-black uppercase tracking-[0.1em] text-slate-400">
+                  {metricConfig.label}
                 </span>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       ) : (
-        <p className="mt-2 text-sm text-slate-400">Evidence gated</p>
+        <p className="mt-2 text-sm text-slate-400">
+          Evidence gated
+        </p>
       )}
     </div>
   );
 }
 
+function KeyPlayersPanel({
+  teamName,
+  opponentName,
+  teamPlayers,
+  opponentPlayers,
+}) {
+  const [
+    hitterMetricKey,
+    setHitterMetricKey,
+  ] = useState("OPS");
+
+  const [
+    pitcherMetricKey,
+    setPitcherMetricKey,
+  ] = useState("ERA");
+
+  const hitterMetric =
+    HITTER_KEY_PLAYER_METRICS.find(
+      (metric) =>
+        metric.key === hitterMetricKey,
+    ) || HITTER_KEY_PLAYER_METRICS[0];
+
+  const pitcherMetric =
+    PITCHER_KEY_PLAYER_METRICS.find(
+      (metric) =>
+        metric.key === pitcherMetricKey,
+    ) || PITCHER_KEY_PLAYER_METRICS[0];
+
+  const hitterRowsFor = (players) =>
+    hitterMetric.key === "OPS"
+      ? players?.topHittersByOPS
+      : players?.hitters;
+
+  const pitcherRowsFor = (players) =>
+    pitcherMetric.key === "ERA"
+      ? players?.topPitchersByERA
+      : players?.pitchers;
+
+  return (
+    <section
+      data-bie-surface="key-players"
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+            Key Players
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+            Compare both teams on the same batting and pitching measures.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-4">
+          <KeyPlayerMetricSelector
+            label="Hitters"
+            metrics={
+              HITTER_KEY_PLAYER_METRICS
+            }
+            selectedKey={
+              hitterMetricKey
+            }
+            onChange={
+              setHitterMetricKey
+            }
+          />
+
+          <KeyPlayerMetricSelector
+            label="Pitchers"
+            metrics={
+              PITCHER_KEY_PLAYER_METRICS
+            }
+            selectedKey={
+              pitcherMetricKey
+            }
+            onChange={
+              setPitcherMetricKey
+            }
+          />
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5">
+          <h3 className="font-black text-slate-900 dark:text-white">
+            {teamName}
+          </h3>
+
+          <PlayerList
+            title={`Top Hitters · ${hitterMetric.label}`}
+            rows={hitterRowsFor(
+              teamPlayers,
+            )}
+            metricConfig={
+              hitterMetric
+            }
+          />
+
+          <PlayerList
+            title={`Top Pitchers · ${pitcherMetric.label}`}
+            rows={pitcherRowsFor(
+              teamPlayers,
+            )}
+            metricConfig={
+              pitcherMetric
+            }
+          />
+        </div>
+
+        <div className="space-y-5">
+          <h3 className="font-black text-slate-900 dark:text-white">
+            {opponentName}
+          </h3>
+
+          <PlayerList
+            title={`Top Hitters · ${hitterMetric.label}`}
+            rows={hitterRowsFor(
+              opponentPlayers,
+            )}
+            metricConfig={
+              hitterMetric
+            }
+          />
+
+          <PlayerList
+            title={`Top Pitchers · ${pitcherMetric.label}`}
+            rows={pitcherRowsFor(
+              opponentPlayers,
+            )}
+            metricConfig={
+              pitcherMetric
+            }
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
 function GatedModule({ title, status = "EVIDENCE_GATED", detail }) {
   return (
     <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-950/30">
@@ -662,49 +1012,13 @@ export default function SeriesPreview({
       ) : null}
 
       {playerIntelligence?.status === "AVAILABLE" ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-            Key Players
-          </p>
-
-          <div className="mt-4 grid gap-6 lg:grid-cols-2">
-            <div className="space-y-5">
-              <h3 className="font-black text-slate-900 dark:text-white">
-                Aquarium Drinkers
-              </h3>
-              <PlayerList
-                title="Top Hitters · OPS"
-                rows={teamPlayers.topHittersByOPS}
-                metric="OPS"
-              />
-              <PlayerList
-                title="Top Pitchers · ERA"
-                rows={teamPlayers.topPitchersByERA}
-                metric="ERA"
-                digits={2}
-              />
-            </div>
-
-            <div className="space-y-5">
-              <h3 className="font-black text-slate-900 dark:text-white">
-                {opponentDisplayName}
-              </h3>
-              <PlayerList
-                title="Top Hitters · OPS"
-                rows={opponentPlayers.topHittersByOPS}
-                metric="OPS"
-              />
-              <PlayerList
-                title="Top Pitchers · ERA"
-                rows={opponentPlayers.topPitchersByERA}
-                metric="ERA"
-                digits={2}
-              />
-            </div>
-          </div>
-        </section>
+        <KeyPlayersPanel
+          teamName={aquariumDisplayName}
+          opponentName={opponentDisplayName}
+          teamPlayers={teamPlayers}
+          opponentPlayers={opponentPlayers}
+        />
       ) : null}
-
       <section>
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
           Matchup Intelligence
