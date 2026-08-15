@@ -468,6 +468,40 @@ def parse_team_links(
     return result
 
 
+def parse_team_abbreviation_ids(
+    path: Path,
+) -> dict[str, str]:
+    text = path.read_text(
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    pattern = re.compile(
+        r'<div[^>]*class=["\'][^"\']*\babbrev\b[^"\']*["\'][^>]*>\s*([^<]+?)\s*</div>\s*'
+        r'<div[^>]*class=["\'][^"\']*\bfullname\b[^"\']*["\'][^>]*>.*?'
+        r'href=["\'][^"\']*/team/(\d+)[^"\']*["\']',
+        re.IGNORECASE | re.DOTALL,
+    )
+
+    result: dict[str, str] = {}
+
+    for label, team_id in pattern.findall(text):
+        key = team_key(label.strip())
+        if not key:
+            continue
+
+        existing = result.get(key)
+        if existing is not None and existing != team_id:
+            raise ValueError(
+                "Conflicting Strat team IDs for fielding "
+                f"abbreviation {label}: {existing} vs {team_id}"
+            )
+
+        result[key] = team_id
+
+    return result
+
+
 def team_tokens(value: str) -> list[str]:
     value = unicodedata.normalize(
         "NFKD",
@@ -490,11 +524,22 @@ def resolve_alias_collection_globally(
     collection: dict[str, dict[str, Any]],
     canonical: dict[str, dict[str, Any]],
     collection_name: str,
+    explicit_aliases: dict[str, str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     candidate_map: dict[str, set[str]] = {}
 
     for alias_key in collection:
         candidates: set[str] = set()
+
+        if explicit_aliases is not None:
+            explicit = explicit_aliases.get(alias_key)
+            if explicit is not None:
+                if explicit not in canonical:
+                    raise ValueError(
+                        f"{collection_name} explicit alias points "
+                        f"to unknown canonical team: {alias_key} -> {explicit}"
+                    )
+                candidates.add(explicit)
 
         if alias_key in canonical:
             candidates.add(alias_key)
@@ -964,6 +1009,35 @@ def build(
 
         standing["teamId"] = team_id
 
+    fielding_abbreviation_ids = parse_team_abbreviation_ids(
+        responses
+        / "league-team-fielding"
+        / "page-00000.html"
+    )
+
+    manager_abbreviation_ids = parse_team_abbreviation_ids(
+        responses
+        / "league-managers"
+        / "page-00000.html"
+    )
+
+    standings_by_team_id = {
+        str(standing["teamId"]): canonical_key
+        for canonical_key, standing in standings.items()
+    }
+
+    fielding_explicit_aliases: dict[str, str] = {}
+    for alias_key, team_id in fielding_abbreviation_ids.items():
+        canonical_key = standings_by_team_id.get(team_id)
+        if canonical_key is not None:
+            fielding_explicit_aliases[alias_key] = canonical_key
+
+    manager_explicit_aliases: dict[str, str] = {}
+    for alias_key, team_id in manager_abbreviation_ids.items():
+        canonical_key = standings_by_team_id.get(team_id)
+        if canonical_key is not None:
+            manager_explicit_aliases[alias_key] = canonical_key
+
     if set(offense) != set(standings):
         raise ValueError(
             "Offense full-name identities do not "
@@ -980,12 +1054,14 @@ def build(
         fielding,
         standings,
         "fielding",
+        fielding_explicit_aliases,
     )
 
     managers = resolve_alias_collection_globally(
         managers,
         standings,
         "managers",
+        manager_explicit_aliases,
     )
 
     collections = {

@@ -880,6 +880,144 @@ function loadBieSeriesFromRequest(req) {
 }
 
 app.get(
+  "/api/strat/league/:leagueId/team/:teamId/series-preview/:seriesId",
+  (req, res) => {
+    try {
+      const { leagueId, teamId, seriesId } = req.params;
+
+      if (
+        !/^\d+$/.test(String(leagueId)) ||
+        !/^\d+$/.test(String(teamId))
+      ) {
+        const error = new Error(
+          "Invalid Series Preview identity"
+        );
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      const previewFile = path.join(
+        BIE_REPO_ROOT,
+        "data",
+        "baseball",
+        "state",
+        "strat365",
+        "series-preview-v0",
+        `league-${leagueId}`,
+        `team-${teamId}`,
+        "series-engine-v0.json"
+      );
+
+      const payload = JSON.parse(
+        fs.readFileSync(previewFile, "utf8")
+      );
+
+      const upcoming =
+        payload?.upcomingSeries || {};
+
+      const scheduleGameNumbers =
+        Array.isArray(upcoming.scheduleGameNumbers)
+          ? upcoming.scheduleGameNumbers.map(
+              (value) => Number(value)
+            )
+          : [];
+
+      const expectedSeriesId =
+        `league-${leagueId}-team-${teamId}-games-` +
+        scheduleGameNumbers.join("-");
+
+      if (
+        scheduleGameNumbers.length === 0 ||
+        seriesId !== expectedSeriesId
+      ) {
+        const error = new Error(
+          `Upcoming Series Preview not found for ${seriesId}`
+        );
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      return res.json({
+        schemaVersion:
+          "bie.strat365.series-preview-view.v0",
+
+        evidence: {
+          classification: "PREGAME_ONLY",
+          sourceArtifact: "series-preview-v0",
+        },
+
+        lifecycle: {
+          completedGameCount: 0,
+          learningAvailable: false,
+          previewAvailable: true,
+          replayAvailable: false,
+          reviewAvailable: false,
+          stage: "PREGAME",
+        },
+
+        preSeriesSnapshot: {
+          certifiedPreSeries: false,
+          frozenAtUtc: null,
+          missingEvidence: [],
+          payload,
+
+          provenance: {
+            sourceArtifact: "series-preview-v0",
+          },
+
+          reconstructionEvidence: null,
+          snapshotClassification:
+            "LIVE_PREGAME_PREVIEW",
+          status: "AVAILABLE",
+
+          warning:
+            "Live pregame BIE Series Preview. " +
+            "No canonical series-v1 artifact is created.",
+        },
+
+        replay: {
+          games: [],
+        },
+
+        seriesIdentity: {
+          gameCount:
+            Number(upcoming.gameCount) ||
+            scheduleGameNumbers.length,
+
+          homeAway:
+            upcoming.homeAway || null,
+
+          leagueId:
+            String(leagueId),
+
+          opponentDisplayName:
+            upcoming.opponentDisplayName || null,
+
+          opponentTeamId:
+            upcoming.opponentTeamId == null
+              ? null
+              : String(upcoming.opponentTeamId),
+
+          scheduleGameNumbers,
+
+          scheduledDate:
+            upcoming.scheduledDate || null,
+
+          seriesId,
+
+          teamId:
+            String(teamId),
+        },
+      });
+    } catch (error) {
+      return sendBieSeriesError(
+        res,
+        error
+      );
+    }
+  }
+);
+app.get(
   "/api/strat/league/:leagueId/team/:teamId/series/:seriesId",
   (req, res) => {
     try {

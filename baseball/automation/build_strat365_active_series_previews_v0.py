@@ -570,22 +570,22 @@ def build(
                 )
 
 
-        prior_series_learning = (
-            resolve_prior_series_learning(
-                repo_root,
-                league_id=str(row["leagueId"]),
-                team_id=str(row["teamId"]),
-                schedule_path=row["schedule"],
+            prior_series_learning = (
+                resolve_prior_series_learning(
+                    repo_root,
+                    league_id=str(row["leagueId"]),
+                    team_id=str(row["teamId"]),
+                    schedule_path=row["schedule"],
+                )
             )
-        )
 
-        if prior_series_learning is not None:
-            arguments.extend(
-                [
-                    "--prior-series-learning",
-                    str(prior_series_learning),
-                ]
-            )
+            if prior_series_learning is not None:
+                arguments.extend(
+                    [
+                        "--prior-series-learning",
+                        str(prior_series_learning),
+                    ]
+                )
 
             arguments.extend(
                 [

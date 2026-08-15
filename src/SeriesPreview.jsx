@@ -202,7 +202,7 @@ export default function SeriesPreview({
 
     return (
       `${apiBase}/api/strat/league/${selection.leagueId}` +
-      `/team/${selection.teamId}/series/` +
+      `/team/${selection.teamId}/series-preview/` +
       encodeURIComponent(selection.seriesId)
     );
   }, [apiBase, selection]);

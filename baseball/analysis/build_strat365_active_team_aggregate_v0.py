@@ -120,6 +120,19 @@ def find_team_payload(
     *,
     team_id: str,
 ) -> dict[str, Any] | None:
+    if isinstance(payload, dict):
+        teams = payload.get("teams")
+
+        if isinstance(teams, list):
+            for obj in teams:
+                if (
+                    isinstance(obj, dict)
+                    and str(obj.get("teamId", "")) == team_id
+                ):
+                    return obj
+
+            return None
+
     for obj in walk_objects(payload):
         if str(obj.get("teamId", "")) == team_id:
             return obj
