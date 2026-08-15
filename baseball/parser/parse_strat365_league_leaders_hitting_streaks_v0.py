@@ -8,6 +8,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from parse_strat365_league_leaders_v0 import parse_leader_categories
 
 
 PRE_RE = re.compile(
@@ -138,6 +139,21 @@ def build_output(input_path: Path) -> dict:
     streaks = parse_hitting_streaks(raw_html)
     current = [row for row in streaks if row["isCurrent"]]
 
+    leader_categories = parse_leader_categories(raw_html)
+
+    league_leader_rows = []
+
+    for category in leader_categories:
+        for row in category.get("leaders") or []:
+            league_leader_rows.append(
+                {
+                    "categoryKey": category.get("categoryKey"),
+                    "categoryName": category.get("categoryName"),
+                    "section": category.get("section"),
+                    **row,
+                }
+            )
+
     return {
         "schemaVersion": "strat365-league-leaders-hitting-streaks-v0",
         "artifactType": "league-leaders-hitting-streak-evidence",
@@ -153,6 +169,15 @@ def build_output(input_path: Path) -> dict:
         "counts": {
             "streakRows": len(streaks),
             "currentStreakRows": len(current),
+            "leagueLeaderCategoryCount": len(leader_categories),
+            "leagueLeaderRowCount": len(league_leader_rows),
+        },
+        "leagueLeaders": {
+            "schemaVersion": "strat365-league-leaders-v0",
+            "categoryCount": len(leader_categories),
+            "leaderRowCount": len(league_leader_rows),
+            "categories": leader_categories,
+            "leaders": league_leader_rows,
         },
         "hittingStreaks": streaks,
         "currentHittingStreaks": current,

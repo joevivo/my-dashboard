@@ -375,6 +375,221 @@ function PlayerList({
   );
 }
 
+const LEAGUE_LEADER_CATEGORY_PRIORITY = {
+  hitters: [
+    "BATTING AVERAGE",
+    "ON BASE PCT",
+    "SLUGGING PCT",
+    "HOMERUNS",
+    "RUNS BATTED IN",
+    "RUNS SCORED",
+    "HITS",
+    "STOLEN BASES",
+  ],
+  pitchers: [
+    "ERA",
+    "WINS",
+    "STRIKEOUTS",
+    "SAVES",
+    "INNINGS PITCHED",
+    "STRIKEOUTS/WALKS",
+    "HITS / 9 INNINGS",
+    "BB / 9 INNINGS",
+  ],
+};
+
+const LEAGUE_LEADER_CATEGORY_LABELS = {
+  "BATTING AVERAGE": "Batting Avg",
+  "ON BASE PCT": "On-Base %",
+  "SLUGGING PCT": "Slugging %",
+  HOMERUNS: "Home Runs",
+  "RUNS BATTED IN": "RBI",
+  "RUNS SCORED": "Runs",
+  HITS: "Hits",
+  "STOLEN BASES": "Stolen Bases",
+  ERA: "ERA",
+  WINS: "Wins",
+  STRIKEOUTS: "Strikeouts",
+  SAVES: "Saves",
+  "INNINGS PITCHED": "Innings",
+  "STRIKEOUTS/WALKS": "K/BB",
+  "HITS / 9 INNINGS": "H/9",
+  "BB / 9 INNINGS": "BB/9",
+};
+
+function prominentLeagueLeaders(
+  players,
+  section,
+) {
+  const appearances =
+    players?.leagueLeaderAppearances;
+
+  if (!Array.isArray(appearances)) {
+    return null;
+  }
+
+  const priority =
+    LEAGUE_LEADER_CATEGORY_PRIORITY[
+      section
+    ] || [];
+
+  return appearances
+    .filter((row) => {
+      const rank = Number(row?.rank);
+
+      return (
+        row?.section === section &&
+        Number.isFinite(rank) &&
+        rank >= 1 &&
+        rank <= 3 &&
+        priority.includes(
+          row?.categoryName,
+        )
+      );
+    })
+    .sort((left, right) => {
+      const rankDifference =
+        Number(left?.rank) -
+        Number(right?.rank);
+
+      if (rankDifference !== 0) {
+        return rankDifference;
+      }
+
+      const categoryDifference =
+        priority.indexOf(
+          left?.categoryName,
+        ) -
+        priority.indexOf(
+          right?.categoryName,
+        );
+
+      if (categoryDifference !== 0) {
+        return categoryDifference;
+      }
+
+      return String(
+        left?.playerName || "",
+      ).localeCompare(
+        String(
+          right?.playerName || "",
+        ),
+      );
+    })
+    .slice(0, 3);
+}
+
+function LeagueLeaderGroup({
+  label,
+  rows,
+}) {
+  return (
+    <div>
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
+        {label}
+      </p>
+
+      {rows?.length ? (
+        <div className="mt-2 space-y-1.5">
+          {rows.map((row, index) => (
+            <div
+              key={`${row?.section}-${row?.categoryName}-${row?.playerName}-${index}`}
+              className="flex items-center gap-2 rounded-lg bg-white px-2.5 py-2 dark:bg-slate-950/60"
+            >
+              <span className="min-w-8 rounded-md bg-slate-900 px-1.5 py-1 text-center text-[10px] font-black text-white dark:bg-slate-100 dark:text-slate-950">
+                #{row?.rank}
+              </span>
+
+              <div className="min-w-0">
+                <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-100">
+                  {row?.playerName ||
+                    "Unknown player"}
+                </p>
+
+                <p className="truncate text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                  {LEAGUE_LEADER_CATEGORY_LABELS[
+                    row?.categoryName
+                  ] ||
+                    row?.categoryName ||
+                    "League category"}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-2 text-xs leading-5 text-slate-400">
+          No top-three placements in
+          highlighted categories.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function LeagueLeaderSummary({
+  players,
+}) {
+  const appearances =
+    players?.leagueLeaderAppearances;
+
+  const hasEvidence =
+    Array.isArray(appearances);
+
+  const hitterRows =
+    prominentLeagueLeaders(
+      players,
+      "hitters",
+    );
+
+  const pitcherRows =
+    prominentLeagueLeaders(
+      players,
+      "pitchers",
+    );
+
+  return (
+    <div
+      data-bie-surface="league-leaders"
+      className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/40"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-slate-600 dark:text-slate-300">
+          League Leaders
+        </p>
+
+        {hasEvidence &&
+        appearances.length > 0 ? (
+          <span className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+            Top 3 league ranks
+          </span>
+        ) : null}
+      </div>
+
+      {!hasEvidence ? (
+        <p className="mt-2 text-xs leading-5 text-slate-400">
+          League leader context unavailable.
+        </p>
+      ) : appearances.length === 0 ? (
+        <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+          No listed league leaders.
+        </p>
+      ) : (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <LeagueLeaderGroup
+            label="Hitters"
+            rows={hitterRows}
+          />
+
+          <LeagueLeaderGroup
+            label="Pitchers"
+            rows={pitcherRows}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 function KeyPlayersPanel({
   teamName,
   opponentName,
@@ -425,7 +640,7 @@ function KeyPlayersPanel({
           </p>
 
           <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-            Compare both teams on the same batting and pitching measures.
+            Compare both teams on the same batting and pitching measures, with official top-three league context.
           </p>
         </div>
 
@@ -464,6 +679,10 @@ function KeyPlayersPanel({
             {teamName}
           </h3>
 
+          <LeagueLeaderSummary
+            players={teamPlayers}
+          />
+
           <PlayerList
             title={`Top Hitters · ${hitterMetric.label}`}
             rows={hitterRowsFor(
@@ -489,6 +708,10 @@ function KeyPlayersPanel({
           <h3 className="font-black text-slate-900 dark:text-white">
             {opponentName}
           </h3>
+
+          <LeagueLeaderSummary
+            players={opponentPlayers}
+          />
 
           <PlayerList
             title={`Top Hitters · ${hitterMetric.label}`}

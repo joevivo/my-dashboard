@@ -166,6 +166,7 @@ def build_side(
     batting: list[dict[str, Any]],
     pitching: list[dict[str, Any]],
     streaks: list[dict[str, Any]],
+    league_leaders: list[dict[str, Any]],
 ) -> dict[str, Any]:
     abbreviation = team_abbreviation(team)
     games = int((team.get("derived") or {}).get("games") or 0)
@@ -198,6 +199,33 @@ def build_side(
     min_ab, leaders = top_hitters(hitters, games)
     min_ip, pitcher_leaders = top_pitchers(pitchers, games)
 
+    league_leader_appearances = [
+        {
+            "playerName": row.get("playerName"),
+            "teamAbbreviation": upper(
+                row.get("teamAbbreviation")
+            ),
+            "section": row.get("section"),
+            "categoryKey": row.get("categoryKey"),
+            "categoryName": row.get("categoryName"),
+            "rank": row.get("rank"),
+            "displayOrder": row.get("displayOrder"),
+            "valueRaw": row.get("valueRaw"),
+            "valueNumeric": row.get("valueNumeric"),
+            "isCurrent": bool(row.get("isCurrent")),
+        }
+        for row in league_leaders
+        if upper(row.get("teamAbbreviation")) == abbreviation
+    ]
+
+    league_leader_player_names = sorted(
+        {
+            str(row.get("playerName"))
+            for row in league_leader_appearances
+            if row.get("playerName")
+        }
+    )
+
     return {
         "teamId": str(team.get("teamId")),
         "teamName": team.get("teamName"),
@@ -212,6 +240,12 @@ def build_side(
             "hitters": len(hitters),
             "pitchers": len(pitchers),
             "currentHittingStreaks": len(current_streaks),
+            "leagueLeaderAppearances": len(
+                league_leader_appearances
+            ),
+            "leagueLeaderPlayers": len(
+                league_leader_player_names
+            ),
         },
         "rankingRules": {
             "topHitters": {
@@ -227,6 +261,8 @@ def build_side(
         "topHittersByOPS": leaders,
         "topPitchersByERA": pitcher_leaders,
         "currentHittingStreaks": current_streaks,
+        "leagueLeaderAppearances": league_leader_appearances,
+        "leagueLeaderPlayers": league_leader_player_names,
         "hitters": hitters,
         "pitchers": pitchers,
     }
@@ -286,6 +322,14 @@ def main() -> int:
 
     streaks = streak_evidence.get("hittingStreaks") or []
 
+    league_leader_payload = (
+        streak_evidence.get("leagueLeaders") or {}
+    )
+
+    league_leaders = (
+        league_leader_payload.get("leaders") or []
+    )
+
     result = {
         "schemaVersion":
             "strat365-series-player-intelligence-v1",
@@ -300,12 +344,14 @@ def main() -> int:
             batting,
             pitching,
             streaks,
+            league_leaders,
         ),
         "opponent": build_side(
             opponent,
             batting,
             pitching,
             streaks,
+            league_leaders,
         ),
         "sourceEvidence": {
             "leagueIntelligence":
@@ -314,10 +360,19 @@ def main() -> int:
                 str(streak_path).replace("\\", "/"),
             "hittingStreakSourceFamily":
                 "leagueLeaders",
+            "leagueLeaders":
+                str(streak_path).replace("\\", "/"),
+            "leagueLeaderSourceFamily":
+                "leagueLeaders",
         },
         "evidenceGates": {
             "seasonPlayerPerformance": "AVAILABLE",
             "activeHittingStreaks": "AVAILABLE",
+            "leagueLeaderContext": (
+                "AVAILABLE"
+                if league_leader_payload.get("categoryCount")
+                else "NOT_AVAILABLE"
+            ),
             "recentPlayerForm": "NOT_YET_NORMALIZED",
             "injuryAvailability": "NOT_YET_NORMALIZED",
             "probableStarters": "NOT_YET_NORMALIZED",
