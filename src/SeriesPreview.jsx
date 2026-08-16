@@ -128,6 +128,361 @@ function formatRecord(profile) {
   return `${wins}-${losses}`;
 }
 
+function formatLeagueRank(
+  rank,
+  teamCount,
+) {
+  const numericRank = Number(rank);
+  const numericCount = Number(teamCount);
+
+  if (
+    !Number.isFinite(numericRank) ||
+    numericRank < 1
+  ) {
+    return "Rank unavailable";
+  }
+
+  if (
+    Number.isFinite(numericCount) &&
+    numericCount >= numericRank
+  ) {
+    return `#${numericRank} of ${numericCount}`;
+  }
+
+  return `#${numericRank} in league`;
+}
+
+function leagueRankTier(
+  rank,
+  teamCount,
+) {
+  const numericRank = Number(rank);
+  const numericCount = Number(teamCount);
+
+  if (
+    !Number.isFinite(numericRank) ||
+    !Number.isFinite(numericCount) ||
+    numericRank < 1 ||
+    numericCount < 1
+  ) {
+    return null;
+  }
+
+  const fraction =
+    numericRank / numericCount;
+
+  if (fraction <= 1 / 3) {
+    return "Top third";
+  }
+
+  if (fraction <= 2 / 3) {
+    return "Middle third";
+  }
+
+  return "Bottom third";
+}
+
+function formatLeagueMetric(
+  value,
+  digits = 0,
+) {
+  if (
+    value == null ||
+    value === ""
+  ) {
+    return "—";
+  }
+
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+
+  return numericValue.toFixed(digits);
+}
+
+function LeaguePositionMetric({
+  label,
+  value,
+  rank,
+  teamCount,
+  digits = 0,
+}) {
+  const tier =
+    leagueRankTier(
+      rank,
+      teamCount,
+    );
+
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+      <div className="min-w-0">
+        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+          {label}
+        </p>
+
+        <p className="mt-0.5 text-sm font-bold text-slate-900 dark:text-white">
+          {formatLeagueMetric(
+            value,
+            digits,
+          )}
+        </p>
+      </div>
+
+      <div className="shrink-0 text-right">
+        <p className="text-xs font-black text-slate-700 dark:text-slate-200">
+          {formatLeagueRank(
+            rank,
+            teamCount,
+          )}
+        </p>
+
+        {tier ? (
+          <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            {tier}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ManagerUsageContext({
+  tendencies,
+}) {
+  if (!tendencies) {
+    return null;
+  }
+
+  const items = [
+    [
+      "SB",
+      tendencies.stolenBases,
+    ],
+    [
+      "Sac",
+      tendencies.sacrifices,
+    ],
+    [
+      "Hit & Run",
+      tendencies.hitAndRuns,
+    ],
+    [
+      "IBB",
+      tendencies.intentionalWalks,
+    ],
+  ];
+
+  return (
+    <div className="rounded-xl border border-dashed border-slate-300 px-3 py-3 dark:border-slate-700">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
+          Manager Usage
+        </p>
+
+        <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
+          Descriptive
+        </span>
+      </div>
+
+      <div className="mt-2 grid grid-cols-4 gap-2">
+        {items.map(
+          ([label, value]) => (
+            <div
+              key={label}
+              className="text-center"
+            >
+              <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-slate-400">
+                {label}
+              </p>
+
+              <p className="mt-0.5 text-xs font-black text-slate-700 dark:text-slate-200">
+                {value ?? "—"}
+              </p>
+            </div>
+          ),
+        )}
+      </div>
+    </div>
+  );
+}
+
+function LeaguePositionTeamCard({
+  name,
+  profile,
+  teamCount,
+}) {
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-950/30">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="font-black text-slate-900 dark:text-white">
+            {name}
+          </h3>
+
+          <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Record{" "}
+            {formatRecord(profile)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-right dark:border-slate-800 dark:bg-slate-950">
+          <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+            Run Differential
+          </p>
+
+          <p className="mt-0.5 text-sm font-black text-slate-900 dark:text-white">
+            {profile?.runDifferential ??
+              "—"}
+          </p>
+
+          <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+            {formatLeagueRank(
+              profile?.runDifferentialRank,
+              teamCount,
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-4">
+        <div>
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+            Offense
+          </p>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            <LeaguePositionMetric
+              label="OPS"
+              value={
+                profile?.offense?.ops
+              }
+              rank={
+                profile?.offense?.opsRank
+              }
+              teamCount={teamCount}
+              digits={3}
+            />
+
+            <LeaguePositionMetric
+              label="Runs"
+              value={
+                profile?.offense
+                  ?.runsScored
+              }
+              rank={
+                profile?.offense
+                  ?.runsScoredRank
+              }
+              teamCount={teamCount}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+            Pitching
+          </p>
+
+          <div className="grid gap-2 sm:grid-cols-3">
+            <LeaguePositionMetric
+              label="ERA"
+              value={
+                profile?.pitching?.era
+              }
+              rank={
+                profile?.pitching?.eraRank
+              }
+              teamCount={teamCount}
+              digits={2}
+            />
+
+            <LeaguePositionMetric
+              label="WHIP"
+              value={
+                profile?.pitching?.whip
+              }
+              rank={
+                profile?.pitching
+                  ?.whipRank
+              }
+              teamCount={teamCount}
+              digits={2}
+            />
+
+            <LeaguePositionMetric
+              label="Runs Allowed"
+              value={
+                profile?.pitching
+                  ?.runsAllowed
+              }
+              rank={
+                profile?.pitching
+                  ?.runsAllowedRank
+              }
+              teamCount={teamCount}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+            Defense
+          </p>
+
+          <div className="grid gap-2 sm:grid-cols-3">
+            <LeaguePositionMetric
+              label="Fielding %"
+              value={
+                profile?.defense
+                  ?.fieldingAverage
+              }
+              rank={
+                profile?.defense
+                  ?.fieldingAverageRank
+              }
+              teamCount={teamCount}
+              digits={3}
+            />
+
+            <LeaguePositionMetric
+              label="Errors"
+              value={
+                profile?.defense?.errors
+              }
+              rank={
+                profile?.defense
+                  ?.fewestErrorsRank
+              }
+              teamCount={teamCount}
+            />
+
+            <LeaguePositionMetric
+              label="Unearned R/G"
+              value={
+                profile?.defense
+                  ?.unearnedRunsPerGame
+              }
+              rank={
+                profile?.defense
+                  ?.lowestUnearnedRunsPerGameRank
+              }
+              teamCount={teamCount}
+              digits={2}
+            />
+          </div>
+        </div>
+
+        <ManagerUsageContext
+          tendencies={
+            profile?.managerTendencies
+          }
+        />
+      </div>
+    </article>
+  );
+}
 const HITTER_KEY_PLAYER_METRICS = [
   {
     key: "OPS",
@@ -1187,53 +1542,51 @@ export default function SeriesPreview({
       ) : null}
 
       {leagueContext?.status === "AVAILABLE" ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-            Team vs. Opponent
-          </p>
+        <section
+          data-bie-surface="league-position"
+          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                League Position
+              </p>
 
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            {[
-              ["Aquarium Drinkers", teamProfile],
-              [opponentDisplayName, opponentProfile],
-            ].map(([name, profile]) => (
-              <div
-                key={name}
-                className="rounded-xl border border-slate-200 p-4 dark:border-slate-800"
-              >
-                <h3 className="font-black text-slate-900 dark:text-white">
-                  {name}
-                </h3>
+              <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                Season-to-date position relative to the full league. Lower rank numbers are better.
+              </p>
+            </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  <Metric label="Record" value={formatRecord(profile)} />
-                  <Metric
-                    label="Run Diff"
-                    value={profile?.runDifferential ?? "—"}
-                  />
-                  <Metric
-                    label="OPS"
-                    value={
-                      profile?.offense?.ops != null
-                        ? Number(profile.offense.ops).toFixed(3)
-                        : "—"
-                    }
-                  />
-                  <Metric
-                    label="ERA"
-                    value={
-                      profile?.pitching?.era != null
-                        ? Number(profile.pitching.era).toFixed(2)
-                        : "—"
-                    }
-                  />
-                </div>
-              </div>
-            ))}
+            <span className="rounded-full border border-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500 dark:border-slate-700 dark:text-slate-300">
+              {leagueContext?.leagueTeamCount
+                ? `${leagueContext.leagueTeamCount} teams`
+                : "League context"}
+            </span>
           </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-2">
+            <LeaguePositionTeamCard
+              name={aquariumDisplayName}
+              profile={teamProfile}
+              teamCount={
+                leagueContext?.leagueTeamCount
+              }
+            />
+
+            <LeaguePositionTeamCard
+              name={opponentDisplayName}
+              profile={opponentProfile}
+              teamCount={
+                leagueContext?.leagueTeamCount
+              }
+            />
+          </div>
+
+          <p className="mt-3 text-[10px] leading-4 text-slate-400">
+            Manager usage is descriptive context, not a quality ranking.
+          </p>
         </section>
       ) : null}
-
       {playerIntelligence?.status === "AVAILABLE" ? (
         <KeyPlayersPanel
           teamName={aquariumDisplayName}

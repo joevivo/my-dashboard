@@ -883,6 +883,16 @@ def build_league_context(
         "classification": (
             "SEASON_TO_DATE_LEAGUE_CONTEXT"
         ),
+        "leagueTeamCount": int(
+            as_number(
+                league_payload.get("teamCount")
+            )
+            or len(
+                as_list(
+                    league_payload.get("teams")
+                )
+            )
+        ),
         "teamProfile": team_profile,
         "opponentProfile": opponent_profile,
         "comparison": compare_league_profiles(
