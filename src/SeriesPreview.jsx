@@ -1975,7 +1975,7 @@ export default function SeriesPreview({
 
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                        Series Intelligence
+                        Decision Support
                       </p>
 
                       <h2 className="mt-0.5 text-xl font-black tracking-tight text-white">
@@ -2090,7 +2090,7 @@ export default function SeriesPreview({
       </section>
 
       <section className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
-        <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl">
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 px-5 py-5 sm:px-6">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
@@ -2232,7 +2232,7 @@ export default function SeriesPreview({
           </div>
         </div>
 
-        <aside className="overflow-hidden rounded-3xl border border-cyan-900/60 bg-gradient-to-b from-slate-900 to-cyan-950 text-white shadow-xl">
+        <aside className="overflow-hidden rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-slate-900 to-cyan-950 text-white shadow-sm">
           <div className="border-b border-cyan-900/60 px-5 py-5">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
               Provenance
