@@ -265,7 +265,18 @@ def resolve_inputs(
             "upcoming-series-v0.json",
         )
 
-        league_intelligence_root = (
+        current_league_intelligence = (
+            repo_root
+            / "data"
+            / "baseball"
+            / "state"
+            / "strat365"
+            / "league-intelligence-v0"
+            / f"league-{league_id}"
+            / "current-normalized.json"
+        )
+
+        legacy_league_intelligence_root = (
             repo_root
             / "data"
             / "baseball"
@@ -276,9 +287,13 @@ def resolve_inputs(
             / f"league-{league_id}"
         )
 
-        league_intelligence = latest_file(
-            league_intelligence_root,
-            "bie-current-league-intelligence-v0.json",
+        league_intelligence = (
+            current_league_intelligence
+            if current_league_intelligence.exists()
+            else latest_file(
+                legacy_league_intelligence_root,
+                "bie-current-league-intelligence-v0.json",
+            )
         )
 
         resolved.append(
