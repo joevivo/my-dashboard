@@ -76,6 +76,7 @@ function Pill({ children, status }) {
 function TeamIdentityMark({
   mark,
   tone = "teal",
+  size = "standard",
 }) {
   const [imageFailed, setImageFailed] =
     useState(false);
@@ -85,9 +86,14 @@ function TeamIdentityMark({
       ? "border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200"
       : "border-cyan-200 bg-cyan-50 text-cyan-800 dark:border-cyan-900/60 dark:bg-cyan-950/40 dark:text-cyan-200";
 
+  const sizeClass =
+    size === "large"
+      ? "h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32"
+      : "h-20 w-20";
+
   return (
     <div
-      className={`flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border shadow-sm ${palette}`}
+      className={`flex ${sizeClass} shrink-0 items-center justify-center overflow-hidden rounded-2xl border shadow-sm ${palette}`}
       aria-label={`${mark?.teamName || "Team"} mark`}
     >
       {mark?.logoPath && !imageFailed ? (
@@ -1452,6 +1458,7 @@ export default function SeriesPreview({
                 key={opponentMark?.teamId || opponentDisplayName}
                 mark={opponentMark}
                 tone="rose"
+                size="large"
               />
             </div>
           </div>
