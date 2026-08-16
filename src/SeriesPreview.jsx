@@ -88,8 +88,8 @@ function TeamIdentityMark({
 
   const sizeClass =
     size === "large"
-      ? "h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32"
-      : "h-20 w-20";
+      ? "h-32 w-32 sm:h-40 sm:w-40 lg:h-52 lg:w-52"
+      : "h-32 w-32 sm:h-40 sm:w-40 lg:h-52 lg:w-52";
 
   return (
     <div
@@ -100,7 +100,7 @@ function TeamIdentityMark({
         <img
           src={mark.logoPath}
           alt=""
-          className="h-full w-full object-contain p-2"
+          className="h-full w-full object-contain p-1"
           onError={() => setImageFailed(true)}
         />
       ) : (
@@ -309,6 +309,247 @@ function ManagerUsageContext({
             </div>
           ),
         )}
+      </div>
+    </div>
+  );
+}
+
+
+function shortLeagueRank(rank) {
+  const numericRank = Number(rank);
+
+  if (
+    !Number.isFinite(numericRank) ||
+    numericRank < 1
+  ) {
+    return "—";
+  }
+
+  const mod100 = numericRank % 100;
+
+  if (mod100 >= 11 && mod100 <= 13) {
+    return `${numericRank}th`;
+  }
+
+  switch (numericRank % 10) {
+    case 1:
+      return `${numericRank}st`;
+    case 2:
+      return `${numericRank}nd`;
+    case 3:
+      return `${numericRank}rd`;
+    default:
+      return `${numericRank}th`;
+  }
+}
+
+function LeagueEdgeScoreboard({
+  teamName,
+  opponentName,
+  teamProfile,
+  opponentProfile,
+  teamCount,
+}) {
+  const rows = [
+    {
+      label: "OPS",
+      context: "Offense",
+      teamValue: teamProfile?.offense?.ops,
+      opponentValue:
+        opponentProfile?.offense?.ops,
+      teamRank:
+        teamProfile?.offense?.opsRank,
+      opponentRank:
+        opponentProfile?.offense?.opsRank,
+      digits: 3,
+    },
+    {
+      label: "Runs",
+      context: "Run Production",
+      teamValue:
+        teamProfile?.offense?.runsScored,
+      opponentValue:
+        opponentProfile?.offense?.runsScored,
+      teamRank:
+        teamProfile?.offense?.runsScoredRank,
+      opponentRank:
+        opponentProfile?.offense?.runsScoredRank,
+      digits: 0,
+    },
+    {
+      label: "ERA",
+      context: "Run Prevention",
+      teamValue:
+        teamProfile?.pitching?.era,
+      opponentValue:
+        opponentProfile?.pitching?.era,
+      teamRank:
+        teamProfile?.pitching?.eraRank,
+      opponentRank:
+        opponentProfile?.pitching?.eraRank,
+      digits: 2,
+    },
+    {
+      label: "WHIP",
+      context: "Traffic",
+      teamValue:
+        teamProfile?.pitching?.whip,
+      opponentValue:
+        opponentProfile?.pitching?.whip,
+      teamRank:
+        teamProfile?.pitching?.whipRank,
+      opponentRank:
+        opponentProfile?.pitching?.whipRank,
+      digits: 2,
+    },
+  ];
+
+  const edgeFor = (teamRank, opponentRank) => {
+    const teamNumeric = Number(teamRank);
+    const opponentNumeric =
+      Number(opponentRank);
+
+    if (
+      !Number.isFinite(teamNumeric) ||
+      !Number.isFinite(opponentNumeric)
+    ) {
+      return null;
+    }
+
+    if (teamNumeric < opponentNumeric) {
+      return "TEAM";
+    }
+
+    if (opponentNumeric < teamNumeric) {
+      return "OPPONENT";
+    }
+
+    return "EVEN";
+  };
+
+  return (
+    <div
+      data-bie-surface="league-edge-scoreboard"
+      className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950/30"
+    >
+      <div className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-end border-b border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/60">
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-600 dark:text-cyan-300">
+            Aquarium
+          </p>
+          <p className="mt-0.5 truncate text-sm font-black text-slate-900 dark:text-white">
+            {teamName}
+          </p>
+        </div>
+
+        <p className="text-center text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">
+          League Rank
+        </p>
+
+        <div className="text-right">
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-600 dark:text-rose-300">
+            Opponent
+          </p>
+          <p className="mt-0.5 truncate text-sm font-black text-slate-900 dark:text-white">
+            {opponentName}
+          </p>
+        </div>
+      </div>
+
+      {rows.map((row) => {
+        const edge = edgeFor(
+          row.teamRank,
+          row.opponentRank,
+        );
+
+        return (
+          <div
+            key={row.label}
+            className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-center border-b border-slate-100 px-4 py-3 last:border-b-0 dark:border-slate-800"
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span
+                    className={`text-2xl font-black tracking-tight ${
+                      edge === "TEAM"
+                        ? "text-cyan-600 dark:text-cyan-300"
+                        : "text-slate-900 dark:text-white"
+                    }`}
+                  >
+                    {shortLeagueRank(
+                      row.teamRank,
+                    )}
+                  </span>
+
+                  {edge === "TEAM" ? (
+                    <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-300">
+                      Edge
+                    </span>
+                  ) : null}
+                </div>
+
+                <p className="mt-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                  {formatLeagueMetric(
+                    row.teamValue,
+                    row.digits,
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm font-black text-slate-900 dark:text-white">
+                {row.label}
+              </p>
+              <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                {row.context}
+              </p>
+            </div>
+
+            <div className="flex min-w-0 justify-end text-right">
+              <div>
+                <div className="flex items-baseline justify-end gap-2">
+                  {edge === "OPPONENT" ? (
+                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-rose-800 dark:bg-rose-950/70 dark:text-rose-300">
+                      Edge
+                    </span>
+                  ) : null}
+
+                  <span
+                    className={`text-2xl font-black tracking-tight ${
+                      edge === "OPPONENT"
+                        ? "text-rose-600 dark:text-rose-300"
+                        : "text-slate-900 dark:text-white"
+                    }`}
+                  >
+                    {shortLeagueRank(
+                      row.opponentRank,
+                    )}
+                  </span>
+                </div>
+
+                <p className="mt-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                  {formatLeagueMetric(
+                    row.opponentValue,
+                    row.digits,
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-50/60 px-4 py-2 text-[9px] font-semibold text-slate-400 dark:bg-slate-950/50">
+        <span>
+          Lower rank number is better.
+        </span>
+        <span>
+          {teamCount
+            ? `${teamCount}-team league`
+            : "League context"}
+        </span>
       </div>
     </div>
   );
@@ -989,23 +1230,39 @@ function KeyPlayersPanel({
       ? players?.topPitchersByERA
       : players?.pitchers;
 
+  const sides = [
+    {
+      key: "team",
+      name: teamName,
+      players: teamPlayers,
+      role: "Aquarium",
+    },
+    {
+      key: "opponent",
+      name: opponentName,
+      players: opponentPlayers,
+      role: "Opponent",
+    },
+  ];
+
   return (
     <section
       data-bie-surface="key-players"
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+      data-bie-polish="key-players-compact-v2"
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
             Key Players
           </p>
 
-          <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-            Compare both teams on the same batting and pitching measures, with official top-three league context.
+          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            League leaders and top current performers.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap items-end gap-2">
           <KeyPlayerMetricSelector
             label="Hitters"
             metrics={
@@ -1034,70 +1291,80 @@ function KeyPlayersPanel({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-6 lg:grid-cols-2">
-        <div className="space-y-5">
-          <h3 className="font-black text-slate-900 dark:text-white">
-            {teamName}
-          </h3>
+      <div className="grid lg:grid-cols-2 lg:divide-x lg:divide-slate-200 dark:lg:divide-slate-800">
+        {sides.map(
+          (
+            {
+              key,
+              name,
+              players,
+              role,
+            },
+            sideIndex,
+          ) => (
+            <div
+              key={key}
+              className={
+                sideIndex === 0
+                  ? "px-4 py-3 lg:pr-4"
+                  : "border-t border-slate-200 px-4 py-3 dark:border-slate-800 lg:border-t-0 lg:pl-4"
+              }
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p
+                    className={
+                      sideIndex === 0
+                        ? "text-[9px] font-black uppercase tracking-[0.15em] text-cyan-600 dark:text-cyan-300"
+                        : "text-[9px] font-black uppercase tracking-[0.15em] text-rose-600 dark:text-rose-300"
+                    }
+                  >
+                    {role}
+                  </p>
 
-          <LeagueLeaderSummary
-            players={teamPlayers}
-          />
+                  <h3 className="mt-0.5 truncate text-sm font-black text-slate-900 dark:text-white">
+                    {name}
+                  </h3>
+                </div>
 
-          <PlayerList
-            title={`Top Hitters · ${hitterMetric.label}`}
-            rows={hitterRowsFor(
-              teamPlayers,
-            )}
-            metricConfig={
-              hitterMetric
-            }
-          />
+                <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                  League context
+                </span>
+              </div>
 
-          <PlayerList
-            title={`Top Pitchers · ${pitcherMetric.label}`}
-            rows={pitcherRowsFor(
-              teamPlayers,
-            )}
-            metricConfig={
-              pitcherMetric
-            }
-          />
-        </div>
+              <div className="space-y-3">
+                <LeagueLeaderSummary
+                  players={players}
+                />
 
-        <div className="space-y-5">
-          <h3 className="font-black text-slate-900 dark:text-white">
-            {opponentName}
-          </h3>
+                <PlayerList
+                  title={`Top Hitters · ${hitterMetric.label}`}
+                  rows={hitterRowsFor(
+                    players,
+                  )}
+                  metricConfig={
+                    hitterMetric
+                  }
+                />
 
-          <LeagueLeaderSummary
-            players={opponentPlayers}
-          />
-
-          <PlayerList
-            title={`Top Hitters · ${hitterMetric.label}`}
-            rows={hitterRowsFor(
-              opponentPlayers,
-            )}
-            metricConfig={
-              hitterMetric
-            }
-          />
-
-          <PlayerList
-            title={`Top Pitchers · ${pitcherMetric.label}`}
-            rows={pitcherRowsFor(
-              opponentPlayers,
-            )}
-            metricConfig={
-              pitcherMetric
-            }
-          />
-        </div>
+                <PlayerList
+                  title={`Top Pitchers · ${pitcherMetric.label}`}
+                  rows={pitcherRowsFor(
+                    players,
+                  )}
+                  metricConfig={
+                    pitcherMetric
+                  }
+                />
+              </div>
+            </div>
+          ),
+        )}
       </div>
     </section>
   );
 }
+
 function GatedModule({ title, status = "EVIDENCE_GATED", detail }) {
   return (
     <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-950/30">
@@ -1128,16 +1395,14 @@ export default function SeriesPreview({
   const requestUrl = useMemo(() => {
     if (
       !selection?.leagueId ||
-      !selection?.teamId ||
-      !selection?.seriesId
+      !selection?.teamId
     ) {
       return null;
     }
 
     return (
       `${apiBase}/api/strat/league/${selection.leagueId}` +
-      `/team/${selection.teamId}/series-preview/` +
-      encodeURIComponent(selection.seriesId)
+      `/team/${selection.teamId}/series-preview/current`
     );
   }, [apiBase, selection]);
 
@@ -1363,7 +1628,7 @@ export default function SeriesPreview({
             <span className="hidden h-4 w-px bg-slate-700 sm:block" />
 
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-              BIE Series Preview
+              BIE Series Matchup
             </p>
           </div>
 
@@ -1378,7 +1643,7 @@ export default function SeriesPreview({
           </div>
         </div>
 
-        <div className="relative overflow-hidden px-5 py-8 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
           <div
             className="pointer-events-none absolute inset-0"
             aria-hidden="true"
@@ -1387,7 +1652,7 @@ export default function SeriesPreview({
             <div className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
           </div>
 
-          <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_minmax(320px,0.9fr)_1fr]">
+          <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.55fr)_minmax(0,1fr)]">
             <div className="flex items-center gap-5">
               <TeamIdentityMark
                 key={teamMark?.teamId || "aquarium"}
@@ -1397,7 +1662,7 @@ export default function SeriesPreview({
 
               <div className="min-w-0">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                  Home Team
+                  Aquarium Drinkers
                 </p>
 
                 <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
@@ -1412,7 +1677,7 @@ export default function SeriesPreview({
 
             <div className="text-center">
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
-                Current Matchup
+                Series Matchup
               </p>
 
               <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-white">
@@ -1442,7 +1707,7 @@ export default function SeriesPreview({
             <div className="flex items-center justify-end gap-5">
               <div className="min-w-0 text-right">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-300">
-                  Away Team
+                  Opponent
                 </p>
 
                 <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
@@ -1556,11 +1821,11 @@ export default function SeriesPreview({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                League Position
+                Who Has the Edge?
               </p>
 
               <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                Season-to-date position relative to the full league. Lower rank numbers are better.
+                League position at a glance. Rank is the primary signal; lower rank numbers are better.
               </p>
             </div>
 
@@ -1571,27 +1836,15 @@ export default function SeriesPreview({
             </span>
           </div>
 
-          <div className="mt-4 grid gap-4 xl:grid-cols-2">
-            <LeaguePositionTeamCard
-              name={aquariumDisplayName}
-              profile={teamProfile}
-              teamCount={
-                leagueContext?.leagueTeamCount
-              }
-            />
-
-            <LeaguePositionTeamCard
-              name={opponentDisplayName}
-              profile={opponentProfile}
-              teamCount={
-                leagueContext?.leagueTeamCount
-              }
-            />
-          </div>
-
-          <p className="mt-3 text-[10px] leading-4 text-slate-400">
-            Manager usage is descriptive context, not a quality ranking.
-          </p>
+          <LeagueEdgeScoreboard
+            teamName={aquariumDisplayName}
+            opponentName={opponentDisplayName}
+            teamProfile={teamProfile}
+            opponentProfile={opponentProfile}
+            teamCount={
+              leagueContext?.leagueTeamCount
+            }
+          />
         </section>
       ) : null}
       {playerIntelligence?.status === "AVAILABLE" ? (
@@ -1602,9 +1855,13 @@ export default function SeriesPreview({
           opponentPlayers={opponentPlayers}
         />
       ) : null}
-      <section>
+      {(payload?.pitchingMatchup?.status === "CURRENT_PROJECTED" ||
+        payload?.lineupMatchups?.status === "CURRENT_OFFENSIVE_PROFILE") ? (
+        <section
+          data-bie-cleanup="available-intelligence-only"
+        >
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-          Matchup Intelligence
+          What Matters in This Series
         </p>
 
         <div className="grid gap-3 md:grid-cols-2">
@@ -1735,12 +1992,7 @@ export default function SeriesPreview({
                   performance.
                 </p>
               </div>
-            </div>          ) : (
-            <GatedModule
-              title="Pitching Matchup"
-              detail="Probable starters, bullpen availability, and workload remain evidence gated until captured."
-            />
-          )}
+            </div>          ) : null}
           {payload?.lineupMatchups?.status === "CURRENT_OFFENSIVE_PROFILE" ? (
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1848,12 +2100,7 @@ export default function SeriesPreview({
                 ))}
               </div>
             </div>
-          ) : (
-            <GatedModule
-              title="Current Offensive Threats"
-              detail="Projected lineups, platoon edges, and card-split matchups remain evidence gated."
-            />
-          )}
+          ) : null}
           {payload?.availabilityEnvironment?.status === "CURRENT_PARTIAL" ? (
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:col-span-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1954,13 +2201,7 @@ export default function SeriesPreview({
                 Recent transaction implications and quantified park effects remain evidence gated.
               </p>
             </div>
-          ) : (
-            <GatedModule
-              title="Readiness & Environment"
-              status="NOT_CAPTURED"
-              detail="Injuries, roster constraints, and park effects are not yet captured in the canonical series artifact."
-            />
-          )}
+          ) : null}
           {payload?.managerNotebook?.status === "CURRENT_EVIDENCE_BASED" ? (
             <div className="overflow-hidden rounded-3xl bg-slate-950 shadow-xl ring-1 ring-slate-800 md:col-span-2">
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 bg-gradient-to-r from-slate-950 via-slate-950 to-cyan-950/60 px-5 py-5 sm:px-6">
@@ -2080,14 +2321,10 @@ export default function SeriesPreview({
                 )}
               </div>
             </div>
-          ) : (
-            <GatedModule
-              title="Manager's Notebook"
-              detail="Managerial recommendations will appear only when they are traceable to supporting evidence."
-            />
-          )}
+          ) : null}
         </div>
       </section>
+      ) : null}
 
       <section className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
         <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-sm">

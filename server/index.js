@@ -846,6 +846,77 @@ app.get("/api/strat/active-teams", (req, res) => {
 });
 
 const BIE_REPO_ROOT = path.join(__dirname, "..");
+app.get(
+  "/api/strat/league/:leagueId/team/:teamId/series-preview/current",
+  (req, res) => {
+    try {
+      const { leagueId, teamId } = req.params;
+
+      if (
+        !/^\d+$/.test(String(leagueId)) ||
+        !/^\d+$/.test(String(teamId))
+      ) {
+        const error = new Error("Invalid Series Preview identity");
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      const previewFile = path.join(
+        BIE_REPO_ROOT,
+        "data",
+        "baseball",
+        "state",
+        "strat365",
+        "series-preview-v0",
+        `league-${leagueId}`,
+        `team-${teamId}`,
+        "series-engine-v0.json"
+      );
+
+      const payload = JSON.parse(
+        fs.readFileSync(previewFile, "utf8")
+      );
+
+      const scheduleGameNumbers = Array.isArray(
+        payload?.upcomingSeries?.scheduleGameNumbers
+      )
+        ? payload.upcomingSeries.scheduleGameNumbers.map(
+            (value) => Number(value)
+          )
+        : [];
+
+      if (scheduleGameNumbers.length === 0) {
+        const error = new Error(
+          "Current BIE Series Preview identity is unavailable"
+        );
+        error.code = "ENOENT";
+        throw error;
+      }
+
+      const seriesId =
+        `league-${leagueId}-team-${teamId}-games-` +
+        scheduleGameNumbers.join("-");
+
+      return res.redirect(
+        307,
+        `/api/strat/league/${leagueId}/team/${teamId}` +
+          `/series-preview/${encodeURIComponent(seriesId)}`
+      );
+    } catch (error) {
+      console.error(
+        "Failed to resolve current BIE Series Preview:",
+        error
+      );
+
+      return res
+        .status(error?.code === "ENOENT" ? 404 : 500)
+        .json({
+          error: "Current BIE Series Preview unavailable",
+          detail: error?.message ?? String(error),
+        });
+    }
+  }
+);
 
 function sendBieSeriesError(res, error) {
   if (error instanceof SeriesReplayError) {

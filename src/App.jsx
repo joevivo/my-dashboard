@@ -14,6 +14,7 @@ import FinanceView from "./FinanceView";
 
 import SeriesPlanner from "./SeriesPlanner";
 import SeriesPreview from "./SeriesPreview";
+import { getStratTeamIdentity } from "./strat/teamIdentityRegistry";
 
 import GameSimulator from "./GameSimulator";
 
@@ -84,7 +85,7 @@ function formatOrdinal(value) {
   const number = Number(value);
 
   if (!Number.isFinite(number) || number < 1) {
-    return "ΓÇö";
+    return "—";
   }
 
   const mod100 = number % 100;
@@ -283,7 +284,7 @@ function buildSeriesRead({
     tone,
     summary:
       evidence.length > 0
-        ? evidence.slice(0, 3).join(" ┬╖ ")
+        ? evidence.slice(0, 3).join(" · ")
         : "No meaningful statistical separation detected.",
   };
 }
@@ -295,7 +296,7 @@ function formatRotationPitcher(value) {
 
   return parts.length >= 2
     ? `${parts.slice(1).join(" ")} ${parts[0]}`
-    : value || "ΓÇö";
+    : value || "—";
 }
 
 function rotationConfidenceClasses(value) {
@@ -328,6 +329,8 @@ export default function App() {
   const [stratLeagueStatus, setStratLeagueStatus] = useState({});
   const [stratRotationData, setStratRotationData] = useState({});
   const [stratRotationStatus, setStratRotationStatus] = useState({});
+  const [stratCurrentPreviewData, setStratCurrentPreviewData] = useState({});
+  const [stratCurrentPreviewStatus, setStratCurrentPreviewStatus] = useState({});
   const [stratActionMessage, setStratActionMessage] = useState("");
 
 
@@ -422,6 +425,69 @@ export default function App() {
 
     return rotation;
   };
+  const refreshStratCurrentPreview = async (team) => {
+    const key = `${team.leagueId}:${team.teamId}`;
+
+    setStratCurrentPreviewStatus((current) => ({
+      ...current,
+      [key]: "loading",
+    }));
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/strat/league/${team.leagueId}/team/${team.teamId}/series-preview/current`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Current Series Preview fetch failed: ${response.status}`
+        );
+      }
+
+      const payload = await response.json();
+
+      setStratCurrentPreviewData((current) => ({
+        ...current,
+        [key]: payload,
+      }));
+
+      setStratCurrentPreviewStatus((current) => ({
+        ...current,
+        [key]: "ready",
+      }));
+
+      const opponentTeamId =
+        payload?.seriesIdentity?.opponentTeamId || null;
+
+      if (opponentTeamId) {
+        await refreshStratTeam(opponentTeamId);
+
+        void refreshStratRotation(
+          team.leagueId,
+          opponentTeamId
+        );
+      }
+
+      return payload;
+    } catch (error) {
+      console.error(
+        "Current BIE Series Preview refresh failed",
+        error
+      );
+
+      setStratCurrentPreviewData((current) => ({
+        ...current,
+        [key]: null,
+      }));
+
+      setStratCurrentPreviewStatus((current) => ({
+        ...current,
+        [key]: "error",
+      }));
+
+      return null;
+    }
+  };
   const refreshStratLeague = async (leagueId) => {
     setStratLeagueStatus((current) => ({
       ...current,
@@ -515,6 +581,7 @@ export default function App() {
   const refreshAllStratTeams = () => {
     ACTIVE_STRAT_TEAMS.forEach((team) => {
       void refreshStratTeamAndOpponent(team);
+      void refreshStratCurrentPreview(team);
       refreshStratLeague(team.leagueId);
     });
 
@@ -523,20 +590,15 @@ export default function App() {
     );
   };
   const openSeriesPreview = async (team) => {
-    const rotation =
-      await refreshStratTeamAndOpponent(team);
+    const currentPreview =
+      await refreshStratCurrentPreview(team);
 
-    const currentSeries =
-      rotation?.currentSeries ||
-      null;
+    const currentIdentity =
+      currentPreview?.seriesIdentity || null;
 
-    const seriesId =
-      currentSeries?.seriesId ||
-      null;
-
-    if (!seriesId) {
+    if (!currentIdentity?.opponentTeamId) {
       setStratActionMessage(
-        `${team.teamName} ┬╖ League ${team.leagueId}: current BIE Series Preview is not yet resolved.`
+        `${team.teamName} · League ${team.leagueId}: current BIE Series Preview is not yet resolved.`
       );
       return;
     }
@@ -544,22 +606,23 @@ export default function App() {
     setSelectedSeriesPreview({
       leagueId: String(team.leagueId),
       teamId: String(team.teamId),
-      seriesId,
       scheduleUrl: team.scheduleUrl,
+      opponentTeamId:
+        String(currentIdentity.opponentTeamId),
       opponentDisplayName:
-        currentSeries?.opponentTeamName ||
-        null,
+        currentIdentity.opponentDisplayName || null,
     });
 
     setActiveView("SeriesPreview");
 
     setStratActionMessage(
-      `${team.teamName} ┬╖ League ${team.leagueId}: current BIE Series Preview opened.`
+      `${team.teamName} · League ${team.leagueId}: current BIE Series Preview opened.`
     );
   };
   useEffect(() => {
     ACTIVE_STRAT_TEAMS.forEach((team) => {
       void refreshStratTeamAndOpponent(team);
+      void refreshStratCurrentPreview(team);
       refreshStratLeague(team.leagueId);
     });
   }, []);
@@ -570,7 +633,7 @@ export default function App() {
         {
           title: "StratOperations",
           items: [
-            ["StratHome", "Strat-o-Matic Active Teams"],
+            ["StratHome", "Strat-O-Matic Active Teams"],
           ],
         },
       ],
@@ -654,27 +717,48 @@ export default function App() {
 
 
 
-  const StratHome = () => (
+  const STRAT_1968_PARK_EFFECTS = {
+  "Astrodome 1968": {
+    singlesLeft: 9,
+    singlesRight: 9,
+    homeRunsLeft: 1,
+    homeRunsRight: 1,
+  },
+  "Comiskey Park 1968": {
+    singlesLeft: 7,
+    singlesRight: 10,
+    homeRunsLeft: 5,
+    homeRunsRight: 5,
+  },
+  "Busch Stadium 1968": {
+    singlesLeft: 1,
+    singlesRight: 6,
+    homeRunsLeft: 1,
+    homeRunsRight: 4,
+  },
+};
+const StratHome = () => (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+      <section className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-[#06172f] via-[#08243d] to-cyan-950 p-6 text-white shadow-[0_18px_50px_rgba(8,47,73,0.22)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-              StratOperations
-            </p>
-
-            <div className="mb-3 inline-flex rounded-xl bg-slate-950 px-3 py-2">
+          <div className="min-w-0">
+            <div className="inline-flex rounded-xl bg-slate-950 px-3 py-2">
               <img
                 src="https://365.strat-o-matic.com/img/redesign/header_logo_som.png"
                 alt="Strat-O-Matic"
                 className="h-8 w-auto"
               />
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight">
-              Strat-o-Matic Active Teams
+
+            <p className="-mt-0.5 whitespace-nowrap text-[11px] font-black uppercase tracking-[0.16em] text-cyan-300 sm:text-xs">
+              Active Teams · BIE-backed workspace
+            </p>
+
+            <h2 className="mt-2 whitespace-nowrap text-3xl font-black leading-none tracking-tight text-white sm:text-4xl">
+              Active Teams
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-slate-200">
               Current position, upcoming opposition, and the decisions that matter before and after each series.
               BIE surfaces evidence-backed intelligence and leaves unsupported fields explicitly unresolved.
             </p>
@@ -683,7 +767,7 @@ export default function App() {
           <button
             type="button"
             onClick={refreshAllStratTeams}
-            className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white"
+            className="rounded-xl border border-cyan-300/40 bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2.5 text-sm font-black text-white shadow-[0_8px_24px_rgba(6,182,212,0.28)] transition hover:from-cyan-400 hover:to-blue-500"
           >
             Refresh All Teams
           </button>
@@ -696,31 +780,49 @@ export default function App() {
         )}
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-3">
+      <section className="grid gap-7">
         {ACTIVE_STRAT_TEAMS.map((team) => {
           const live = stratTeamData[team.teamId];
           const liveStatus =
             stratTeamStatus[team.teamId] || "loading";
 
+          const currentPreviewKey =
+            `${team.leagueId}:${team.teamId}`;
+
+          const currentPreview =
+            stratCurrentPreviewData[
+              currentPreviewKey
+            ] || null;
+
           const currentSeries =
-            stratRotationData[
-              `${team.leagueId}:${team.teamId}`
-            ]?.currentSeries || null;
+            currentPreview?.seriesIdentity || null;
 
           const currentOpponentTeamId =
             currentSeries?.opponentTeamId || null;
 
           const currentOpponentName =
-            currentSeries?.opponentTeamName || "Resolving...";
+            currentSeries?.opponentDisplayName || "Resolving...";
+
+          const currentOpponentIdentity =
+            currentOpponentTeamId
+              ? getStratTeamIdentity(
+                  currentOpponentTeamId,
+                  currentOpponentName,
+                )
+              : null;
+
+          const currentOpponentDisplayName =
+            currentOpponentIdentity?.teamName ||
+            currentOpponentName;
 
           const currentSeriesDate =
-            currentSeries?.nextSeriesDate || "Resolving...";
+            currentSeries?.scheduledDate || "Resolving...";
 
           const currentGameCount =
             currentSeries?.gameCount ?? null;
 
           const currentHomeAway =
-            currentSeries?.homeAway || "ΓÇö";
+            currentSeries?.homeAway || "—";
 
           const opponentLive =
             currentOpponentTeamId ? stratTeamData[currentOpponentTeamId] : null;
@@ -753,6 +855,8 @@ export default function App() {
             currentHomeAway === "Away"
               ? opponentLive?.homeBallpark
               : live?.homeBallpark;
+          const seriesParkEffects =
+            STRAT_1968_PARK_EFFECTS[seriesBallpark] || null;
 
           const teamVenueRecord =
             currentHomeAway === "Away"
@@ -804,27 +908,183 @@ export default function App() {
           return (
             <article
               key={team.teamId}
-              className="overflow-hidden rounded-2xl border border-cyan-200/80 bg-white/95 shadow-[0_8px_24px_rgba(8,47,73,0.08)] transition-shadow hover:shadow-[0_12px_30px_rgba(8,47,73,0.13)] dark:border-cyan-900/60 dark:bg-slate-900/90"
+              className="group overflow-hidden rounded-3xl border border-cyan-200/90 bg-gradient-to-b from-cyan-50/70 via-white to-white shadow-[0_12px_34px_rgba(8,47,73,0.10)] ring-1 ring-cyan-100/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-300 hover:shadow-[0_18px_44px_rgba(8,47,73,0.16)] dark:border-cyan-900/70 dark:from-[#07192e] dark:via-slate-900 dark:to-slate-900 dark:ring-cyan-950"
             >
-              <div className="border-b border-cyan-100 bg-gradient-to-r from-cyan-50/70 via-white to-blue-50/50 p-5 dark:border-cyan-900/60 dark:from-[#07192e] dark:via-slate-900 dark:to-cyan-950/40">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-cyan-400 bg-[#06172f] shadow-sm"
-                      aria-label="Aquarium Drinkers"
-                      title="Aquarium Drinkers"
-                    >
-                      <span className="translate-x-px -translate-y-px font-serif text-xl font-black italic leading-none tracking-[-0.04em] text-white">
-                        AD
+              <div
+                data-bie-surface="active-team-matchup-hero"
+                data-bie-polish="active-team-hero-v2"
+                className="relative overflow-hidden border-b border-slate-800 bg-slate-950 px-5 py-5 text-white sm:px-7 sm:py-6 lg:px-9"
+              >
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0"
+                >
+                  <div className="absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/15 blur-3xl" />
+                  <div className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
+                </div>
+
+                <div className="relative flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+                      1968 · League {team.leagueId}
+                    </p>
+
+                    <p className="mt-1 text-xs font-semibold text-slate-400">
+                      Active Series Command
+                    </p>
+                  </div>
+
+                  {isPreseason ? (
+                    <span className="rounded-full border border-sky-700 bg-sky-950/70 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-sky-300">
+                      Preseason
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="relative mt-5 grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]">
+                  <div className="flex flex-col items-center text-center">
+                    <img
+                      src={
+                        getStratTeamIdentity(
+                          team.teamId,
+                          team.teamName
+                        )?.logoPath ||
+                        "/aquarium-drinkers-shield.svg"
+                      }
+                      alt="Aquarium Drinkers"
+                      className="h-36 w-36 object-contain sm:h-40 sm:w-40 lg:h-44 lg:w-44"
+                    />
+
+                    <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                      Aquarium Drinkers
+                    </p>
+
+                    <h3 className="mt-1 text-2xl font-black tracking-tight">
+                      {team.teamName}
+                    </h3>
+
+                    <p className="mt-2 text-3xl font-black">
+                      {live?.record ||
+                        (liveStatus === "error"
+                          ? "Unavailable"
+                          : "—")}
+                    </p>
+
+                    {!isPreseason && teamStanding ? (
+                      <p className="mt-1 text-sm font-bold text-slate-300">
+                        {formatOrdinal(
+                          teamStanding.divisionRank
+                        )}{" "}
+                        {teamStanding.division}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-[9px] font-black uppercase tracking-[0.24em] text-slate-500">
+                      Next Series
+                    </p>
+
+                    <p className="mt-2 text-5xl font-black tracking-[-0.05em]">
+                      VS
+                    </p>
+
+                    <p className="mt-4 text-base font-black text-white">
+                      {currentSeriesDate}
+                    </p>
+
+                    <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-semibold text-slate-400">
+                      <span>{currentHomeAway}</span>
+                      <span aria-hidden="true">·</span>
+                      <span>
+                        {currentGameCount ?? "—"} games
                       </span>
                     </div>
 
+                    <p className="mt-3 text-xs font-bold leading-5 text-slate-300">
+                      {seriesBallpark || "Ballpark resolving"}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center">
+                    {currentOpponentIdentity?.logoPath ? (
+                      <img
+                        src={currentOpponentIdentity.logoPath}
+                        alt={currentOpponentDisplayName}
+                        className="h-36 w-36 object-contain sm:h-40 sm:w-40 lg:h-44 lg:w-44"
+                      />
+                    ) : (
+                      <div className="flex h-36 w-36 items-center justify-center rounded-3xl border border-rose-800 bg-rose-950/60 text-4xl font-black text-rose-200 sm:h-40 sm:w-40 lg:h-44 lg:w-44">
+                        {currentOpponentIdentity?.monogram ||
+                          "?"}
+                      </div>
+                    )}
+
+                    <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-rose-300">
+                      Opponent
+                    </p>
+
+                    <h3 className="mt-1 text-2xl font-black tracking-tight">
+                      {currentOpponentDisplayName}
+                    </h3>
+
+                    <p className="mt-2 text-3xl font-black">
+                      {opponentLive?.record ||
+                        (opponentStatus === "error"
+                          ? "Unavailable"
+                          : "—")}
+                    </p>
+
+                    {!isPreseason && opponentStanding ? (
+                      <p className="mt-1 text-sm font-bold text-slate-300">
+                        {formatOrdinal(
+                          opponentStanding.divisionRank
+                        )}{" "}
+                        {opponentStanding.division}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="relative mt-4 flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-[0.18em] text-emerald-300">
+                      BIE Read
+                    </p>
+
+                    <p className="mt-1 text-sm font-bold text-white">
+                      {seriesRead?.label ||
+                        seriesRead?.classification ||
+                        "Series matchup ready"}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => openSeriesPreview(team)}
+                    className="rounded-xl bg-cyan-400 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-300"
+                  >
+                    View Series Matchup →
+                  </button>
+                </div>
+              </div>
+
+              <div className="hidden">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                    src="/aquarium-drinkers-shield.svg"
+                    alt="Aquarium Drinkers"
+                    title="Aquarium Drinkers"
+                    className="h-32 w-32 object-contain sm:h-36 sm:w-36 lg:h-44 lg:w-44"
+                  />
+
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-800/70 dark:text-cyan-200/65">
-                        {team.season} ┬╖ League {team.leagueId}
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-300">
+                        {team.season} · LEAGUE {team.leagueId}
                       </p>
 
-                      <h3 className="mt-1 text-2xl font-black text-[#06172f] dark:text-white">
+                      <h3 className="mt-1 text-2xl font-black text-white">
                         {team.teamName}
                       </h3>
                     </div>
@@ -856,36 +1116,36 @@ export default function App() {
                 </div>
 
                 <div className="mt-5 grid grid-cols-3 gap-3">
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
+                  <div className="rounded-xl border border-white/10 bg-white/10 p-3 text-white shadow-inner backdrop-blur-sm">
+                    <p className="text-xs font-semibold text-cyan-100/70">
                       Record
                     </p>
                     <p className="mt-1 text-xl font-black">
                       {live?.record ||
                         (liveStatus === "error"
                           ? "Unavailable"
-                          : "LoadingΓÇª")}
+                          : "Loading…")}
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
+                  <div className="rounded-xl border border-white/10 bg-white/10 p-3 text-white shadow-inner backdrop-blur-sm">
+                    <p className="text-xs font-semibold text-cyan-100/70">
                       Standing
                     </p>
                     <p className="mt-1 text-lg font-black">
                       {isPreseason
-                        ? "ΓÇö"
+                        ? "—"
                         : teamStanding
                           ? `${formatOrdinal(
                               teamStanding.divisionRank
                             )} ${teamStanding.division}`
                           : leagueStatus === "error"
                             ? "Unavailable"
-                            : "LoadingΓÇª"}
+                            : "Loading…"}
                     </p>
 
                     {!isPreseason && teamStanding && (
-                      <p className="mt-0.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
+                      <p className="mt-0.5 text-xs font-semibold text-slate-300">
                         {teamStanding.gamesBehind === "-"
                           ? "Division leader"
                           : `${teamStanding.gamesBehind} GB`}
@@ -893,22 +1153,22 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
+                  <div className="rounded-xl border border-white/10 bg-white/10 p-3 text-white shadow-inner backdrop-blur-sm">
+                    <p className="text-xs font-semibold text-cyan-100/70">
                       Run Diff
                     </p>
                     <p className="mt-1 text-xl font-black">
                       {isPreseason
-                        ? "ΓÇö"
+                        ? "—"
                         : teamStanding?.runDifferential ||
                           (leagueStatus === "error"
                             ? "Unavailable"
-                            : "LoadingΓÇª")}
+                            : "Loading…")}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
                   {isPreseason ? (
                     <span>
                       Performance data begins Opening Day
@@ -916,286 +1176,137 @@ export default function App() {
                   ) : (
                     <>
                       <span>
-                        L10 {teamStanding?.last10 || "ΓÇª"}
+                        Recent form · L10 {teamStanding?.last10 || "…"}
                       </span>
-                      <span>┬╖</span>
+                      <span>·</span>
                       <span>
-                        Streak {teamStanding?.streak || "ΓÇª"}
+                        Streak {teamStanding?.streak || "…"}
                       </span>
                     </>
                   )}
                 </div>
               </div>
 
-              <div className="p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                  Upcoming Series
-                </p>
-
-                <p className="mt-2 text-xl font-black">
-                  {currentHomeAway} ┬╖ {currentOpponentName}
-                </p>
-
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  {currentSeriesDate} ┬╖ {currentGameCount ?? "ΓÇö"} games
-                </p>
-
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Opp Record
+              <div
+                data-bie-surface="starter-matchup-strip"
+                className="border-t border-cyan-100 bg-slate-50/80 px-5 py-4 dark:border-slate-800 dark:bg-slate-950/40"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-300">
+                      Probable Starters
                     </p>
-                    <p className="mt-1 font-black">
-                      {opponentLive?.record ||
-                        (opponentStatus === "error"
-                          ? "Unavailable"
-                          : "LoadingΓÇª")}
+                    <p className="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      Projected series rotation
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Opp Standing
-                    </p>
-                    <p className="mt-1 font-black">
-                      {isPreseason
-                        ? "ΓÇö"
-                        : opponentStanding
-                          ? `${formatOrdinal(
-                              opponentStanding.divisionRank
-                            )} ${opponentStanding.division}`
-                          : leagueStatus === "error"
-                            ? "Unavailable"
-                            : "LoadingΓÇª"}
-                    </p>
-
-                    {!isPreseason && opponentStanding && (
-                      <p className="mt-0.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
-                        {opponentStanding.gamesBehind === "-"
-                          ? "Division leader"
-                          : `${opponentStanding.gamesBehind} GB`}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/60">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Opp Diff
-                    </p>
-                    <p className="mt-1 font-black">
-                      {isPreseason
-                        ? "ΓÇö"
-                        : opponentStanding?.runDifferential ||
-                          (leagueStatus === "error"
-                            ? "Unavailable"
-                            : "LoadingΓÇª")}
-                    </p>
-                  </div>
+                  {rotationReady ? (
+                    <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950/60 dark:text-cyan-300">
+                      Live projection
+                    </span>
+                  ) : null}
                 </div>
 
-                {!isPreseason && (
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <span>
-                      Opp L10 {opponentStanding?.last10 || "ΓÇª"}
-                    </span>
-                    <span>┬╖</span>
-                    <span>
-                      Streak {opponentStanding?.streak || "ΓÇª"}
-                    </span>
+                {rotationError ? (
+                  <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+                    Rotation evidence unavailable
                   </div>
-                )}
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Series Ballpark
-                    </p>
-                    <p className="mt-1 font-bold">
-                      {seriesBallpark ||
-                        (liveStatus === "error" ||
-                        opponentStatus === "error"
-                          ? "Unavailable"
-                          : "LoadingΓÇª")}
-                    </p>
+                ) : rotationLoading ? (
+                  <div className="mt-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-400 dark:border-slate-800 dark:bg-slate-900/70">
+                    Loading rotation evidence…
                   </div>
-
-                  <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Venue Records
-                    </p>
-                    <p className="mt-1 font-bold">
-                      {isPreseason
-                        ? "ΓÇö"
-                        : teamVenueRecord && opponentVenueRecord
-                          ? `${currentHomeAway} ${teamVenueRecord} ┬╖ Opp ${
-                              currentHomeAway === "Away"
-                                ? "Home"
-                                : "Road"
-                            } ${opponentVenueRecord}`
-                          : leagueStatus === "error"
-                            ? "Unavailable"
-                            : "LoadingΓÇª"}
-                    </p>
+                ) : !rotationReady ? (
+                  <div className="mt-3 rounded-xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-500">
+                    Rotation projection not yet available
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="mt-3 grid gap-3 md:grid-cols-3">
+                      {[1, 2, 3].map((gameNumber) => {
+                        const teamProjection =
+                          teamRotation?.projections?.find(
+                            (projection) =>
+                              Number(projection.slot) === gameNumber
+                          );
 
-                {(liveStatus === "error" ||
-                  opponentStatus === "error" ||
-                  leagueStatus === "error") && (
-                  <p className="mt-3 text-xs font-semibold text-amber-700 dark:text-amber-300">
-                    Live Strat data is unavailable for one or more teams.
-                    Missing current values are not inferred.
-                  </p>
-                )}
+                        const opponentProjection =
+                          opponentRotation?.projections?.find(
+                            (projection) =>
+                              Number(projection.slot) === gameNumber
+                          );
 
-                <div
-                  className={`mt-4 rounded-xl border p-3 ${
-                    seriesRead.tone === "positive"
-                      ? "border-emerald-200 bg-emerald-50/70 dark:border-emerald-900/60 dark:bg-emerald-950/20"
-                      : seriesRead.tone === "warning"
-                        ? "border-amber-200 bg-amber-50/70 dark:border-amber-900/60 dark:bg-amber-950/20"
-                        : isPreseason
-                          ? "border-blue-200 bg-blue-50/70 dark:border-blue-900/60 dark:bg-blue-950/20"
-                          : "border-cyan-200 bg-cyan-50/50 dark:border-cyan-900/60 dark:bg-cyan-950/20"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                      Series Read
-                    </p>
+                        const confidence =
+                          teamProjection?.effectiveConfidence ||
+                          opponentProjection?.effectiveConfidence ||
+                          "NONE";
 
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                        seriesRead.tone === "positive"
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                          : seriesRead.tone === "warning"
-                            ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
-                            : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                      }`}
-                    >
-                      {seriesRead.label}
-                    </span>
-                  </div>
+                        return (
+                          <div
+                            key={gameNumber}
+                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/80"
+                          >
+                            <div className="flex items-center justify-between border-b border-slate-100 px-3.5 py-2 dark:border-slate-800">
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                Game {gameNumber}
+                              </p>
 
-                  <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
-                    {seriesRead.summary}
-                  </p>
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${rotationConfidenceClasses(
+                                  confidence
+                                )}`}
+                              >
+                                {confidence.toLowerCase()}
+                              </span>
+                            </div>
 
-                  {!isPreseason && (
-                    <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
-                      Based on record, run differential, recent form, and venue splits.
-                    </p>
-                  )}
-                </div>
-
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-xl border border-cyan-200 bg-cyan-50/40 p-3 dark:border-cyan-900/60 dark:bg-cyan-950/15">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                        Probable starters
-                      </p>
-
-                      {rotationReady && (
-                        <span className="rounded-full bg-cyan-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300">
-                          Live projection
-                        </span>
-                      )}
-                    </div>
-
-                    {rotationError ? (
-                      <p className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-300">
-                        Rotation evidence unavailable
-                      </p>
-                    ) : rotationLoading ? (
-                      <p className="mt-2 text-sm font-semibold text-slate-400">
-                        Loading rotation evidenceΓÇª
-                      </p>
-                    ) : !rotationReady ? (
-                      <p className="mt-2 text-sm font-semibold text-slate-400 dark:text-slate-500">
-                        Evidence gated
-                      </p>
-                    ) : (
-                      <div className="mt-3 space-y-2">
-                        {[
-                          ["Aquarium", teamRotation],
-                          [currentOpponentName, opponentRotation],
-                        ].map(([label, rotation]) => {
-                          const projections =
-                            rotation?.projections?.slice(0, 3) || [];
-
-                          const confidence =
-                            projections[0]?.effectiveConfidence || "NONE";
-
-                          return (
-                            <div
-                              key={label}
-                              className="rounded-lg border border-slate-200 bg-white/85 p-2.5 dark:border-slate-800 dark:bg-slate-900/70"
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <p className="text-xs font-black text-[#06172f] dark:text-white">
-                                  {label}
+                            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-4">
+                              <div className="min-w-0 text-left">
+                                <p className="text-[9px] font-black uppercase tracking-[0.12em] text-cyan-700 dark:text-cyan-300">
+                                  Aquarium
                                 </p>
-
-                                <span
-                                  className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${rotationConfidenceClasses(
-                                    confidence
-                                  )}`}
-                                >
-                                  {confidence.toLowerCase()} confidence
-                                </span>
+                                <p className="mt-1 truncate text-sm font-black text-[#06172f] dark:text-white">
+                                  {teamProjection
+                                    ? formatRotationPitcher(
+                                        teamProjection.pitcher
+                                      )
+                                    : "TBD"}
+                                </p>
                               </div>
 
-                              <div className="mt-2 grid grid-cols-3 gap-1.5">
-                                {projections.map((projection) => (
-                                  <div
-                                    key={projection.slot}
-                                    className="rounded-md bg-slate-50 px-2 py-1.5 dark:bg-slate-950/60"
-                                  >
-                                    <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">
-                                      G{projection.slot}
-                                    </p>
-                                    <p className="mt-0.5 text-[11px] font-black text-slate-700 dark:text-slate-200">
-                                      {formatRotationPitcher(
-                                        projection.pitcher
-                                      )}
-                                    </p>
-                                  </div>
-                                ))}
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-[9px] font-black text-white dark:bg-slate-700">
+                                VS
+                              </div>
+
+                              <div className="min-w-0 text-right">
+                                <p className="truncate text-[9px] font-black uppercase tracking-[0.12em] text-rose-700 dark:text-rose-300">
+                                  {currentOpponentDisplayName}
+                                </p>
+                                <p className="mt-1 truncate text-sm font-black text-[#06172f] dark:text-white">
+                                  {opponentProjection
+                                    ? formatRotationPitcher(
+                                        opponentProjection.pitcher
+                                      )
+                                    : "TBD"}
+                                </p>
                               </div>
                             </div>
-                          );
-                        })}
+                          </div>
+                        );
+                      })}
+                    </div>
 
-                        <p className="text-[10px] leading-4 text-slate-400 dark:text-slate-500">
-                          Projection from recent completed starts and observed rotation transitions; not announced starters.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-950/30">
-                    <p className="text-xs font-semibold text-slate-500">
-                      Likely lineup
+                    <p className="mt-2.5 text-[10px] leading-4 text-slate-400 dark:text-slate-500">
+                      Projection from recent completed starts and observed rotation transitions; not announced starters.
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-slate-400 dark:text-slate-500">
-                      Evidence gated
-                    </p>
-                  </div>
-                </div>
+                  </>
+                )}
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => openSeriesPreview(team)}
-                    className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-500"
-                  >
-                    Open Series Preview
-                  </button>
-
+                <div className="mt-3 flex flex-wrap justify-end gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
                   <button
                     type="button"
                     onClick={() => refreshStratTeam(team.teamId)}
-                    className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                   >
                     Refresh Team
                   </button>
@@ -1209,7 +1320,7 @@ export default function App() {
                         "noopener,noreferrer"
                       )
                     }
-                    className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                   >
                     Open Strat
                   </button>
@@ -1254,7 +1365,7 @@ export default function App() {
 
         </h2>
 
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+        <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-slate-200">
 
           Query your archives, surface long-running patterns, and turn personal data into usable memory.
 
@@ -1345,7 +1456,7 @@ export default function App() {
 
             <h1 className="text-xl font-bold tracking-tight">
 
-              Defending Sisyphus ┬╖ Strat-O-Matic
+              Defending Sisyphus · Strat-O-Matic
 
             </h1>
 
