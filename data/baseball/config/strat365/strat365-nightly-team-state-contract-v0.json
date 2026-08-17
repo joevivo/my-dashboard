@@ -136,7 +136,7 @@
     },
     "validation": {
         "requiredTopLevelPropertyCount": 19,
-        "activeTeamCountExpected": 3,
+        "activeTeamCountExpected": 4,
         "initialSpoilerState": "SEALED",
         "initialStateRevision": 0,
         "status": "PASS"
