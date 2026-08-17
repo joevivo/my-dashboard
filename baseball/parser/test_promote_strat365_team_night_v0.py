@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import pathlib
 import subprocess
@@ -364,6 +365,35 @@ class TeamNightPromoterTests(unittest.TestCase):
                 tree_hash(parsed),
                 source_hash,
             )
+
+    def test_capture_metadata_success_contract(self) -> None:
+        validator_path = self.promoter.with_name(
+            "validate_strat365_season_ingestion_complete_night_v0.py"
+        )
+        spec = importlib.util.spec_from_file_location(
+            "complete_night_validator_contract_test",
+            validator_path,
+        )
+        if spec is None or spec.loader is None:
+            self.fail("Unable to load complete-night validator.")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        check = module.capture_metadata_success
+
+        self.assertTrue(check({"httpStatus": 200}))
+        self.assertTrue(
+            check(
+                {"httpStatus": 200, "requestStatus": "captured"}
+            )
+        )
+        self.assertTrue(check({"httpStatus": "200"}))
+        self.assertFalse(check({"httpStatus": 500}))
+        self.assertFalse(
+            check(
+                {"httpStatus": 200, "requestStatus": "failed"}
+            )
+        )
+        self.assertFalse(check({"requestStatus": "captured"}))
 
     def test_invented_truthy_gate_names_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as value:

@@ -72,6 +72,19 @@ def resolve_repo_path(repo_root: Path, value: str) -> Path:
     return (repo_root / path).resolve()
 
 
+def capture_metadata_success(metadata: dict[str, Any]) -> bool:
+    try:
+        if int(metadata.get("httpStatus", 0)) != 200:
+            return False
+    except (TypeError, ValueError):
+        return False
+
+    if "requestStatus" in metadata:
+        if metadata.get("requestStatus") != "captured":
+            return False
+
+    return True
+
 def add_gate(
     gates: dict[str, bool],
     failures: list[str],
@@ -854,6 +867,13 @@ def main() -> int:
                         f"Game {game_id} metadata body path differs "
                         f"for {metadata_name}."
                     )
+
+                if not capture_metadata_success(metadata):
+                    failures.append(
+                        f"Game {game_id} capture metadata is not "
+                        f"successful for {metadata_name}."
+                    )
+                    continue
 
                 verified_game_source_count += 1
                 verified_source_paths.add(str(body_path))
