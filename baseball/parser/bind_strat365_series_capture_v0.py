@@ -293,6 +293,131 @@ def discover_sources(
     }
 
 
+def validate_target_series_alignment(
+    series,
+    *,
+    series_game_number: int,
+):
+    """
+    Fail closed unless the selected replay ordinal belongs to the exact
+    schedule-game-number series encoded by seriesIdentity.
+
+    Replay/capture binding must never attach completed series N evidence
+    to preview series N+1 merely because both contain three games.
+    """
+    identity = series.get(
+        "seriesIdentity",
+        {},
+    )
+
+    if not isinstance(identity, dict):
+        raise ValueError(
+            "Series alignment requires seriesIdentity."
+        )
+
+    raw_numbers = identity.get(
+        "scheduleGameNumbers"
+    )
+
+    if (
+        not isinstance(raw_numbers, list)
+        or len(raw_numbers) != 3
+    ):
+        raise ValueError(
+            "Series alignment requires exactly three "
+            "seriesIdentity.scheduleGameNumbers."
+        )
+
+    expected_numbers = [
+        int(value)
+        for value in raw_numbers
+    ]
+
+    expected_series_id = (
+        f"league-{identity.get('leagueId')}-"
+        f"team-{identity.get('teamId')}-games-"
+        + "-".join(
+            str(value)
+            for value in expected_numbers
+        )
+    )
+
+    actual_series_id = str(
+        identity.get("seriesId") or ""
+    )
+
+    if actual_series_id != expected_series_id:
+        raise ValueError(
+            "Series identity does not reconcile with "
+            "scheduleGameNumbers."
+        )
+
+    ordinal = int(series_game_number)
+
+    if ordinal < 1 or ordinal > len(
+        expected_numbers
+    ):
+        raise ValueError(
+            "Series game ordinal is outside the "
+            "previewed series boundary."
+        )
+
+    games = (
+        series.get("replay", {})
+        .get("games", [])
+    )
+
+    matches = [
+        game
+        for game in games
+        if int(game.get("ordinal", -1))
+        == ordinal
+    ]
+
+    if len(matches) != 1:
+        raise ValueError(
+            "Series alignment requires exactly one "
+            "target replay game."
+        )
+
+    target = matches[0]
+
+    expected_schedule_number = (
+        expected_numbers[ordinal - 1]
+    )
+
+    target_schedule_number = target.get(
+        "scheduleGameNumber"
+    )
+
+    if target_schedule_number is None:
+        raise ValueError(
+            "Target replay game is missing "
+            "scheduleGameNumber."
+        )
+
+    if (
+        int(target_schedule_number)
+        != expected_schedule_number
+    ):
+        raise ValueError(
+            "Target replay game schedule number "
+            "does not match the exact previewed series."
+        )
+
+    return {
+        "status": "MATCH",
+        "seriesId": actual_series_id,
+        "ordinal": ordinal,
+        "scheduleGameNumber": (
+            expected_schedule_number
+        ),
+        "policy": (
+            "POSTGAME_CAPTURE_MUST_BIND_TO_EXACT_"
+            "PREVIEWED_SCHEDULE_GAME_NUMBER"
+        ),
+    }
+
 def find_target_game(
     series,
     series_game_number: int,
@@ -447,6 +572,11 @@ def main():
 
     team_id = str(
         identity.get("teamId")
+    )
+
+    alignment = validate_target_series_alignment(
+        series,
+        series_game_number=args.series_game_number,
     )
 
     snapshot = series.get(

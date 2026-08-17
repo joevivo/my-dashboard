@@ -97,6 +97,107 @@ def latest_file(
 
 
 
+def validate_series_schedule_alignment(
+    *,
+    preview_schedule_payload: dict[str, Any],
+    completed_schedule_game_numbers: list[int],
+    completed_opponent_team_id: str | None = None,
+) -> dict[str, Any]:
+    """
+    Fail closed unless postgame evidence belongs to the exact series
+    identified by the preview's upcoming-series schedule contract.
+
+    This prevents a completed N series from being evaluated against the
+    preview for N+1 merely because N is the latest completed three-game set.
+    """
+    if not isinstance(preview_schedule_payload, dict):
+        raise ValueError(
+            "Series alignment requires a preview schedule JSON object."
+        )
+
+    next_series = preview_schedule_payload.get("nextSeries")
+
+    if not isinstance(next_series, dict):
+        raise ValueError(
+            "Series alignment requires nextSeries in the preview schedule."
+        )
+
+    if next_series.get("status") != "FOUND":
+        raise ValueError(
+            "Series alignment requires nextSeries.status == FOUND."
+        )
+
+    raw_preview_numbers = next_series.get("scheduleGameNumbers")
+
+    if (
+        not isinstance(raw_preview_numbers, list)
+        or len(raw_preview_numbers) != 3
+    ):
+        raise ValueError(
+            "Series alignment requires exactly three preview "
+            "scheduleGameNumbers."
+        )
+
+    preview_numbers = sorted(
+        int(value)
+        for value in raw_preview_numbers
+    )
+
+    completed_numbers = sorted(
+        int(value)
+        for value in completed_schedule_game_numbers
+    )
+
+    if len(completed_numbers) != 3:
+        raise ValueError(
+            "Series alignment requires exactly three completed "
+            "schedule game numbers."
+        )
+
+    preview_opponent_team_id = str(
+        next_series.get("opponentTeamId") or ""
+    ).strip()
+
+    completed_opponent = str(
+        completed_opponent_team_id or ""
+    ).strip()
+
+    game_numbers_match = (
+        preview_numbers == completed_numbers
+    )
+
+    opponent_match = (
+        not completed_opponent
+        or (
+            bool(preview_opponent_team_id)
+            and preview_opponent_team_id == completed_opponent
+        )
+    )
+
+    status = (
+        "MATCH"
+        if game_numbers_match and opponent_match
+        else "MISMATCH"
+    )
+
+    return {
+        "status": status,
+        "previewScheduleGameNumbers": preview_numbers,
+        "completedScheduleGameNumbers": completed_numbers,
+        "previewOpponentTeamId": (
+            preview_opponent_team_id or None
+        ),
+        "completedOpponentTeamId": (
+            completed_opponent or None
+        ),
+        "scheduleGameNumbersMatch": game_numbers_match,
+        "opponentTeamIdMatch": opponent_match,
+        "policy": (
+            "POSTGAME_REVIEW_MUST_MATCH_EXACT_PREVIEWED_"
+            "SCHEDULE_GAME_NUMBERS"
+        ),
+    }
+
 def resolve_prior_series_learning(
     repo_root: Path,
     *,
