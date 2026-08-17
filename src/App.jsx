@@ -79,6 +79,17 @@ const ACTIVE_STRAT_TEAMS = [
       phase: "ACTIVE_SEASON",
     },
   },
+  {
+    teamId: "1856033",
+    leagueId: "479640",
+    teamName: "Aquarium Drinkers",
+    season: "1968",
+    teamUrl: "https://365.strat-o-matic.com/team/1856033",
+    scheduleUrl: "https://365.strat-o-matic.com/team/schedule/1856033",
+    bie: {
+      phase: "PRESEASON",
+    },
+  },
 ];
 
 function formatOrdinal(value) {
