@@ -678,11 +678,39 @@ function parseRosterRows(html) {
         return {
           type: "pitcher",
           ...common,
-          innings: fields.h || "",
+          throws:
+            fields.t ||
+            fields.throws ||
+            fields.throw ||
+            "",
+          endurance:
+            fields.end ||
+            fields.endurance ||
+            "",
+          wins: fields.w || "",
+          losses: fields.l || "",
+          saves: fields.s || "",
+          innings: fields.ip || "",
           hitsAllowed: fields.h || "",
-          hrAllowed: fields.hr || "",
+          earnedRuns: fields.er || "",
           walksAllowed: fields.bb || "",
           strikeouts: fields.so || "",
+          hrAllowed: fields.hr || "",
+          holdRating:
+            fields.hold ||
+            fields.holdrating ||
+            "",
+          balkRating:
+            fields.bkr ||
+            fields.bk ||
+            "",
+          wildPitchRating:
+            fields.wpr ||
+            fields.wp ||
+            "",
+          batting: fields.bat || "",
+          era: fields.era || "",
+          whip: fields.whip || "",
         };
       }
 

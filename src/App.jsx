@@ -315,6 +315,226 @@ function rotationConfidenceClasses(value) {
   return "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400";
 }
 
+
+function starterNameIdentity(value) {
+  const raw = String(value || "")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!raw) {
+    return null;
+  }
+
+  let firstPart = "";
+  let surnamePart = "";
+
+  if (raw.includes(",")) {
+    const [surname, given = ""] =
+      raw.split(",", 2);
+
+    surnamePart = surname.trim();
+    firstPart = given.trim();
+  } else {
+    const parts = raw
+      .split(/\s+/)
+      .filter(Boolean);
+
+    surnamePart =
+      parts[parts.length - 1] || "";
+
+    firstPart =
+      parts[0] || "";
+  }
+
+  const normalize = (part) =>
+    String(part || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+
+  const surname =
+    normalize(surnamePart);
+
+  const first =
+    normalize(firstPart);
+
+  const full =
+    normalize(raw.includes(",")
+      ? `${firstPart} ${surnamePart}`
+      : raw);
+
+  return {
+    full,
+    surname,
+    firstInitial:
+      first.slice(0, 1),
+  };
+}
+
+function findProjectedStarterRosterRow(
+  liveTeam,
+  projectedPitcher,
+) {
+  const target =
+    starterNameIdentity(
+      projectedPitcher,
+    );
+
+  const pitchers =
+    Array.isArray(liveTeam?.pitchers)
+      ? liveTeam.pitchers
+      : [];
+
+  if (
+    !target ||
+    !target.surname ||
+    !pitchers.length
+  ) {
+    return null;
+  }
+
+  const candidates =
+    pitchers.map((pitcher) => ({
+      pitcher,
+      identity:
+        starterNameIdentity(
+          pitcher?.name,
+        ),
+    }));
+
+  const exact =
+    candidates.find(
+      ({ identity }) =>
+        identity?.full &&
+        identity.full === target.full,
+    );
+
+  if (exact) {
+    return exact.pitcher;
+  }
+
+  const surnameAndInitial =
+    candidates.filter(
+      ({ identity }) =>
+        identity?.surname ===
+          target.surname &&
+        identity?.firstInitial ===
+          target.firstInitial,
+    );
+
+  if (
+    surnameAndInitial.length === 1
+  ) {
+    return surnameAndInitial[0]
+      .pitcher;
+  }
+
+  const surnameOnly =
+    candidates.filter(
+      ({ identity }) =>
+        identity?.surname ===
+        target.surname,
+    );
+
+  return surnameOnly.length === 1
+    ? surnameOnly[0].pitcher
+    : null;
+}
+
+function formatStarterThrowingHand(value) {
+  const hand = String(value || "")
+    .trim()
+    .toUpperCase();
+
+  if (hand === "L") {
+    return "LHP";
+  }
+
+  if (hand === "R") {
+    return "RHP";
+  }
+
+  return hand || "—";
+}
+
+function formatStarterRecord(row) {
+  const wins = String(
+    row?.wins ?? "",
+  ).trim();
+
+  const losses = String(
+    row?.losses ?? "",
+  ).trim();
+
+  if (!wins && !losses) {
+    return "—";
+  }
+
+  return `${wins || "0"}-${losses || "0"}`;
+}
+
+function formatStarterStat(
+  value,
+  digits,
+) {
+  if (
+    value == null ||
+    String(value).trim() === ""
+  ) {
+    return "—";
+  }
+
+  const numeric = Number(value);
+
+  if (!Number.isFinite(numeric)) {
+    return String(value).trim();
+  }
+
+  return numeric.toFixed(digits);
+}
+
+function formatStarterKbb(row) {
+  const strikeouts = Number(
+    row?.strikeouts,
+  );
+
+  const walks = Number(
+    row?.walksAllowed,
+  );
+
+  if (
+    !Number.isFinite(strikeouts) ||
+    !Number.isFinite(walks)
+  ) {
+    return "—";
+  }
+
+  if (walks === 0) {
+    return strikeouts > 0
+      ? "∞"
+      : "—";
+  }
+
+  return (
+    strikeouts / walks
+  ).toFixed(2);
+}
+
+function formatStarterHold(value) {
+  const raw = String(value || "")
+    .trim();
+
+  if (!raw) {
+    return "Hold —";
+  }
+
+  if (/^hold\b/i.test(raw)) {
+    return raw;
+  }
+
+  return `Hold ${raw}`;
+}
+
 export default function App() {
 
   const [activeView, setActiveView] = useState("StratHome");
@@ -717,7 +937,48 @@ export default function App() {
 
 
 
-  const STRAT_1968_PARK_EFFECTS = {
+  function ActiveTeamHeroMark({
+  identity,
+  alt,
+  tone = "cyan",
+}) {
+  const [imageFailed, setImageFailed] =
+    useState(false);
+
+  const palette =
+    tone === "rose"
+      ? "border-rose-800 bg-rose-950/60 text-rose-200"
+      : "border-cyan-800 bg-cyan-950/60 text-cyan-200";
+
+  const sizeClass =
+    "h-36 w-36 sm:h-40 sm:w-40 lg:h-44 lg:w-44";
+
+  if (
+    identity?.logoPath &&
+    !imageFailed
+  ) {
+    return (
+      <img
+        src={identity.logoPath}
+        alt={alt || identity?.teamName || "Team"}
+        className={`${sizeClass} object-contain`}
+        onError={() => setImageFailed(true)}
+      />
+    );
+  }
+
+  return (
+    <div
+      data-bie-logo-fallback="monogram"
+      aria-label={alt || identity?.teamName || "Team"}
+      className={`flex ${sizeClass} items-center justify-center rounded-3xl border text-4xl font-black ${palette}`}
+    >
+      {identity?.monogram || "?"}
+    </div>
+  );
+}
+
+const STRAT_1968_PARK_EFFECTS = {
   "Astrodome 1968": {
     singlesLeft: 9,
     singlesRight: 9,
@@ -943,16 +1204,14 @@ const StratHome = () => (
 
                 <div className="relative mt-5 grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]">
                   <div className="flex flex-col items-center text-center">
-                    <img
-                      src={
-                        getStratTeamIdentity(
-                          team.teamId,
-                          team.teamName
-                        )?.logoPath ||
-                        "/aquarium-drinkers-shield.svg"
-                      }
+                    <ActiveTeamHeroMark
+                      key={`aquarium-${team.teamId}`}
+                      identity={getStratTeamIdentity(
+                        team.teamId,
+                        team.teamName
+                      )}
                       alt="Aquarium Drinkers"
-                      className="h-36 w-36 object-contain sm:h-40 sm:w-40 lg:h-44 lg:w-44"
+                      tone="cyan"
                     />
 
                     <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
@@ -1007,18 +1266,15 @@ const StratHome = () => (
                   </div>
 
                   <div className="flex flex-col items-center text-center">
-                    {currentOpponentIdentity?.logoPath ? (
-                      <img
-                        src={currentOpponentIdentity.logoPath}
-                        alt={currentOpponentDisplayName}
-                        className="h-36 w-36 object-contain sm:h-40 sm:w-40 lg:h-44 lg:w-44"
-                      />
-                    ) : (
-                      <div className="flex h-36 w-36 items-center justify-center rounded-3xl border border-rose-800 bg-rose-950/60 text-4xl font-black text-rose-200 sm:h-40 sm:w-40 lg:h-44 lg:w-44">
-                        {currentOpponentIdentity?.monogram ||
-                          "?"}
-                      </div>
-                    )}
+                    <ActiveTeamHeroMark
+                      key={
+                        currentOpponentIdentity?.teamId ||
+                        currentOpponentDisplayName
+                      }
+                      identity={currentOpponentIdentity}
+                      alt={currentOpponentDisplayName}
+                      tone="rose"
+                    />
 
                     <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-rose-300">
                       Opponent
@@ -1241,6 +1497,18 @@ const StratHome = () => (
                           opponentProjection?.effectiveConfidence ||
                           "NONE";
 
+                        const teamPitcher =
+                          findProjectedStarterRosterRow(
+                            live,
+                            teamProjection?.pitcher,
+                          );
+
+                        const opponentPitcher =
+                          findProjectedStarterRosterRow(
+                            opponentLive,
+                            opponentProjection?.pitcher,
+                          );
+
                         return (
                           <div
                             key={gameNumber}
@@ -1272,6 +1540,46 @@ const StratHome = () => (
                                       )
                                     : "TBD"}
                                 </p>
+
+                                <p className="mt-1 text-[10px] font-bold tabular-nums text-slate-600 dark:text-slate-300">
+                                  {formatStarterThrowingHand(
+                                    teamPitcher?.throws,
+                                  )}
+                                  {" · "}
+                                  {formatStarterRecord(
+                                    teamPitcher,
+                                  )}
+                                  {" · "}
+                                  ERA{" "}
+                                  {formatStarterStat(
+                                    teamPitcher?.era,
+                                    2,
+                                  )}
+                                  {" · "}
+                                  WHIP{" "}
+                                  {formatStarterStat(
+                                    teamPitcher?.whip,
+                                    2,
+                                  )}
+                                </p>
+
+                                <p className="mt-0.5 text-[9px] font-semibold tabular-nums text-slate-400">
+                                  IP{" "}
+                                  {teamPitcher?.innings ||
+                                    "—"}
+                                  {" · "}
+                                  K/BB{" "}
+                                  {formatStarterKbb(
+                                    teamPitcher,
+                                  )}
+                                  {" · "}
+                                  {formatStarterHold(
+                                    teamPitcher?.holdRating,
+                                  )}
+                                  {teamPitcher?.endurance
+                                    ? ` · ${teamPitcher.endurance}`
+                                    : ""}
+                                </p>
                               </div>
 
                               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-[9px] font-black text-white dark:bg-slate-700">
@@ -1288,6 +1596,46 @@ const StratHome = () => (
                                         opponentProjection.pitcher
                                       )
                                     : "TBD"}
+                                </p>
+
+                                <p className="mt-1 text-[10px] font-bold tabular-nums text-slate-600 dark:text-slate-300">
+                                  {formatStarterThrowingHand(
+                                    opponentPitcher?.throws,
+                                  )}
+                                  {" · "}
+                                  {formatStarterRecord(
+                                    opponentPitcher,
+                                  )}
+                                  {" · "}
+                                  ERA{" "}
+                                  {formatStarterStat(
+                                    opponentPitcher?.era,
+                                    2,
+                                  )}
+                                  {" · "}
+                                  WHIP{" "}
+                                  {formatStarterStat(
+                                    opponentPitcher?.whip,
+                                    2,
+                                  )}
+                                </p>
+
+                                <p className="mt-0.5 text-[9px] font-semibold tabular-nums text-slate-400">
+                                  IP{" "}
+                                  {opponentPitcher?.innings ||
+                                    "—"}
+                                  {" · "}
+                                  K/BB{" "}
+                                  {formatStarterKbb(
+                                    opponentPitcher,
+                                  )}
+                                  {" · "}
+                                  {formatStarterHold(
+                                    opponentPitcher?.holdRating,
+                                  )}
+                                  {opponentPitcher?.endurance
+                                    ? ` · ${opponentPitcher.endurance}`
+                                    : ""}
                                 </p>
                               </div>
                             </div>
