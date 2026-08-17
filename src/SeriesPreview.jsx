@@ -1,6 +1,11 @@
+import frozenFieldingIntelligence from "./strat/frozenFieldingIntelligence.pre10pm.json";
+import FrozenDefensePanel from "./strat/FrozenDefensePanel.jsx";
+import { getFrozenSeriesPreview, FROZEN_STRAT_REVIEW_ID } from "./strat/frozenSeriesPreviewReview";
+import frozenMiscIntelligence from "./strat/frozenMiscIntelligence.pre10pm.json";
 import React, { useEffect, useMemo, useState } from "react";
 import { getStratTeamMark } from "./strat/teamIdentityRegistry";
 
+import ImpactPlayersPanel from "./strat/ImpactPlayersPanel.jsx";
 function humanize(value) {
   return String(value || "")
     .replaceAll("_", " ")
@@ -343,6 +348,113 @@ function shortLeagueRank(rank) {
   }
 }
 
+function frozenMetricValue(
+  value,
+  digits = 0
+) {
+  const numeric = Number(value);
+
+  if (!Number.isFinite(numeric)) {
+    return "—";
+  }
+
+  if (digits === 3) {
+    return numeric
+      .toFixed(3)
+      .replace(/^0(?=\.)/, "");
+  }
+
+  return numeric.toFixed(digits);
+}
+
+function frozenPercent(value) {
+  if (!Number.isFinite(value)) {
+    return "—";
+  }
+
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+function frozenRate(numerator, denominator) {
+  const top = Number(numerator);
+  const bottom = Number(denominator);
+
+  if (
+    !Number.isFinite(top) ||
+    !Number.isFinite(bottom) ||
+    bottom <= 0
+  ) {
+    return null;
+  }
+
+  return top / bottom;
+}
+
+function frozenLeaguePercentile(rank, teamCount) {
+  const numericRank = Number(rank);
+  const numericCount = Number(teamCount);
+
+  if (
+    !Number.isFinite(numericRank) ||
+    !Number.isFinite(numericCount) ||
+    numericCount <= 1 ||
+    numericRank < 1
+  ) {
+    return null;
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      ((numericCount - numericRank) /
+        (numericCount - 1)) *
+        100,
+    ),
+  );
+}
+
+function FrozenPercentileTrack({
+  teamPercentile,
+  opponentPercentile,
+}) {
+  return (
+    <div className="relative mt-3 h-7">
+      <div className="absolute left-0 right-0 top-3 h-1 rounded-full bg-slate-200 dark:bg-slate-700" />
+
+      <div className="absolute left-1/2 top-1 h-5 w-px bg-slate-300 dark:bg-slate-600" />
+
+      <span className="absolute left-1/2 top-0 -translate-x-1/2 text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+        League
+      </span>
+
+      {Number.isFinite(teamPercentile) ? (
+        <span
+          className="absolute top-[8px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-cyan-500 shadow dark:border-slate-900"
+          style={{
+            left: `${teamPercentile}%`,
+          }}
+          title={`Aquarium league percentile ${Math.round(
+            teamPercentile,
+          )}`}
+        />
+      ) : null}
+
+      {Number.isFinite(opponentPercentile) ? (
+        <span
+          className="absolute top-[8px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-rose-500 shadow dark:border-slate-900"
+          style={{
+            left: `${opponentPercentile}%`,
+          }}
+          title={`Opponent league percentile ${Math.round(
+            opponentPercentile,
+          )}`}
+        />
+      ) : null}
+    </div>
+  );
+}
+
 function LeagueEdgeScoreboard({
   teamName,
   opponentName,
@@ -354,6 +466,8 @@ function LeagueEdgeScoreboard({
     {
       label: "OPS",
       context: "Offense",
+      direction: "HIGHER BETTER",
+      higherBetter: true,
       teamValue: teamProfile?.offense?.ops,
       opponentValue:
         opponentProfile?.offense?.ops,
@@ -366,6 +480,8 @@ function LeagueEdgeScoreboard({
     {
       label: "Runs",
       context: "Run Production",
+      direction: "HIGHER BETTER",
+      higherBetter: true,
       teamValue:
         teamProfile?.offense?.runsScored,
       opponentValue:
@@ -379,6 +495,8 @@ function LeagueEdgeScoreboard({
     {
       label: "ERA",
       context: "Run Prevention",
+      direction: "LOWER BETTER",
+      higherBetter: false,
       teamValue:
         teamProfile?.pitching?.era,
       opponentValue:
@@ -392,6 +510,8 @@ function LeagueEdgeScoreboard({
     {
       label: "WHIP",
       context: "Traffic",
+      direction: "LOWER BETTER",
+      higherBetter: false,
       teamValue:
         teamProfile?.pitching?.whip,
       opponentValue:
@@ -404,154 +524,1164 @@ function LeagueEdgeScoreboard({
     },
   ];
 
-  const edgeFor = (teamRank, opponentRank) => {
-    const teamNumeric = Number(teamRank);
-    const opponentNumeric =
-      Number(opponentRank);
-
-    if (
-      !Number.isFinite(teamNumeric) ||
-      !Number.isFinite(opponentNumeric)
-    ) {
-      return null;
-    }
-
-    if (teamNumeric < opponentNumeric) {
-      return "TEAM";
-    }
-
-    if (opponentNumeric < teamNumeric) {
-      return "OPPONENT";
-    }
-
-    return "EVEN";
-  };
-
   return (
     <div
-      data-bie-surface="league-edge-scoreboard"
-      className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950/30"
+      data-bie-surface="league-edge-scoreboard-v3"
+      className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/70 dark:border-slate-700 dark:bg-slate-950/35"
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-end border-b border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/60">
+      <div className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-center border-b border-slate-200 px-4 py-3 dark:border-slate-700">
         <div>
           <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-600 dark:text-cyan-300">
             Aquarium
           </p>
-          <p className="mt-0.5 truncate text-sm font-black text-slate-900 dark:text-white">
+          <p className="truncate text-xs font-black text-slate-900 dark:text-white">
             {teamName}
           </p>
         </div>
 
         <p className="text-center text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">
-          League Rank
+          League context
         </p>
 
         <div className="text-right">
-          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-600 dark:text-rose-300">
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-500">
             Opponent
           </p>
-          <p className="mt-0.5 truncate text-sm font-black text-slate-900 dark:text-white">
+          <p className="truncate text-xs font-black text-slate-900 dark:text-white">
             {opponentName}
           </p>
         </div>
       </div>
 
       {rows.map((row) => {
-        const edge = edgeFor(
-          row.teamRank,
-          row.opponentRank,
-        );
+        const teamNumeric =
+          Number(row.teamValue);
+
+        const opponentNumeric =
+          Number(row.opponentValue);
+
+        const valuesAvailable =
+          Number.isFinite(teamNumeric) &&
+          Number.isFinite(opponentNumeric);
+
+        const teamBetter =
+          valuesAvailable &&
+          (row.higherBetter
+            ? teamNumeric > opponentNumeric
+            : teamNumeric < opponentNumeric);
+
+        const opponentBetter =
+          valuesAvailable &&
+          (row.higherBetter
+            ? opponentNumeric > teamNumeric
+            : opponentNumeric < teamNumeric);
+
+        const difference =
+          valuesAvailable
+            ? Math.abs(
+                teamNumeric - opponentNumeric,
+              )
+            : null;
+
+        const teamPercentile =
+          frozenLeaguePercentile(
+            row.teamRank,
+            teamCount,
+          );
+
+        const opponentPercentile =
+          frozenLeaguePercentile(
+            row.opponentRank,
+            teamCount,
+          );
 
         return (
           <div
             key={row.label}
-            className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-center border-b border-slate-100 px-4 py-3 last:border-b-0 dark:border-slate-800"
+            className="grid grid-cols-[minmax(0,1fr)_minmax(180px,1.3fr)_minmax(0,1fr)] items-center gap-4 border-b border-slate-200 px-4 py-4 last:border-b-0 dark:border-slate-800"
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <span
-                    className={`text-2xl font-black tracking-tight ${
-                      edge === "TEAM"
-                        ? "text-cyan-600 dark:text-cyan-300"
-                        : "text-slate-900 dark:text-white"
-                    }`}
-                  >
-                    {shortLeagueRank(
-                      row.teamRank,
-                    )}
-                  </span>
-
-                  {edge === "TEAM" ? (
-                    <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-300">
-                      Edge
-                    </span>
-                  ) : null}
-                </div>
-
-                <p className="mt-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-                  {formatLeagueMetric(
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-black tabular-nums text-cyan-600 dark:text-cyan-300">
+                  {frozenMetricValue(
                     row.teamValue,
                     row.digits,
                   )}
-                </p>
+                </span>
+
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                  {shortLeagueRank(
+                    row.teamRank,
+                  )}
+                </span>
+
+                {teamBetter ? (
+                  <span className="rounded-full bg-cyan-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300">
+                    Edge
+                  </span>
+                ) : null}
               </div>
             </div>
 
-            <div className="text-center">
-              <p className="text-sm font-black text-slate-900 dark:text-white">
-                {row.label}
-              </p>
+            <div className="min-w-0 text-center">
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-xs font-black text-slate-900 dark:text-white">
+                  {row.label}
+                </p>
+
+                <span
+                  className={`text-[8px] font-black uppercase tracking-[0.12em] ${
+                    row.higherBetter
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-violet-600 dark:text-violet-400"
+                  }`}
+                >
+                  {row.higherBetter
+                    ? "↑ Higher better"
+                    : "↓ Lower better"}
+                </span>
+              </div>
+
               <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
                 {row.context}
               </p>
+
+              <FrozenPercentileTrack
+                teamPercentile={
+                  teamPercentile
+                }
+                opponentPercentile={
+                  opponentPercentile
+                }
+              />
+
+              {valuesAvailable ? (
+                <p className="mt-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                  {teamBetter
+                    ? teamName
+                    : opponentBetter
+                      ? opponentName
+                      : "Even"}
+                  {difference !== null
+                    ? ` · ${frozenMetricValue(
+                        difference,
+                        row.digits,
+                      )}`
+                    : ""}
+                </p>
+              ) : null}
             </div>
 
-            <div className="flex min-w-0 justify-end text-right">
-              <div>
-                <div className="flex items-baseline justify-end gap-2">
-                  {edge === "OPPONENT" ? (
-                    <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.12em] text-rose-800 dark:bg-rose-950/70 dark:text-rose-300">
-                      Edge
-                    </span>
-                  ) : null}
-
-                  <span
-                    className={`text-2xl font-black tracking-tight ${
-                      edge === "OPPONENT"
-                        ? "text-rose-600 dark:text-rose-300"
-                        : "text-slate-900 dark:text-white"
-                    }`}
-                  >
-                    {shortLeagueRank(
-                      row.opponentRank,
-                    )}
+            <div className="text-right">
+              <div className="flex items-baseline justify-end gap-2">
+                {opponentBetter ? (
+                  <span className="rounded-full bg-rose-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                    Edge
                   </span>
-                </div>
+                ) : null}
 
-                <p className="mt-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-                  {formatLeagueMetric(
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                  {shortLeagueRank(
+                    row.opponentRank,
+                  )}
+                </span>
+
+                <span className="text-xl font-black tabular-nums text-rose-600 dark:text-rose-300">
+                  {frozenMetricValue(
                     row.opponentValue,
                     row.digits,
                   )}
-                </p>
+                </span>
               </div>
             </div>
           </div>
         );
       })}
-
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-50/60 px-4 py-2 text-[9px] font-semibold text-slate-400 dark:bg-slate-950/50">
-        <span>
-          Lower rank number is better.
-        </span>
-        <span>
-          {teamCount
-            ? `${teamCount}-team league`
-            : "League context"}
-        </span>
-      </div>
     </div>
+  );
+}
+
+function FrozenBasepathGraphic({
+  teamRate,
+  opponentRate,
+  label,
+}) {
+  const team =
+    Number.isFinite(teamRate)
+      ? Math.max(0, Math.min(1, teamRate))
+      : 0;
+
+  const opponent =
+    Number.isFinite(opponentRate)
+      ? Math.max(
+          0,
+          Math.min(1, opponentRate),
+        )
+      : 0;
+
+  return (
+    <div className="relative mx-auto h-[92px] w-[150px]">
+      <svg
+        viewBox="0 0 160 96"
+        className="h-full w-full"
+        aria-label={label}
+      >
+        <path
+          d="M80 10 L142 48 L80 86 L18 48 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-slate-300 dark:text-slate-700"
+        />
+
+        <path
+          d="M80 86 L80 10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeDasharray="3 4"
+          className="text-slate-300 dark:text-slate-700"
+        />
+
+        <circle
+          cx={18 + 62 * team}
+          cy={48 - 38 * team}
+          r="6"
+          className="fill-cyan-500"
+        />
+
+        <circle
+          cx={142 - 62 * opponent}
+          cy={48 - 38 * opponent}
+          r="6"
+          className="fill-rose-500"
+        />
+
+        <circle
+          cx="80"
+          cy="48"
+          r="18"
+          className="fill-slate-950 dark:fill-slate-900"
+        />
+
+        <text
+          x="80"
+          y="52"
+          textAnchor="middle"
+          className="fill-white text-[9px] font-black"
+        >
+          RUN
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+function FrozenMetricBar({
+  value,
+  tone = "team",
+}) {
+  const numeric =
+    Number.isFinite(value)
+      ? Math.max(0, Math.min(1, value))
+      : 0;
+
+  return (
+    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+      <div
+        className={
+          tone === "team"
+            ? "h-full rounded-full bg-cyan-500"
+            : "h-full rounded-full bg-rose-500"
+        }
+        style={{
+          width: `${numeric * 100}%`,
+        }}
+      />
+    </div>
+  );
+}
+
+function FrozenTeamMetric({
+  label,
+  value,
+  rate,
+  tone,
+  note,
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-700 dark:bg-slate-900">
+      <p className="text-[8px] font-black uppercase tracking-[0.14em] text-slate-400">
+        {label}
+      </p>
+
+      <p
+        className={`mt-1 text-lg font-black tabular-nums ${
+          tone === "team"
+            ? "text-cyan-600 dark:text-cyan-300"
+            : "text-rose-600 dark:text-rose-300"
+        }`}
+      >
+        {value}
+      </p>
+
+      {Number.isFinite(rate) ? (
+        <FrozenMetricBar
+          value={rate}
+          tone={tone}
+        />
+      ) : null}
+
+      {note ? (
+        <p className="mt-1.5 text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+          {note}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function FrozenStealMetric({
+  steals,
+  caught,
+  tone,
+}) {
+  const sb = Number(steals) || 0;
+  const cs = Number(caught) || 0;
+  const attempts = sb + cs;
+  const success =
+    frozenRate(sb, attempts);
+
+  const sample =
+    attempts < 5
+      ? "Small sample"
+      : attempts < 15
+        ? "Developing sample"
+        : "Established sample";
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-700 dark:bg-slate-900">
+      <p className="text-[8px] font-black uppercase tracking-[0.14em] text-slate-400">
+        Stealing
+      </p>
+
+      <p
+        className={`mt-1 text-lg font-black tabular-nums ${
+          tone === "team"
+            ? "text-cyan-600 dark:text-cyan-300"
+            : "text-rose-600 dark:text-rose-300"
+        }`}
+      >
+        {sb}-{cs}
+      </p>
+
+      <p className="mt-1 text-[9px] font-bold text-slate-600 dark:text-slate-300">
+        {frozenPercent(success)} success
+      </p>
+
+      <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+        {attempts} attempts · {sample}
+      </p>
+    </div>
+  );
+}
+
+function FrozenDefenseDiamond() {
+  return (
+    <div className="relative mx-auto h-[205px] max-w-[330px]">
+      <svg
+        viewBox="0 0 360 220"
+        className="h-full w-full"
+        aria-label="Defense architecture"
+      >
+        <path
+          d="M180 20 C80 30 35 85 35 155 L180 210 L325 155 C325 85 280 30 180 20 Z"
+          className="fill-emerald-950/10 stroke-emerald-700/40 dark:fill-emerald-950/40"
+          strokeWidth="2"
+        />
+
+        <path
+          d="M180 202 L92 130 L180 58 L268 130 Z"
+          className="fill-amber-100/50 stroke-amber-500/40 dark:fill-amber-950/25"
+          strokeWidth="2"
+        />
+
+        {[
+          ["CF", 180, 43],
+          ["LF", 77, 82],
+          ["RF", 283, 82],
+          ["SS", 132, 118],
+          ["2B", 228, 118],
+          ["3B", 95, 157],
+          ["1B", 265, 157],
+          ["C", 180, 202],
+        ].map(([position, x, y]) => (
+          <g key={position}>
+            <circle
+              cx={x}
+              cy={y}
+              r="18"
+              className="fill-slate-950 stroke-slate-500 dark:fill-slate-900"
+              strokeWidth="1.5"
+            />
+            <text
+              x={x}
+              y={y + 4}
+              textAnchor="middle"
+              className="fill-white text-[10px] font-black"
+            >
+              {position}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function FrozenMatchupIntelligence({
+  leagueId,
+  teamName,
+  opponentName,
+}) {
+  const leagueKey = String(
+    leagueId || "",
+  );
+
+  const leagueTeams =
+    frozenMiscIntelligence?.teams?.filter(
+      (entry) =>
+        String(entry?.leagueId) ===
+        leagueKey,
+    ) || [];
+
+  const fieldingLeagueTeams =
+    frozenFieldingIntelligence?.teams?.filter(
+      (entry) =>
+        String(entry?.leagueId) ===
+        leagueKey,
+    ) || [];
+
+  const team =
+    leagueTeams.find(
+      (entry) =>
+        entry?.role === "aquarium",
+    );
+
+  const opponent =
+    leagueTeams.find(
+      (entry) =>
+        entry?.role === "opponent",
+    );
+
+  const teamFielding =
+    fieldingLeagueTeams.find(
+      (entry) =>
+        entry?.role === "aquarium",
+    ) || null;
+
+  const opponentFielding =
+    fieldingLeagueTeams.find(
+      (entry) =>
+        entry?.role === "opponent",
+    ) || null;
+
+  if (!team || !opponent) {
+    return null;
+  }
+
+  const teamHitting =
+    team?.hitting?.totals;
+
+  const opponentHitting =
+    opponent?.hitting?.totals;
+
+  const teamPitching =
+    team?.pitching?.totals;
+
+  const opponentPitching =
+    opponent?.pitching?.totals;
+
+  if (
+    !teamHitting ||
+    !opponentHitting ||
+    !teamPitching ||
+    !opponentPitching
+  ) {
+    return null;
+  }
+
+  const running = (hitting) => {
+    const opportunities =
+      Number(
+        hitting?.baserunning
+          ?.opportunities,
+      ) || 0;
+
+    const advances =
+      Number(
+        hitting?.baserunning?.advances,
+      ) || 0;
+
+    const outs =
+      Number(
+        hitting?.baserunning?.outs,
+      ) || 0;
+
+    const attempts =
+      advances + outs;
+
+    const steals =
+      Number(
+        hitting?.stealing?.sb,
+      ) || 0;
+
+    const caught =
+      Number(
+        hitting?.stealing?.cs,
+      ) || 0;
+
+    return {
+      opportunities,
+      advances,
+      outs,
+      attempts,
+      aggression:
+        frozenRate(
+          attempts,
+          opportunities,
+        ),
+      execution:
+        frozenRate(
+          advances,
+          attempts,
+        ),
+      stealSuccess:
+        frozenRate(
+          steals,
+          steals + caught,
+        ),
+      steals,
+      caught,
+    };
+  };
+
+  const contact = (
+    hitting,
+    pitching,
+  ) => {
+    const hGb =
+      Number(
+        hitting?.contact
+          ?.groundBalls,
+      ) || 0;
+
+    const hFb =
+      Number(
+        hitting?.contact?.flyBalls,
+      ) || 0;
+
+    const pGb =
+      Number(
+        pitching?.contact
+          ?.groundBalls,
+      ) || 0;
+
+    const pFb =
+      Number(
+        pitching?.contact?.flyBalls,
+      ) || 0;
+
+    return {
+      hittingGbShare:
+        frozenRate(
+          hGb,
+          hGb + hFb,
+        ),
+      hittingGb: hGb,
+      hittingFb: hFb,
+      hittingGidp:
+        hitting?.contact?.gidp,
+      pitchingGbShare:
+        frozenRate(
+          pGb,
+          pGb + pFb,
+        ),
+      pitchingGb: pGb,
+      pitchingFb: pFb,
+      pitchingGidp:
+        pitching?.contact
+          ?.gidpInduced,
+    };
+  };
+
+  const teamRunning =
+    running(teamHitting);
+
+  const opponentRunning =
+    running(opponentHitting);
+
+  const teamContact =
+    contact(
+      teamHitting,
+      teamPitching,
+    );
+
+  const opponentContact =
+    contact(
+      opponentHitting,
+      opponentPitching,
+    );
+
+  const sampleLabel = (
+    opportunities,
+  ) => {
+    if (opportunities < 20) {
+      return "Small sample";
+    }
+
+    if (opportunities < 50) {
+      return "Developing sample";
+    }
+
+    return "Established sample";
+  };
+
+  const teamRollTotal =
+    Number(
+      teamHitting?.rolls
+        ?.hitterCard,
+    ) +
+    Number(
+      teamHitting?.rolls
+        ?.pitcherCard,
+    );
+
+  const opponentRollTotal =
+    Number(
+      opponentHitting?.rolls
+        ?.hitterCard,
+    ) +
+    Number(
+      opponentHitting?.rolls
+        ?.pitcherCard,
+    );
+
+  const teamPhAb =
+    Number(
+      teamHitting?.pinchHitting?.ab,
+    ) || 0;
+
+  const opponentPhAb =
+    Number(
+      opponentHitting
+        ?.pinchHitting?.ab,
+    ) || 0;
+
+  return (
+    <section
+      data-bie-surface="frozen-matchup-intelligence"
+      data-bie-source="pre-10pm-20260816-201815"
+      className="mt-5 grid gap-4 xl:grid-cols-12"
+    >
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-8">
+        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+                Running Game
+              </p>
+              <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                Taking the extra base and stealing.
+              </p>
+            </div>
+
+            <span className="rounded-full bg-slate-100 px-2 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+              Frozen data
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-[1fr_150px_1fr] items-center gap-2 px-4 py-4">
+          <div className="space-y-2">
+            <FrozenTeamMetric
+              label="Aggression"
+              value={frozenPercent(
+                teamRunning.aggression,
+              )}
+              rate={
+                teamRunning.aggression
+              }
+              tone="team"
+              note={`${teamRunning.attempts}/${teamRunning.opportunities} attempts/opportunities`}
+            />
+
+            <FrozenTeamMetric
+              label="Execution"
+              value={frozenPercent(
+                teamRunning.execution,
+              )}
+              rate={
+                teamRunning.execution
+              }
+              tone="team"
+              note={`${teamRunning.advances} safe · ${teamRunning.outs} out`}
+            />
+
+            <FrozenStealMetric
+              steals={teamRunning.steals}
+              caught={teamRunning.caught}
+              tone="team"
+            />
+          </div>
+
+          <div>
+            <FrozenBasepathGraphic
+              teamRate={
+                teamRunning.aggression
+              }
+              opponentRate={
+                opponentRunning.aggression
+              }
+              label="Baserunning aggression comparison"
+            />
+
+            <p className="mt-1 text-center text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+              Extra-base pressure
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <FrozenTeamMetric
+              label="Aggression"
+              value={frozenPercent(
+                opponentRunning.aggression,
+              )}
+              rate={
+                opponentRunning.aggression
+              }
+              tone="opponent"
+              note={`${opponentRunning.attempts}/${opponentRunning.opportunities} attempts/opportunities`}
+            />
+
+            <FrozenTeamMetric
+              label="Execution"
+              value={frozenPercent(
+                opponentRunning.execution,
+              )}
+              rate={
+                opponentRunning.execution
+              }
+              tone="opponent"
+              note={`${opponentRunning.advances} safe · ${opponentRunning.outs} out`}
+            />
+
+            <FrozenStealMetric
+              steals={opponentRunning.steals}
+              caught={opponentRunning.caught}
+              tone="opponent"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 border-t border-slate-200 bg-slate-50 px-4 py-3 text-[9px] dark:border-slate-800 dark:bg-slate-950/40">
+          <div>
+            <p className="font-black text-cyan-600 dark:text-cyan-300">
+              {teamName}
+            </p>
+            <p className="mt-0.5 text-slate-500 dark:text-slate-400">
+              {sampleLabel(
+                teamRunning.opportunities,
+              )}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="font-black text-rose-600 dark:text-rose-300">
+              {opponentName}
+            </p>
+            <p className="mt-0.5 text-slate-500 dark:text-slate-400">
+              {sampleLabel(
+                opponentRunning.opportunities,
+              )}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-4">
+        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+            Run Control
+          </p>
+          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Preventing opponent advancement.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 p-4">
+          {[
+            {
+              label: teamName,
+              tone: "text-cyan-600 dark:text-cyan-300",
+              pitching: teamPitching,
+            },
+            {
+              label: opponentName,
+              tone: "text-rose-600 dark:text-rose-300",
+              pitching:
+                opponentPitching,
+            },
+          ].map((side) => (
+            <div
+              key={side.label}
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40"
+            >
+              <p
+                className={`truncate text-[9px] font-black uppercase tracking-[0.12em] ${side.tone}`}
+              >
+                {side.label}
+              </p>
+
+              <p className="mt-3 text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+                SB allowed-CS
+              </p>
+
+              {(() => {
+                const allowed =
+                  Number(
+                    side.pitching
+                      ?.runControl
+                      ?.stolenBasesAllowed,
+                  ) || 0;
+
+                const caught =
+                  Number(
+                    side.pitching
+                      ?.runControl
+                      ?.caughtStealing,
+                  ) || 0;
+
+                const attempts =
+                  allowed + caught;
+
+                return (
+                  <>
+                    <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                      {allowed}-{caught}
+                    </p>
+
+                    <p className="mt-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                      {attempts} attempts faced
+                    </p>
+
+                    <p className="mt-0.5 text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                      {frozenPercent(
+                        frozenRate(
+                          caught,
+                          attempts,
+                        ),
+                      )}{" "}
+                      caught stealing
+                    </p>
+
+                    <p className="mt-1 text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                      {attempts < 5
+                        ? "Small sample"
+                        : attempts < 15
+                          ? "Developing sample"
+                          : "Established sample"}
+                    </p>
+                  </>
+                );
+              })()}
+            </div>
+          ))}
+        </div>
+
+        <div className="mx-4 mb-4 rounded-xl border border-dashed border-slate-300 px-3 py-2.5 dark:border-slate-700">
+          <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+            Next join
+          </p>
+          <p className="mt-1 text-[10px] font-bold leading-4 text-slate-600 dark:text-slate-300">
+            Projected starter Hold will complete the running-game defense view.
+          </p>
+        </div>
+      </div>
+
+      <FrozenDefensePanel
+        teamName={teamName}
+        opponentName={opponentName}
+        teamFielding={teamFielding}
+        opponentFielding={opponentFielding}
+      />
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-6">
+        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+            Contact Profile
+          </p>
+          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Style and tendencies — not a grade.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 divide-x divide-slate-200 dark:divide-slate-800">
+          {[
+            {
+              name: teamName,
+              tone:
+                "text-cyan-600 dark:text-cyan-300",
+              profile: teamContact,
+            },
+            {
+              name: opponentName,
+              tone:
+                "text-rose-600 dark:text-rose-300",
+              profile:
+                opponentContact,
+            },
+          ].map((side) => (
+            <div
+              key={side.name}
+              className="p-4"
+            >
+              <p
+                className={`truncate text-[9px] font-black uppercase tracking-[0.12em] ${side.tone}`}
+              >
+                {side.name}
+              </p>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                    Hitting GB
+                  </p>
+                  <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                    {frozenPercent(
+                      side.profile
+                        .hittingGbShare,
+                    )}
+                  </p>
+                  <p className="text-[8px] text-slate-400">
+                    {side.profile.hittingGb}-
+                    {side.profile.hittingFb}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                    GIDP
+                  </p>
+                  <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                    {side.profile
+                      .hittingGidp}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                    Staff GB
+                  </p>
+                  <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                    {frozenPercent(
+                      side.profile
+                        .pitchingGbShare,
+                    )}
+                  </p>
+                  <p className="text-[8px] text-slate-400">
+                    {side.profile.pitchingGb}-
+                    {side.profile.pitchingFb}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                    GIDP induced
+                  </p>
+                  <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                    {side.profile
+                      .pitchingGidp}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-3">
+        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+            Bench
+          </p>
+          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Pinch-hitting production.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 p-4">
+          {[
+            {
+              name: teamName,
+              tone:
+                "text-cyan-600 dark:text-cyan-300",
+              hitting: teamHitting,
+            },
+            {
+              name: opponentName,
+              tone:
+                "text-rose-600 dark:text-rose-300",
+              hitting:
+                opponentHitting,
+            },
+          ].map((side) => {
+            const ab =
+              Number(
+                side.hitting
+                  ?.pinchHitting?.ab,
+              ) || 0;
+
+            const hits =
+              Number(
+                side.hitting
+                  ?.pinchHitting?.hits,
+              ) || 0;
+
+            return (
+              <div
+                key={side.name}
+                className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40"
+              >
+                <p
+                  className={`truncate text-[9px] font-black uppercase tracking-[0.12em] ${side.tone}`}
+                >
+                  {side.name}
+                </p>
+
+                <p className="mt-3 text-2xl font-black tabular-nums text-slate-900 dark:text-white">
+                  {hits}/{ab}
+                </p>
+
+                <p className="mt-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                  {ab
+                    ? frozenMetricValue(
+                        hits / ab,
+                        3,
+                      )
+                    : "—"}{" "}
+                  AVG
+                </p>
+
+                <p className="mt-2 text-[9px] text-slate-400">
+                  {
+                    side.hitting
+                      ?.pinchHitting?.hr
+                  }{" "}
+                  HR
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-3">
+        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+            Context
+          </p>
+          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Supporting information, not edge scores.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 p-4">
+          {[
+            {
+              name: teamName,
+              tone:
+                "text-cyan-600 dark:text-cyan-300",
+              hitting: teamHitting,
+              pitching: teamPitching,
+              rollTotal: teamRollTotal,
+            },
+            {
+              name: opponentName,
+              tone:
+                "text-rose-600 dark:text-rose-300",
+              hitting:
+                opponentHitting,
+              pitching:
+                opponentPitching,
+              rollTotal:
+                opponentRollTotal,
+            },
+          ].map((side) => (
+            <div
+              key={side.name}
+              className="space-y-3"
+            >
+              <p
+                className={`truncate text-[9px] font-black uppercase tracking-[0.12em] ${side.tone}`}
+              >
+                {side.name}
+              </p>
+
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+                <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+                  Hitter-card rolls
+                </p>
+                <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                  {frozenPercent(
+                    frozenRate(
+                      Number(
+                        side.hitting
+                          ?.rolls
+                          ?.hitterCard,
+                      ),
+                      side.rollTotal,
+                    ),
+                  )}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+                <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+                  GWBI
+                </p>
+                <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                  {
+                    side.hitting
+                      ?.contact?.gwbi
+                  }
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+                <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
+                  Inherited scored
+                </p>
+                <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                  {
+                    side.pitching
+                      ?.inherited?.scored
+                  }
+                  /
+                  {
+                    side.pitching
+                      ?.inherited?.runners
+                  }
+                </p>
+                <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                  Relief context
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1419,6 +2549,22 @@ export default function SeriesPreview({
       setStatus("loading");
       setError("");
 
+      const frozenPreview =
+        getFrozenSeriesPreview(
+          selection?.leagueId,
+          selection?.teamId
+        );
+
+      if (frozenPreview) {
+        if (!cancelled) {
+          setSeries(frozenPreview);
+          setStatus("ready");
+          setError("");
+        }
+
+        return;
+      }
+
       try {
         const response = await fetch(requestUrl);
 
@@ -1845,10 +2991,16 @@ export default function SeriesPreview({
               leagueContext?.leagueTeamCount
             }
           />
+
+          <FrozenMatchupIntelligence
+            leagueId={selection?.leagueId}
+            teamName={aquariumDisplayName}
+            opponentName={opponentDisplayName}
+          />
         </section>
       ) : null}
       {playerIntelligence?.status === "AVAILABLE" ? (
-        <KeyPlayersPanel
+        <ImpactPlayersPanel
           teamName={aquariumDisplayName}
           opponentName={opponentDisplayName}
           teamPlayers={teamPlayers}

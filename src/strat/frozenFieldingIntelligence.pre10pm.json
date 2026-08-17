@@ -1,0 +1,2905 @@
+{
+  "schema": "bie.strat.frozen-fielding-intelligence.v1",
+  "freezeRoot": "C:\\Users\\joevi\\my-dashboard\\data\\strat-freeze\\pre-10pm-20260816-201815",
+  "liveDataAllowed": false,
+  "scope": "SIX_MATCHUP_TEAMS_ONLY",
+  "xDefense": {
+    "teamMetric": "ALL_POSITIONS",
+    "definition": "X Conversion = All-Position X Outs / All-Position X Chances",
+    "higherIsBetter": true,
+    "leagueRankPolicy": "UNAVAILABLE_WITHOUT_ALL_12_TEAM_FIELDING_PAGES_PER_LEAGUE"
+  },
+  "teams": [
+    {
+      "leagueId": "479336",
+      "teamId": "1851052",
+      "role": "aquarium",
+      "sourceFile": "league-479336-team-1851052-aquarium-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 390,
+          "xOut": 286,
+          "xConversion": 0.7333
+        },
+        "allPositions": {
+          "xTotal": 400,
+          "xOut": 291,
+          "xConversion": 0.7275
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Freehan, Bill",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "1(-2)e8",
+            "range": 1,
+            "arm": -2,
+            "error": 8,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 38,
+              "xOut": 27,
+              "xConversion": 0.7105
+            },
+            "allPositions": {
+              "xTotal": 38,
+              "xOut": 27,
+              "xConversion": 0.7105
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 20,
+            "caughtStealing": 9,
+            "passedBalls": 5,
+            "throwingErrors": 1
+          },
+          "salary": "8.21M"
+        },
+        {
+          "name": "Etchebarren, Andy",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "3(-1)e3",
+            "range": 3,
+            "arm": -1,
+            "error": 3,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.84M"
+        },
+        {
+          "name": "Parker, Wes",
+          "bats": "S",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "1e2",
+            "range": 1,
+            "arm": null,
+            "error": 2,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 26,
+              "xOut": 23,
+              "xConversion": 0.8846
+            },
+            "allPositions": {
+              "xTotal": 26,
+              "xOut": 23,
+              "xConversion": 0.8846
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.82M"
+        },
+        {
+          "name": "Joseph, Rick",
+          "bats": "R",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "3e13",
+            "range": 3,
+            "arm": null,
+            "error": 13,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".86M"
+        },
+        {
+          "name": "McAuliffe, Dick",
+          "bats": "L",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e10",
+            "range": 2,
+            "arm": null,
+            "error": 10,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 95,
+              "xOut": 74,
+              "xConversion": 0.7789
+            },
+            "allPositions": {
+              "xTotal": 95,
+              "xOut": 74,
+              "xConversion": 0.7789
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.34M"
+        },
+        {
+          "name": "Robinson, Brooks",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "1e16",
+            "range": 1,
+            "arm": null,
+            "error": 16,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 39,
+              "xOut": 30,
+              "xConversion": 0.7692
+            },
+            "allPositions": {
+              "xTotal": 39,
+              "xOut": 30,
+              "xConversion": 0.7692
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "6.73M"
+        },
+        {
+          "name": "Fregosi, Jim",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e30",
+            "range": 2,
+            "arm": null,
+            "error": 30,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 76,
+              "xOut": 56,
+              "xConversion": 0.7368
+            },
+            "allPositions": {
+              "xTotal": 76,
+              "xOut": 56,
+              "xConversion": 0.7368
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.43M"
+        },
+        {
+          "name": "Harrelson, Bud",
+          "bats": "S",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "3e24",
+            "range": 3,
+            "arm": null,
+            "error": 24,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 20,
+              "xOut": 10,
+              "xConversion": 0.5
+            },
+            "allPositions": {
+              "xTotal": 20,
+              "xOut": 10,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Matchick, Tommy",
+          "bats": "L",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "4e36",
+            "range": 4,
+            "arm": null,
+            "error": 36,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Shamsky, Art",
+          "bats": "L",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+1)e2",
+            "range": 4,
+            "arm": 1,
+            "error": 2,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.42M"
+        },
+        {
+          "name": "Harper, Tommy",
+          "bats": "R",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "2(+1)e5",
+            "range": 2,
+            "arm": 1,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 6,
+              "xOut": 5,
+              "xConversion": 0.8333
+            },
+            "allPositions": {
+              "xTotal": 6,
+              "xOut": 5,
+              "xConversion": 0.8333
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.85M"
+        },
+        {
+          "name": "Alou, Felipe",
+          "bats": "R",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(-1)e8",
+            "range": 2,
+            "arm": -1,
+            "error": 8,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 43,
+              "xOut": 31,
+              "xConversion": 0.7209
+            },
+            "allPositions": {
+              "xTotal": 43,
+              "xOut": 31,
+              "xConversion": 0.7209
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "8.17M"
+        },
+        {
+          "name": "Stahl, Larry",
+          "bats": "L",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "4(0)e8",
+            "range": 4,
+            "arm": 0,
+            "error": 8,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.18M"
+        },
+        {
+          "name": "Alyea, Brant",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(+1)e12",
+            "range": 4,
+            "arm": 1,
+            "error": 12,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 5,
+              "xOut": 2,
+              "xConversion": 0.4
+            },
+            "allPositions": {
+              "xTotal": 12,
+              "xOut": 5,
+              "xConversion": 0.4167
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.86M"
+        },
+        {
+          "name": "Spangler, Al",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "3(0)e8",
+            "range": 3,
+            "arm": 0,
+            "error": 8,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 17,
+              "xOut": 13,
+              "xConversion": 0.7647
+            },
+            "allPositions": {
+              "xTotal": 18,
+              "xOut": 14,
+              "xConversion": 0.7778
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.49M"
+        },
+        {
+          "name": "Lahoud, Joe",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(0)e15",
+            "range": 4,
+            "arm": 0,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 0,
+              "xConversion": 0.0
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".74M"
+        }
+      ]
+    },
+    {
+      "leagueId": "479336",
+      "teamId": "1853443",
+      "role": "opponent",
+      "sourceFile": "league-479336-team-1853443-opponent-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 356,
+          "xOut": 283,
+          "xConversion": 0.7949
+        },
+        "allPositions": {
+          "xTotal": 406,
+          "xOut": 317,
+          "xConversion": 0.7808
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Grote, Jerry",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "2(-2)e7",
+            "range": 2,
+            "arm": -2,
+            "error": 7,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 37,
+              "xOut": 31,
+              "xConversion": 0.8378
+            },
+            "allPositions": {
+              "xTotal": 37,
+              "xOut": 31,
+              "xConversion": 0.8378
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 27,
+            "caughtStealing": 9,
+            "passedBalls": 0,
+            "throwingErrors": 2
+          },
+          "salary": "4.88M"
+        },
+        {
+          "name": "May, Jerry",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "3(-1)e13",
+            "range": 3,
+            "arm": -1,
+            "error": 13,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 6,
+              "xOut": 3,
+              "xConversion": 0.5
+            },
+            "allPositions": {
+              "xTotal": 6,
+              "xOut": 3,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 4,
+            "caughtStealing": 2,
+            "passedBalls": 1,
+            "throwingErrors": 0
+          },
+          "salary": ".64M"
+        },
+        {
+          "name": "Goossen, Greg",
+          "bats": "R",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "4e12",
+            "range": 4,
+            "arm": null,
+            "error": 12,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 2,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".60M"
+        },
+        {
+          "name": "Beckert, Glenn",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "1e20",
+            "range": 1,
+            "arm": null,
+            "error": 20,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 82,
+              "xOut": 73,
+              "xConversion": 0.8902
+            },
+            "allPositions": {
+              "xTotal": 82,
+              "xOut": 73,
+              "xConversion": 0.8902
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.36M"
+        },
+        {
+          "name": "Ruiz, Chico",
+          "bats": "S",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "3e21",
+            "range": 3,
+            "arm": null,
+            "error": 21,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".89M"
+        },
+        {
+          "name": "Taylor, Tony",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "2e18",
+            "range": 2,
+            "arm": null,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 39,
+              "xOut": 24,
+              "xConversion": 0.6154
+            },
+            "allPositions": {
+              "xTotal": 39,
+              "xOut": 24,
+              "xConversion": 0.6154
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.87M"
+        },
+        {
+          "name": "Alley, Gene",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e24",
+            "range": 2,
+            "arm": null,
+            "error": 24,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 90,
+              "xOut": 75,
+              "xConversion": 0.8333
+            },
+            "allPositions": {
+              "xTotal": 90,
+              "xOut": 75,
+              "xConversion": 0.8333
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.41M"
+        },
+        {
+          "name": "Francona, Tito",
+          "bats": "L",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+1)e6",
+            "range": 4,
+            "arm": 1,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 18,
+              "xOut": 7,
+              "xConversion": 0.3889
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.21M"
+        },
+        {
+          "name": "Davis, Tommy I",
+          "bats": "R",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+4)e11",
+            "range": 4,
+            "arm": 4,
+            "error": 11,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 3,
+              "xOut": 1,
+              "xConversion": 0.3333
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.61M"
+        },
+        {
+          "name": "Smith, Reggie",
+          "bats": "S",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(-4)e6",
+            "range": 2,
+            "arm": -4,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 25,
+              "xOut": 25,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.75M"
+        },
+        {
+          "name": "Alou, Matty",
+          "bats": "L",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(+2)e6",
+            "range": 2,
+            "arm": 2,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 37,
+              "xOut": 29,
+              "xConversion": 0.7838
+            },
+            "allPositions": {
+              "xTotal": 37,
+              "xOut": 29,
+              "xConversion": 0.7838
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.55M"
+        },
+        {
+          "name": "Rettenmund, Merv",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "3(0)e3",
+            "range": 3,
+            "arm": 0,
+            "error": 3,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 38,
+              "xOut": 26,
+              "xConversion": 0.6842
+            },
+            "allPositions": {
+              "xTotal": 40,
+              "xOut": 27,
+              "xConversion": 0.675
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "10.43M"
+        },
+        {
+          "name": "Wagner, Leon",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(0)e23",
+            "range": 4,
+            "arm": 0,
+            "error": 23,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.24M"
+        },
+        {
+          "name": "Alou, Jesus",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "2(0)e3",
+            "range": 2,
+            "arm": 0,
+            "error": 3,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.19M"
+        }
+      ]
+    },
+    {
+      "leagueId": "479431",
+      "teamId": "1853975",
+      "role": "aquarium",
+      "sourceFile": "league-479431-team-1853975-aquarium-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 269,
+          "xOut": 204,
+          "xConversion": 0.7584
+        },
+        "allPositions": {
+          "xTotal": 281,
+          "xOut": 207,
+          "xConversion": 0.7367
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Sims, Duke",
+          "bats": "L",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "3(0)e16",
+            "range": 3,
+            "arm": 0,
+            "error": 16,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 9,
+              "xOut": 5,
+              "xConversion": 0.5556
+            },
+            "allPositions": {
+              "xTotal": 12,
+              "xOut": 5,
+              "xConversion": 0.4167
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 5,
+            "caughtStealing": 6,
+            "passedBalls": 1,
+            "throwingErrors": 2
+          },
+          "salary": "5.22M"
+        },
+        {
+          "name": "Corrales, Pat I",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "2(0)e10",
+            "range": 2,
+            "arm": 0,
+            "error": 10,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 14,
+              "xOut": 10,
+              "xConversion": 0.7143
+            },
+            "allPositions": {
+              "xTotal": 14,
+              "xOut": 10,
+              "xConversion": 0.7143
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 20,
+            "caughtStealing": 10,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.39M"
+        },
+        {
+          "name": "Mantle, Mickey",
+          "bats": "S",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "3e20",
+            "range": 3,
+            "arm": null,
+            "error": 20,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 21,
+              "xOut": 9,
+              "xConversion": 0.4286
+            },
+            "allPositions": {
+              "xTotal": 21,
+              "xOut": 9,
+              "xConversion": 0.4286
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.46M"
+        },
+        {
+          "name": "Helms, Tommy",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e20",
+            "range": 2,
+            "arm": null,
+            "error": 20,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 41,
+              "xOut": 32,
+              "xConversion": 0.7805
+            },
+            "allPositions": {
+              "xTotal": 41,
+              "xOut": 32,
+              "xConversion": 0.7805
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "4.29M"
+        },
+        {
+          "name": "Howser, Dick",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "3e17",
+            "range": 3,
+            "arm": null,
+            "error": 17,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 5,
+              "xOut": 1,
+              "xConversion": 0.2
+            },
+            "allPositions": {
+              "xTotal": 5,
+              "xOut": 1,
+              "xConversion": 0.2
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 1,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.07M"
+        },
+        {
+          "name": "Charles, Ed",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "3e23",
+            "range": 3,
+            "arm": null,
+            "error": 23,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 29,
+              "xOut": 21,
+              "xConversion": 0.7241
+            },
+            "allPositions": {
+              "xTotal": 31,
+              "xOut": 21,
+              "xConversion": 0.6774
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 1,
+            "caughtStealing": 1,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.52M"
+        },
+        {
+          "name": "Collins, Kevin",
+          "bats": "L",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "3e18",
+            "range": 3,
+            "arm": null,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Alley, Gene",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e24",
+            "range": 2,
+            "arm": null,
+            "error": 24,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 69,
+              "xOut": 53,
+              "xConversion": 0.7681
+            },
+            "allPositions": {
+              "xTotal": 70,
+              "xOut": 54,
+              "xConversion": 0.7714
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.41M"
+        },
+        {
+          "name": "Torres, Hector",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e33",
+            "range": 2,
+            "arm": null,
+            "error": 33,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 2,
+              "xOut": 2,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 2,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "White, Roy",
+          "bats": "S",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "2(+2)e1",
+            "range": 2,
+            "arm": 2,
+            "error": 1,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 13,
+              "xOut": 11,
+              "xConversion": 0.8462
+            },
+            "allPositions": {
+              "xTotal": 13,
+              "xOut": 11,
+              "xConversion": 0.8462
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.06M"
+        },
+        {
+          "name": "Stanley, Mickey",
+          "bats": "R",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "1(-2)e0",
+            "range": 1,
+            "arm": -2,
+            "error": 0,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 39,
+              "xOut": 39,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 39,
+              "xOut": 39,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "6.58M"
+        },
+        {
+          "name": "Bosch, Don",
+          "bats": "S",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "3(0)e12",
+            "range": 3,
+            "arm": 0,
+            "error": 12,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Northrup, Jim",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "2(-1)e8",
+            "range": 2,
+            "arm": -1,
+            "error": 8,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 4,
+              "xOut": 4,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 4,
+              "xOut": 4,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "6.23M"
+        },
+        {
+          "name": "Alyea, Brant",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(+1)e12",
+            "range": 4,
+            "arm": 1,
+            "error": 12,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 8,
+              "xOut": 5,
+              "xConversion": 0.625
+            },
+            "allPositions": {
+              "xTotal": 12,
+              "xOut": 6,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.86M"
+        }
+      ]
+    },
+    {
+      "leagueId": "479431",
+      "teamId": "1854297",
+      "role": "opponent",
+      "sourceFile": "league-479431-team-1854297-opponent-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 187,
+          "xOut": 130,
+          "xConversion": 0.6952
+        },
+        "allPositions": {
+          "xTotal": 270,
+          "xOut": 189,
+          "xConversion": 0.7
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Bench, Johnny",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "2(-3)e10",
+            "range": 2,
+            "arm": -3,
+            "error": 10,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 2,
+            "caughtStealing": 1,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.73M"
+        },
+        {
+          "name": "Reese, Rich",
+          "bats": "L",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "2e15",
+            "range": 2,
+            "arm": null,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 4,
+              "xOut": 0,
+              "xConversion": 0.0
+            },
+            "allPositions": {
+              "xTotal": 4,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.74M"
+        },
+        {
+          "name": "Millan, Felix",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e18",
+            "range": 2,
+            "arm": null,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 42,
+              "xOut": 36,
+              "xConversion": 0.8571
+            },
+            "allPositions": {
+              "xTotal": 42,
+              "xOut": 36,
+              "xConversion": 0.8571
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "4.51M"
+        },
+        {
+          "name": "Ruiz, Chico",
+          "bats": "S",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "3e21",
+            "range": 3,
+            "arm": null,
+            "error": 21,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 6,
+              "xOut": 3,
+              "xConversion": 0.5
+            },
+            "allPositions": {
+              "xTotal": 6,
+              "xOut": 3,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".89M"
+        },
+        {
+          "name": "Santo, Ron",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "1e15",
+            "range": 1,
+            "arm": null,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 19,
+              "xOut": 14,
+              "xConversion": 0.7368
+            },
+            "allPositions": {
+              "xTotal": 19,
+              "xOut": 14,
+              "xConversion": 0.7368
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.46M"
+        },
+        {
+          "name": "Wills, Maury",
+          "bats": "S",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "3e20",
+            "range": 3,
+            "arm": null,
+            "error": 20,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 53,
+              "xOut": 33,
+              "xConversion": 0.6226
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.42M"
+        },
+        {
+          "name": "Tresh, Tom",
+          "bats": "S",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "3e44",
+            "range": 3,
+            "arm": null,
+            "error": 44,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 12,
+              "xOut": 9,
+              "xConversion": 0.75
+            },
+            "allPositions": {
+              "xTotal": 12,
+              "xOut": 9,
+              "xConversion": 0.75
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".55M"
+        },
+        {
+          "name": "Allison, Bob",
+          "bats": "R",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "3(+1)e9",
+            "range": 3,
+            "arm": 1,
+            "error": 9,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 0,
+              "xConversion": 0.0
+            },
+            "allPositions": {
+              "xTotal": 20,
+              "xOut": 15,
+              "xConversion": 0.75
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "6.58M"
+        },
+        {
+          "name": "Johnson, Alex",
+          "bats": "R",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+2)e17",
+            "range": 4,
+            "arm": 2,
+            "error": 17,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 23,
+              "xOut": 5,
+              "xConversion": 0.2174
+            },
+            "allPositions": {
+              "xTotal": 23,
+              "xOut": 5,
+              "xConversion": 0.2174
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.51M"
+        },
+        {
+          "name": "Davis, Tommy",
+          "bats": "R",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+4)e11",
+            "range": 4,
+            "arm": 4,
+            "error": 11,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.61M"
+        },
+        {
+          "name": "Uhlaender, Ted",
+          "bats": "L",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(0)e5",
+            "range": 2,
+            "arm": 0,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 21,
+              "xOut": 16,
+              "xConversion": 0.7619
+            },
+            "allPositions": {
+              "xTotal": 21,
+              "xOut": 16,
+              "xConversion": 0.7619
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.18M"
+        },
+        {
+          "name": "Lock, Don",
+          "bats": "R",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(-2)e18",
+            "range": 2,
+            "arm": -2,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 7,
+              "xOut": 5,
+              "xConversion": 0.7143
+            },
+            "allPositions": {
+              "xTotal": 7,
+              "xOut": 5,
+              "xConversion": 0.7143
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.74M"
+        },
+        {
+          "name": "Kirkpatrick, Ed",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "3(0)e5",
+            "range": 3,
+            "arm": 0,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 11,
+              "xOut": 11,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 7,
+            "caughtStealing": 3,
+            "passedBalls": 5,
+            "throwingErrors": 0
+          },
+          "salary": ".98M"
+        },
+        {
+          "name": "May, Dave",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "2(-2)e4",
+            "range": 2,
+            "arm": -2,
+            "error": 4,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".54M"
+        },
+        {
+          "name": "2 players no longer on roster",
+          "bats": "",
+          "primaryPosition": "",
+          "defense": {
+            "raw": "",
+            "range": null,
+            "arm": null,
+            "error": null,
+            "parsed": false
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ""
+        },
+        {
+          "name": "# May, Jerry",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "3(-1)e13",
+            "range": 3,
+            "arm": -1,
+            "error": 13,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 21,
+              "xOut": 16,
+              "xConversion": 0.7619
+            },
+            "allPositions": {
+              "xTotal": 21,
+              "xOut": 16,
+              "xConversion": 0.7619
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 19,
+            "caughtStealing": 7,
+            "passedBalls": 4,
+            "throwingErrors": 0
+          },
+          "salary": ".64M"
+        },
+        {
+          "name": "# Killebrew, Harmon",
+          "bats": "R",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "4e9",
+            "range": 4,
+            "arm": null,
+            "error": 9,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 10,
+              "xOut": 7,
+              "xConversion": 0.7
+            },
+            "allPositions": {
+              "xTotal": 10,
+              "xOut": 7,
+              "xConversion": 0.7
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.61M"
+        }
+      ]
+    },
+    {
+      "leagueId": "479610",
+      "teamId": "1851199",
+      "role": "opponent",
+      "sourceFile": "league-479610-team-1851199-opponent-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 22,
+          "xOut": 18,
+          "xConversion": 0.8182
+        },
+        "allPositions": {
+          "xTotal": 39,
+          "xOut": 27,
+          "xConversion": 0.6923
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Grote, Jerry",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "2(-2)e7",
+            "range": 2,
+            "arm": -2,
+            "error": 7,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 2,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "4.88M"
+        },
+        {
+          "name": "Price, Jim",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "3(0)e5",
+            "range": 3,
+            "arm": 0,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Scott, George",
+          "bats": "R",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "1e19",
+            "range": 1,
+            "arm": null,
+            "error": 19,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".73M"
+        },
+        {
+          "name": "Mazeroski, Bill",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e18",
+            "range": 2,
+            "arm": null,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 10,
+              "xOut": 9,
+              "xConversion": 0.9
+            },
+            "allPositions": {
+              "xTotal": 10,
+              "xOut": 9,
+              "xConversion": 0.9
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.68M"
+        },
+        {
+          "name": "Alomar, Sandy",
+          "bats": "S",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "3e34",
+            "range": 3,
+            "arm": null,
+            "error": 34,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 6,
+              "xOut": 3,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.87M"
+        },
+        {
+          "name": "Gagliano, Phil",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "4e15",
+            "range": 4,
+            "arm": null,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Taylor, Tony I",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "2e18",
+            "range": 2,
+            "arm": null,
+            "error": 18,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.87M"
+        },
+        {
+          "name": "Torres, Hector",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e33",
+            "range": 2,
+            "arm": null,
+            "error": 33,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "Brown, Gates",
+          "bats": "L",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+4)e15",
+            "range": 4,
+            "arm": 4,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 2,
+              "xOut": 0,
+              "xConversion": 0.0
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "9.45M"
+        },
+        {
+          "name": "Francona, Tito",
+          "bats": "L",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+1)e6",
+            "range": 4,
+            "arm": 1,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.21M"
+        },
+        {
+          "name": "Alou, Matty",
+          "bats": "L",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "2(+2)e6",
+            "range": 2,
+            "arm": 2,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "5.55M"
+        },
+        {
+          "name": "Rose, Pete",
+          "bats": "S",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "1(-2)e3",
+            "range": 1,
+            "arm": -2,
+            "error": 3,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "10.02M"
+        },
+        {
+          "name": "Brown, Ollie",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "2(-4)e5",
+            "range": 2,
+            "arm": -4,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 4,
+              "xOut": 3,
+              "xConversion": 0.75
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "1.80M"
+        },
+        {
+          "name": "Scheinblum, Richie",
+          "bats": "S",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(+1)e10",
+            "range": 4,
+            "arm": 1,
+            "error": 10,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 0,
+              "xConversion": 0.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".53M"
+        }
+      ]
+    },
+    {
+      "leagueId": "479610",
+      "teamId": "1854215",
+      "role": "aquarium",
+      "sourceFile": "league-479610-team-1854215-aquarium-fielding.html",
+      "xDefense": {
+        "primaryPosition": {
+          "xTotal": 43,
+          "xOut": 39,
+          "xConversion": 0.907
+        },
+        "allPositions": {
+          "xTotal": 45,
+          "xOut": 40,
+          "xConversion": 0.8889
+        },
+        "leagueRank": null,
+        "leagueRankStatus": "UNAVAILABLE_FROZEN_SIX_TEAM_SCOPE"
+      },
+      "players": [
+        {
+          "name": "Hundley, Randy",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "1(-3)e5",
+            "range": 1,
+            "arm": -3,
+            "error": 5,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 2,
+              "xOut": 2,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 2,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 1,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.05M"
+        },
+        {
+          "name": "Ryan, Mike",
+          "bats": "R",
+          "primaryPosition": "C",
+          "defense": {
+            "raw": "2(-2)e9",
+            "range": 2,
+            "arm": -2,
+            "error": 9,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".51M"
+        },
+        {
+          "name": "Parker, Wes",
+          "bats": "S",
+          "primaryPosition": "1B",
+          "defense": {
+            "raw": "1e2",
+            "range": 1,
+            "arm": null,
+            "error": 2,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.82M"
+        },
+        {
+          "name": "Rojas, Cookie",
+          "bats": "R",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e11",
+            "range": 2,
+            "arm": null,
+            "error": 11,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 17,
+              "xOut": 16,
+              "xConversion": 0.9412
+            },
+            "allPositions": {
+              "xTotal": 17,
+              "xOut": 16,
+              "xConversion": 0.9412
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.68M"
+        },
+        {
+          "name": "Clarke, Horace",
+          "bats": "S",
+          "primaryPosition": "2B",
+          "defense": {
+            "raw": "2e16",
+            "range": 2,
+            "arm": null,
+            "error": 16,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".98M"
+        },
+        {
+          "name": "Boyer, Clete I",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "1e10",
+            "range": 1,
+            "arm": null,
+            "error": 10,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 3,
+              "xOut": 3,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.17M"
+        },
+        {
+          "name": "Foy, Joe",
+          "bats": "R",
+          "primaryPosition": "3B",
+          "defense": {
+            "raw": "4e34",
+            "range": 4,
+            "arm": null,
+            "error": 34,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.39M"
+        },
+        {
+          "name": "Alley, Gene",
+          "bats": "R",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "2e24",
+            "range": 2,
+            "arm": null,
+            "error": 24,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 10,
+              "xOut": 8,
+              "xConversion": 0.8
+            },
+            "allPositions": {
+              "xTotal": 10,
+              "xOut": 8,
+              "xConversion": 0.8
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "2.41M"
+        },
+        {
+          "name": "Harrelson, Bud",
+          "bats": "S",
+          "primaryPosition": "SS",
+          "defense": {
+            "raw": "3e24",
+            "range": 3,
+            "arm": null,
+            "error": 24,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".50M"
+        },
+        {
+          "name": "White, Roy",
+          "bats": "S",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "2(+2)e1",
+            "range": 2,
+            "arm": 2,
+            "error": 1,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 1,
+              "xOut": 1,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "7.06M"
+        },
+        {
+          "name": "Jimenez, Manny",
+          "bats": "L",
+          "primaryPosition": "LF",
+          "defense": {
+            "raw": "4(+2)e25",
+            "range": 4,
+            "arm": 2,
+            "error": 25,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "3.31M"
+        },
+        {
+          "name": "Stanley, Mickey",
+          "bats": "R",
+          "primaryPosition": "CF",
+          "defense": {
+            "raw": "1(-2)e0",
+            "range": 1,
+            "arm": -2,
+            "error": 0,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 5,
+              "xOut": 5,
+              "xConversion": 1.0
+            },
+            "allPositions": {
+              "xTotal": 6,
+              "xOut": 6,
+              "xConversion": 1.0
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "6.58M"
+        },
+        {
+          "name": "Clemente, Roberto",
+          "bats": "R",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "1(-5)e6",
+            "range": 1,
+            "arm": -5,
+            "error": 6,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            },
+            "allPositions": {
+              "xTotal": 2,
+              "xOut": 1,
+              "xConversion": 0.5
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": "9.77M"
+        },
+        {
+          "name": "Lahoud, Joe",
+          "bats": "L",
+          "primaryPosition": "RF",
+          "defense": {
+            "raw": "4(0)e15",
+            "range": 4,
+            "arm": 0,
+            "error": 15,
+            "parsed": true
+          },
+          "xDefense": {
+            "primaryPosition": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            },
+            "allPositions": {
+              "xTotal": 0,
+              "xOut": 0,
+              "xConversion": null
+            }
+          },
+          "catching": {
+            "stolenBasesAllowed": 0,
+            "caughtStealing": 0,
+            "passedBalls": 0,
+            "throwingErrors": 0
+          },
+          "salary": ".74M"
+        }
+      ]
+    }
+  ]
+}
