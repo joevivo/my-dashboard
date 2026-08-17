@@ -1,7 +1,7 @@
 {
   "schemaVersion": "bie.strat365.team-logo-manifest.v1",
-  "teamCount": 33,
-  "leagues": ["479336", "479431", "479610"],
+  "teamCount": 44,
+  "leagues": ["479336", "479431", "479610", "479640"],
   "specialRules": {
     "arkinals": "1853519 and 1854378 intentionally reuse the same approved sad, beat-up cardinal artwork.",
     "sixtiesHippies": "1855828 uses the earlier approved Sixties Hippies artwork, not the later alternate.",
@@ -43,6 +43,18 @@
     {"leagueId":"479610","teamId":"1855969","teamName":"Napa Valley Crushers","logoPath":"/strat/team-logos/1855969.png"},
     {"leagueId":"479610","teamId":"1855976","teamName":"Grant Park Weathermen","logoPath":"/strat/team-logos/1855976.png"},
     {"leagueId":"479610","teamId":"1855985","teamName":"Virginia Outlaws","logoPath":"/strat/team-logos/1855985.png"},
-    {"leagueId":"479610","teamId":"1856003","teamName":"Taguig Moto Kings","logoPath":"/strat/team-logos/1856003.png"}
+    {"leagueId":"479610","teamId":"1856003","teamName":"Taguig Moto Kings","logoPath":"/strat/team-logos/1856003.png"},
+
+    {"leagueId":"479640","teamId":"1856113","teamName":"Harlem Fences","logoPath":"/strat/team-logos/1856113.png"},
+    {"leagueId":"479640","teamId":"1856487","teamName":"Fairfield Judds","logoPath":"/strat/team-logos/1856487.png"},
+    {"leagueId":"479640","teamId":"1854059","teamName":"norwich Herbie's","logoPath":"/strat/team-logos/1854059.png"},
+    {"leagueId":"479640","teamId":"1856196","teamName":"Faraway Galaxys","logoPath":"/strat/team-logos/1856196.png"},
+    {"leagueId":"479640","teamId":"1856488","teamName":"Alicante Singers","logoPath":"/strat/team-logos/1856488.png"},
+    {"leagueId":"479640","teamId":"1855793","teamName":"Boquete Bombers 3","logoPath":"/strat/team-logos/1855793.png"},
+    {"leagueId":"479640","teamId":"1853415","teamName":"Piermont Fireflies","logoPath":"/strat/team-logos/1853415.png"},
+    {"leagueId":"479640","teamId":"1856313","teamName":"Tidewater Thunder","logoPath":"/strat/team-logos/1856313.png"},
+    {"leagueId":"479640","teamId":"1856460","teamName":"Port Orchard Pansies","logoPath":"/strat/team-logos/1856460.png"},
+    {"leagueId":"479640","teamId":"1856148","teamName":"Marble Mothmen","logoPath":"/strat/team-logos/1856148.png"},
+    {"leagueId":"479640","teamId":"1856417","teamName":"Back To the future","logoPath":"/strat/team-logos/1856417.png"}
   ]
 }

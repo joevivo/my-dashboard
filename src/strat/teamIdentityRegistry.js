@@ -3,6 +3,7 @@ const RAW_STRAT_TEAM_IDENTITIES = [
   ["1851052", "479336", "Aquarium Drinkers", true],
   ["1853975", "479431", "Aquarium Drinkers", true],
   ["1854215", "479610", "Aquarium Drinkers", true],
+["1856033", "479640", "Aquarium Drinkers", true],
 
   // League 479336.
   ["1853382", "479336", "Iowa bombers", false],
@@ -42,6 +43,18 @@ const RAW_STRAT_TEAM_IDENTITIES = [
   ["1855976", "479610", "Grant Park Weathermen", false],
   ["1855985", "479610", "Virginia Outlaws", false],
   ["1856003", "479610", "Taguig Moto Kings", false],
+// League 479640.
+["1856113", "479640", "Harlem Fences", false],
+["1856487", "479640", "Fairfield Judds", false],
+["1854059", "479640", "norwich Herbie's", false],
+["1856196", "479640", "Faraway Galaxys", false],
+["1856488", "479640", "Alicante Singers", false],
+["1855793", "479640", "Boquete Bombers 3", false],
+["1853415", "479640", "Piermont Fireflies", false],
+["1856313", "479640", "Tidewater Thunder", false],
+["1856460", "479640", "Port Orchard Pansies", false],
+["1856148", "479640", "Marble Mothmen", false],
+["1856417", "479640", "Back To the future", false],
 ];
 
 function buildMonogram(teamName) {
