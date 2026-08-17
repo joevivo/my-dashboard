@@ -998,6 +998,594 @@ const STRAT_1968_PARK_EFFECTS = {
     homeRunsRight: 4,
   },
 };
+
+// ACTIVE_TEAMS_ADAPTIVE_MATCHUP_HERO_V2
+// ACTIVE_TEAMS_HERO_V2_VISUAL_REFINEMENT
+// ACTIVE_TEAMS_HERO_V2_BALANCED_INTELLIGENCE
+function formatActiveHeroMetric(value, metricKey) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  if (
+    metricKey === "OPS" ||
+    metricKey === "FIELDING"
+  ) {
+    return numericValue
+      .toFixed(3)
+      .replace(/^0/, "");
+  }
+
+  if (
+    metricKey === "ERA" ||
+    metricKey === "WHIP"
+  ) {
+    return numericValue.toFixed(2);
+  }
+
+  if (metricKey === "RUN_DIFF") {
+    const rounded =
+      Math.round(numericValue);
+
+    return rounded > 0
+      ? `+${rounded}`
+      : String(rounded);
+  }
+
+  return String(Math.round(numericValue));
+}
+
+function buildActiveHeroMatchupSignals(
+  currentPreview,
+) {
+  const leagueContext =
+    currentPreview?.preSeriesSnapshot?.payload
+      ?.leagueContext;
+
+  const teamProfile =
+    leagueContext?.teamProfile;
+
+  const opponentProfile =
+    leagueContext?.opponentProfile;
+
+  if (!teamProfile || !opponentProfile) {
+    return [];
+  }
+
+  const candidates = [
+    {
+      key: "ERA",
+      label: "ERA",
+      teamRank:
+        teamProfile?.pitching?.eraRank,
+      opponentRank:
+        opponentProfile?.pitching?.eraRank,
+      teamValue:
+        teamProfile?.pitching?.era,
+      opponentValue:
+        opponentProfile?.pitching?.era,
+      order: 1,
+    },
+    {
+      key: "WHIP",
+      label: "WHIP",
+      teamRank:
+        teamProfile?.pitching?.whipRank,
+      opponentRank:
+        opponentProfile?.pitching?.whipRank,
+      teamValue:
+        teamProfile?.pitching?.whip,
+      opponentValue:
+        opponentProfile?.pitching?.whip,
+      order: 2,
+    },
+    {
+      key: "OPS",
+      label: "OPS",
+      teamRank:
+        teamProfile?.offense?.opsRank,
+      opponentRank:
+        opponentProfile?.offense?.opsRank,
+      teamValue:
+        teamProfile?.offense?.ops,
+      opponentValue:
+        opponentProfile?.offense?.ops,
+      order: 3,
+    },
+    {
+      key: "RUN_DIFF",
+      label: "Run Differential",
+      teamRank:
+        teamProfile?.runDifferentialRank,
+      opponentRank:
+        opponentProfile?.runDifferentialRank,
+      teamValue:
+        teamProfile?.runDifferential,
+      opponentValue:
+        opponentProfile?.runDifferential,
+      order: 4,
+    },
+    {
+      key: "FIELDING",
+      label: "Fielding %",
+      teamRank:
+        teamProfile?.defense
+          ?.fieldingAverageRank,
+      opponentRank:
+        opponentProfile?.defense
+          ?.fieldingAverageRank,
+      teamValue:
+        teamProfile?.defense
+          ?.fieldingAverage,
+      opponentValue:
+        opponentProfile?.defense
+          ?.fieldingAverage,
+      order: 5,
+    },
+    {
+      key: "RUNS",
+      label: "Runs Scored",
+      teamRank:
+        teamProfile?.offense
+          ?.runsScoredRank,
+      opponentRank:
+        opponentProfile?.offense
+          ?.runsScoredRank,
+      teamValue:
+        teamProfile?.offense
+          ?.runsScored,
+      opponentValue:
+        opponentProfile?.offense
+          ?.runsScored,
+      order: 6,
+    },
+  ];
+
+  const ranked =
+    candidates
+      .filter((candidate) => {
+        const teamRank =
+          Number(candidate.teamRank);
+
+        const opponentRank =
+          Number(candidate.opponentRank);
+
+        return (
+          Number.isFinite(teamRank) &&
+          Number.isFinite(opponentRank) &&
+          teamRank > 0 &&
+          opponentRank > 0
+        );
+      })
+      .map((candidate) => {
+        const teamRank =
+          Number(candidate.teamRank);
+
+        const opponentRank =
+          Number(candidate.opponentRank);
+
+        const rankGap =
+          Math.abs(
+            teamRank - opponentRank,
+          );
+
+        let edgeSide = "Even";
+
+        if (teamRank < opponentRank) {
+          edgeSide = "Aquarium";
+        } else if (
+          opponentRank < teamRank
+        ) {
+          edgeSide = "Opponent";
+        }
+
+        return {
+          ...candidate,
+          teamRank,
+          opponentRank,
+          rankGap,
+          edgeSide,
+          teamValueDisplay:
+            formatActiveHeroMetric(
+              candidate.teamValue,
+              candidate.key,
+            ),
+          opponentValueDisplay:
+            formatActiveHeroMetric(
+              candidate.opponentValue,
+              candidate.key,
+            ),
+        };
+      })
+      .sort((left, right) => {
+        if (
+          right.rankGap !== left.rankGap
+        ) {
+          return (
+            right.rankGap -
+            left.rankGap
+          );
+        }
+
+        return left.order - right.order;
+      });
+
+  if (!ranked.length) {
+    return [];
+  }
+
+  const aquariumEdge =
+    ranked.find(
+      (candidate) =>
+        candidate.edgeSide ===
+        "Aquarium",
+    ) || null;
+
+  const opponentEdge =
+    ranked.find(
+      (candidate) =>
+        candidate.edgeSide ===
+        "Opponent",
+    ) || null;
+
+  const usedKeys =
+    new Set(
+      [
+        aquariumEdge?.key,
+        opponentEdge?.key,
+      ].filter(Boolean),
+    );
+
+  const swingFactor =
+    ranked.find(
+      (candidate) =>
+        !usedKeys.has(candidate.key),
+    ) || null;
+
+  const selected = [];
+
+  if (aquariumEdge) {
+    selected.push({
+      ...aquariumEdge,
+      slot: "AQUARIUM_EDGE",
+    });
+  }
+
+  if (opponentEdge) {
+    selected.push({
+      ...opponentEdge,
+      slot: "OPPONENT_EDGE",
+    });
+  }
+
+  if (swingFactor) {
+    selected.push({
+      ...swingFactor,
+      slot: "SWING_FACTOR",
+    });
+  }
+
+  // If one side has no measurable advantage, fill remaining
+  // space with the strongest unused evidence rather than
+  // inventing an edge.
+  if (selected.length < 3) {
+    const selectedKeys =
+      new Set(
+        selected.map(
+          (candidate) =>
+            candidate.key,
+        ),
+      );
+
+    for (const candidate of ranked) {
+      if (
+        selected.length >= 3
+      ) {
+        break;
+      }
+
+      if (
+        selectedKeys.has(
+          candidate.key,
+        )
+      ) {
+        continue;
+      }
+
+      selected.push({
+        ...candidate,
+        slot: "SWING_FACTOR",
+      });
+
+      selectedKeys.add(
+        candidate.key,
+      );
+    }
+  }
+
+  return selected.slice(0, 3);
+}
+
+function getActiveHeroProjectedStarter(
+  rotation,
+) {
+  if (!rotation) {
+    return null;
+  }
+
+  const candidate =
+    rotation?.projectedPitcher ||
+    rotation?.projection
+      ?.projectedPitcher ||
+    rotation?.projectedStarter ||
+    rotation?.nextStarter ||
+    rotation?.projection?.pitcher ||
+    null;
+
+  if (!candidate) {
+    return null;
+  }
+
+  if (typeof candidate === "string") {
+    return {
+      name: candidate,
+      throws: null,
+      confidence:
+        rotation?.confidence || null,
+      source:
+        rotation?.projectionSource ||
+        null,
+    };
+  }
+
+  const name =
+    candidate?.playerName ||
+    candidate?.name ||
+    candidate?.pitcherName ||
+    candidate?.fullName ||
+    null;
+
+  if (!name) {
+    return null;
+  }
+
+  const rawThrows =
+    candidate?.throws ||
+    candidate?.throwingHand ||
+    rotation?.projectedPitcherThrows ||
+    null;
+
+  let throwsLabel = null;
+
+  if (rawThrows) {
+    const normalized =
+      String(rawThrows)
+        .trim()
+        .toUpperCase();
+
+    if (
+      normalized === "L" ||
+      normalized === "LEFT"
+    ) {
+      throwsLabel = "LHP";
+    } else if (
+      normalized === "R" ||
+      normalized === "RIGHT"
+    ) {
+      throwsLabel = "RHP";
+    } else {
+      throwsLabel = normalized;
+    }
+  }
+
+  return {
+    name,
+    throws: throwsLabel,
+    confidence:
+      rotation?.confidence ||
+      rotation?.projectionConfidence ||
+      null,
+    source:
+      rotation?.projectionSource ||
+      rotation?.projection?.source ||
+      null,
+  };
+}
+
+function ActiveTeamHeroMarkV2({
+  identity,
+  alt,
+  tone = "cyan",
+}) {
+  const [logoFailed, setLogoFailed] =
+    useState(false);
+
+  const logoPath =
+    identity?.logoPath;
+
+  const monogram =
+    identity?.monogram || "—";
+
+  const toneClass =
+    tone === "rose"
+      ? "border-rose-400/40 bg-rose-950/30 shadow-[0_16px_42px_rgba(244,63,94,0.18)]"
+      : "border-cyan-400/40 bg-cyan-950/30 shadow-[0_16px_42px_rgba(34,211,238,0.18)]";
+
+  return (
+    <div
+      className={`flex h-28 w-28 items-center justify-center overflow-hidden rounded-[2rem] border p-2 sm:h-32 sm:w-32 ${toneClass}`}
+    >
+      {logoPath && !logoFailed ? (
+        <img
+          src={logoPath}
+          alt={alt}
+          className="h-full w-full object-contain"
+          onError={() =>
+            setLogoFailed(true)
+          }
+        />
+      ) : (
+        <span className="text-3xl font-black tracking-tight text-white">
+          {monogram}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function ActiveHeroSignalStrip({
+  signals,
+  opponentName,
+}) {
+  if (!Array.isArray(signals)) {
+    return null;
+  }
+
+  if (signals.length === 0) {
+    return (
+      <div
+        data-bie-surface="active-team-adaptive-edges"
+        className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/60 px-4 py-4"
+      >
+        <p className="text-sm font-semibold leading-6 text-slate-400">
+          Matchup edges will populate when
+          comparative league evidence is available.
+        </p>
+      </div>
+    );
+  }
+
+  const resolvedOpponentName =
+    opponentName || "Opponent";
+
+  return (
+    <div
+      data-bie-surface="active-team-adaptive-edges"
+      data-bie-polish="balanced-matchup-edge-v2"
+      className="grid gap-3 md:grid-cols-3"
+    >
+      {signals.map((signal, index) => {
+        const slotLabel =
+          signal.slot === "AQUARIUM_EDGE"
+            ? "Aquarium Edge"
+            : signal.slot ===
+                "OPPONENT_EDGE"
+              ? `${resolvedOpponentName} Edge`
+              : "Swing Factor";
+
+        const slotClass =
+          signal.slot === "AQUARIUM_EDGE"
+            ? "text-cyan-300"
+            : signal.slot ===
+                "OPPONENT_EDGE"
+              ? "text-rose-300"
+              : "text-amber-300";
+
+        const favoredTeam =
+          signal.edgeSide === "Aquarium"
+            ? "Aquarium"
+            : signal.edgeSide ===
+                "Opponent"
+              ? resolvedOpponentName
+              : "Even";
+
+        const teamMetric =
+          signal.teamValueDisplay !== null
+            ? `Aquarium ${signal.teamValueDisplay} · #${signal.teamRank}`
+            : `Aquarium #${signal.teamRank}`;
+
+        const opponentMetric =
+          signal.opponentValueDisplay !== null
+            ? `${resolvedOpponentName} ${signal.opponentValueDisplay} · #${signal.opponentRank}`
+            : `${resolvedOpponentName} #${signal.opponentRank}`;
+
+        return (
+          <div
+            key={`${signal.slot}-${signal.key}-${index}`}
+            className="rounded-2xl border border-slate-700/80 bg-slate-900/75 px-4 py-3"
+          >
+            <p
+              className={`text-xs font-black uppercase tracking-[0.12em] ${slotClass}`}
+            >
+              {slotLabel}
+            </p>
+
+            <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+              <p className="text-lg font-black text-white">
+                {signal.label}
+              </p>
+
+              <p className="text-xs font-bold text-slate-500">
+                {signal.rankGap === 0
+                  ? "Ranks even"
+                  : `${signal.rankGap}-rank gap`}
+              </p>
+            </div>
+
+            <p className="mt-1 text-sm font-bold text-slate-300">
+              {signal.slot ===
+              "SWING_FACTOR"
+                ? `Favors ${favoredTeam}`
+                : favoredTeam}
+            </p>
+
+            <div className="mt-2 space-y-1 text-sm font-semibold leading-5 text-slate-400">
+              <p>{teamMetric}</p>
+              <p>{opponentMetric}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ActiveHeroStarterStrip({
+  teamStarter,
+  opponentStarter,
+  opponentName,
+}) {
+  const starterText = (starter) => {
+    if (!starter) {
+      return "Evidence gated";
+    }
+
+    return starter.throws
+      ? `${starter.name} · ${starter.throws}`
+      : starter.name;
+  };
+
+  return (
+    <div
+      data-bie-surface="active-team-projected-starters"
+      className="mt-4 grid gap-3 rounded-2xl border border-slate-700/80 bg-slate-900/60 p-4 sm:grid-cols-2"
+    >
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.12em] text-cyan-300">
+          Aquarium projected starter
+        </p>
+
+        <p className="mt-1 text-base font-black text-white">
+          {starterText(teamStarter)}
+        </p>
+      </div>
+
+      <div className="border-t border-slate-700 pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+        <p className="text-xs font-black uppercase tracking-[0.12em] text-rose-300">
+          {opponentName || "Opponent"} projected starter
+        </p>
+
+        <p className="mt-1 text-base font-black text-white">
+          {starterText(opponentStarter)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+
 const StratHome = () => (
     <div className="space-y-6">
       <section className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-[#06172f] via-[#08243d] to-cyan-950 p-6 text-white shadow-[0_18px_50px_rgba(8,47,73,0.22)]">
@@ -1166,6 +1754,62 @@ const StratHome = () => (
             opponentStanding,
           });
 
+          const heroMatchupSignals =
+            buildActiveHeroMatchupSignals(
+              currentPreview,
+            );
+
+          const previewSynopsis =
+            currentPreview?.preSeriesSnapshot
+              ?.payload?.executiveOutlook
+              ?.synopsis || null;
+
+          const previewSynopsisSentences =
+            previewSynopsis
+              ? (
+                  previewSynopsis.match(
+                    /[^.!?]+[.!?]+|[^.!?]+$/g,
+                  ) || []
+                )
+                  .map((sentence) =>
+                    sentence.trim(),
+                  )
+                  .filter(
+                    (sentence) =>
+                      sentence &&
+                      !/^[A-Za-z]+[.!]$/.test(
+                        sentence,
+                      ) &&
+                      !/^This read is season-to-date/i.test(
+                        sentence,
+                      ),
+                  )
+                  .slice(0, 2)
+              : [];
+
+          const previewSynopsisSummary =
+            previewSynopsisSentences.length
+              ? previewSynopsisSentences.join(
+                  " ",
+                )
+              : null;
+
+          const strongestSignal =
+            heroMatchupSignals?.[0] || null;
+
+          const heroBieRead =
+            previewSynopsisSummary ||
+            (strongestSignal
+              ? `${strongestSignal.edgeSide} owns the clearest measurable edge in ${strongestSignal.label.toLowerCase()} entering this series.`
+              : seriesRead?.label ||
+                seriesRead?.classification ||
+                "Series matchup intelligence is still resolving.");
+
+          const heroEvidenceNote =
+            previewSynopsis
+              ? "Season-to-date evidence · recent form not yet normalized"
+              : null;
+
           return (
             <article
               key={team.teamId}
@@ -1186,7 +1830,7 @@ const StratHome = () => (
 
                 <div className="relative flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-300">
                       1968 · League {team.leagueId}
                     </p>
 
@@ -1202,9 +1846,9 @@ const StratHome = () => (
                   ) : null}
                 </div>
 
-                <div className="relative mt-5 grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]">
+                <div className="relative mt-5 grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_190px_minmax(0,1fr)]">
                   <div className="flex flex-col items-center text-center">
-                    <ActiveTeamHeroMark
+                    <ActiveTeamHeroMarkV2
                       key={`aquarium-${team.teamId}`}
                       identity={getStratTeamIdentity(
                         team.teamId,
@@ -1240,7 +1884,7 @@ const StratHome = () => (
                   </div>
 
                   <div className="text-center">
-                    <p className="text-[9px] font-black uppercase tracking-[0.24em] text-slate-500">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
                       Next Series
                     </p>
 
@@ -1266,7 +1910,7 @@ const StratHome = () => (
                   </div>
 
                   <div className="flex flex-col items-center text-center">
-                    <ActiveTeamHeroMark
+                    <ActiveTeamHeroMarkV2
                       key={
                         currentOpponentIdentity?.teamId ||
                         currentOpponentDisplayName
@@ -1302,17 +1946,47 @@ const StratHome = () => (
                   </div>
                 </div>
 
+                <div
+                  data-bie-surface="active-team-matchup-intelligence"
+                  className="relative mt-4 border-t border-slate-800 pt-4"
+                >
+                  <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-300">
+                        Who Has the Edge?
+                      </p>
+
+                      <p className="mt-1 text-sm font-semibold text-slate-400">
+                        BIE surfaces the strongest available league-relative matchup differences.
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <ActiveHeroSignalStrip
+                    signals={heroMatchupSignals}
+                    opponentName={
+                      currentOpponentDisplayName
+                    }
+                  />
+
+                </div>
+
                 <div className="relative mt-4 flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-[9px] font-black uppercase tracking-[0.18em] text-emerald-300">
                       BIE Read
                     </p>
 
-                    <p className="mt-1 text-sm font-bold text-white">
-                      {seriesRead?.label ||
-                        seriesRead?.classification ||
-                        "Series matchup ready"}
+                    <p className="mt-1 max-w-4xl text-base font-bold leading-6 text-white">
+                      {heroBieRead}
                     </p>
+
+                    {heroEvidenceNote ? (
+                      <p className="mt-1 text-xs font-semibold text-slate-500">
+                        {heroEvidenceNote}
+                      </p>
+                    ) : null}
                   </div>
 
                   <button
@@ -1320,7 +1994,7 @@ const StratHome = () => (
                     onClick={() => openSeriesPreview(team)}
                     className="rounded-xl bg-cyan-400 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-300"
                   >
-                    View Series Matchup →
+                    Open Series Matchup →
                   </button>
                 </div>
               </div>
