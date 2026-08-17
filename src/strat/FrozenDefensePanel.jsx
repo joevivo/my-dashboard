@@ -122,12 +122,12 @@ function TeamDiamond({
   return (
     <div>
       <p
-        className={`truncate text-center text-[10px] font-black uppercase tracking-[0.13em] ${teamText}`}
+        className={`truncate text-center text-xs font-black uppercase tracking-[0.11em] ${teamText}`}
       >
         {name}
       </p>
 
-      <div className="relative mx-auto mt-2 h-[275px] max-w-[420px] overflow-hidden rounded-2xl border border-emerald-800/25 bg-gradient-to-b from-emerald-50 to-amber-50 dark:from-emerald-950/45 dark:to-amber-950/20">
+      <div className="relative mx-auto mt-3 h-[330px] max-w-[520px] overflow-hidden rounded-2xl border border-emerald-800/25 bg-gradient-to-b from-emerald-50 to-amber-50 dark:from-emerald-950/45 dark:to-amber-950/20">
         <svg
           viewBox="0 0 350 245"
           className="absolute inset-0 h-full w-full"
@@ -173,19 +173,19 @@ function TeamDiamond({
               }}
             >
               <div
-                className={`min-w-[59px] rounded-lg border px-1.5 py-1 shadow-sm ${badge}`}
+                className={`min-w-[76px] rounded-xl border px-2 py-1.5 shadow-sm ${badge}`}
               >
-                <p className="text-[8px] font-black uppercase tracking-[0.08em]">
+                <p className="text-[10px] font-black uppercase tracking-[0.07em]">
                   {position.key}
                 </p>
 
-                <p className="mt-0.5 whitespace-nowrap text-[9px] font-black tabular-nums">
+                <p className="mt-0.5 whitespace-nowrap text-[12px] font-black tabular-nums leading-tight">
                   {player?.defense?.raw ||
                     "—"}
                 </p>
               </div>
 
-              <p className="mt-0.5 max-w-[76px] truncate text-[7px] font-bold text-slate-500 dark:text-slate-400">
+              <p className="mt-1 max-w-[100px] truncate text-[9px] font-bold text-slate-600 dark:text-slate-300">
                 {surname(player?.name)}
               </p>
             </div>
@@ -237,16 +237,16 @@ function XDefense({
     >
       <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-700">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-300">
+          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-600 dark:text-slate-200">
             X-Chance Defense
           </p>
 
-          <p className="mt-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
+          <p className="mt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-300">
             ↑ Higher conversion is better
           </p>
         </div>
 
-        <span className="rounded-full border border-slate-200 px-2 py-1 text-[7px] font-black uppercase tracking-[0.08em] text-slate-400 dark:border-slate-700">
+        <span className="rounded-full border border-slate-200 px-2 py-1 text-[9px] font-black uppercase tracking-[0.07em] text-slate-400 dark:border-slate-700">
           Pairwise
         </span>
       </div>
@@ -271,13 +271,13 @@ function XDefense({
             >
               <div className="flex items-center justify-between gap-2">
                 <p
-                  className={`truncate text-[9px] font-black uppercase tracking-[0.11em] ${side.tone}`}
+                  className={`truncate text-[11px] font-black uppercase tracking-[0.1em] ${side.tone}`}
                 >
                   {side.name}
                 </p>
 
                 {edge ? (
-                  <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[7px] font-black uppercase tracking-[0.08em] text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                  <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-[0.07em] text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                     Edge
                   </span>
                 ) : null}
@@ -291,7 +291,7 @@ function XDefense({
                   : "—"}
               </p>
 
-              <p className="mt-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-[11px] font-bold text-slate-600 dark:text-slate-300">
                 {side.x
                   ? `${side.x.xOut}/${side.x.xTotal} X outs/chances`
                   : "X data unavailable"}
@@ -319,7 +319,7 @@ function XDefense({
         })}
       </div>
 
-      <p className="border-t border-slate-200 px-4 py-2.5 text-[8px] font-bold leading-4 text-slate-400 dark:border-slate-700">
+      <p className="border-t border-slate-200 px-4 py-2.5 text-[10px] font-bold leading-5 text-slate-500 dark:border-slate-700 dark:text-slate-300">
         League-wide X rank is intentionally unavailable in the frozen six-team review dataset.
       </p>
     </div>
@@ -340,25 +340,25 @@ export default function FrozenDefensePanel({
       <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">
               Defense
             </p>
 
-            <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs font-medium text-slate-600 dark:text-slate-300">
               Range, arms and actual X-chance conversion.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-violet-50 px-2 py-1 text-[7px] font-black uppercase tracking-[0.08em] text-violet-700 dark:bg-violet-950 dark:text-violet-300">
+            <span className="rounded-full bg-violet-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.07em] text-violet-700 dark:bg-violet-950 dark:text-violet-300">
               Range ↓ lower better
             </span>
 
-            <span className="rounded-full bg-amber-50 px-2 py-1 text-[7px] font-black uppercase tracking-[0.08em] text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+            <span className="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.07em] text-amber-700 dark:bg-amber-950 dark:text-amber-300">
               Arm ↓ lower = stronger
             </span>
 
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[7px] font-black uppercase tracking-[0.08em] text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+            <span className="rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-black uppercase tracking-[0.07em] text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
               X ↑ higher better
             </span>
           </div>
@@ -368,7 +368,7 @@ export default function FrozenDefensePanel({
       {teamFielding &&
       opponentFielding ? (
         <>
-          <div className="grid gap-5 p-4 md:grid-cols-2">
+          <div className="grid gap-6 p-5 md:grid-cols-2">
             <TeamDiamond
               name={teamName}
               tone="team"
@@ -401,7 +401,7 @@ export default function FrozenDefensePanel({
             />
           </div>
 
-          <p className="border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-[8px] font-bold leading-4 text-slate-500 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">
+          <p className="border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-[10px] font-bold leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
             Diamond uses the most-used defender at each primary position by observed primary-position X chances. Raw Strat range/arm/error ratings are preserved.
           </p>
         </>
