@@ -1101,29 +1101,29 @@ function LeagueEdgeScoreboard({
     <div
       data-bie-surface="league-edge-scoreboard-v4"
       data-bie-scale="TEAM_LEAGUE_AVG_OPPONENT_NUMERIC"
-      className="mt-4 overflow-hidden rounded-2xl border border-slate-700 bg-slate-950/35"
+      className="mt-3 overflow-hidden rounded-xl border border-slate-600 bg-slate-950/80 shadow-inner"
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)] items-center border-b border-slate-700 px-4 py-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_160px_minmax(0,1fr)] items-center border-b border-slate-600 bg-slate-900/70 px-4 py-2.5">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
+          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-cyan-300">
             Aquarium
           </p>
 
-          <p className="truncate text-xs font-black text-white">
+          <p className="truncate text-sm font-black text-white">
             {teamName}
           </p>
         </div>
 
-        <p className="text-center text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">
+        <p className="text-center text-[11px] font-black uppercase tracking-[0.1em] text-slate-200">
           League-average benchmark
         </p>
 
         <div className="text-right">
-          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-300">
+          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-rose-300">
             Opponent
           </p>
 
-          <p className="truncate text-xs font-black text-white">
+          <p className="truncate text-sm font-black text-white">
             {opponentName}
           </p>
         </div>
@@ -1328,20 +1328,20 @@ function LeagueEdgeScoreboard({
         return (
           <div
             key={row.label}
-            className="grid grid-cols-[minmax(0,0.8fr)_minmax(420px,1.4fr)_minmax(0,0.8fr)] items-center gap-5 border-b border-slate-800 px-4 py-4 last:border-b-0"
+            className="grid grid-cols-[minmax(0,0.9fr)_minmax(300px,1.15fr)_minmax(0,0.9fr)] items-center gap-3 border-b border-slate-700/80 px-4 py-2.5 last:border-b-0"
           >
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xl font-black tabular-nums text-cyan-300">
+                <span className="text-2xl font-black tabular-nums leading-none text-cyan-300">
                   {teamDisplay}
                 </span>
 
-                <span className="text-[10px] font-black text-slate-400">
+                <span className="text-sm font-black tabular-nums text-slate-200">
                   {teamRankText}
                 </span>
 
                 {teamBetter ? (
-                  <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-cyan-300">
+                  <span className="rounded-full border border-cyan-400/30 bg-cyan-400/15 px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.07em] text-cyan-100">
                     Edge
                   </span>
                 ) : null}
@@ -1350,15 +1350,15 @@ function LeagueEdgeScoreboard({
 
             <div className="min-w-0 text-center">
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm font-black text-white">
+                <span className="text-base font-black text-white">
                   {row.label}
                 </span>
 
                 <span
                   className={
                     row.higherBetter
-                      ? "text-[9px] font-black uppercase tracking-[0.1em] text-emerald-300"
-                      : "text-[9px] font-black uppercase tracking-[0.1em] text-violet-300"
+                      ? "text-[11px] font-black uppercase tracking-[0.07em] text-emerald-300"
+                      : "text-[11px] font-black uppercase tracking-[0.07em] text-violet-300"
                   }
                 >
                   {row.higherBetter
@@ -1367,17 +1367,17 @@ function LeagueEdgeScoreboard({
                 </span>
               </div>
 
-              <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              <p className="mt-0.5 text-[11px] font-bold uppercase tracking-[0.07em] text-slate-200">
                 {row.context}
               </p>
 
-              <div className="relative mx-auto mt-3 h-10 max-w-xl">
-                <div className="absolute left-0 right-0 top-6 h-1 rounded-full bg-slate-700" />
+              <div className="relative mx-auto mt-2 h-8 max-w-lg">
+                <div className="absolute left-0 right-0 top-5 h-1 rounded-full bg-slate-600" />
 
                 {allValuesAvailable ? (
                   <>
                     <div
-                      className="absolute top-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-600 bg-slate-900 px-2 py-0.5 text-[9px] font-black tabular-nums text-slate-300"
+                      className="absolute top-0 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-500 bg-slate-800 px-2 py-0.5 text-[11px] font-black tabular-nums text-white"
                       style={{
                         left: `${leaguePosition}%`,
                       }}
@@ -1386,7 +1386,7 @@ function LeagueEdgeScoreboard({
                     </div>
 
                     <div
-                      className="absolute top-[19px] h-4 w-px -translate-x-1/2 bg-slate-400"
+                      className="absolute top-[16px] h-4 w-px -translate-x-1/2 bg-slate-300"
                       style={{
                         left: `${leaguePosition}%`,
                       }}
@@ -1394,7 +1394,7 @@ function LeagueEdgeScoreboard({
 
                     <div
                       aria-label={`${teamName} ${teamDisplay}`}
-                      className="absolute top-[21px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-cyan-400 shadow"
+                      className="absolute top-[17px] h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-cyan-300 shadow"
                       style={{
                         left: `${teamPosition}%`,
                       }}
@@ -1402,7 +1402,7 @@ function LeagueEdgeScoreboard({
 
                     <div
                       aria-label={`${opponentName} ${opponentDisplay}`}
-                      className="absolute top-[21px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-rose-400 shadow"
+                      className="absolute top-[17px] h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-rose-300 shadow"
                       style={{
                         left: `${opponentPosition}%`,
                       }}
@@ -1413,7 +1413,7 @@ function LeagueEdgeScoreboard({
 
               {favoredName &&
               differenceDisplay ? (
-                <p className="mt-1 text-[10px] font-semibold text-slate-400">
+                <p className="mt-0.5 text-xs font-bold text-slate-200">
                   {favoredName} · {differenceDisplay}
                 </p>
               ) : null}
@@ -1422,16 +1422,16 @@ function LeagueEdgeScoreboard({
             <div className="text-right">
               <div className="flex flex-wrap items-center justify-end gap-2">
                 {opponentBetter ? (
-                  <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-rose-300">
+                  <span className="rounded-full border border-rose-400/30 bg-rose-400/15 px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.07em] text-rose-100">
                     Edge
                   </span>
                 ) : null}
 
-                <span className="text-[10px] font-black text-slate-400">
+                <span className="text-sm font-black tabular-nums text-slate-200">
                   {opponentRankText}
                 </span>
 
-                <span className="text-xl font-black tabular-nums text-rose-300">
+                <span className="text-2xl font-black tabular-nums leading-none text-rose-300">
                   {opponentDisplay}
                 </span>
               </div>
@@ -3660,20 +3660,20 @@ export default function SeriesPreview({
       {leagueContext?.status === "AVAILABLE" ? (
         <section
           data-bie-surface="league-position"
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+          className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900"
         >
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+              <p className="text-sm font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-200">
                 League Position
               </p>
 
-              <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-300">
                 Season-to-date team and opponent position against league rank and the league-average baseline.
               </p>
             </div>
 
-            <span className="rounded-full border border-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500 dark:border-slate-700 dark:text-slate-300">
+            <span className="rounded-full border border-slate-300 bg-slate-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.1em] text-slate-600 dark:border-slate-600 dark:bg-slate-950/60 dark:text-slate-200">
               {leagueContext?.leagueTeamCount
                 ? `${leagueContext.leagueTeamCount} teams`
                 : "League context"}
