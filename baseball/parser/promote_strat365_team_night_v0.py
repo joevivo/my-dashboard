@@ -12,6 +12,26 @@ from pathlib import Path
 from typing import Any
 
 
+EXPECTED_VALIDATION_GATES = frozenset({
+    "parserHashMatch",
+    "captureLockStateMatch",
+    "captureLockRunIdentityMatch",
+    "captureLockEvidenceHashMatch",
+    "captureLockCoverageMatch",
+    "leagueNightIdentityMatch",
+    "metadataFileCountMatch",
+    "metadataFamilyCountsMatch",
+    "uniqueMetadataBodyPathCountMatch",
+    "gameFileCountMatch",
+    "gameSetSignaturePresent",
+    "gameIdCoverageMatch",
+    "recapAggregateCountsMatch",
+    "playByPlayAggregateCountsMatch",
+    "reconciliationAggregateCountsMatch",
+    "rawGameSourceReferencesMatch",
+    "leagueNightSummaryMatch",
+})
+
 def sha256(path: Path) -> str:
     algorithm = hashlib.sha256()
 
@@ -372,7 +392,7 @@ def main() -> int:
 
     if (
         not isinstance(gates, dict)
-        or len(gates) != 17
+        or set(gates.keys()) != EXPECTED_VALIDATION_GATES
         or not all(
             value is True
             for value in gates.values()
@@ -380,7 +400,7 @@ def main() -> int:
     ):
         failures.append(
             "Validation report does not retain "
-            "17 passing gates."
+            "the canonical 17 passing gates."
         )
 
     expected_game_count = int(

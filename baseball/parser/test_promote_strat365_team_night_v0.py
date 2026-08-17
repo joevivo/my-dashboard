@@ -10,6 +10,26 @@ import tempfile
 import unittest
 
 
+EXPECTED_VALIDATION_GATES = (
+    "parserHashMatch",
+    "captureLockStateMatch",
+    "captureLockRunIdentityMatch",
+    "captureLockEvidenceHashMatch",
+    "captureLockCoverageMatch",
+    "leagueNightIdentityMatch",
+    "metadataFileCountMatch",
+    "metadataFamilyCountsMatch",
+    "uniqueMetadataBodyPathCountMatch",
+    "gameFileCountMatch",
+    "gameSetSignaturePresent",
+    "gameIdCoverageMatch",
+    "recapAggregateCountsMatch",
+    "playByPlayAggregateCountsMatch",
+    "reconciliationAggregateCountsMatch",
+    "rawGameSourceReferencesMatch",
+    "leagueNightSummaryMatch",
+)
+
 def write_json(path: pathlib.Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -216,8 +236,8 @@ class TeamNightPromoterTests(unittest.TestCase):
                 "reconciledGames": 3,
             },
             "gates": {
-                f"gate{index:02d}": True
-                for index in range(1, 18)
+                gate_name: True
+                for gate_name in EXPECTED_VALIDATION_GATES
             },
             "promotionDecision": {
                 "scopeType": "TEAM_NIGHT",
@@ -344,6 +364,20 @@ class TeamNightPromoterTests(unittest.TestCase):
                 tree_hash(parsed),
                 source_hash,
             )
+
+    def test_invented_truthy_gate_names_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as value:
+            repo, parsed, target, _ = self.build_fixture(pathlib.Path(value))
+            validation_path = parsed / "complete-night-validation-v0.json"
+            report = json.loads(validation_path.read_text(encoding="utf-8"))
+            report["gates"] = {f"gate{index:02d}": True for index in range(1, 18)}
+            write_json(validation_path, report)
+            source_hash = tree_hash(parsed)
+            result = self.execute(repo, parsed, target)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("PROMOTION_STATUS: BLOCKED", result.stdout)
+            self.assertFalse(target.exists())
+            self.assertEqual(tree_hash(parsed), source_hash)
 
     def test_wrong_team_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as value:
