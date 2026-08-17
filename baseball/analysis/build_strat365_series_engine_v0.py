@@ -351,6 +351,317 @@ def compare_recent_signals(
     }
 
 
+# SERIES_LEAGUE_AVERAGES_V1
+def baseball_innings_to_outs(
+    value: Any,
+) -> int:
+    if value is None:
+        return 0
+
+    text = str(value).strip()
+
+    if not text:
+        return 0
+
+    try:
+        if "." not in text:
+            return int(text) * 3
+
+        whole_text, fraction_text = text.split(
+            ".",
+            1,
+        )
+
+        whole = int(
+            whole_text or "0"
+        )
+
+        fraction = int(
+            (fraction_text or "0")[0]
+        )
+
+        if fraction not in (0, 1, 2):
+            return 0
+
+        return (
+            whole * 3
+            + fraction
+        )
+
+    except (
+        TypeError,
+        ValueError,
+    ):
+        return 0
+
+
+def summarize_league_averages(
+    teams: list[dict[str, Any]],
+) -> dict[str, Any]:
+    league_teams = [
+        as_dict(team)
+        for team in teams
+        if isinstance(team, dict)
+    ]
+
+    team_count = len(
+        league_teams
+    )
+
+    if team_count == 0:
+        return {
+            "status": "EVIDENCE_GATED",
+            "teamCount": 0,
+        }
+
+    total_ab = 0.0
+    total_h = 0.0
+    total_bb = 0.0
+    total_doubles = 0.0
+    total_triples = 0.0
+    total_hr = 0.0
+    total_runs = 0.0
+
+    total_pitching_outs = 0
+    total_er = 0.0
+    total_pitching_h = 0.0
+    total_pitching_bb = 0.0
+
+    total_fielding_chances = 0.0
+    total_fielding_errors = 0.0
+
+    for team in league_teams:
+        offense_raw = as_dict(
+            as_dict(
+                team.get("offense")
+            ).get("raw")
+        )
+
+        pitching_raw = as_dict(
+            as_dict(
+                team.get("pitching")
+            ).get("raw")
+        )
+
+        fielding_raw = as_dict(
+            as_dict(
+                team.get("fielding")
+            ).get("raw")
+        )
+
+        standings_metrics = as_dict(
+            as_dict(
+                team.get("standings")
+            ).get("metrics")
+        )
+
+        total_ab += as_number(
+            offense_raw.get("AB")
+        )
+
+        total_h += as_number(
+            offense_raw.get("H")
+        )
+
+        total_bb += as_number(
+            offense_raw.get("BB")
+        )
+
+        total_doubles += as_number(
+            offense_raw.get("2B")
+        )
+
+        total_triples += as_number(
+            offense_raw.get("3B")
+        )
+
+        total_hr += as_number(
+            offense_raw.get("HR")
+        )
+
+        runs_value = (
+            standings_metrics.get(
+                "runsScored"
+            )
+        )
+
+        if runs_value is None:
+            runs_value = (
+                offense_raw.get("R")
+            )
+
+        total_runs += as_number(
+            runs_value
+        )
+
+        total_pitching_outs += (
+            baseball_innings_to_outs(
+                pitching_raw.get("IP")
+            )
+        )
+
+        total_er += as_number(
+            pitching_raw.get("ER")
+        )
+
+        total_pitching_h += as_number(
+            pitching_raw.get("H")
+        )
+
+        total_pitching_bb += as_number(
+            pitching_raw.get("BB")
+        )
+
+        total_fielding_chances += (
+            as_number(
+                fielding_raw.get("TC")
+            )
+        )
+
+        total_fielding_errors += (
+            as_number(
+                fielding_raw.get("E")
+            )
+        )
+
+    # Strat's captured team table supplies AB/H/BB and
+    # doubles/triples/HR, but does not expose HBP or SF.
+    # Calculate aggregate OPS from the component universe
+    # actually supplied by this source.
+    total_bases = (
+        total_h
+        + total_doubles
+        + (2.0 * total_triples)
+        + (3.0 * total_hr)
+    )
+
+    obp_denominator = (
+        total_ab
+        + total_bb
+    )
+
+    league_obp = (
+        (
+            total_h
+            + total_bb
+        )
+        / obp_denominator
+        if obp_denominator > 0
+        else None
+    )
+
+    league_slg = (
+        total_bases
+        / total_ab
+        if total_ab > 0
+        else None
+    )
+
+    league_ops = (
+        league_obp
+        + league_slg
+        if (
+            league_obp is not None
+            and league_slg is not None
+        )
+        else None
+    )
+
+    league_era = (
+        total_er * 27.0
+        / total_pitching_outs
+        if total_pitching_outs > 0
+        else None
+    )
+
+    league_whip = (
+        (
+            total_pitching_h
+            + total_pitching_bb
+        )
+        * 3.0
+        / total_pitching_outs
+        if total_pitching_outs > 0
+        else None
+    )
+
+    league_fielding = (
+        (
+            total_fielding_chances
+            - total_fielding_errors
+        )
+        / total_fielding_chances
+        if total_fielding_chances > 0
+        else None
+    )
+
+    return {
+        "status": "AVAILABLE",
+        "teamCount": team_count,
+        "ops": (
+            round(
+                league_ops,
+                3,
+            )
+            if league_ops is not None
+            else None
+        ),
+        "runsScored": round(
+            total_runs / team_count,
+            1,
+        ),
+        "era": (
+            round(
+                league_era,
+                2,
+            )
+            if league_era is not None
+            else None
+        ),
+        "whip": (
+            round(
+                league_whip,
+                2,
+            )
+            if league_whip is not None
+            else None
+        ),
+        "fieldingAverage": (
+            round(
+                league_fielding,
+                3,
+            )
+            if league_fielding is not None
+            else None
+        ),
+        "runDifferential": 0.0,
+        "methods": {
+            "ops": (
+                "AGGREGATE_AVAILABLE_"
+                "OFFENSIVE_COMPONENTS"
+            ),
+            "runsScored": (
+                "LEAGUE_RUNS_DIVIDED_"
+                "BY_TEAM_COUNT"
+            ),
+            "era": (
+                "AGGREGATE_ER_PER_"
+                "NINE_INNINGS"
+            ),
+            "whip": (
+                "AGGREGATE_H_PLUS_BB_"
+                "PER_INNING"
+            ),
+            "fieldingAverage": (
+                "AGGREGATE_SUCCESSFUL_"
+                "CHANCES_DIVIDED_BY_TC"
+            ),
+            "runDifferential": (
+                "CLOSED_LEAGUE_ZERO"
+            ),
+        },
+    }
+
 def summarize_league_profile(
     team: dict[str, Any],
 ) -> dict[str, Any]:
@@ -891,6 +1202,11 @@ def build_league_context(
                 as_list(
                     league_payload.get("teams")
                 )
+            )
+        ),
+        "leagueAverages": summarize_league_averages(
+            as_list(
+                league_payload.get("teams")
             )
         ),
         "teamProfile": team_profile,

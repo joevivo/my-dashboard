@@ -455,12 +455,571 @@ function FrozenPercentileTrack({
   );
 }
 
+// SERIES_LEAGUE_AVERAGE_SCOREBOARD_V1
+function formatLeagueAverageMetric(
+  value,
+  digits,
+) {
+  if (
+    value == null ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  const numericValue =
+    Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+
+  const formatted =
+    numericValue.toFixed(digits);
+
+  return (
+    digits === 3 &&
+    numericValue >= 0 &&
+    numericValue < 1
+      ? formatted.replace(/^0/, "")
+      : formatted
+  );
+}
+// SERIES_MATCHUP_COMMAND_DECK_V1
+const SERIES_COMMAND_METRICS = [
+  {
+    key: "ops",
+    label: "OPS",
+    direction: "HIGHER BETTER",
+    digits: 3,
+    teamValue: (profile) =>
+      profile?.offense?.ops,
+    opponentValue: (profile) =>
+      profile?.offense?.ops,
+    teamRank: (profile) =>
+      profile?.offense?.opsRank,
+    opponentRank: (profile) =>
+      profile?.offense?.opsRank,
+  },
+  {
+    key: "runs",
+    label: "Runs Scored",
+    direction: "HIGHER BETTER",
+    digits: 0,
+    teamValue: (profile) =>
+      profile?.offense?.runsScored,
+    opponentValue: (profile) =>
+      profile?.offense?.runsScored,
+    teamRank: (profile) =>
+      profile?.offense?.runsScoredRank,
+    opponentRank: (profile) =>
+      profile?.offense?.runsScoredRank,
+  },
+  {
+    key: "era",
+    label: "ERA",
+    direction: "LOWER BETTER",
+    digits: 2,
+    teamValue: (profile) =>
+      profile?.pitching?.era,
+    opponentValue: (profile) =>
+      profile?.pitching?.era,
+    teamRank: (profile) =>
+      profile?.pitching?.eraRank,
+    opponentRank: (profile) =>
+      profile?.pitching?.eraRank,
+  },
+  {
+    key: "whip",
+    label: "WHIP",
+    direction: "LOWER BETTER",
+    digits: 2,
+    teamValue: (profile) =>
+      profile?.pitching?.whip,
+    opponentValue: (profile) =>
+      profile?.pitching?.whip,
+    teamRank: (profile) =>
+      profile?.pitching?.whipRank,
+    opponentRank: (profile) =>
+      profile?.pitching?.whipRank,
+  },
+  {
+    key: "fielding",
+    label: "Fielding %",
+    direction: "HIGHER BETTER",
+    digits: 3,
+    teamValue: (profile) =>
+      profile?.defense?.fieldingAverage,
+    opponentValue: (profile) =>
+      profile?.defense?.fieldingAverage,
+    teamRank: (profile) =>
+      profile?.defense?.fieldingAverageRank,
+    opponentRank: (profile) =>
+      profile?.defense?.fieldingAverageRank,
+  },
+  {
+    key: "runDifferential",
+    label: "Run Differential",
+    direction: "HIGHER BETTER",
+    digits: 0,
+    teamValue: (profile) =>
+      profile?.runDifferential,
+    opponentValue: (profile) =>
+      profile?.runDifferential,
+    teamRank: (profile) =>
+      profile?.runDifferentialRank,
+    opponentRank: (profile) =>
+      profile?.runDifferentialRank,
+  },
+];
+
+function formatSeriesCommandMetric(
+  value,
+  digits = 0,
+  signed = false,
+) {
+  if (
+    value == null ||
+    value === ""
+  ) {
+    return "—";
+  }
+
+  const numericValue =
+    Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+
+  const formatted =
+    numericValue.toFixed(digits);
+
+  if (
+    digits === 3 &&
+    numericValue >= 0 &&
+    numericValue < 1
+  ) {
+    return formatted.replace(/^0/, "");
+  }
+
+  if (
+    signed &&
+    numericValue > 0
+  ) {
+    return `+${formatted}`;
+  }
+
+  return formatted;
+}
+
+function buildSeriesCommandSignals(
+  teamProfile,
+  opponentProfile,
+) {
+  const rows =
+    SERIES_COMMAND_METRICS.map(
+      (metric) => {
+        const teamValue =
+          metric.teamValue(teamProfile);
+
+        const opponentValue =
+          metric.opponentValue(
+            opponentProfile,
+          );
+
+        const teamRank =
+          Number(
+            metric.teamRank(teamProfile),
+          );
+
+        const opponentRank =
+          Number(
+            metric.opponentRank(
+              opponentProfile,
+            ),
+          );
+
+        const hasRanks =
+          Number.isFinite(teamRank) &&
+          Number.isFinite(opponentRank) &&
+          teamRank > 0 &&
+          opponentRank > 0;
+
+        const teamNumeric =
+          Number(teamValue);
+
+        const opponentNumeric =
+          Number(opponentValue);
+
+        let favored = null;
+        let rankGap = null;
+
+        if (
+          hasRanks &&
+          teamRank !== opponentRank
+        ) {
+          favored =
+            teamRank < opponentRank
+              ? "TEAM"
+              : "OPPONENT";
+
+          rankGap =
+            Math.abs(
+              opponentRank - teamRank,
+            );
+        } else if (
+          Number.isFinite(teamNumeric) &&
+          Number.isFinite(
+            opponentNumeric,
+          ) &&
+          teamNumeric !== opponentNumeric
+        ) {
+          const higherBetter =
+            metric.direction ===
+            "HIGHER BETTER";
+
+          favored =
+            higherBetter
+              ? (
+                  teamNumeric >
+                  opponentNumeric
+                    ? "TEAM"
+                    : "OPPONENT"
+                )
+              : (
+                  teamNumeric <
+                  opponentNumeric
+                    ? "TEAM"
+                    : "OPPONENT"
+                );
+        }
+
+        return {
+          ...metric,
+          teamValue,
+          opponentValue,
+          teamRank:
+            hasRanks
+              ? teamRank
+              : null,
+          opponentRank:
+            hasRanks
+              ? opponentRank
+              : null,
+          favored,
+          rankGap,
+        };
+      },
+    ).filter(
+      (row) => row.favored,
+    );
+
+  const strongest = (
+    favored,
+    excludedKeys = new Set(),
+  ) =>
+    rows
+      .filter(
+        (row) =>
+          row.favored === favored &&
+          !excludedKeys.has(row.key),
+      )
+      .sort(
+        (a, b) =>
+          (b.rankGap || 0) -
+          (a.rankGap || 0),
+      )[0] || null;
+
+  const teamEdge =
+    strongest("TEAM");
+
+  const opponentEdge =
+    strongest("OPPONENT");
+
+  const usedKeys =
+    new Set(
+      [
+        teamEdge?.key,
+        opponentEdge?.key,
+      ].filter(Boolean),
+    );
+
+  const swing =
+    rows
+      .filter(
+        (row) =>
+          !usedKeys.has(row.key),
+      )
+      .sort(
+        (a, b) =>
+          (b.rankGap || 0) -
+          (a.rankGap || 0),
+      )[0] ||
+    teamEdge ||
+    opponentEdge ||
+    null;
+
+  return {
+    teamEdge,
+    opponentEdge,
+    swing,
+  };
+}
+
+function SeriesCommandSignalCard({
+  eyebrow,
+  signal,
+  tone,
+  teamName,
+  opponentName,
+  showFavored = false,
+}) {
+  const toneClass =
+    tone === "cyan"
+      ? "border-cyan-800/80 bg-cyan-950/35"
+      : tone === "rose"
+        ? "border-rose-900/80 bg-rose-950/30"
+        : "border-amber-900/80 bg-amber-950/25";
+
+  const eyebrowClass =
+    tone === "cyan"
+      ? "text-cyan-300"
+      : tone === "rose"
+        ? "text-rose-300"
+        : "text-amber-300";
+
+  if (!signal) {
+    return (
+      <div
+        className={`rounded-2xl border p-4 ${toneClass}`}
+      >
+        <p
+          className={`text-[11px] font-black uppercase tracking-[0.14em] ${eyebrowClass}`}
+        >
+          {eyebrow}
+        </p>
+
+        <p className="mt-3 text-sm font-bold text-slate-400">
+          Evidence gated
+        </p>
+      </div>
+    );
+  }
+
+  const favoredName =
+    signal.favored === "TEAM"
+      ? teamName
+      : opponentName;
+
+  return (
+    <div
+      className={`rounded-2xl border p-4 ${toneClass}`}
+    >
+      <p
+        className={`text-[11px] font-black uppercase tracking-[0.14em] ${eyebrowClass}`}
+      >
+        {eyebrow}
+      </p>
+
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-xl font-black tracking-tight text-white">
+          {signal.label}
+        </h3>
+
+        {showFavored ? (
+          <span className="rounded-full border border-slate-700 bg-slate-950/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-slate-300">
+            Favors {favoredName}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div>
+          <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-cyan-300">
+            {teamName}
+          </p>
+
+          <p className="mt-1 text-lg font-black tabular-nums text-white">
+            {formatSeriesCommandMetric(
+              signal.teamValue,
+              signal.digits,
+              signal.key === "runDifferential",
+            )}
+
+            {signal.teamRank ? (
+              <span className="ml-2 text-xs font-bold text-slate-400">
+                #{signal.teamRank}
+              </span>
+            ) : null}
+          </p>
+        </div>
+
+        <div className="text-right">
+          <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-rose-300">
+            {opponentName}
+          </p>
+
+          <p className="mt-1 text-lg font-black tabular-nums text-white">
+            {formatSeriesCommandMetric(
+              signal.opponentValue,
+              signal.digits,
+              signal.key === "runDifferential",
+            )}
+
+            {signal.opponentRank ? (
+              <span className="ml-2 text-xs font-bold text-slate-400">
+                #{signal.opponentRank}
+              </span>
+            ) : null}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        {signal.rankGap
+          ? `${signal.rankGap}-rank gap`
+          : signal.direction}
+      </p>
+    </div>
+  );
+}
+
+function SeriesCommandDeck({
+  teamName,
+  opponentName,
+  teamProfile,
+  opponentProfile,
+  watchText,
+}) {
+  const {
+    teamEdge,
+    opponentEdge,
+    swing,
+  } = buildSeriesCommandSignals(
+    teamProfile,
+    opponentProfile,
+  );
+
+  const readLabels = {
+    ops: "offensive-production",
+    runs: "run-production",
+    era: "run-prevention",
+    whip: "traffic-suppression",
+    fielding: "fielding",
+    runDifferential: "run-differential",
+  };
+
+  const teamReadLabel =
+    teamEdge
+      ? readLabels[teamEdge.key] ||
+        teamEdge.label.toLowerCase()
+      : null;
+
+  const opponentReadLabel =
+    opponentEdge
+      ? readLabels[opponentEdge.key] ||
+        opponentEdge.label.toLowerCase()
+      : null;
+
+  let commandRead = null;
+
+  if (
+    teamEdge &&
+    opponentEdge
+  ) {
+    commandRead =
+      `${teamName} needs its ${teamReadLabel} advantage to shape the series; ` +
+      `${opponentName} counters with the stronger ${opponentReadLabel} profile.`;
+  } else if (teamEdge) {
+    commandRead =
+      `${teamName}'s clearest path is to lean on its ${teamReadLabel} advantage.`;
+  } else if (opponentEdge) {
+    commandRead =
+      `${opponentName} owns the clearest season-to-date advantage through ${opponentReadLabel}.`;
+  }
+
+  return (
+    <section
+      data-bie-surface="series-command"
+      data-bie-refinement="SERIES_MATCHUP_VISUAL_REFINEMENT_V2"
+      className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
+    >
+      <div className="border-b border-slate-800 px-5 py-5 sm:px-6">
+        <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+          Series Command
+        </p>
+
+        <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
+          What decides this matchup
+        </h2>
+      </div>
+
+      <div className="grid gap-3 p-5 sm:p-6 xl:grid-cols-3">
+        <SeriesCommandSignalCard
+          eyebrow="Aquarium Edge"
+          signal={teamEdge}
+          tone="cyan"
+          teamName={teamName}
+          opponentName={opponentName}
+        />
+
+        <SeriesCommandSignalCard
+          eyebrow={`${opponentName} Edge`}
+          signal={opponentEdge}
+          tone="rose"
+          teamName={teamName}
+          opponentName={opponentName}
+        />
+
+        <SeriesCommandSignalCard
+          eyebrow="Swing Factor"
+          signal={swing}
+          tone="amber"
+          teamName={teamName}
+          opponentName={opponentName}
+          showFavored
+        />
+      </div>
+
+      {commandRead ? (
+        <div className="border-t border-slate-800 bg-slate-900/60 px-5 py-4 sm:px-6">
+          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
+            BIE Read
+          </p>
+
+          <p className="mt-1 text-sm font-semibold leading-6 text-slate-200">
+            {commandRead}
+          </p>
+
+          <p className="mt-1 text-[11px] font-medium text-slate-500">
+            Season-to-date league evidence · recent form not yet normalized
+          </p>
+        </div>
+      ) : null}
+
+      {watchText ? (
+        <div className="flex flex-col gap-1 border-t border-amber-900/50 bg-amber-950/20 px-5 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-6">
+          <span className="shrink-0 text-[10px] font-black uppercase tracking-[0.14em] text-amber-300">
+            Watch
+          </span>
+
+          <p className="text-xs font-semibold leading-5 text-slate-300">
+            {watchText}
+          </p>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function LeagueEdgeScoreboard({
   teamName,
   opponentName,
   teamProfile,
   opponentProfile,
   teamCount,
+  leagueAverages,
 }) {
   const rows = [
     {
@@ -468,14 +1027,18 @@ function LeagueEdgeScoreboard({
       context: "Offense",
       direction: "HIGHER BETTER",
       higherBetter: true,
-      teamValue: teamProfile?.offense?.ops,
+      teamValue:
+        teamProfile?.offense?.ops,
       opponentValue:
         opponentProfile?.offense?.ops,
+      leagueAverage:
+        leagueAverages?.ops,
       teamRank:
         teamProfile?.offense?.opsRank,
       opponentRank:
         opponentProfile?.offense?.opsRank,
       digits: 3,
+      scaleFloor: 0.005,
     },
     {
       label: "Runs",
@@ -486,11 +1049,15 @@ function LeagueEdgeScoreboard({
         teamProfile?.offense?.runsScored,
       opponentValue:
         opponentProfile?.offense?.runsScored,
+      leagueAverage:
+        leagueAverages?.runsScored,
       teamRank:
         teamProfile?.offense?.runsScoredRank,
       opponentRank:
         opponentProfile?.offense?.runsScoredRank,
       digits: 0,
+      averageDigits: 1,
+      scaleFloor: 2,
     },
     {
       label: "ERA",
@@ -501,11 +1068,14 @@ function LeagueEdgeScoreboard({
         teamProfile?.pitching?.era,
       opponentValue:
         opponentProfile?.pitching?.era,
+      leagueAverage:
+        leagueAverages?.era,
       teamRank:
         teamProfile?.pitching?.eraRank,
       opponentRank:
         opponentProfile?.pitching?.eraRank,
       digits: 2,
+      scaleFloor: 0.05,
     },
     {
       label: "WHIP",
@@ -516,107 +1086,262 @@ function LeagueEdgeScoreboard({
         teamProfile?.pitching?.whip,
       opponentValue:
         opponentProfile?.pitching?.whip,
+      leagueAverage:
+        leagueAverages?.whip,
       teamRank:
         teamProfile?.pitching?.whipRank,
       opponentRank:
         opponentProfile?.pitching?.whipRank,
       digits: 2,
+      scaleFloor: 0.02,
     },
   ];
 
   return (
     <div
-      data-bie-surface="league-edge-scoreboard-v3"
-      className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/70 dark:border-slate-700 dark:bg-slate-950/35"
+      data-bie-surface="league-edge-scoreboard-v4"
+      data-bie-scale="TEAM_LEAGUE_AVG_OPPONENT_NUMERIC"
+      className="mt-4 overflow-hidden rounded-2xl border border-slate-700 bg-slate-950/35"
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] items-center border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+      <div className="grid grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)] items-center border-b border-slate-700 px-4 py-3">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-600 dark:text-cyan-300">
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
             Aquarium
           </p>
-          <p className="truncate text-xs font-black text-slate-900 dark:text-white">
+
+          <p className="truncate text-xs font-black text-white">
             {teamName}
           </p>
         </div>
 
         <p className="text-center text-[9px] font-black uppercase tracking-[0.16em] text-slate-400">
-          League context
+          League-average benchmark
         </p>
 
         <div className="text-right">
-          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-500">
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-rose-300">
             Opponent
           </p>
-          <p className="truncate text-xs font-black text-slate-900 dark:text-white">
+
+          <p className="truncate text-xs font-black text-white">
             {opponentName}
           </p>
         </div>
       </div>
 
       {rows.map((row) => {
+        const numericValue = (value) => {
+          if (
+            value == null ||
+            value === ""
+          ) {
+            return null;
+          }
+
+          const parsed =
+            Number(value);
+
+          return Number.isFinite(parsed)
+            ? parsed
+            : null;
+        };
+
         const teamNumeric =
-          Number(row.teamValue);
+          numericValue(row.teamValue);
 
         const opponentNumeric =
-          Number(row.opponentValue);
+          numericValue(
+            row.opponentValue,
+          );
 
-        const valuesAvailable =
-          Number.isFinite(teamNumeric) &&
-          Number.isFinite(opponentNumeric);
+        const leagueNumeric =
+          numericValue(
+            row.leagueAverage,
+          );
+
+        const allValuesAvailable =
+          teamNumeric != null &&
+          opponentNumeric != null &&
+          leagueNumeric != null;
 
         const teamBetter =
-          valuesAvailable &&
-          (row.higherBetter
-            ? teamNumeric > opponentNumeric
-            : teamNumeric < opponentNumeric);
+          teamNumeric != null &&
+          opponentNumeric != null &&
+          (
+            row.higherBetter
+              ? teamNumeric > opponentNumeric
+              : teamNumeric < opponentNumeric
+          );
 
         const opponentBetter =
-          valuesAvailable &&
-          (row.higherBetter
-            ? opponentNumeric > teamNumeric
-            : opponentNumeric < teamNumeric);
+          teamNumeric != null &&
+          opponentNumeric != null &&
+          (
+            row.higherBetter
+              ? opponentNumeric > teamNumeric
+              : opponentNumeric < teamNumeric
+          );
 
         const difference =
-          valuesAvailable
+          teamNumeric != null &&
+          opponentNumeric != null
             ? Math.abs(
-                teamNumeric - opponentNumeric,
+                teamNumeric -
+                opponentNumeric,
               )
             : null;
 
-        const teamPercentile =
-          frozenLeaguePercentile(
-            row.teamRank,
-            teamCount,
+        const scaleValues =
+          [
+            teamNumeric,
+            opponentNumeric,
+            leagueNumeric,
+          ].filter(
+            (value) =>
+              value != null,
           );
 
-        const opponentPercentile =
-          frozenLeaguePercentile(
-            row.opponentRank,
-            teamCount,
+        const rawMinimum =
+          scaleValues.length > 0
+            ? Math.min(...scaleValues)
+            : 0;
+
+        const rawMaximum =
+          scaleValues.length > 0
+            ? Math.max(...scaleValues)
+            : 1;
+
+        const rawSpread =
+          rawMaximum -
+          rawMinimum;
+
+        const scalePadding =
+          Math.max(
+            rawSpread * 0.12,
+            row.scaleFloor,
           );
+
+        const scaleMinimum =
+          rawMinimum -
+          scalePadding;
+
+        const scaleMaximum =
+          rawMaximum +
+          scalePadding;
+
+        const positionFor =
+          (value) => {
+            if (
+              value == null ||
+              scaleMaximum <= scaleMinimum
+            ) {
+              return 50;
+            }
+
+            const rawPosition =
+              (
+                (value - scaleMinimum) /
+                (
+                  scaleMaximum -
+                  scaleMinimum
+                )
+              ) * 100;
+
+            return Math.max(
+              4,
+              Math.min(
+                96,
+                rawPosition,
+              ),
+            );
+          };
+
+        const teamPosition =
+          positionFor(teamNumeric);
+
+        const opponentPosition =
+          positionFor(
+            opponentNumeric,
+          );
+
+        const leaguePosition =
+          positionFor(
+            leagueNumeric,
+          );
+
+        const teamRank =
+          Number(row.teamRank);
+
+        const opponentRank =
+          Number(
+            row.opponentRank,
+          );
+
+        const teamRankText =
+          Number.isFinite(teamRank) &&
+          teamRank > 0
+            ? `#${teamRank}`
+            : "—";
+
+        const opponentRankText =
+          Number.isFinite(
+            opponentRank,
+          ) &&
+          opponentRank > 0
+            ? `#${opponentRank}`
+            : "—";
+
+        const teamDisplay =
+          formatLeagueAverageMetric(
+            row.teamValue,
+            row.digits,
+          ) || "—";
+
+        const opponentDisplay =
+          formatLeagueAverageMetric(
+            row.opponentValue,
+            row.digits,
+          ) || "—";
+
+        const leagueDisplay =
+          formatLeagueAverageMetric(
+            row.leagueAverage,
+            row.averageDigits ??
+              row.digits,
+          ) || "—";
+
+        const differenceDisplay =
+          difference == null
+            ? null
+            : formatLeagueAverageMetric(
+                difference,
+                row.digits,
+              );
+
+        const favoredName =
+          teamBetter
+            ? teamName
+            : opponentBetter
+              ? opponentName
+              : null;
 
         return (
           <div
             key={row.label}
-            className="grid grid-cols-[minmax(0,1fr)_minmax(180px,1.3fr)_minmax(0,1fr)] items-center gap-4 border-b border-slate-200 px-4 py-4 last:border-b-0 dark:border-slate-800"
+            className="grid grid-cols-[minmax(0,0.8fr)_minmax(420px,1.4fr)_minmax(0,0.8fr)] items-center gap-5 border-b border-slate-800 px-4 py-4 last:border-b-0"
           >
             <div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-black tabular-nums text-cyan-600 dark:text-cyan-300">
-                  {frozenMetricValue(
-                    row.teamValue,
-                    row.digits,
-                  )}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xl font-black tabular-nums text-cyan-300">
+                  {teamDisplay}
                 </span>
 
-                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                  {shortLeagueRank(
-                    row.teamRank,
-                  )}
+                <span className="text-[10px] font-black text-slate-400">
+                  {teamRankText}
                 </span>
 
                 {teamBetter ? (
-                  <span className="rounded-full bg-cyan-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300">
+                  <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-cyan-300">
                     Edge
                   </span>
                 ) : null}
@@ -624,17 +1349,17 @@ function LeagueEdgeScoreboard({
             </div>
 
             <div className="min-w-0 text-center">
-              <div className="flex items-center justify-center gap-2">
-                <p className="text-xs font-black text-slate-900 dark:text-white">
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm font-black text-white">
                   {row.label}
-                </p>
+                </span>
 
                 <span
-                  className={`text-[8px] font-black uppercase tracking-[0.12em] ${
+                  className={
                     row.higherBetter
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-violet-600 dark:text-violet-400"
-                  }`}
+                      ? "text-[9px] font-black uppercase tracking-[0.1em] text-emerald-300"
+                      : "text-[9px] font-black uppercase tracking-[0.1em] text-violet-300"
+                  }
                 >
                   {row.higherBetter
                     ? "↑ Higher better"
@@ -642,55 +1367,72 @@ function LeagueEdgeScoreboard({
                 </span>
               </div>
 
-              <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+              <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                 {row.context}
               </p>
 
-              <FrozenPercentileTrack
-                teamPercentile={
-                  teamPercentile
-                }
-                opponentPercentile={
-                  opponentPercentile
-                }
-              />
+              <div className="relative mx-auto mt-3 h-10 max-w-xl">
+                <div className="absolute left-0 right-0 top-6 h-1 rounded-full bg-slate-700" />
 
-              {valuesAvailable ? (
-                <p className="mt-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
-                  {teamBetter
-                    ? teamName
-                    : opponentBetter
-                      ? opponentName
-                      : "Even"}
-                  {difference !== null
-                    ? ` · ${frozenMetricValue(
-                        difference,
-                        row.digits,
-                      )}`
-                    : ""}
+                {allValuesAvailable ? (
+                  <>
+                    <div
+                      className="absolute top-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-600 bg-slate-900 px-2 py-0.5 text-[9px] font-black tabular-nums text-slate-300"
+                      style={{
+                        left: `${leaguePosition}%`,
+                      }}
+                    >
+                      Lg Avg {leagueDisplay}
+                    </div>
+
+                    <div
+                      className="absolute top-[19px] h-4 w-px -translate-x-1/2 bg-slate-400"
+                      style={{
+                        left: `${leaguePosition}%`,
+                      }}
+                    />
+
+                    <div
+                      aria-label={`${teamName} ${teamDisplay}`}
+                      className="absolute top-[21px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-cyan-400 shadow"
+                      style={{
+                        left: `${teamPosition}%`,
+                      }}
+                    />
+
+                    <div
+                      aria-label={`${opponentName} ${opponentDisplay}`}
+                      className="absolute top-[21px] h-3 w-3 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-rose-400 shadow"
+                      style={{
+                        left: `${opponentPosition}%`,
+                      }}
+                    />
+                  </>
+                ) : null}
+              </div>
+
+              {favoredName &&
+              differenceDisplay ? (
+                <p className="mt-1 text-[10px] font-semibold text-slate-400">
+                  {favoredName} · {differenceDisplay}
                 </p>
               ) : null}
             </div>
 
             <div className="text-right">
-              <div className="flex items-baseline justify-end gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-2">
                 {opponentBetter ? (
-                  <span className="rounded-full bg-rose-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                  <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-rose-300">
                     Edge
                   </span>
                 ) : null}
 
-                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                  {shortLeagueRank(
-                    row.opponentRank,
-                  )}
+                <span className="text-[10px] font-black text-slate-400">
+                  {opponentRankText}
                 </span>
 
-                <span className="text-xl font-black tabular-nums text-rose-600 dark:text-rose-300">
-                  {frozenMetricValue(
-                    row.opponentValue,
-                    row.digits,
-                  )}
+                <span className="text-xl font-black tabular-nums text-rose-300">
+                  {opponentDisplay}
                 </span>
               </div>
             </div>
@@ -2458,7 +3200,7 @@ function KeyPlayersPanel({
                 </div>
 
                 <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                  League context
+                  League-average benchmark
                 </span>
               </div>
 
@@ -2898,65 +3640,21 @@ export default function SeriesPreview({
         </section>
       ) : null}
 
-      {outlook ? (
-        <section
-          data-bie-surface="series-intelligence"
-          className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 bg-gradient-to-r from-cyan-950/80 via-slate-950 to-rose-950/40 px-5 py-5 sm:px-6">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                Series Intelligence
-              </p>
+      {leagueContext?.status === "AVAILABLE" ? (
+        <SeriesCommandDeck
+          teamName={aquariumDisplayName}
+          opponentName={opponentDisplayName}
+          teamProfile={teamProfile}
+          opponentProfile={opponentProfile}
 
-              <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
-                {humanize(outlook.classification)}
-              </h2>
-            </div>
-
-            <Pill status={outlook.status}>
-              {humanize(outlook.confidence || outlook.status)}
-            </Pill>
-          </div>
-
-          <div className="p-5 sm:p-6">
-            <p className="max-w-4xl text-sm leading-6 text-slate-300">
-              {displayOutlookSynopsis}
-            </p>
-
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-              <div className="rounded-2xl border border-cyan-900/70 bg-cyan-950/50 p-4">
-                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-cyan-300">
-                  Series State
-                </p>
-
-                <p className="mt-2 text-sm font-black text-white">
-                  {humanize(outlook.classification)}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
-                  Edge
-                </p>
-
-                <p className="mt-2 text-sm font-black text-white">
-                  {outlook.edge?.text || "Evidence gated"}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-amber-900/70 bg-amber-950/30 p-4">
-                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-300">
-                  Watch
-                </p>
-
-                <p className="mt-2 text-sm font-black text-white">
-                  {outlook.watch?.text || "Evidence gated"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+          watchText={
+            outlook?.watch?.text
+              ? normalizePreviewText(
+                  outlook.watch.text,
+                )
+              : null
+          }
+        />
       ) : null}
 
       {leagueContext?.status === "AVAILABLE" ? (
@@ -2967,11 +3665,11 @@ export default function SeriesPreview({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                Who Has the Edge?
+                League Position
               </p>
 
               <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                League position at a glance. Rank is the primary signal; lower rank numbers are better.
+                Season-to-date team and opponent position against league rank and the league-average baseline.
               </p>
             </div>
 
@@ -2989,6 +3687,9 @@ export default function SeriesPreview({
             opponentProfile={opponentProfile}
             teamCount={
               leagueContext?.leagueTeamCount
+            }
+            leagueAverages={
+              leagueContext?.leagueAverages
             }
           />
 

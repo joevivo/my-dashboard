@@ -193,67 +193,7 @@ function TeamDiamond({
         })}
       </div>
 
-      <div className="mt-3 grid gap-2 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-700 dark:bg-slate-950/40">
-          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
-            IF Range
-          </p>
-
-          <p className="mt-1 text-[11px] font-bold leading-5 text-slate-700 dark:text-slate-300">
-            {["1B", "2B", "SS", "3B"]
-              .map((position) =>
-                `${position} ${
-                  players[position]
-                    ?.defense
-                    ?.range ?? "—"
-                }`,
-              )
-              .join(" · ")}
-          </p>
-
-          <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            Lower is better
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-700 dark:bg-slate-950/40">
-          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
-            OF Arms
-          </p>
-
-          <p className="mt-1 text-[11px] font-bold leading-5 text-slate-700 dark:text-slate-300">
-            {["LF", "CF", "RF"]
-              .map((position) =>
-                `${position} ${signed(
-                  players[position]
-                    ?.defense
-                    ?.arm,
-                )}`,
-              )
-              .join(" · ")}
-          </p>
-
-          <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            Lower = stronger arm
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-700 dark:bg-slate-950/40">
-          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
-            Catcher Arm
-          </p>
-
-          <p className="mt-1 text-lg font-black tabular-nums text-slate-950 dark:text-white">
-            {signed(
-              players.C?.defense?.arm,
-            )}
-          </p>
-
-          <p className="mt-1 truncate text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            {surname(players.C?.name)}
-          </p>
-        </div>
-      </div>
+      {/* DEFENSE_DUPLICATE_SUMMARY_TILES_REMOVED - diamond already carries the raw ratings. */}
     </div>
   );
 }
