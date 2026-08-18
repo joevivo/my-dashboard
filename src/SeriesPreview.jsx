@@ -3488,6 +3488,33 @@ export default function SeriesPreview({
     teamMark?.teamName ||
     "Aquarium Drinkers";
 
+  if (!payload) {
+    return (
+      <div className="min-h-full bg-slate-100/70 p-4 sm:p-6 dark:bg-slate-950">
+        <div className="mb-4">
+          {onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-xs font-black uppercase tracking-[0.14em] text-cyan-700 transition hover:text-cyan-600 dark:text-cyan-300 dark:hover:text-cyan-200"
+            >
+              ← Active Teams
+            </button>
+          ) : null}
+        </div>
+
+        <GatedModule
+          title={`${aquariumDisplayName} vs ${opponentDisplayName}`}
+          status={snapshot.status || "EVIDENCE_GATED"}
+          detail={
+            snapshot.warning ||
+            "Current-series identity is available, but matchup intelligence has not yet been generated."
+          }
+        />
+      </div>
+    );
+  }
+
   const aquariumIsHome =
     String(identity.homeAway || "")
       .trim()

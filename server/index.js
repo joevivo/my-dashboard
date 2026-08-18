@@ -879,7 +879,7 @@ app.get("/api/strat/active-teams", (req, res) => {
 const BIE_REPO_ROOT = path.join(__dirname, "..");
 app.get(
   "/api/strat/league/:leagueId/team/:teamId/series-preview/current",
-  (req, res) => {
+  async (req, res) => {
     try {
       const { leagueId, teamId } = req.params;
 
@@ -887,7 +887,9 @@ app.get(
         !/^\d+$/.test(String(leagueId)) ||
         !/^\d+$/.test(String(teamId))
       ) {
-        const error = new Error("Invalid Series Preview identity");
+        const error = new Error(
+          "Invalid Series Preview identity"
+        );
         error.code = "ENOENT";
         throw error;
       }
@@ -908,31 +910,166 @@ app.get(
         fs.readFileSync(previewFile, "utf8")
       );
 
-      const scheduleGameNumbers = Array.isArray(
-        payload?.upcomingSeries?.scheduleGameNumbers
-      )
-        ? payload.upcomingSeries.scheduleGameNumbers.map(
-            (value) => Number(value)
-          )
-        : [];
+      const artifactGameNumbers =
+        Array.isArray(
+          payload?.upcomingSeries
+            ?.scheduleGameNumbers
+        )
+          ? payload.upcomingSeries
+              .scheduleGameNumbers
+              .map((value) => Number(value))
+          : [];
 
-      if (scheduleGameNumbers.length === 0) {
+      const artifactSeriesId =
+        artifactGameNumbers.length
+          ? `league-${leagueId}-team-${teamId}-games-${artifactGameNumbers.join("-")}`
+          : null;
+
+      const scheduleUrl =
+        `https://365.strat-o-matic.com/team/schedule/${teamId}`;
+
+      const scheduleResponse =
+        await fetch(scheduleUrl);
+
+      if (!scheduleResponse.ok) {
+        throw new Error(
+          `Schedule fetch failed: ${scheduleResponse.status}`
+        );
+      }
+
+      const scheduleHtml =
+        await scheduleResponse.text();
+
+      const liveSeries =
+        parseStratUpcomingSeries(
+          scheduleHtml,
+          leagueId,
+          teamId
+        );
+
+      if (
+        liveSeries?.status !== "FOUND" ||
+        !liveSeries?.seriesId
+      ) {
         const error = new Error(
-          "Current BIE Series Preview identity is unavailable"
+          "Current live Series Preview identity is unavailable"
         );
         error.code = "ENOENT";
         throw error;
       }
 
-      const seriesId =
-        `league-${leagueId}-team-${teamId}-games-` +
-        scheduleGameNumbers.join("-");
+      if (
+        liveSeries.seriesId ===
+        artifactSeriesId
+      ) {
+        return res.redirect(
+          307,
+          `/api/strat/league/${leagueId}/team/${teamId}` +
+            `/series-preview/${encodeURIComponent(liveSeries.seriesId)}`
+        );
+      }
 
-      return res.redirect(
-        307,
-        `/api/strat/league/${leagueId}/team/${teamId}` +
-          `/series-preview/${encodeURIComponent(seriesId)}`
-      );
+      const liveGameNumbers =
+        Array.isArray(
+          liveSeries.scheduleGameNumbers
+        )
+          ? liveSeries.scheduleGameNumbers.map(
+              (value) => Number(value)
+            )
+          : [];
+
+      return res.json({
+        schemaVersion:
+          "bie.strat365.series-preview-view.v0",
+
+        evidence: {
+          classification:
+            "LIVE_IDENTITY_ONLY",
+          sourceArtifact:
+            "series-preview-v0",
+          seriesIdentitySource:
+            "LIVE_STRAT_SCHEDULE",
+        },
+
+        lifecycle: {
+          completedGameCount: 0,
+          learningAvailable: false,
+          previewAvailable: false,
+          replayAvailable: false,
+          reviewAvailable: false,
+          stage: "PREGAME",
+        },
+
+        preSeriesSnapshot: {
+          certifiedPreSeries: false,
+          frozenAtUtc: null,
+
+          missingEvidence: [
+            "Current-series matchup intelligence has not yet been generated.",
+          ],
+
+          payload: null,
+
+          provenance: {
+            sourceArtifact:
+              "series-preview-v0",
+            seriesIdentitySource:
+              "LIVE_STRAT_SCHEDULE",
+          },
+
+          reconstructionEvidence: null,
+
+          snapshotClassification:
+            "LIVE_IDENTITY_ONLY",
+
+          status:
+            "EVIDENCE_GATED",
+
+          warning:
+            "The live schedule has advanced beyond the saved Series Preview. " +
+            "Prior-series matchup intelligence is withheld until the current preview is regenerated.",
+        },
+
+        replay: {
+          games: [],
+        },
+
+        seriesIdentity: {
+          gameCount:
+            Number(liveSeries.gameCount) ||
+            liveGameNumbers.length,
+
+          homeAway:
+            liveSeries.homeAway || null,
+
+          leagueId:
+            String(leagueId),
+
+          opponentDisplayName:
+            liveSeries.opponentTeamName ||
+            null,
+
+          opponentTeamId:
+            liveSeries.opponentTeamId == null
+              ? null
+              : String(
+                  liveSeries.opponentTeamId
+                ),
+
+          scheduleGameNumbers:
+            liveGameNumbers,
+
+          scheduledDate:
+            liveSeries.nextSeriesDate ||
+            null,
+
+          seriesId:
+            liveSeries.seriesId,
+
+          teamId:
+            String(teamId),
+        },
+      });
     } catch (error) {
       console.error(
         "Failed to resolve current BIE Series Preview:",
@@ -940,15 +1077,21 @@ app.get(
       );
 
       return res
-        .status(error?.code === "ENOENT" ? 404 : 500)
+        .status(
+          error?.code === "ENOENT"
+            ? 404
+            : 500
+        )
         .json({
-          error: "Current BIE Series Preview unavailable",
-          detail: error?.message ?? String(error),
+          error:
+            "Current BIE Series Preview unavailable",
+          detail:
+            error?.message ??
+            String(error),
         });
     }
   }
 );
-
 function sendBieSeriesError(res, error) {
   if (error instanceof SeriesReplayError) {
     return res.status(error.statusCode).json({
