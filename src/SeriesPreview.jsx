@@ -646,9 +646,11 @@ function buildSeriesCommandSignals(
           );
 
         const opponentRank =
-          Number(opponentRank(
-            opponentProfile,
-          ));
+          Number(
+            metric.opponentRank(
+              opponentProfile,
+            ),
+          );
 
         const hasRanks =
           Number.isFinite(teamRank) &&
@@ -4009,11 +4011,11 @@ export default function SeriesPreview({
                   </p>
 
                   <p className="mt-1 text-base font-black text-slate-900 dark:text-white">
-                    {payload.availabilityEnvironment.series.ballpark}
+                    {payload?.availabilityEnvironment?.series?.ballpark}
                   </p>
 
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {payload.availabilityEnvironment.series.homeAway} series
+                    {payload?.availabilityEnvironment?.series?.homeAway} series
                   </p>
 
                   <p className="mt-2 text-[11px] leading-4 text-slate-400">
@@ -4127,7 +4129,7 @@ export default function SeriesPreview({
               </div>
 
               <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-2">
-                {(payload.managerNotebook.items || []).map(
+                {(payload?.managerNotebook?.items || []).map(
                   (item) => (
                     <article
                       key={item.priority}
