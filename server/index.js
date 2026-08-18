@@ -668,7 +668,10 @@ function parseRosterRows(html) {
 
       const isHitter = Boolean(fields.bats || fields.pos || fields.def || fields.ba || fields.obp || fields.slg);
 
+      const playerMatch = row.match(/\/player\/(\d+)\//);
+
       const common = {
+        playerId: playerMatch ? Number(playerMatch[1]) : null,
         name: fields.name,
         balance: fields.bal || "",
         price: fields.price || "",
