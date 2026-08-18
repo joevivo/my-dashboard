@@ -492,6 +492,8 @@ const SERIES_COMMAND_METRICS = [
     label: "OPS",
     direction: "HIGHER BETTER",
     digits: 3,
+    threshold: 0.025,
+    tacticalWeight: 1.0,
     teamValue: (profile) =>
       profile?.offense?.ops,
     opponentValue: (profile) =>
@@ -506,6 +508,8 @@ const SERIES_COMMAND_METRICS = [
     label: "Runs Scored",
     direction: "HIGHER BETTER",
     digits: 0,
+    threshold: 10,
+    tacticalWeight: 0.9,
     teamValue: (profile) =>
       profile?.offense?.runsScored,
     opponentValue: (profile) =>
@@ -520,6 +524,8 @@ const SERIES_COMMAND_METRICS = [
     label: "ERA",
     direction: "LOWER BETTER",
     digits: 2,
+    threshold: 0.25,
+    tacticalWeight: 1.2,
     teamValue: (profile) =>
       profile?.pitching?.era,
     opponentValue: (profile) =>
@@ -534,6 +540,8 @@ const SERIES_COMMAND_METRICS = [
     label: "WHIP",
     direction: "LOWER BETTER",
     digits: 2,
+    threshold: 0.05,
+    tacticalWeight: 1.15,
     teamValue: (profile) =>
       profile?.pitching?.whip,
     opponentValue: (profile) =>
@@ -544,24 +552,28 @@ const SERIES_COMMAND_METRICS = [
       profile?.pitching?.whipRank,
   },
   {
-    key: "fielding",
-    label: "Fielding %",
-    direction: "HIGHER BETTER",
-    digits: 3,
+    key: "defensiveExecution",
+    label: "Defensive Execution",
+    direction: "LOWER BETTER",
+    digits: 2,
+    threshold: 0.10,
+    tacticalWeight: 0.65,
     teamValue: (profile) =>
-      profile?.defense?.fieldingAverage,
+      profile?.defense?.unearnedRunsPerGame,
     opponentValue: (profile) =>
-      profile?.defense?.fieldingAverage,
+      profile?.defense?.unearnedRunsPerGame,
     teamRank: (profile) =>
-      profile?.defense?.fieldingAverageRank,
+      profile?.defense?.lowestUnearnedRunsPerGameRank,
     opponentRank: (profile) =>
-      profile?.defense?.fieldingAverageRank,
+      profile?.defense?.lowestUnearnedRunsPerGameRank,
   },
   {
     key: "runDifferential",
     label: "Run Differential",
     direction: "HIGHER BETTER",
     digits: 0,
+    threshold: 10,
+    tacticalWeight: 1.0,
     teamValue: (profile) =>
       profile?.runDifferential,
     opponentValue: (profile) =>
@@ -634,11 +646,9 @@ function buildSeriesCommandSignals(
           );
 
         const opponentRank =
-          Number(
-            metric.opponentRank(
-              opponentProfile,
-            ),
-          );
+          Number(opponentRank(
+            opponentProfile,
+          ));
 
         const hasRanks =
           Number.isFinite(teamRank) &&
@@ -652,10 +662,36 @@ function buildSeriesCommandSignals(
         const opponentNumeric =
           Number(opponentValue);
 
+        const hasValues =
+          Number.isFinite(teamNumeric) &&
+          Number.isFinite(opponentNumeric);
+
+        const higherBetter =
+          metric.direction ===
+          "HIGHER BETTER";
+
         let favored = null;
         let rankGap = null;
+        let normalizedMagnitude = 0;
 
         if (
+          hasValues &&
+          teamNumeric !== opponentNumeric
+        ) {
+          const signedAdvantage =
+            higherBetter
+              ? teamNumeric - opponentNumeric
+              : opponentNumeric - teamNumeric;
+
+          favored =
+            signedAdvantage > 0
+              ? "TEAM"
+              : "OPPONENT";
+
+          normalizedMagnitude =
+            Math.abs(signedAdvantage) /
+            metric.threshold;
+        } else if (
           hasRanks &&
           teamRank !== opponentRank
         ) {
@@ -663,37 +699,33 @@ function buildSeriesCommandSignals(
             teamRank < opponentRank
               ? "TEAM"
               : "OPPONENT";
+        }
 
+        if (
+          hasRanks &&
+          teamRank !== opponentRank
+        ) {
           rankGap =
             Math.abs(
               opponentRank - teamRank,
             );
-        } else if (
-          Number.isFinite(teamNumeric) &&
-          Number.isFinite(
-            opponentNumeric,
-          ) &&
-          teamNumeric !== opponentNumeric
-        ) {
-          const higherBetter =
-            metric.direction ===
-            "HIGHER BETTER";
-
-          favored =
-            higherBetter
-              ? (
-                  teamNumeric >
-                  opponentNumeric
-                    ? "TEAM"
-                    : "OPPONENT"
-                )
-              : (
-                  teamNumeric <
-                  opponentNumeric
-                    ? "TEAM"
-                    : "OPPONENT"
-                );
         }
+
+        const magnitudeComponent =
+          Math.min(
+            normalizedMagnitude,
+            3,
+          );
+
+        const rankComponent =
+          rankGap
+            ? Math.min(rankGap, 4) * 0.2
+            : 0;
+
+        const decisionScore =
+          (magnitudeComponent +
+            rankComponent) *
+          metric.tacticalWeight;
 
         return {
           ...metric,
@@ -709,10 +741,14 @@ function buildSeriesCommandSignals(
               : null,
           favored,
           rankGap,
+          normalizedMagnitude,
+          decisionScore,
         };
       },
     ).filter(
-      (row) => row.favored,
+      (row) =>
+        row.favored &&
+        row.decisionScore > 0,
     );
 
   const strongest = (
@@ -727,8 +763,8 @@ function buildSeriesCommandSignals(
       )
       .sort(
         (a, b) =>
-          (b.rankGap || 0) -
-          (a.rankGap || 0),
+          b.decisionScore -
+          a.decisionScore,
       )[0] || null;
 
   const teamEdge =
@@ -753,8 +789,8 @@ function buildSeriesCommandSignals(
       )
       .sort(
         (a, b) =>
-          (b.rankGap || 0) -
-          (a.rankGap || 0),
+          b.decisionScore -
+          a.decisionScore,
       )[0] ||
     teamEdge ||
     opponentEdge ||
@@ -906,7 +942,7 @@ function SeriesCommandDeck({
     runs: "run-production",
     era: "run-prevention",
     whip: "traffic-suppression",
-    fielding: "fielding",
+    defensiveExecution: "defensive execution",
     runDifferential: "run-differential",
   };
 
