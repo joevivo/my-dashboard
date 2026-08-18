@@ -1397,6 +1397,59 @@ function extractStratStarter(html, teamName) {
   return pitcher ? pitcher[1].trim() : "";
 }
 
+function normalizeStratPlayerIdentityName(value) {
+  return stratVisibleText(String(value || ""))
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function resolveStratPlayerIdFromGameHtml(
+  html,
+  playerName
+) {
+  const targetName =
+    normalizeStratPlayerIdentityName(
+      playerName
+    );
+
+  if (!targetName) {
+    return null;
+  }
+
+  const candidateIds = new Set();
+  const pattern =
+    /<a\b[^>]*href=[^>]*\/player\/(\d+)\/[^>]*>([\s\S]*?)<\/a>/gi;
+
+  for (
+    const match of String(html || "").matchAll(
+      pattern
+    )
+  ) {
+    const anchorName =
+      normalizeStratPlayerIdentityName(
+        match[2]
+      );
+
+    if (anchorName !== targetName) {
+      continue;
+    }
+
+    const playerId = Number(match[1]);
+
+    if (
+      Number.isInteger(playerId) &&
+      playerId > 0
+    ) {
+      candidateIds.add(playerId);
+    }
+  }
+
+  return candidateIds.size === 1
+    ? [...candidateIds][0]
+    : null;
+}
+
 function classifyRotationConfidence(
   samples,
   dominance
@@ -1902,9 +1955,16 @@ app.get(
           continue;
         }
 
+        const playerId =
+          resolveStratPlayerIdFromGameHtml(
+            gameHtml,
+            pitcher
+          );
+
         newestStarts.push({
           gameId,
           pitcher,
+          playerId,
         });
 
         if (newestStarts.length >= 24) {
@@ -1915,10 +1975,61 @@ app.get(
       const chronologicalStarts =
         [...newestStarts].reverse();
 
+      const observedPlayerIdsByPitcher =
+        new Map();
+
+      for (const start of chronologicalStarts) {
+        if (!Number.isInteger(start.playerId)) {
+          continue;
+        }
+
+        const identityKey =
+          normalizeStratPlayerIdentityName(
+            start.pitcher
+          );
+
+        if (!identityKey) {
+          continue;
+        }
+
+        if (
+          !observedPlayerIdsByPitcher.has(
+            identityKey
+          )
+        ) {
+          observedPlayerIdsByPitcher.set(
+            identityKey,
+            new Set()
+          );
+        }
+
+        observedPlayerIdsByPitcher
+          .get(identityKey)
+          .add(start.playerId);
+      }
+
       const projections =
         buildStratRotationProjection(
           chronologicalStarts
-        );
+        ).map((projection) => {
+          const identityKey =
+            normalizeStratPlayerIdentityName(
+              projection.pitcher
+            );
+          const candidateIds =
+            observedPlayerIdsByPitcher.get(
+              identityKey
+            );
+
+          return {
+            ...projection,
+            playerId:
+              candidateIds &&
+              candidateIds.size === 1
+                ? [...candidateIds][0]
+                : null,
+          };
+        });
 
       const overallConfidence =
         projections.length
