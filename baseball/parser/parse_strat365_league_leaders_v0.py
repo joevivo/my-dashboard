@@ -48,6 +48,48 @@ NUMERIC_RE = re.compile(
 )
 
 
+def is_empty_league_leaders_page(raw_html: str) -> bool:
+    matches = list(PRE_RE.finditer(raw_html))
+
+    if len(matches) != 1:
+        return False
+
+    block = html.unescape(
+        TAG_RE.sub(
+            "",
+            matches[0].group(1),
+        )
+    )
+
+    if block.strip():
+        return False
+
+    page_text = html.unescape(
+        TAG_RE.sub(
+            " ",
+            raw_html,
+        )
+    )
+
+    required_shell_markers = (
+        r"\bSTANDINGS\b",
+        r"\bSCHEDULE\b",
+        r"\bSTATS\b",
+        r"Player\s+Batting",
+        r"Player\s+Pitching",
+        r"League\s+Leaders",
+    )
+
+    return all(
+        re.search(
+            pattern,
+            page_text,
+            re.IGNORECASE,
+        )
+        for pattern in required_shell_markers
+    )
+
+
 def extract_leaders_pre(raw_html: str) -> str:
     candidates: list[str] = []
 
@@ -244,6 +286,9 @@ def apply_competition_ranks(
 def parse_leader_categories(
     raw_html: str,
 ) -> list[dict[str, Any]]:
+    if is_empty_league_leaders_page(raw_html):
+        return []
+
     text = extract_leaders_pre(
         raw_html
     )

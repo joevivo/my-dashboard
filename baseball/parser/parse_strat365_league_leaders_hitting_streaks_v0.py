@@ -8,7 +8,10 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from parse_strat365_league_leaders_v0 import parse_leader_categories
+from parse_strat365_league_leaders_v0 import (
+    is_empty_league_leaders_page,
+    parse_leader_categories,
+)
 
 
 PRE_RE = re.compile(
@@ -136,10 +139,16 @@ def build_output(input_path: Path) -> dict:
         errors="replace",
     )
 
-    streaks = parse_hitting_streaks(raw_html)
-    current = [row for row in streaks if row["isCurrent"]]
+    if is_empty_league_leaders_page(raw_html):
+        streaks = []
+        leader_categories = []
+        streak_section_status = "EMPTY_LEAGUE_LEADERS_PAGE"
+    else:
+        streaks = parse_hitting_streaks(raw_html)
+        leader_categories = parse_leader_categories(raw_html)
+        streak_section_status = "AVAILABLE"
 
-    leader_categories = parse_leader_categories(raw_html)
+    current = [row for row in streaks if row["isCurrent"]]
 
     league_leader_rows = []
 
@@ -166,6 +175,7 @@ def build_output(input_path: Path) -> dict:
             "asteriskMeansCurrent": True,
             "completedStreakIsNotCurrentFormClaim": True,
         },
+        "hittingStreakSectionStatus": streak_section_status,
         "counts": {
             "streakRows": len(streaks),
             "currentStreakRows": len(current),
