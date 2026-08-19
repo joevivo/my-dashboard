@@ -805,6 +805,278 @@ function buildSeriesCommandSignals(
   };
 }
 
+function naturalPreviewPlayerName(value) {
+  const text =
+    String(value || "").trim();
+
+  if (!text.includes(",")) {
+    return text;
+  }
+
+  const pieces =
+    text.split(",");
+
+  const last =
+    pieces.shift()?.trim() || "";
+
+  const first =
+    pieces.join(",").trim();
+
+  return [first, last]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function buildSeriesPlanItems({
+  teamName,
+  opponentName,
+  executiveOutlook,
+  leagueContext,
+}) {
+  const comparison =
+    leagueContext?.comparison || {};
+
+  const eraDelta =
+    Number(comparison?.eraDelta);
+
+  const whipDelta =
+    Number(comparison?.whipDelta);
+
+  const opsDelta =
+    Number(comparison?.opsDelta);
+
+  const runDifferentialDelta =
+    Number(
+      comparison?.runDifferentialDelta,
+    );
+
+  const items = [];
+
+  const teamOwnsEraEdge =
+    Number.isFinite(eraDelta) &&
+    eraDelta < 0;
+
+  const teamOwnsWhipEdge =
+    Number.isFinite(whipDelta) &&
+    whipDelta < 0;
+
+  if (
+    teamOwnsEraEdge ||
+    teamOwnsWhipEdge
+  ) {
+    const evidence = [];
+
+    if (teamOwnsEraEdge) {
+      evidence.push(
+        `${Math.abs(eraDelta).toFixed(2)} lower ERA`,
+      );
+    }
+
+    if (teamOwnsWhipEdge) {
+      evidence.push(
+        `${Math.abs(whipDelta).toFixed(2)} lower WHIP`,
+      );
+    }
+
+    items.push({
+      key: "run-prevention",
+      role: "Pitching plan",
+      title:
+        "Protect the run-prevention edge",
+      recommendation:
+        `Keep traffic down and force ${opponentName} to earn every baserunner. ${teamName}'s season profile is strongest when the series stays on the pitching-and-defense axis.`,
+      evidence:
+        `${teamName} enters with ${evidence.join(" and ")} than ${opponentName}.`,
+      tone: "cyan",
+    });
+  }
+
+  if (
+    Number.isFinite(opsDelta) &&
+    Number.isFinite(
+      runDifferentialDelta,
+    ) &&
+    opsDelta < 0 &&
+    runDifferentialDelta > 0
+  ) {
+    items.push({
+      key: "offensive-response",
+      role: "Offensive plan",
+      title:
+        "Do not chase the OPS gap",
+      recommendation:
+        `${teamName} does not need to match ${opponentName} rate-stat for rate-stat. Create traffic, avoid giving away outs, and lean on the stronger run-prevention profile rather than assuming a run-conversion advantage.`,
+      evidence:
+        `${opponentName} holds a ${Math.abs(opsDelta).toFixed(3)} OPS edge, while ${teamName} holds a +${runDifferentialDelta.toFixed(0)} run-differential edge.`,
+      tone: "amber",
+    });
+  }
+
+  const watch =
+    executiveOutlook?.watch;
+
+  if (
+    watch?.status === "AVAILABLE" &&
+    watch?.playerName
+  ) {
+    const playerName =
+      naturalPreviewPlayerName(
+        watch.playerName,
+      );
+
+    const ops =
+      Number(watch?.OPS);
+
+    items.push({
+      key: "primary-threat",
+      role: "Primary threat",
+      title:
+        `Make ${playerName} the focal point`,
+      recommendation:
+        "Treat his plate appearances as leverage situations. The pregame evidence identifies him as the opponent bat most capable of changing an inning.",
+      evidence:
+        Number.isFinite(ops)
+          ? `${playerName}: ${ops.toFixed(3).replace(/^0(?=\.)/, "")} OPS in the pregame snapshot.`
+          : normalizePreviewText(
+              watch.text,
+            ),
+      tone: "rose",
+    });
+  }
+
+  if (
+    !items.length &&
+    executiveOutlook?.edge?.text
+  ) {
+    items.push({
+      key: "outlook-edge",
+      role: "Series edge",
+      title:
+        "Play to the strongest pregame edge",
+      recommendation:
+        normalizePreviewText(
+          executiveOutlook.edge.text,
+        ),
+      evidence:
+        "Derived from the pre-series comparison.",
+      tone: "cyan",
+    });
+  }
+
+  return items.slice(0, 3);
+}
+
+function SeriesPlanPanel({
+  teamName,
+  opponentName,
+  executiveOutlook,
+  leagueContext,
+}) {
+  const items =
+    buildSeriesPlanItems({
+      teamName,
+      opponentName,
+      executiveOutlook,
+      leagueContext,
+    });
+
+  if (!items.length) {
+    return null;
+  }
+
+  const panelWidthClass =
+    items.length === 1
+      ? "max-w-3xl"
+      : "w-full";
+
+  const gridClass =
+    items.length === 1
+      ? "grid-cols-1"
+      : items.length === 2
+        ? "xl:grid-cols-2"
+        : "xl:grid-cols-3";
+
+  const toneClass = {
+    cyan:
+      "border-cyan-200 bg-cyan-50/70 dark:border-cyan-900/70 dark:bg-cyan-950/20",
+    amber:
+      "border-amber-200 bg-amber-50/70 dark:border-amber-900/70 dark:bg-amber-950/20",
+    rose:
+      "border-rose-200 bg-rose-50/70 dark:border-rose-900/70 dark:bg-rose-950/20",
+  };
+
+  const eyebrowClass = {
+    cyan:
+      "text-cyan-700 dark:text-cyan-300",
+    amber:
+      "text-amber-700 dark:text-amber-300",
+    rose:
+      "text-rose-700 dark:text-rose-300",
+  };
+
+  return (
+    <section
+      data-bie-surface="series-plan"
+      data-bie-refinement="SERIES_PLAN_V2"
+      className={`w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 ${panelWidthClass}`}
+    >
+      <div className="border-b border-slate-200 px-4 py-4 dark:border-slate-800 sm:px-5">
+        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-600 dark:text-cyan-300">
+          Series Plan
+        </p>
+
+        <h2 className="mt-1 text-xl font-black tracking-tight text-slate-950 dark:text-white">
+          Key decisions before Game 1
+        </h2>
+
+        <p className="mt-1 text-[11px] leading-4 text-slate-500 dark:text-slate-400">
+          What to do with the strongest pregame signals.
+        </p>
+      </div>
+
+      <div className={`grid gap-3 p-4 sm:p-5 ${gridClass}`}>
+        {items.map((item, index) => (
+          <article
+            key={item.key}
+            className={`rounded-2xl border p-4 ${toneClass[item.tone]}`}
+          >
+            <div className="flex items-start gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-black text-white dark:bg-white dark:text-slate-950">
+                {index + 1}
+              </span>
+
+              <div className="min-w-0">
+                <p
+                  className={`text-[9px] font-black uppercase tracking-[0.14em] ${eyebrowClass[item.tone]}`}
+                >
+                  {item.role}
+                </p>
+
+                <h3 className="mt-1 text-base font-black leading-snug text-slate-950 dark:text-white">
+                  {item.title}
+                </h3>
+              </div>
+            </div>
+
+            <p className="mt-3 text-[12px] font-semibold leading-5 text-slate-700 dark:text-slate-300">
+              {item.recommendation}
+            </p>
+
+            <div className="mt-3 border-t border-slate-200/80 pt-2.5 dark:border-slate-700">
+              <p className="text-[9px] font-black uppercase tracking-[0.11em] text-slate-400">
+                Pregame evidence
+              </p>
+
+              <p className="mt-1 text-[10px] leading-4 text-slate-500 dark:text-slate-400">
+                {item.evidence}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
 function SeriesCommandSignalCard({
   eyebrow,
   signal,
@@ -1076,7 +1348,6 @@ function LeagueEdgeScoreboard({
       opponentRank:
         opponentProfile?.offense?.opsRank,
       digits: 3,
-      scaleFloor: 0.005,
     },
     {
       label: "Runs",
@@ -1095,7 +1366,6 @@ function LeagueEdgeScoreboard({
         opponentProfile?.offense?.runsScoredRank,
       digits: 0,
       averageDigits: 1,
-      scaleFloor: 2,
     },
     {
       label: "ERA",
@@ -1113,7 +1383,6 @@ function LeagueEdgeScoreboard({
       opponentRank:
         opponentProfile?.pitching?.eraRank,
       digits: 2,
-      scaleFloor: 0.05,
     },
     {
       label: "WHIP",
@@ -1131,182 +1400,155 @@ function LeagueEdgeScoreboard({
       opponentRank:
         opponentProfile?.pitching?.whipRank,
       digits: 2,
-      scaleFloor: 0.02,
     },
   ];
 
+  const numericTeamCount =
+    Number(teamCount);
+
+  const resolvedTeamCount =
+    Number.isFinite(numericTeamCount) &&
+    numericTeamCount > 1
+      ? Math.round(numericTeamCount)
+      : null;
+
+  const ordinal = (value) => {
+    const numeric =
+      Number(value);
+
+    if (
+      !Number.isFinite(numeric) ||
+      numeric <= 0
+    ) {
+      return "—";
+    }
+
+    const whole =
+      Math.round(numeric);
+
+    const mod100 =
+      whole % 100;
+
+    const suffix =
+      mod100 >= 11 &&
+      mod100 <= 13
+        ? "th"
+        : whole % 10 === 1
+          ? "st"
+          : whole % 10 === 2
+            ? "nd"
+            : whole % 10 === 3
+              ? "rd"
+              : "th";
+
+    return `${whole}${suffix}`;
+  };
+
+  const rankText = (rank) => {
+    const numeric =
+      Number(rank);
+
+    if (
+      !Number.isFinite(numeric) ||
+      numeric <= 0
+    ) {
+      return "—";
+    }
+
+    const base =
+      ordinal(numeric);
+
+    return resolvedTeamCount
+      ? `${base} of ${resolvedTeamCount}`
+      : base;
+  };
+
+  const rankPosition = (rank) => {
+    const numeric =
+      Number(rank);
+
+    if (
+      !resolvedTeamCount ||
+      !Number.isFinite(numeric) ||
+      numeric <= 0
+    ) {
+      return 50;
+    }
+
+    const bounded =
+      Math.max(
+        1,
+        Math.min(
+          resolvedTeamCount,
+          numeric,
+        ),
+      );
+
+    const raw =
+      (
+        (bounded - 1) /
+        (resolvedTeamCount - 1)
+      ) * 100;
+
+    return Math.max(
+      3,
+      Math.min(
+        97,
+        raw,
+      ),
+    );
+  };
+
+  const midpointRank =
+    resolvedTeamCount
+      ? Math.ceil(
+          resolvedTeamCount / 2,
+        )
+      : null;
+
   return (
     <div
-      data-bie-surface="league-edge-scoreboard-v4"
-      data-bie-scale="TEAM_LEAGUE_AVG_OPPONENT_NUMERIC"
+      data-bie-surface="league-edge-scoreboard-v6"
+      data-bie-scale="LEAGUE_RANK_VISUAL_HIERARCHY"
       className="mt-3 overflow-hidden rounded-xl border border-slate-600 bg-slate-950/80 shadow-inner"
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_160px_minmax(0,1fr)] items-center border-b border-slate-600 bg-slate-900/70 px-4 py-2.5">
+      <div className="grid grid-cols-[150px_minmax(0,0.8fr)_minmax(340px,1.25fr)_minmax(0,0.8fr)] items-center gap-4 border-b border-slate-600 bg-slate-900/70 px-5 py-3">
+        <p className="text-[10px] font-black uppercase tracking-[0.13em] text-slate-500">
+          Metric
+        </p>
+
         <div>
-          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-cyan-300">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-cyan-300">
             Aquarium
           </p>
 
-          <p className="truncate text-sm font-black text-white">
+          <p className="text-sm font-black leading-tight text-white">
             {teamName}
           </p>
         </div>
 
-        <p className="text-center text-[11px] font-black uppercase tracking-[0.1em] text-slate-200">
-          League-average benchmark
-        </p>
+        <div className="text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-300">
+            League rank
+          </p>
+
+          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+            1st is best
+          </p>
+        </div>
 
         <div className="text-right">
-          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-rose-300">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-rose-300">
             Opponent
           </p>
 
-          <p className="truncate text-sm font-black text-white">
+          <p className="text-sm font-black leading-tight text-white">
             {opponentName}
           </p>
         </div>
       </div>
 
       {rows.map((row) => {
-        const numericValue = (value) => {
-          if (
-            value == null ||
-            value === ""
-          ) {
-            return null;
-          }
-
-          const parsed =
-            Number(value);
-
-          return Number.isFinite(parsed)
-            ? parsed
-            : null;
-        };
-
-        const teamNumeric =
-          numericValue(row.teamValue);
-
-        const opponentNumeric =
-          numericValue(
-            row.opponentValue,
-          );
-
-        const leagueNumeric =
-          numericValue(
-            row.leagueAverage,
-          );
-
-        const allValuesAvailable =
-          teamNumeric != null &&
-          opponentNumeric != null &&
-          leagueNumeric != null;
-
-        const teamBetter =
-          teamNumeric != null &&
-          opponentNumeric != null &&
-          (
-            row.higherBetter
-              ? teamNumeric > opponentNumeric
-              : teamNumeric < opponentNumeric
-          );
-
-        const opponentBetter =
-          teamNumeric != null &&
-          opponentNumeric != null &&
-          (
-            row.higherBetter
-              ? opponentNumeric > teamNumeric
-              : opponentNumeric < teamNumeric
-          );
-
-        const difference =
-          teamNumeric != null &&
-          opponentNumeric != null
-            ? Math.abs(
-                teamNumeric -
-                opponentNumeric,
-              )
-            : null;
-
-        const scaleValues =
-          [
-            teamNumeric,
-            opponentNumeric,
-            leagueNumeric,
-          ].filter(
-            (value) =>
-              value != null,
-          );
-
-        const rawMinimum =
-          scaleValues.length > 0
-            ? Math.min(...scaleValues)
-            : 0;
-
-        const rawMaximum =
-          scaleValues.length > 0
-            ? Math.max(...scaleValues)
-            : 1;
-
-        const rawSpread =
-          rawMaximum -
-          rawMinimum;
-
-        const scalePadding =
-          Math.max(
-            rawSpread * 0.12,
-            row.scaleFloor,
-          );
-
-        const scaleMinimum =
-          rawMinimum -
-          scalePadding;
-
-        const scaleMaximum =
-          rawMaximum +
-          scalePadding;
-
-        const positionFor =
-          (value) => {
-            if (
-              value == null ||
-              scaleMaximum <= scaleMinimum
-            ) {
-              return 50;
-            }
-
-            const rawPosition =
-              (
-                (value - scaleMinimum) /
-                (
-                  scaleMaximum -
-                  scaleMinimum
-                )
-              ) * 100;
-
-            return Math.max(
-              4,
-              Math.min(
-                96,
-                rawPosition,
-              ),
-            );
-          };
-
-        const teamPosition =
-          positionFor(teamNumeric);
-
-        const opponentPosition =
-          positionFor(
-            opponentNumeric,
-          );
-
-        const leaguePosition =
-          positionFor(
-            leagueNumeric,
-          );
-
         const teamRank =
           Number(row.teamRank);
 
@@ -1314,20 +1556,6 @@ function LeagueEdgeScoreboard({
           Number(
             row.opponentRank,
           );
-
-        const teamRankText =
-          Number.isFinite(teamRank) &&
-          teamRank > 0
-            ? `#${teamRank}`
-            : "—";
-
-        const opponentRankText =
-          Number.isFinite(
-            opponentRank,
-          ) &&
-          opponentRank > 0
-            ? `#${opponentRank}`
-            : "—";
 
         const teamDisplay =
           formatLeagueAverageMetric(
@@ -1348,125 +1576,133 @@ function LeagueEdgeScoreboard({
               row.digits,
           ) || "—";
 
-        const differenceDisplay =
-          difference == null
-            ? null
-            : formatLeagueAverageMetric(
-                difference,
-                row.digits,
-              );
+        const teamPosition =
+          rankPosition(teamRank);
 
-        const favoredName =
-          teamBetter
-            ? teamName
-            : opponentBetter
-              ? opponentName
-              : null;
+        const opponentPosition =
+          rankPosition(
+            opponentRank,
+          );
+
+        const ranksAvailable =
+          resolvedTeamCount &&
+          Number.isFinite(teamRank) &&
+          teamRank > 0 &&
+          Number.isFinite(
+            opponentRank,
+          ) &&
+          opponentRank > 0;
 
         return (
           <div
             key={row.label}
-            className="grid grid-cols-[minmax(0,0.9fr)_minmax(300px,1.15fr)_minmax(0,0.9fr)] items-center gap-3 border-b border-slate-700/80 px-4 py-2.5 last:border-b-0"
+            className="grid grid-cols-[150px_minmax(0,0.8fr)_minmax(340px,1.25fr)_minmax(0,0.8fr)] items-center gap-4 border-b border-slate-700/80 px-5 py-3 last:border-b-0"
           >
+            <div className="border-r border-slate-700/70 pr-4">
+              <p className="text-2xl font-black leading-none tracking-tight text-white">
+                {row.label}
+              </p>
+
+              <p className="mt-1.5 text-[10px] font-black uppercase tracking-[0.09em] text-slate-400">
+                {row.context}
+              </p>
+
+              <p
+                className={
+                  row.higherBetter
+                    ? "mt-1 text-[9px] font-black uppercase tracking-[0.07em] text-emerald-300"
+                    : "mt-1 text-[9px] font-black uppercase tracking-[0.07em] text-violet-300"
+                }
+              >
+                {row.higherBetter
+                  ? "↑ Higher better"
+                  : "↓ Lower better"}
+              </p>
+
+              <p className="mt-2 text-[10px] font-semibold tabular-nums text-slate-500">
+                Lg avg {leagueDisplay}
+              </p>
+            </div>
+
             <div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <span className="text-2xl font-black tabular-nums leading-none text-cyan-300">
                   {teamDisplay}
                 </span>
 
-                <span className="text-sm font-black tabular-nums text-slate-200">
-                  {teamRankText}
+                <span className="text-[11px] font-black tabular-nums text-slate-300">
+                  {rankText(
+                    teamRank,
+                  )}
                 </span>
-
-                {teamBetter ? (
-                  <span className="rounded-full border border-cyan-400/30 bg-cyan-400/15 px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.07em] text-cyan-100">
-                    Edge
-                  </span>
-                ) : null}
               </div>
             </div>
 
             <div className="min-w-0 text-center">
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-base font-black text-white">
-                  {row.label}
-                </span>
-
-                <span
-                  className={
-                    row.higherBetter
-                      ? "text-[11px] font-black uppercase tracking-[0.07em] text-emerald-300"
-                      : "text-[11px] font-black uppercase tracking-[0.07em] text-violet-300"
-                  }
-                >
-                  {row.higherBetter
-                    ? "↑ Higher better"
-                    : "↓ Lower better"}
-                </span>
-              </div>
-
-              <p className="mt-0.5 text-[11px] font-bold uppercase tracking-[0.07em] text-slate-200">
-                {row.context}
+              <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-500">
+                League rank
               </p>
 
-              <div className="relative mx-auto mt-2 h-8 max-w-lg">
-                <div className="absolute left-0 right-0 top-5 h-1 rounded-full bg-slate-600" />
+              <div className="relative mx-auto mt-1.5 h-12 max-w-lg">
+                <div className="absolute left-[3%] right-[3%] top-[18px] h-1.5 rounded-full bg-slate-600" />
 
-                {allValuesAvailable ? (
+                {resolvedTeamCount ? (
+                  <>
+                    <div className="absolute left-[3%] top-[13px] h-4 w-px bg-slate-400" />
+                    <div className="absolute left-1/2 top-[13px] h-4 w-px bg-slate-500" />
+                    <div className="absolute right-[3%] top-[13px] h-4 w-px bg-slate-400" />
+
+                    <span className="absolute left-[3%] top-9 -translate-x-1/2 text-[9px] font-black text-slate-400">
+                      1st
+                    </span>
+
+                    <span className="absolute left-1/2 top-9 -translate-x-1/2 text-[9px] font-black text-slate-500">
+                      {ordinal(
+                        midpointRank,
+                      )}
+                    </span>
+
+                    <span className="absolute right-[3%] top-9 translate-x-1/2 text-[9px] font-black text-slate-400">
+                      {ordinal(
+                        resolvedTeamCount,
+                      )}
+                    </span>
+                  </>
+                ) : null}
+
+                {ranksAvailable ? (
                   <>
                     <div
-                      className="absolute top-0 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-500 bg-slate-800 px-2 py-0.5 text-[11px] font-black tabular-nums text-white"
+                      aria-label={`${teamName} ${rankText(teamRank)}`}
+                      title={`${teamName}: ${teamDisplay}, ${rankText(teamRank)}`}
+                      className="absolute top-[7px] h-6 w-6 -translate-x-1/2 rounded-full border-[3px] border-slate-950 bg-cyan-300 shadow-lg ring-2 ring-cyan-300/30"
                       style={{
-                        left: `${leaguePosition}%`,
-                      }}
-                    >
-                      Lg Avg {leagueDisplay}
-                    </div>
-
-                    <div
-                      className="absolute top-[16px] h-4 w-px -translate-x-1/2 bg-slate-300"
-                      style={{
-                        left: `${leaguePosition}%`,
+                        left:
+                          `${teamPosition}%`,
                       }}
                     />
 
                     <div
-                      aria-label={`${teamName} ${teamDisplay}`}
-                      className="absolute top-[17px] h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-cyan-300 shadow"
+                      aria-label={`${opponentName} ${rankText(opponentRank)}`}
+                      title={`${opponentName}: ${opponentDisplay}, ${rankText(opponentRank)}`}
+                      className="absolute top-[7px] h-6 w-6 -translate-x-1/2 rounded-full border-[3px] border-slate-950 bg-rose-300 shadow-lg ring-2 ring-rose-300/30"
                       style={{
-                        left: `${teamPosition}%`,
-                      }}
-                    />
-
-                    <div
-                      aria-label={`${opponentName} ${opponentDisplay}`}
-                      className="absolute top-[17px] h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-rose-300 shadow"
-                      style={{
-                        left: `${opponentPosition}%`,
+                        left:
+                          `${opponentPosition}%`,
                       }}
                     />
                   </>
                 ) : null}
               </div>
 
-              {favoredName &&
-              differenceDisplay ? (
-                <p className="mt-0.5 text-xs font-bold text-slate-200">
-                  {favoredName} · {differenceDisplay}
-                </p>
-              ) : null}
             </div>
 
             <div className="text-right">
-              <div className="flex flex-wrap items-center justify-end gap-2">
-                {opponentBetter ? (
-                  <span className="rounded-full border border-rose-400/30 bg-rose-400/15 px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.07em] text-rose-100">
-                    Edge
-                  </span>
-                ) : null}
-
-                <span className="text-sm font-black tabular-nums text-slate-200">
-                  {opponentRankText}
+              <div className="flex flex-wrap items-baseline justify-end gap-x-2 gap-y-1">
+                <span className="text-[11px] font-black tabular-nums text-slate-300">
+                  {rankText(
+                    opponentRank,
+                  )}
                 </span>
 
                 <span className="text-2xl font-black tabular-nums leading-none text-rose-300">
@@ -1480,7 +1716,6 @@ function LeagueEdgeScoreboard({
     </div>
   );
 }
-
 function FrozenBasepathGraphic({
   teamRate,
   opponentRate,
@@ -1719,6 +1954,634 @@ function FrozenDefenseDiamond() {
   );
 }
 
+function commandNumber(value) {
+  const numeric =
+    Number(value);
+
+  return Number.isFinite(numeric)
+    ? numeric
+    : null;
+}
+
+function commandPercent(value) {
+  const numeric =
+    commandNumber(value);
+
+  return numeric === null
+    ? "—"
+    : `${(numeric * 100).toFixed(1)}%`;
+}
+
+function commandRatio(value) {
+  const numeric =
+    commandNumber(value);
+
+  return numeric === null
+    ? "—"
+    : numeric.toFixed(2);
+}
+
+function SeriesCommandInteractionDeck({
+  leagueId,
+  teamName,
+  opponentName,
+  teamProfile,
+  opponentProfile,
+  watch,
+}) {
+  const leagueKey =
+    String(leagueId || "");
+
+  const miscTeams =
+    frozenMiscIntelligence?.teams?.filter(
+      (entry) =>
+        String(entry?.leagueId) ===
+        leagueKey,
+    ) || [];
+
+  const fieldingTeams =
+    frozenFieldingIntelligence?.teams?.filter(
+      (entry) =>
+        String(entry?.leagueId) ===
+        leagueKey,
+    ) || [];
+
+  const team =
+    miscTeams.find(
+      (entry) =>
+        entry?.role === "aquarium",
+    );
+
+  const opponent =
+    miscTeams.find(
+      (entry) =>
+        entry?.role === "opponent",
+    );
+
+  const teamFielding =
+    fieldingTeams.find(
+      (entry) =>
+        entry?.role === "aquarium",
+    );
+
+  const opponentFielding =
+    fieldingTeams.find(
+      (entry) =>
+        entry?.role === "opponent",
+    );
+
+  if (
+    !team ||
+    !opponent ||
+    !teamFielding ||
+    !opponentFielding
+  ) {
+    return (
+      <SeriesCommandDeck
+        teamName={teamName}
+        opponentName={opponentName}
+        teamProfile={teamProfile}
+        opponentProfile={opponentProfile}
+        watchText={
+          watch?.text || null
+        }
+      />
+    );
+  }
+
+  const runningLane = (
+    offense,
+    defense,
+  ) => {
+    const baserunning =
+      offense?.hitting?.totals
+        ?.baserunning || {};
+
+    const stealing =
+      offense?.hitting?.totals
+        ?.stealing || {};
+
+    const runControl =
+      defense?.pitching?.totals
+        ?.runControl || {};
+
+    return {
+      attemptRate:
+        commandNumber(
+          baserunning?.attemptRate,
+        ),
+      execution:
+        commandNumber(
+          baserunning?.successRate,
+        ),
+      attempts:
+        commandNumber(
+          baserunning?.attempts,
+        ),
+      opportunities:
+        commandNumber(
+          baserunning?.opportunities,
+        ),
+      stealSuccess:
+        commandNumber(
+          stealing?.successRate,
+        ),
+      defenseCsRate:
+        commandNumber(
+          runControl?.caughtStealingRate,
+        ),
+    };
+  };
+
+  const contactLane = (
+    offense,
+    defense,
+    defenseFielding,
+  ) => {
+    const hittingContact =
+      offense?.hitting?.totals
+        ?.contact || {};
+
+    const pitchingContact =
+      defense?.pitching?.totals
+        ?.contact || {};
+
+    const xDefense =
+      defenseFielding?.xDefense
+        ?.allPositions || {};
+
+    return {
+      hitterGbFb:
+        commandNumber(
+          hittingContact?.gbFbRatio,
+        ),
+      staffGbFb:
+        commandNumber(
+          pitchingContact?.gbFbRatio,
+        ),
+      defenseXConversion:
+        commandNumber(
+          xDefense?.xConversion,
+        ),
+      defenseXTotal:
+        commandNumber(
+          xDefense?.xTotal,
+        ),
+    };
+  };
+
+  const teamRunning =
+    runningLane(
+      team,
+      opponent,
+    );
+
+  const opponentRunning =
+    runningLane(
+      opponent,
+      team,
+    );
+
+  const teamContact =
+    contactLane(
+      team,
+      opponent,
+      opponentFielding,
+    );
+
+  const opponentContact =
+    contactLane(
+      opponent,
+      team,
+      teamFielding,
+    );
+
+  const teamDefenseCs =
+    opponentRunning.defenseCsRate;
+
+  const opponentDefenseCs =
+    teamRunning.defenseCsRate;
+
+  const teamDefenseX =
+    opponentContact.defenseXConversion;
+
+  const opponentDefenseX =
+    teamContact.defenseXConversion;
+
+  const runningSignal = (() => {
+    if (
+      teamDefenseCs !== null &&
+      opponentDefenseCs !== null &&
+      Math.abs(
+        teamDefenseCs -
+          opponentDefenseCs,
+      ) >= 0.03
+    ) {
+      return teamDefenseCs >
+        opponentDefenseCs
+        ? `${teamName} owns the stronger observed run-control edge`
+        : `${opponentName} owns the stronger observed run-control edge`;
+    }
+
+    if (
+      teamRunning.attemptRate !== null &&
+      opponentRunning.attemptRate !== null &&
+      Math.abs(
+        teamRunning.attemptRate -
+          opponentRunning.attemptRate,
+      ) >= 0.04
+    ) {
+      return teamRunning.attemptRate >
+        opponentRunning.attemptRate
+        ? `${teamName} brings more baserunning pressure`
+        : `${opponentName} brings more baserunning pressure`;
+    }
+
+    return "Running pressure is close";
+  })();
+
+  const runningDecision = (() => {
+    if (
+      teamDefenseCs !== null &&
+      opponentDefenseCs !== null
+    ) {
+      if (
+        opponentDefenseCs <
+        teamDefenseCs - 0.03
+      ) {
+        return `Use selective pressure when the game state offers it. ${opponentName}'s observed caught-stealing rate is the softer control side.`;
+      }
+
+      if (
+        opponentDefenseCs >
+        teamDefenseCs + 0.03
+      ) {
+        return `Do not force the running game into the stronger control side. Make ${opponentName} defend sustained baserunner pressure instead.`;
+      }
+    }
+
+    return "Let game state and personnel trigger attempts rather than forcing the running game.";
+  })();
+
+  const contactSignal = (() => {
+    const teamGb =
+      teamContact.hitterGbFb;
+
+    const opponentGb =
+      opponentContact.hitterGbFb;
+
+    if (
+      teamGb !== null &&
+      opponentGb !== null &&
+      teamDefenseX !== null &&
+      opponentDefenseX !== null
+    ) {
+      if (
+        opponentGb >
+          teamGb + 0.20 &&
+        teamDefenseX <
+          opponentDefenseX - 0.03
+      ) {
+        return `${opponentName} creates the tougher contact-defense collision`;
+      }
+
+      if (
+        teamGb >
+          opponentGb + 0.20 &&
+        opponentDefenseX <
+          teamDefenseX - 0.03
+      ) {
+        return `${teamName} can create the tougher contact-defense collision`;
+      }
+
+      if (
+        teamGb > 1 &&
+        opponentGb > 1
+      ) {
+        return "Both clubs bring ground-ball-heavy contact";
+      }
+    }
+
+    return "Contact shape creates a mixed defensive test";
+  })();
+
+  const contactDecision = (() => {
+    const teamGb =
+      teamContact.hitterGbFb;
+
+    const opponentGb =
+      opponentContact.hitterGbFb;
+
+    if (
+      teamGb !== null &&
+      opponentGb !== null &&
+      teamDefenseX !== null &&
+      opponentDefenseX !== null
+    ) {
+      if (
+        opponentGb >
+          teamGb + 0.20 &&
+        teamDefenseX <
+          opponentDefenseX - 0.03
+      ) {
+        return `${opponentName}'s heavier ground-ball profile meets ${teamName}'s lower observed X-chance conversion. Treat in-play defense as a series priority.`;
+      }
+
+      if (
+        teamGb >
+          opponentGb + 0.20 &&
+        opponentDefenseX <
+          teamDefenseX - 0.03
+      ) {
+        return `${teamName}'s contact profile gets the better opportunity to stress the weaker observed X-defense.`;
+      }
+    }
+
+    return "No decisive contact-defense edge is established; use this as supporting matchup evidence.";
+  })();
+
+  const watchName =
+    watch?.playerName
+      ? naturalPreviewPlayerName(
+          watch.playerName,
+        )
+      : null;
+
+  const watchOps =
+    commandNumber(
+      watch?.OPS,
+    );
+
+  const bieRead = (() => {
+    const parts = [];
+
+    if (
+      teamDefenseCs !== null &&
+      opponentDefenseCs !== null
+    ) {
+      if (
+        teamDefenseCs >
+          opponentDefenseCs + 0.03
+      ) {
+        parts.push(
+          `${teamName}'s stronger observed run control creates more room for selective baserunning pressure.`,
+        );
+      } else if (
+        opponentDefenseCs >
+          teamDefenseCs + 0.03
+      ) {
+        parts.push(
+          `${opponentName}'s stronger observed run control means baserunning pressure should be selective.`,
+        );
+      }
+    }
+
+    if (
+      opponentContact.hitterGbFb !== null &&
+      teamContact.hitterGbFb !== null &&
+      teamDefenseX !== null &&
+      opponentDefenseX !== null &&
+      opponentContact.hitterGbFb >
+        teamContact.hitterGbFb + 0.20 &&
+      teamDefenseX <
+        opponentDefenseX - 0.03
+    ) {
+      parts.push(
+        `${opponentName}'s heavier ground-ball profile puts extra pressure on ${teamName}'s lower observed X-chance conversion.`,
+      );
+    } else if (
+      teamContact.hitterGbFb !== null &&
+      opponentContact.hitterGbFb !== null &&
+      opponentDefenseX !== null &&
+      teamDefenseX !== null &&
+      teamContact.hitterGbFb >
+        opponentContact.hitterGbFb + 0.20 &&
+      opponentDefenseX <
+        teamDefenseX - 0.03
+    ) {
+      parts.push(
+        `${teamName}'s contact profile has the better opportunity to stress ${opponentName}'s lower observed X-chance conversion.`,
+      );
+    }
+
+    if (watchName) {
+      parts.push(
+        `${watchName} is the first leverage bat to manage around.`,
+      );
+    }
+
+    return parts.length
+      ? parts.join(" ")
+      : "No single interaction dominates the pregame evidence; execution across the three pressure points should decide the series.";
+  })();
+
+  const EvidenceStat = ({
+    label,
+    value,
+    detail,
+  }) => (
+    <div>
+      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-500">
+        {label}
+      </p>
+
+      <p className="mt-1 text-xl font-black tabular-nums text-white">
+        {value}
+      </p>
+
+      {detail ? (
+        <p className="mt-0.5 text-[8px] leading-3 text-slate-500">
+          {detail}
+        </p>
+      ) : null}
+    </div>
+  );
+
+  const Decision = ({
+    children,
+  }) => (
+    <div className="mt-4 border-t border-slate-800 pt-3">
+      <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-500">
+        Series decision
+      </p>
+
+      <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-300">
+        {children}
+      </p>
+    </div>
+  );
+
+  return (
+    <section
+      data-bie-surface="series-command"
+      data-bie-refinement="SERIES_COMMAND_INTERACTIONS_V2_1"
+      className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
+    >
+      <div className="border-b border-slate-800 px-5 py-5 sm:px-6">
+        <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+          Series Command
+        </p>
+
+        <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
+          What decides this matchup
+        </h2>
+
+        <p className="mt-1 text-[11px] text-slate-400">
+          The three pregame pressures most likely to shape the series.
+        </p>
+      </div>
+
+      <div className="grid gap-3 p-5 sm:p-6 xl:grid-cols-3">
+        <article className="flex flex-col rounded-2xl border border-cyan-900/80 bg-cyan-950/25 p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-cyan-300">
+            Running Pressure
+          </p>
+
+          <h3 className="mt-1 text-lg font-black leading-tight">
+            {runningSignal}
+          </h3>
+
+          <div className="mt-5 grid grid-cols-3 gap-3 rounded-xl border border-slate-800 bg-slate-950/55 p-3">
+            <EvidenceStat
+              label={`${teamName} pressure`}
+              value={`${commandPercent(
+                teamRunning.attemptRate,
+              )} / ${commandPercent(
+                teamRunning.execution,
+              )}`}
+              detail="attempt / execution"
+            />
+
+            <EvidenceStat
+              label={`${opponentName} CS`}
+              value={commandPercent(
+                opponentDefenseCs,
+              )}
+            />
+
+            <EvidenceStat
+              label={`${teamName} CS`}
+              value={commandPercent(
+                teamDefenseCs,
+              )}
+            />
+          </div>
+
+          <div className="mt-auto">
+            <Decision>
+              {runningDecision}
+            </Decision>
+          </div>
+        </article>
+
+        <article className="flex flex-col rounded-2xl border border-emerald-900/80 bg-emerald-950/20 p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-300">
+            Contact + Defense
+          </p>
+
+          <h3 className="mt-1 text-lg font-black leading-tight">
+            {contactSignal}
+          </h3>
+
+          <div className="mt-5 grid grid-cols-3 gap-3 rounded-xl border border-slate-800 bg-slate-950/55 p-3">
+            <EvidenceStat
+              label={`${teamName} GB/FB`}
+              value={commandRatio(
+                teamContact.hitterGbFb,
+              )}
+            />
+
+            <EvidenceStat
+              label={`${opponentName} GB/FB`}
+              value={commandRatio(
+                opponentContact.hitterGbFb,
+              )}
+            />
+
+            <EvidenceStat
+              label="X conversion"
+              value={`${commandPercent(
+                teamDefenseX,
+              )} / ${commandPercent(
+                opponentDefenseX,
+              )}`}
+              detail={`${teamName} / ${opponentName}`}
+            />
+          </div>
+
+          <div className="mt-auto">
+            <Decision>
+              {contactDecision}
+            </Decision>
+          </div>
+        </article>
+
+        <article className="flex flex-col rounded-2xl border border-rose-900/80 bg-rose-950/25 p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-rose-300">
+            Primary Threat
+          </p>
+
+          {watchName ? (
+            <>
+              <h3 className="mt-1 text-xl font-black leading-tight">
+                Plan around {watchName}
+              </h3>
+
+              <div className="mt-5 rounded-xl border border-slate-800 bg-slate-950/55 p-3">
+                <EvidenceStat
+                  label="Pregame OPS"
+                  value={
+                    watchOps !== null
+                      ? watchOps
+                          .toFixed(3)
+                          .replace(
+                            /^0(?=\.)/,
+                            "",
+                          )
+                      : "—"
+                  }
+                  detail="opponent watch bat"
+                />
+              </div>
+
+              <div className="mt-auto">
+                <Decision>
+                  When feasible, avoid giving {watchName} leverage plate appearances with traffic. Make the rest of the order build the inning.
+                </Decision>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="mt-1 text-lg font-black leading-tight">
+                No single bat separates
+              </h3>
+
+              <p className="mt-5 text-sm font-semibold leading-6 text-slate-400">
+                The pregame player-intelligence evidence does not isolate one opponent hitter strongly enough to elevate here.
+              </p>
+
+              <div className="mt-auto">
+                <Decision>
+                  Manage the lineup by situation rather than building the series plan around one hitter.
+                </Decision>
+              </div>
+            </>
+          )}
+        </article>
+      </div>
+
+      <div className="border-t border-slate-800 bg-slate-900/55 px-5 py-4 sm:px-6">
+        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-slate-500">
+          BIE Read
+        </p>
+
+        <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-300">
+          {bieRead}
+        </p>
+      </div>
+    </section>
+  );
+}
 function FrozenMatchupIntelligence({
   leagueId,
   teamName,
@@ -1958,237 +2821,293 @@ function FrozenMatchupIntelligence({
         ?.pinchHitting?.ab,
     ) || 0;
 
+  const runControlSummary = (
+    pitching,
+  ) => {
+    const allowed =
+      Number(
+        pitching?.runControl
+          ?.stolenBasesAllowed,
+      ) || 0;
+
+    const caught =
+      Number(
+        pitching?.runControl
+          ?.caughtStealing,
+      ) || 0;
+
+    const attempts =
+      allowed + caught;
+
+    const caughtRate =
+      frozenRate(
+        caught,
+        attempts,
+      );
+
+    const sample =
+      attempts < 5
+        ? "Small sample"
+        : attempts < 15
+          ? "Developing sample"
+          : "Established sample";
+
+    return {
+      allowed,
+      caught,
+      attempts,
+      caughtRate,
+      sample,
+    };
+  };
+
+  const teamRunControl =
+    runControlSummary(
+      teamPitching,
+    );
+
+  const opponentRunControl =
+    runControlSummary(
+      opponentPitching,
+    );
+
   return (
     <section
       data-bie-surface="frozen-matchup-intelligence"
       data-bie-source="pre-10pm-20260816-201815"
       className="mt-5 grid gap-4 xl:grid-cols-12"
     >
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-8">
-        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-                Running Game
-              </p>
-              <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                Taking the extra base and stealing.
-              </p>
-            </div>
-
-            <span className="rounded-full bg-slate-100 px-2 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-slate-500 dark:bg-slate-800 dark:text-slate-300">
-              Frozen data
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-[1fr_150px_1fr] items-center gap-2 px-4 py-4">
-          <div className="space-y-2">
-            <FrozenTeamMetric
-              label="Aggression"
-              value={frozenPercent(
-                teamRunning.aggression,
-              )}
-              rate={
-                teamRunning.aggression
-              }
-              tone="team"
-              note={`${teamRunning.attempts}/${teamRunning.opportunities} attempts/opportunities`}
-            />
-
-            <FrozenTeamMetric
-              label="Execution"
-              value={frozenPercent(
-                teamRunning.execution,
-              )}
-              rate={
-                teamRunning.execution
-              }
-              tone="team"
-              note={`${teamRunning.advances} safe · ${teamRunning.outs} out`}
-            />
-
-            <FrozenStealMetric
-              steals={teamRunning.steals}
-              caught={teamRunning.caught}
-              tone="team"
-            />
-          </div>
-
-          <div>
-            <FrozenBasepathGraphic
-              teamRate={
-                teamRunning.aggression
-              }
-              opponentRate={
-                opponentRunning.aggression
-              }
-              label="Baserunning aggression comparison"
-            />
-
-            <p className="mt-1 text-center text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
-              Extra-base pressure
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <FrozenTeamMetric
-              label="Aggression"
-              value={frozenPercent(
-                opponentRunning.aggression,
-              )}
-              rate={
-                opponentRunning.aggression
-              }
-              tone="opponent"
-              note={`${opponentRunning.attempts}/${opponentRunning.opportunities} attempts/opportunities`}
-            />
-
-            <FrozenTeamMetric
-              label="Execution"
-              value={frozenPercent(
-                opponentRunning.execution,
-              )}
-              rate={
-                opponentRunning.execution
-              }
-              tone="opponent"
-              note={`${opponentRunning.advances} safe · ${opponentRunning.outs} out`}
-            />
-
-            <FrozenStealMetric
-              steals={opponentRunning.steals}
-              caught={opponentRunning.caught}
-              tone="opponent"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 border-t border-slate-200 bg-slate-50 px-4 py-3 text-[9px] dark:border-slate-800 dark:bg-slate-950/40">
-          <div>
-            <p className="font-black text-cyan-600 dark:text-cyan-300">
-              {teamName}
-            </p>
-            <p className="mt-0.5 text-slate-500 dark:text-slate-400">
-              {sampleLabel(
-                teamRunning.opportunities,
-              )}
-            </p>
-          </div>
-
-          <div className="text-right">
-            <p className="font-black text-rose-600 dark:text-rose-300">
-              {opponentName}
-            </p>
-            <p className="mt-0.5 text-slate-500 dark:text-slate-400">
-              {sampleLabel(
-                opponentRunning.opportunities,
-              )}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-4">
-        <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+      <div
+        data-bie-surface="running-game-interactions-v1"
+        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-12"
+      >
+        <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
           <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-            Run Control
+            Running Game Matchups
           </p>
-          <p className="mt-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-            Preventing opponent advancement.
+
+          <h3 className="mt-1 text-lg font-black text-slate-900 dark:text-white">
+            Baserunning pressure against opposing run control
+          </h3>
+
+          <p className="mt-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Each offense is matched directly to the defense trying to control it.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 p-4">
+        <div className="grid gap-4 p-4 xl:grid-cols-2">
           {[
             {
-              label: teamName,
-              tone: "text-cyan-600 dark:text-cyan-300",
-              pitching: teamPitching,
+              key: "team-running",
+              offenseName: teamName,
+              defenseName: opponentName,
+              running: teamRunning,
+              control: opponentRunControl,
+              offenseTone:
+                "text-cyan-600 dark:text-cyan-300",
+              borderTone:
+                "border-cyan-200 dark:border-cyan-900/60",
+              wash:
+                "bg-cyan-50/60 dark:bg-cyan-950/10",
             },
             {
-              label: opponentName,
-              tone: "text-rose-600 dark:text-rose-300",
-              pitching:
-                opponentPitching,
+              key: "opponent-running",
+              offenseName: opponentName,
+              defenseName: teamName,
+              running: opponentRunning,
+              control: teamRunControl,
+              offenseTone:
+                "text-rose-600 dark:text-rose-300",
+              borderTone:
+                "border-rose-200 dark:border-rose-900/60",
+              wash:
+                "bg-rose-50/50 dark:bg-rose-950/10",
             },
-          ].map((side) => (
-            <div
-              key={side.label}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/40"
+          ].map((lane) => (
+            <article
+              key={lane.key}
+              className={`overflow-hidden rounded-2xl border ${lane.borderTone}`}
             >
-              <p
-                className={`truncate text-[9px] font-black uppercase tracking-[0.12em] ${side.tone}`}
+              <div
+                className={`border-b border-slate-200 px-4 py-3 dark:border-slate-800 ${lane.wash}`}
               >
-                {side.label}
-              </p>
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span
+                    className={`text-sm font-black ${lane.offenseTone}`}
+                  >
+                    {lane.offenseName}
+                  </span>
 
-              <p className="mt-3 text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
-                SB allowed-CS
-              </p>
+                  <span className="text-[10px] font-black uppercase tracking-[0.08em] text-slate-400">
+                    on the bases
+                  </span>
 
-              {(() => {
-                const allowed =
-                  Number(
-                    side.pitching
-                      ?.runControl
-                      ?.stolenBasesAllowed,
-                  ) || 0;
+                  <span className="text-slate-400">
+                    →
+                  </span>
 
-                const caught =
-                  Number(
-                    side.pitching
-                      ?.runControl
-                      ?.caughtStealing,
-                  ) || 0;
+                  <span className="text-sm font-black text-slate-800 dark:text-slate-100">
+                    {lane.defenseName}
+                  </span>
 
-                const attempts =
-                  allowed + caught;
+                  <span className="text-[10px] font-black uppercase tracking-[0.08em] text-slate-400">
+                    run control
+                  </span>
+                </div>
+              </div>
 
-                return (
-                  <>
-                    <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
-                      {allowed}-{caught}
+              <div className="grid gap-3 p-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+                  <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+                    Baserunning pressure
+                  </p>
+
+                  <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-4">
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                        Extra-base attempt rate
+                      </p>
+
+                      <p
+                        className={`mt-1 text-xl font-black tabular-nums ${lane.offenseTone}`}
+                      >
+                        {frozenPercent(
+                          lane.running.aggression,
+                        )}
+                      </p>
+
+                      <p className="mt-1 text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+                        {lane.running.attempts} attempts /{" "}
+                        {lane.running.opportunities} opportunities
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                        Extra-base execution
+                      </p>
+
+                      <p
+                        className={`mt-1 text-xl font-black tabular-nums ${lane.offenseTone}`}
+                      >
+                        {frozenPercent(
+                          lane.running.execution,
+                        )}
+                      </p>
+
+                      <p className="mt-1 text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+                        {lane.running.advances} safe /{" "}
+                        {lane.running.attempts} attempts
+                      </p>
+                    </div>
+
+                    <div className="col-span-2 border-t border-slate-200 pt-3 dark:border-slate-700">
+                      <div className="flex flex-wrap items-end justify-between gap-2">
+                        <div>
+                          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                            Stealing
+                          </p>
+
+                          <p
+                            className={`mt-1 text-lg font-black tabular-nums ${lane.offenseTone}`}
+                          >
+                            {lane.running.steals} SB /{" "}
+                            {lane.running.caught} CS
+                          </p>
+                        </div>
+
+                        <div className="text-right">
+                          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                            Success
+                          </p>
+
+                          <p className="mt-1 text-lg font-black tabular-nums text-slate-900 dark:text-white">
+                            {frozenPercent(
+                              lane.running.stealSuccess,
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+                  <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+                    Opposing run control
+                  </p>
+
+                  <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-4">
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                        Caught-stealing rate
+                      </p>
+
+                      <p className="mt-1 text-xl font-black tabular-nums text-slate-900 dark:text-white">
+                        {frozenPercent(
+                          lane.control.caughtRate,
+                        )}
+                      </p>
+
+                      <p className="mt-1 text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+                        {lane.control.caught} CS /{" "}
+                        {lane.control.attempts} attempts faced
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                        Stolen bases allowed
+                      </p>
+
+                      <p className="mt-1 text-xl font-black tabular-nums text-slate-900 dark:text-white">
+                        {lane.control.allowed}
+                      </p>
+
+                      <p className="mt-1 text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+                        {lane.control.attempts} total attempts faced
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-700">
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
+                      Evidence sample
                     </p>
 
-                    <p className="mt-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
-                      {attempts} attempts faced
+                    <p className="mt-1 text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                      {lane.control.sample}
                     </p>
+                  </div>
+                </div>
+              </div>
 
-                    <p className="mt-0.5 text-[9px] font-bold text-slate-500 dark:text-slate-400">
-                      {frozenPercent(
-                        frozenRate(
-                          caught,
-                          attempts,
-                        ),
-                      )}{" "}
-                      caught stealing
-                    </p>
-
-                    <p className="mt-1 text-[8px] font-black uppercase tracking-[0.1em] text-slate-400">
-                      {attempts < 5
-                        ? "Small sample"
-                        : attempts < 15
-                          ? "Developing sample"
-                          : "Established sample"}
-                    </p>
-                  </>
-                );
-              })()}
-            </div>
+              <div className="border-t border-slate-200 bg-slate-50 px-4 py-2.5 dark:border-slate-800 dark:bg-slate-950/40">
+                <p className="text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+                  <span className="font-black text-slate-600 dark:text-slate-300">
+                    Observed matchup:
+                  </span>{" "}
+                  {lane.offenseName} has a{" "}
+                  {frozenPercent(
+                    lane.running.aggression,
+                  )}{" "}
+                  extra-base attempt rate; {lane.defenseName} has thrown out{" "}
+                  {frozenPercent(
+                    lane.control.caughtRate,
+                  )}{" "}
+                  of observed steal attempts.
+                </p>
+              </div>
+            </article>
           ))}
         </div>
 
-        <div className="mx-4 mb-4 rounded-xl border border-dashed border-slate-300 px-3 py-2.5 dark:border-slate-700">
-          <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-400">
-            Next join
-          </p>
-          <p className="mt-1 text-[10px] font-bold leading-4 text-slate-600 dark:text-slate-300">
-            Projected starter Hold will complete the running-game defense view.
+        <div className="border-t border-slate-200 px-5 py-3 dark:border-slate-800">
+          <p className="text-[9px] font-medium leading-4 text-slate-500 dark:text-slate-400">
+            Pregame observed tendencies. Run-control results reflect team pitching/catching outcomes; projected starter Hold is not yet included.
           </p>
         </div>
       </div>
-
       <FrozenDefensePanel
         teamName={teamName}
         opponentName={opponentName}
@@ -3521,15 +4440,15 @@ export default function SeriesPreview({
       .toUpperCase()
       .startsWith("HOME");
 
-  const homeTeamDisplayName =
+  const aquariumVenueRole =
     aquariumIsHome
-      ? aquariumDisplayName
-      : opponentDisplayName;
+      ? "HOME"
+      : "ROAD";
 
-  const awayTeamDisplayName =
+  const opponentVenueRole =
     aquariumIsHome
-      ? opponentDisplayName
-      : aquariumDisplayName;
+      ? "ROAD"
+      : "HOME";
 
   const displayOutlookSynopsis =
     payload?.executiveOutlook?.synopsis
@@ -3564,6 +4483,7 @@ export default function SeriesPreview({
     <div className="min-h-full space-y-6 bg-slate-100/70 p-4 sm:p-6 dark:bg-slate-950">
       <header
         data-bie-surface="series-hero"
+        data-bie-refinement="SERIES_HERO_V1"
         className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl"
       >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-gradient-to-r from-cyan-950/90 via-slate-950 to-rose-950/80 px-5 py-3 sm:px-6">
@@ -3581,32 +4501,26 @@ export default function SeriesPreview({
             <span className="hidden h-4 w-px bg-slate-700 sm:block" />
 
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-              BIE Series Matchup
+              Series Preview
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Pill status={snapshot.snapshotClassification}>
-              {humanize(snapshot.snapshotClassification)}
-            </Pill>
-
-            <Pill status={lifecycle.stage}>
-              {humanize(lifecycle.stage)}
-            </Pill>
-          </div>
+          <span className="rounded-full border border-slate-700 bg-slate-900/70 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-slate-300">
+            Pregame
+          </span>
         </div>
 
-        <div className="relative overflow-hidden px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
+        <div className="relative overflow-hidden px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
           <div
             className="pointer-events-none absolute inset-0"
             aria-hidden="true"
           >
-            <div className="absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/15 blur-3xl" />
-            <div className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
+            <div className="absolute -left-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-cyan-500/15 blur-3xl" />
+            <div className="absolute -right-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-rose-500/15 blur-3xl" />
           </div>
 
-          <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.55fr)_minmax(0,1fr)]">
-            <div className="flex items-center gap-5">
+          <div className="relative grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)]">
+            <div className="flex items-center gap-4">
               <TeamIdentityMark
                 key={teamMark?.teamId || "aquarium"}
                 mark={teamMark}
@@ -3615,81 +4529,57 @@ export default function SeriesPreview({
 
               <div className="min-w-0">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                  Aquarium Drinkers
+                  {aquariumVenueRole}
                 </p>
 
-                <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
-                  {teamMark?.teamName || "Aquarium Drinkers"}
+                <h2 className="mt-1 text-2xl font-black leading-tight tracking-tight text-white">
+                  {aquariumDisplayName}
                 </h2>
-
-                <p className="mt-1 text-xs font-semibold text-slate-400">
-                  BIE-backed team
-                </p>
               </div>
             </div>
 
             <div className="text-center">
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
-                Series Matchup
+              <p className="text-2xl font-black tracking-[0.16em] text-slate-300">
+                VS
               </p>
 
-              <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-white">
-                <span className="block whitespace-nowrap">
-                  {homeTeamDisplayName}
-                </span>
+              <div className="mt-3 space-y-1 text-[11px] font-semibold text-slate-400">
+                <p>
+                  {identity.scheduledDate || "Date TBD"}
+                </p>
 
-                <span className="mt-1 block whitespace-nowrap">
-                  <span className="mr-2 font-semibold text-cyan-300">
-                    vs.
-                  </span>
-                  {awayTeamDisplayName}
-                </span>
-              </h1>
+                <p>
+                  {identity.gameCount ||
+                    replayGames.length ||
+                    "—"}-game series
+                </p>
 
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-semibold text-slate-400">
-                <span>{identity.homeAway || "Venue TBD"}</span>
-                <span aria-hidden="true">·</span>
-                <span>{identity.scheduledDate || "Date TBD"}</span>
-                <span aria-hidden="true">·</span>
-                <span>
-                  {identity.gameCount || replayGames.length || "—"} games
-                </span>
+                {selection?.leagueId ? (
+                  <p>
+                    League {selection.leagueId}
+                  </p>
+                ) : null}
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-5">
+            <div className="flex items-center justify-end gap-4">
               <div className="min-w-0 text-right">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-300">
-                  Opponent
+                  {opponentVenueRole}
                 </p>
 
-                <h2 className="mt-1 text-2xl font-black tracking-tight text-white">
+                <h2 className="mt-1 text-2xl font-black leading-tight tracking-tight text-white">
                   {opponentDisplayName}
                 </h2>
-
-                <p className="mt-1 text-xs font-semibold text-slate-400">
-                  League {selection?.leagueId}
-                </p>
               </div>
 
               <TeamIdentityMark
                 key={opponentMark?.teamId || opponentDisplayName}
                 mark={opponentMark}
                 tone="rose"
-                size="large"
               />
             </div>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 bg-slate-950/90 px-5 py-3 sm:px-6">
-          <p className="truncate text-[10px] font-semibold text-slate-500">
-            {identity.seriesId}
-          </p>
-
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-400">
-            Feedback loop active
-          </p>
         </div>
       </header>
 
@@ -3706,19 +4596,13 @@ export default function SeriesPreview({
       ) : null}
 
       {leagueContext?.status === "AVAILABLE" ? (
-        <SeriesCommandDeck
+        <SeriesCommandInteractionDeck
+          leagueId={selection?.leagueId}
           teamName={aquariumDisplayName}
           opponentName={opponentDisplayName}
           teamProfile={teamProfile}
           opponentProfile={opponentProfile}
-
-          watchText={
-            outlook?.watch?.text
-              ? normalizePreviewText(
-                  outlook.watch.text,
-                )
-              : null
-          }
+          watch={outlook?.watch}
         />
       ) : null}
 
@@ -4134,11 +5018,11 @@ export default function SeriesPreview({
 
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                        Decision Support
+                        Series Plan
                       </p>
 
                       <h2 className="mt-0.5 text-xl font-black tracking-tight text-white">
-                        Manager's Notebook
+                        Key Decisions
                       </h2>
                     </div>
                   </div>
@@ -4151,7 +5035,7 @@ export default function SeriesPreview({
                 </div>
 
                 <div className="rounded-full border border-emerald-700/60 bg-emerald-950/70 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-300">
-                  Evidence based
+                  Pregame plan
                 </div>
               </div>
 
@@ -4201,7 +5085,7 @@ export default function SeriesPreview({
                           <div className="flex flex-wrap items-start justify-between gap-2">
                             <div>
                               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
-                                Decision Priority
+                                Priority
                               </p>
 
                               <h3 className="mt-1 text-base font-black leading-snug text-slate-950 dark:text-white">
@@ -4244,225 +5128,89 @@ export default function SeriesPreview({
       </section>
       ) : null}
 
-      <section className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 px-5 py-5 sm:px-6">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-                Series Workflow
+      {payload?.managerNotebook?.status !== "CURRENT_EVIDENCE_BASED" ? (
+        <SeriesPlanPanel
+          teamName={aquariumDisplayName}
+          opponentName={opponentDisplayName}
+          executiveOutlook={outlook}
+          leagueContext={leagueContext}
+        />
+      ) : null}
+      <details
+        data-bie-surface="series-preview-evidence-details"
+        className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+      >
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 sm:px-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className={
+                missingEvidence.length
+                  ? "h-2.5 w-2.5 shrink-0 rounded-full bg-amber-500"
+                  : "h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500"
+              }
+              aria-hidden="true"
+            />
+
+            <div className="min-w-0">
+              <p className="text-xs font-black text-slate-800 dark:text-slate-200">
+                {missingEvidence.length
+                  ? `${missingEvidence.length} pregame evidence gap${missingEvidence.length === 1 ? "" : "s"}`
+                  : "Pregame evidence verified"}
               </p>
 
-              <h2 className="mt-1 text-xl font-black">
-                Preview to Learning
-              </h2>
-
-              <p className="mt-2 max-w-2xl text-xs leading-5 text-slate-400">
-                The preview stays frozen. Game evidence is revealed deliberately,
-                reviewed after the series, then carried forward into the next
-                matchup.
+              <p className="mt-0.5 text-[10px] text-slate-400">
+                Evidence details
               </p>
             </div>
-
-            <Pill status={series?.replay?.status}>
-              {humanize(series?.replay?.status)}
-            </Pill>
           </div>
 
-          <div className="p-5 sm:p-6">
-            <div className="grid gap-3 md:grid-cols-4">
-              <div className="relative rounded-2xl border border-cyan-500/70 bg-cyan-950/60 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-400 text-sm font-black text-slate-950">
-                    1
-                  </span>
+          <span className="text-xs font-black text-slate-400 transition group-open:rotate-180">
+            ▾
+          </span>
+        </summary>
 
-                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
-                    Current
-                  </span>
-                </div>
-
-                <p className="mt-4 text-sm font-black text-white">
-                  Series Preview
-                </p>
-
-                <p className="mt-1 text-[11px] leading-4 text-slate-400">
-                  Frozen pre-series decision baseline.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-sm font-black text-slate-300">
-                    2
-                  </span>
-
-                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
-                    Controlled
-                  </span>
-                </div>
-
-                <p className="mt-4 text-sm font-black text-white">
-                  Spoiler-Free Replay
-                </p>
-
-                <p className="mt-1 text-[11px] leading-4 text-slate-400">
-                  Game evidence stays hidden until deliberately revealed.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-sm font-black text-slate-300">
-                    3
-                  </span>
-
-                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
-                    After Series
-                  </span>
-                </div>
-
-                <p className="mt-4 text-sm font-black text-white">
-                  Series Review
-                </p>
-
-                <p className="mt-1 text-[11px] leading-4 text-slate-400">
-                  Actual game shape is compared with the frozen preview.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-emerald-900/80 bg-emerald-950/40 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-emerald-700 text-sm font-black text-emerald-300">
-                    4
-                  </span>
-
-                  <span className="text-[9px] font-black uppercase tracking-[0.16em] text-emerald-400">
-                    Feedback
-                  </span>
-                </div>
-
-                <p className="mt-4 text-sm font-black text-white">
-                  Learning
-                </p>
-
-                <p className="mt-1 text-[11px] leading-4 text-slate-400">
-                  Supported signals carry into the next series preview.
-                </p>
-              </div>
-            </div>
-
-            {replayGames.length ? (
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {replayGames.map((game) => (
-                  <div
-                    key={`${identity.seriesId}-${game.ordinal}`}
-                    className="rounded-2xl border border-slate-700 bg-slate-900/80 p-4"
-                  >
-                    <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
-                      Game {game.ordinal}
-                    </p>
-
-                    <p className="mt-1 text-sm font-black text-white">
-                      Schedule #{game.scheduleGameNumber}
-                    </p>
-
-                    <p className="mt-2 text-[11px] text-slate-400">
-                      {humanize(game.evidenceStatus)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-5 rounded-2xl border border-dashed border-slate-700 bg-slate-900/60 px-4 py-4">
-                <p className="text-xs font-semibold text-slate-300">
-                  No replay evidence has been deliberately revealed yet.
-                </p>
-
-                <p className="mt-1 text-[11px] leading-4 text-slate-500">
-                  Scores, winners, updated records, series outcomes, and
-                  future-game information remain protected.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <aside className="overflow-hidden rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-slate-900 to-cyan-950 text-white shadow-sm">
-          <div className="border-b border-cyan-900/60 px-5 py-5">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
-              Provenance
-            </p>
-
-            <h2 className="mt-1 text-lg font-black">
-              Evidence Integrity
-            </h2>
-          </div>
-
-          <div className="space-y-5 p-5">
-            <div>
-              <p className="mb-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
-                Artifact Evidence
+        <div className="border-t border-slate-200 px-4 py-4 dark:border-slate-800 sm:px-5">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50">
+              <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+                Preview evidence
               </p>
 
-              <Pill status={series?.evidence?.status}>
+              <p className="mt-1 text-xs font-bold text-slate-700 dark:text-slate-300">
                 {humanize(series?.evidence?.status)}
-              </Pill>
+              </p>
             </div>
 
-            <div>
-              <p className="mb-2 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
-                Snapshot Integrity
+            <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50">
+              <p className="text-[9px] font-black uppercase tracking-[0.12em] text-slate-400">
+                Pregame snapshot
               </p>
 
-              <Pill status={snapshot.status}>
+              <p className="mt-1 text-xs font-bold text-slate-700 dark:text-slate-300">
                 {humanize(snapshot.status)}
-              </Pill>
-            </div>
-
-            <div className="border-t border-cyan-900/60 pt-4">
-              <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
-                Certification
-              </p>
-
-              {missingEvidence.length ? (
-                <ul className="mt-3 space-y-2">
-                  {missingEvidence.map((item) => (
-                    <li
-                      key={item}
-                      className="flex gap-2 text-xs leading-5 text-slate-300"
-                    >
-                      <span className="mt-0.5 text-amber-400">
-                        •
-                      </span>
-
-                      <span>
-                        {normalizePreviewText(item)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="mt-3 rounded-xl border border-emerald-800/70 bg-emerald-950/50 p-3">
-                  <p className="text-xs font-semibold leading-5 text-emerald-200">
-                    Pre-series snapshot integrity is intact.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="rounded-2xl border border-cyan-800/60 bg-cyan-950/60 p-4">
-              <p className="text-[9px] font-black uppercase tracking-[0.16em] text-cyan-300">
-                BIE Contract
-              </p>
-
-              <p className="mt-2 text-xs leading-5 text-slate-300">
-                Unsupported intelligence remains evidence gated rather than
-                being presented as known before Game 1.
               </p>
             </div>
           </div>
-        </aside>
-      </section>
+
+          {missingEvidence.length ? (
+            <ul className="mt-3 space-y-1.5">
+              {missingEvidence.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-2 text-[11px] leading-4 text-slate-500 dark:text-slate-400"
+                >
+                  <span className="text-amber-500">•</span>
+                  <span>{normalizePreviewText(item)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <p className="mt-3 text-[10px] leading-4 text-slate-400">
+            Unsupported pregame intelligence remains hidden rather than being presented as known.
+          </p>
+        </div>
+      </details>
     </div>
   );
 }

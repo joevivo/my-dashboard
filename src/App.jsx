@@ -2178,7 +2178,6 @@ const StratHome = () => (
                           );
 
                         const confidence =
-                          teamProjection?.effectiveConfidence ||
                           opponentProjection?.effectiveConfidence ||
                           "NONE";
 
@@ -2193,8 +2192,177 @@ const StratHome = () => (
                             opponentLive,
                             opponentProjection?.pitcher,
                           );
+                        const opponentStarterName =
+                          opponentProjection?.pitcher
+                            ? formatRotationPitcher(
+                                opponentProjection.pitcher,
+                              )
+                            : "Projected starter";
 
-                        return (
+                        const opponentEra =
+                          Number(
+                            opponentPitcher?.era,
+                          );
+
+                        const opponentWhip =
+                          Number(
+                            opponentPitcher?.whip,
+                          );
+
+                        const opponentThrows =
+                          String(
+                            opponentPitcher?.throws || "",
+                          )
+                            .trim()
+                            .toUpperCase();
+
+                        const opponentHoldMatch =
+                          String(
+                            opponentPitcher?.holdRating ?? "",
+                          ).match(/[+-]?\d+/);
+
+                        const opponentHoldValue =
+                          opponentHoldMatch
+                            ? Number(
+                                opponentHoldMatch[0],
+                              )
+                            : null;
+
+                        const opponentEnduranceMatch =
+                          String(
+                            opponentPitcher?.endurance || "",
+                          ).match(/S(\d+)/i);
+
+                        const opponentStarterEndurance =
+                          opponentEnduranceMatch
+                            ? Number(
+                                opponentEnduranceMatch[1],
+                              )
+                            : null;
+
+                        const opponentConfidence =
+                          String(
+                            opponentProjection?.effectiveConfidence ||
+                              confidence ||
+                              "",
+                          ).toUpperCase();
+
+                        const starterMatchupRead =
+                          (() => {
+                            if (
+                              !opponentProjection ||
+                              !opponentPitcher
+                            ) {
+                              return {
+                                label: "EVIDENCE LIMITED",
+                                text:
+                                  "Opponent starter evidence is incomplete; keep the game plan flexible.",
+                              };
+                            }
+
+                            if (
+                              opponentConfidence === "LOW" ||
+                              opponentConfidence === "NONE"
+                            ) {
+                              return {
+                                label: "PROJECTION CAUTION",
+                                text:
+                                  `Rotation confidence is ${opponentConfidence.toLowerCase()}; treat ${opponentStarterName} as provisional.`,
+                              };
+                            }
+
+                            if (
+                              Number.isFinite(
+                                opponentHoldValue,
+                              ) &&
+                              opponentHoldValue >= 3
+                            ) {
+                              return {
+                                label: "RUNNING WINDOW",
+                                text:
+                                  `${opponentStarterName}'s ${formatStarterHold(
+                                    opponentPitcher?.holdRating,
+                                  )} creates a meaningful running opportunity; press it with the right runner.`,
+                              };
+                            }
+
+                            if (
+                              opponentThrows.startsWith("L")
+                            ) {
+                              return {
+                                label: "PLATOON PRESSURE",
+                                text:
+                                  `${opponentStarterName} is a projected left-hander; prioritize the strongest right-handed configuration.`,
+                              };
+                            }
+
+                            if (
+                              (
+                                Number.isFinite(
+                                  opponentWhip,
+                                ) &&
+                                opponentWhip <= 1.18
+                              ) ||
+                              (
+                                Number.isFinite(
+                                  opponentEra,
+                                ) &&
+                                opponentEra <= 2.75
+                              )
+                            ) {
+                              return {
+                                label: "TRAFFIC SCARCITY",
+                                text:
+                                  `${opponentStarterName} has suppressed traffic; value walks and avoid giving away outs.`,
+                              };
+                            }
+
+                            if (
+                              Number.isFinite(
+                                opponentStarterEndurance,
+                              ) &&
+                              opponentStarterEndurance <= 6
+                            ) {
+                              return {
+                                label: "BULLPEN WINDOW",
+                                text:
+                                  `${opponentStarterName}'s ${opponentPitcher.endurance} profile increases the chance of earlier bullpen exposure.`,
+                              };
+                            }
+
+                            if (
+                              Number.isFinite(
+                                opponentStarterEndurance,
+                              ) &&
+                              opponentStarterEndurance >= 8
+                            ) {
+                              return {
+                                label: "DEEP START RISK",
+                                text:
+                                  `${opponentStarterName}'s ${opponentPitcher.endurance} endurance can keep him in the game; build pressure before the late innings.`,
+                              };
+                            }
+
+                            if (
+                              Number.isFinite(
+                                opponentWhip,
+                              ) &&
+                              opponentWhip >= 1.35
+                            ) {
+                              return {
+                                label: "TRAFFIC WINDOW",
+                                text:
+                                  `${opponentStarterName} has allowed elevated traffic; extend innings without donating outs.`,
+                              };
+                            }
+
+                            return {
+                              label: "BALANCED APPROACH",
+                              text:
+                                `${opponentStarterName} does not present one dominant pregame lever; let baserunners and game state determine aggression.`,
+                            };
+                          })();
+return (
                           <div
                             key={gameNumber}
                             className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/80"
@@ -2209,7 +2377,7 @@ const StratHome = () => (
                                   confidence
                                 )}`}
                               >
-                                {confidence.toLowerCase()}
+                                OPP PROJ &middot; {confidence}
                               </span>
                             </div>
 
@@ -2226,7 +2394,7 @@ const StratHome = () => (
                                     : "TBD"}
                                 </p>
 
-                                <p className="mt-1 text-[10px] font-bold tabular-nums text-slate-600 dark:text-slate-300">
+                                <p className="mt-1.5 text-[11px] font-extrabold leading-4 tabular-nums text-slate-700 dark:text-slate-200">
                                   {formatStarterThrowingHand(
                                     teamPitcher?.throws,
                                   )}
@@ -2235,28 +2403,28 @@ const StratHome = () => (
                                     teamPitcher,
                                   )}
                                   {" · "}
-                                  ERA{" "}
                                   {formatStarterStat(
                                     teamPitcher?.era,
                                     2,
-                                  )}
+                                  )}{" "}
+                                  ERA
                                   {" · "}
-                                  WHIP{" "}
                                   {formatStarterStat(
                                     teamPitcher?.whip,
                                     2,
-                                  )}
+                                  )}{" "}
+                                  WHIP
                                 </p>
 
-                                <p className="mt-0.5 text-[9px] font-semibold tabular-nums text-slate-400">
-                                  IP{" "}
+                                <p className="mt-1 text-[10px] font-bold leading-4 tabular-nums text-slate-500 dark:text-slate-400">
                                   {teamPitcher?.innings ||
-                                    "—"}
+                                    "—"}{" "}
+                                  IP
                                   {" · "}
-                                  K/BB{" "}
                                   {formatStarterKbb(
                                     teamPitcher,
-                                  )}
+                                  )}{" "}
+                                  K/BB
                                   {" · "}
                                   {formatStarterHold(
                                     teamPitcher?.holdRating,
@@ -2283,7 +2451,7 @@ const StratHome = () => (
                                     : "TBD"}
                                 </p>
 
-                                <p className="mt-1 text-[10px] font-bold tabular-nums text-slate-600 dark:text-slate-300">
+                                <p className="mt-1.5 text-[11px] font-extrabold leading-4 tabular-nums text-slate-700 dark:text-slate-200">
                                   {formatStarterThrowingHand(
                                     opponentPitcher?.throws,
                                   )}
@@ -2292,28 +2460,28 @@ const StratHome = () => (
                                     opponentPitcher,
                                   )}
                                   {" · "}
-                                  ERA{" "}
                                   {formatStarterStat(
                                     opponentPitcher?.era,
                                     2,
-                                  )}
+                                  )}{" "}
+                                  ERA
                                   {" · "}
-                                  WHIP{" "}
                                   {formatStarterStat(
                                     opponentPitcher?.whip,
                                     2,
-                                  )}
+                                  )}{" "}
+                                  WHIP
                                 </p>
 
-                                <p className="mt-0.5 text-[9px] font-semibold tabular-nums text-slate-400">
-                                  IP{" "}
+                                <p className="mt-1 text-[10px] font-bold leading-4 tabular-nums text-slate-500 dark:text-slate-400">
                                   {opponentPitcher?.innings ||
-                                    "—"}
+                                    "—"}{" "}
+                                  IP
                                   {" · "}
-                                  K/BB{" "}
                                   {formatStarterKbb(
                                     opponentPitcher,
-                                  )}
+                                  )}{" "}
+                                  K/BB
                                   {" · "}
                                   {formatStarterHold(
                                     opponentPitcher?.holdRating,
@@ -2322,8 +2490,28 @@ const StratHome = () => (
                                     ? ` · ${opponentPitcher.endurance}`
                                     : ""}
                                 </p>
+
+
                               </div>
                             </div>
+<div
+                                  data-bie-starter-intelligence="v1.1"
+                                  className="mx-3 mb-3 rounded-xl border border-cyan-100 bg-cyan-50/80 px-3 py-2.5 text-left dark:border-cyan-900/60 dark:bg-cyan-950/25"
+                                >
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    <span className="text-[8px] font-black uppercase tracking-[0.14em] text-cyan-700 dark:text-cyan-300">
+                                      BIE Matchup Read
+                                    </span>
+
+                                    <span className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
+                                      {starterMatchupRead.label}
+                                    </span>
+                                  </div>
+
+                                  <p className="mt-1 text-[10px] font-semibold leading-4 text-slate-600 dark:text-slate-300">
+                                    {starterMatchupRead.text}
+                                  </p>
+                                </div>
                           </div>
                         );
                       })}

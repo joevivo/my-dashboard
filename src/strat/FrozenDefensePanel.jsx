@@ -53,13 +53,30 @@ function getPlayer(team, position) {
   );
 }
 
-function surname(name) {
+function naturalDefensePlayerName(name) {
   const raw =
     String(name || "").trim();
 
-  return raw
-    ? raw.split(",")[0]
-    : "—";
+  if (!raw) {
+    return "—";
+  }
+
+  if (!raw.includes(",")) {
+    return raw;
+  }
+
+  const pieces =
+    raw.split(",");
+
+  const last =
+    pieces.shift()?.trim() || "";
+
+  const first =
+    pieces.join(",").trim();
+
+  return [first, last]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function signed(value) {
@@ -122,12 +139,12 @@ function TeamDiamond({
   return (
     <div>
       <p
-        className={`truncate text-center text-xs font-black uppercase tracking-[0.11em] ${teamText}`}
+        className={`text-center text-sm font-black uppercase tracking-[0.11em] ${teamText}`}
       >
         {name}
       </p>
 
-      <div className="relative mx-auto mt-3 h-[330px] max-w-[520px] overflow-hidden rounded-2xl border border-emerald-800/25 bg-gradient-to-b from-emerald-50 to-amber-50 dark:from-emerald-950/45 dark:to-amber-950/20">
+      <div className="relative mx-auto mt-3 h-[350px] max-w-[540px] overflow-hidden rounded-2xl border border-emerald-800/25 bg-gradient-to-b from-emerald-50 to-amber-50 dark:from-emerald-950/45 dark:to-amber-950/20">
         <svg
           viewBox="0 0 350 245"
           className="absolute inset-0 h-full w-full"
@@ -185,8 +202,8 @@ function TeamDiamond({
                 </p>
               </div>
 
-              <p className="mt-1 max-w-[100px] truncate text-[9px] font-bold text-slate-600 dark:text-slate-300">
-                {surname(player?.name)}
+              <p className="mt-1 max-w-[120px] text-center text-[11px] font-black leading-[1.15] text-slate-700 dark:text-slate-200">
+                {naturalDefensePlayerName(player?.name)}
               </p>
             </div>
           );
@@ -246,9 +263,6 @@ function XDefense({
           </p>
         </div>
 
-        <span className="rounded-full border border-slate-200 px-2 py-1 text-[9px] font-black uppercase tracking-[0.07em] text-slate-400 dark:border-slate-700">
-          Pairwise
-        </span>
       </div>
 
       <div className="grid grid-cols-2 divide-x divide-slate-200 dark:divide-slate-700">
@@ -271,16 +285,11 @@ function XDefense({
             >
               <div className="flex items-center justify-between gap-2">
                 <p
-                  className={`truncate text-[11px] font-black uppercase tracking-[0.1em] ${side.tone}`}
+                  className={`text-xs font-black uppercase tracking-[0.1em] ${side.tone}`}
                 >
                   {side.name}
                 </p>
 
-                {edge ? (
-                  <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-[0.07em] text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                    Edge
-                  </span>
-                ) : null}
               </div>
 
               <p className="mt-2 text-3xl font-black tabular-nums text-slate-950 dark:text-white">
@@ -320,7 +329,7 @@ function XDefense({
       </div>
 
       <p className="border-t border-slate-200 px-4 py-2.5 text-[10px] font-bold leading-5 text-slate-500 dark:border-slate-700 dark:text-slate-300">
-        League-wide X rank is intentionally unavailable in the frozen six-team review dataset.
+        Observed X conversion = X outs divided by X chances through the pregame snapshot.
       </p>
     </div>
   );
@@ -402,12 +411,12 @@ export default function FrozenDefensePanel({
           </div>
 
           <p className="border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-[10px] font-bold leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
-            Diamond uses the most-used defender at each primary position by observed primary-position X chances. Raw Strat range/arm/error ratings are preserved.
+            Players shown are each team's most-used defender at the position in the pregame X-chance sample. Strat range/arm/error ratings are shown as recorded.
           </p>
         </>
       ) : (
         <p className="p-4 text-xs font-bold text-slate-400">
-          Frozen fielding evidence unavailable.
+          Fielding evidence unavailable.
         </p>
       )}
     </div>
