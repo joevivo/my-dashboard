@@ -329,6 +329,53 @@ def resolve_prior_series_learning(
     return candidates[-1][1]
 
 
+def require_pregame_authorized_evidence(
+    path: Path,
+    *,
+    label: str,
+) -> None:
+    """Fail closed unless optional evidence is explicitly pregame-authorized."""
+    payload = read_json(path)
+
+    if not isinstance(payload, dict):
+        raise ValueError(
+            f"{label} must be a JSON object: {path}"
+        )
+
+    authorization = payload.get("pregameAuthorization")
+
+    if not isinstance(authorization, dict):
+        raise ValueError(
+            f"{label} is not explicitly authorized for "
+            "Series Preview pregame use."
+        )
+
+    if (
+        authorization.get("status") != "AUTHORIZED"
+        or authorization.get("scope") != "SERIES_PREVIEW"
+    ):
+        raise ValueError(
+            f"{label} pregame authorization is invalid."
+        )
+
+
+def is_pregame_authorized_evidence(
+    path: Path,
+    *,
+    label: str,
+) -> bool:
+    """Return True only for explicitly authorized optional evidence."""
+    try:
+        require_pregame_authorized_evidence(
+            path,
+            label=label,
+        )
+    except (OSError, ValueError):
+        return False
+
+    return True
+
+
 def resolve_inputs(
     *,
     repo_root: Path,
@@ -655,7 +702,13 @@ def build(
                 "leagueIntelligence"
             ]
 
-            if league_intelligence is not None:
+            if (
+                league_intelligence is not None
+                and is_pregame_authorized_evidence(
+                    league_intelligence,
+                    label="League Intelligence",
+                )
+            ):
                 arguments.extend(
                     [
                         "--league-intelligence",
@@ -677,7 +730,13 @@ def build(
                 / "series-player-intelligence-v1.json"
             )
 
-            if player_intelligence.exists():
+            if (
+                player_intelligence.exists()
+                and is_pregame_authorized_evidence(
+                    player_intelligence,
+                    label="Series Player Intelligence",
+                )
+            ):
                 arguments.extend(
                     [
                         "--player-intelligence",
@@ -695,7 +754,13 @@ def build(
                 )
             )
 
-            if prior_series_learning is not None:
+            if (
+                prior_series_learning is not None
+                and is_pregame_authorized_evidence(
+                    prior_series_learning,
+                    label="Prior-Series Learning",
+                )
+            ):
                 arguments.extend(
                     [
                         "--prior-series-learning",
@@ -782,25 +847,27 @@ def build(
             ]
 
             if (
-                league_intelligence is None
-                or league_id
-                in league_intelligence_seen
+                league_intelligence is not None
+                and league_id
+                not in league_intelligence_seen
+                and is_pregame_authorized_evidence(
+                    league_intelligence,
+                    label="League Intelligence",
+                )
             ):
-                continue
+                league_intelligence_seen.add(
+                    league_id
+                )
 
-            league_intelligence_seen.add(
-                league_id
-            )
-
-            aggregate_arguments.extend(
-                [
-                    "--league-intelligence",
-                    (
-                        f"{league_id}="
-                        f"{league_intelligence}"
-                    ),
-                ]
-            )
+                aggregate_arguments.extend(
+                    [
+                        "--league-intelligence",
+                        (
+                            f"{league_id}="
+                            f"{league_intelligence}"
+                        ),
+                    ]
+                )
 
         aggregate_arguments.extend(
             [
