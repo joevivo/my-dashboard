@@ -390,16 +390,28 @@ def capture_single_page(
 
     artifact_root = (
         output_root
-        / "responses"
-        / "league-intelligence"
-        / slug
+        / Path(
+            str(
+                request.get("artifactRelativeRoot")
+                or (
+                    "responses/league-intelligence/"
+                    f"{slug}"
+                )
+            )
+        )
     )
 
     metadata_root = (
         output_root
-        / "metadata"
-        / "league-intelligence"
-        / slug
+        / Path(
+            str(
+                request.get("metadataRelativeRoot")
+                or (
+                    "metadata/league-intelligence/"
+                    f"{slug}"
+                )
+            )
+        )
     )
 
     requested_url = str(
@@ -1051,6 +1063,342 @@ def capture_paginated_pages(
             "error": str(exc),
         }
 
+
+def discover_team_ids_from_standings(
+    *,
+    output_root: Path,
+) -> list[str]:
+    standings_path = (
+        output_root
+        / "responses"
+        / "league-intelligence"
+        / "league-standings"
+        / "page-00000.html"
+    )
+
+    html = standings_path.read_text(
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    team_ids = sorted(
+        set(
+            re.findall(
+                r"href=[\"'][^\"']*/team/(\d+)(?:[\"'/?#])",
+                html,
+                flags=re.IGNORECASE,
+            )
+        ),
+        key=int,
+    )
+
+    if len(team_ids) != 12:
+        raise ValueError(
+            "Expected 12 canonical team IDs from "
+            "league standings; "
+            f"found {len(team_ids)}."
+        )
+
+    return team_ids
+
+
+def capture_team_fielding_fanout(
+    *,
+    requests: list[dict[str, Any]],
+    output_root: Path,
+) -> dict[str, Any]:
+    try:
+        team_ids = discover_team_ids_from_standings(
+            output_root=output_root,
+        )
+
+        standings_request = next(
+            request
+            for request in requests
+            if str(
+                request.get("sourceFamily")
+            )
+            == "leagueStandings"
+        )
+
+        requested_url = str(
+            standings_request.get(
+                "requestedUrl"
+            )
+            or ""
+        )
+
+        origin_match = re.match(
+            r"^(https?://[^/]+)",
+            requested_url,
+            flags=re.IGNORECASE,
+        )
+
+        if origin_match is None:
+            raise ValueError(
+                "Could not derive Strat365 origin "
+                "from leagueStandings requestedUrl."
+            )
+
+        origin = origin_match.group(1)
+
+        fanout_results: list[
+            dict[str, Any]
+        ] = []
+
+        for team_id in team_ids:
+            request = {
+                "requestId": (
+                    "league-intelligence-"
+                    "team-fielding-"
+                    f"{team_id}"
+                ),
+                "sourceFamily": (
+                    "teamFielding"
+                ),
+                "teamId": team_id,
+                "requestedUrl": (
+                    f"{origin}"
+                    f"/team/fielding/{team_id}"
+                ),
+                "required": True,
+                "captureMode": "singlePage",
+                "artifactRelativeRoot": (
+                    "responses/"
+                    "league-intelligence/"
+                    "team-fielding/"
+                    f"{team_id}"
+                ),
+                "metadataRelativeRoot": (
+                    "metadata/"
+                    "league-intelligence/"
+                    "team-fielding/"
+                    f"{team_id}"
+                ),
+            }
+
+            result = capture_single_page(
+                request=request,
+                output_root=output_root,
+            )
+
+            result["teamId"] = team_id
+
+            fanout_results.append(
+                result
+            )
+
+        failures = [
+            result
+            for result in fanout_results
+            if result.get(
+                "requestStatus"
+            )
+            != "captured"
+        ]
+
+        return {
+            "captureStatus": (
+                "PASS"
+                if not failures
+                else "FAIL"
+            ),
+            "required": True,
+            "discoveredTeamCount": len(
+                team_ids
+            ),
+            "capturedTeamCount": sum(
+                result.get(
+                    "requestStatus"
+                )
+                == "captured"
+                for result in fanout_results
+            ),
+            "failureCount": len(
+                failures
+            ),
+            "physicalRequestCount": sum(
+                int(
+                    result.get(
+                        "physicalRequestCount",
+                        0,
+                    )
+                )
+                for result
+                in fanout_results
+            ),
+            "teamIds": team_ids,
+            "requests": fanout_results,
+            "error": None,
+        }
+
+    except (
+        ValueError,
+        OSError,
+        StopIteration,
+    ) as exc:
+        return {
+            "captureStatus": "FAIL",
+            "required": True,
+            "discoveredTeamCount": 0,
+            "capturedTeamCount": 0,
+            "failureCount": 1,
+            "physicalRequestCount": 0,
+            "teamIds": [],
+            "requests": [],
+            "error": str(exc),
+        }
+
+
+
+def capture_team_offense_fanout(
+    *,
+    requests: list[dict[str, Any]],
+    output_root: Path,
+) -> dict[str, Any]:
+    try:
+        team_ids = discover_team_ids_from_standings(
+            output_root=output_root,
+        )
+
+        standings_request = next(
+            request
+            for request in requests
+            if str(
+                request.get("sourceFamily")
+            )
+            == "leagueStandings"
+        )
+
+        requested_url = str(
+            standings_request.get(
+                "requestedUrl"
+            )
+            or ""
+        )
+
+        origin_match = re.match(
+            r"^(https?://[^/]+)",
+            requested_url,
+            flags=re.IGNORECASE,
+        )
+
+        if origin_match is None:
+            raise ValueError(
+                "Could not derive Strat365 origin "
+                "from leagueStandings requestedUrl."
+            )
+
+        origin = origin_match.group(1)
+
+        fanout_results: list[
+            dict[str, Any]
+        ] = []
+
+        for team_id in team_ids:
+            request = {
+                "requestId": (
+                    "league-intelligence-"
+                    "team-offense-"
+                    f"{team_id}"
+                ),
+                "sourceFamily": (
+                    "teamOffense"
+                ),
+                "teamId": team_id,
+                "requestedUrl": (
+                    f"{origin}"
+                    f"/team/{team_id}"
+                ),
+                "required": True,
+                "captureMode": "singlePage",
+                "artifactRelativeRoot": (
+                    "responses/"
+                    "league-intelligence/"
+                    "team-offense/"
+                    f"{team_id}"
+                ),
+                "metadataRelativeRoot": (
+                    "metadata/"
+                    "league-intelligence/"
+                    "team-offense/"
+                    f"{team_id}"
+                ),
+            }
+
+            result = capture_single_page(
+                request=request,
+                output_root=output_root,
+            )
+
+            result["teamId"] = team_id
+
+            fanout_results.append(
+                result
+            )
+
+        failures = [
+            result
+            for result in fanout_results
+            if result.get(
+                "requestStatus"
+            )
+            != "captured"
+        ]
+
+        return {
+            "captureStatus": (
+                "PASS"
+                if not failures
+                else "FAIL"
+            ),
+            "required": True,
+            "discoveredTeamCount": len(
+                team_ids
+            ),
+            "capturedTeamCount": sum(
+                result.get(
+                    "requestStatus"
+                )
+                == "captured"
+                for result in fanout_results
+            ),
+            "failureCount": len(
+                failures
+            ),
+            "physicalRequestCount": sum(
+                int(
+                    result.get(
+                        "physicalRequestCount",
+                        0,
+                    )
+                )
+                for result
+                in fanout_results
+            ),
+            "teamIds": team_ids,
+            "requests": fanout_results,
+            "error": None,
+        }
+
+    except (
+        ValueError,
+        OSError,
+        StopIteration,
+    ) as exc:
+        return {
+            "captureStatus": "FAIL",
+            "required": True,
+            "discoveredTeamCount": 0,
+            "capturedTeamCount": 0,
+            "failureCount": 1,
+            "physicalRequestCount": 0,
+            "teamIds": [],
+            "requests": [],
+            "error": str(exc),
+        }
+
+
 def execute(
     *,
     plan_path: Path,
@@ -1154,6 +1502,20 @@ def execute(
             result
         )
 
+    team_fielding_fanout = (
+        capture_team_fielding_fanout(
+            requests=requests,
+            output_root=output_root,
+        )
+    )
+
+    team_offense_fanout = (
+        capture_team_offense_fanout(
+            requests=requests,
+            output_root=output_root,
+        )
+    )
+
     required_failures = [
         result
         for result in results
@@ -1178,20 +1540,44 @@ def execute(
         )
     ]
 
-    physical_request_count = sum(
-        int(
-            result[
-                "physicalRequestCount"
-            ]
+    physical_request_count = (
+        sum(
+            int(
+                result[
+                    "physicalRequestCount"
+                ]
+            )
+            for result in results
         )
-        for result in results
+        + int(
+            team_fielding_fanout.get(
+                "physicalRequestCount",
+                0,
+            )
+        )
+        + int(
+            team_offense_fanout.get(
+                "physicalRequestCount",
+                0,
+            )
+        )
     )
 
     manifest = {
         "schemaVersion": SCHEMA_VERSION,
         "captureStatus": (
             "PASS"
-            if not required_failures
+            if (
+                not required_failures
+                and team_fielding_fanout.get(
+                    "captureStatus"
+                )
+                == "PASS"
+                and team_offense_fanout.get(
+                    "captureStatus"
+                )
+                == "PASS"
+            )
             else "FAIL"
         ),
         "capturedAtUtc": utc_now(),
@@ -1238,6 +1624,12 @@ def execute(
         "canonicalDataChanged": False,
         "gameCaptureContractChanged": False,
         "bieOwnsSortingAndAnalysis": True,
+        "teamFieldingFanout": (
+            team_fielding_fanout
+        ),
+        "teamOffenseFanout": (
+            team_offense_fanout
+        ),
         "requests": results,
     }
 
