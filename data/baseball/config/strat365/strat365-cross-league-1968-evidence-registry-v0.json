@@ -1,0 +1,170 @@
+{
+    "schemaVersion":  "v0",
+    "artifactType":  "strat365CrossLeague1968EvidenceRegistry",
+    "registryPurpose":  "Supplemental verified 1968 cross-league evidence corpus",
+    "sourceSystem":  "Strat-O-Matic 365",
+    "evidencePolicy":  {
+                           "activeLeagueEvidencePriority":  "primary",
+                           "crossLeagueEvidencePriority":  "supplemental",
+                           "samePlayerSameCardSameSeasonPreferred":  true,
+                           "provenanceRequired":  true,
+                           "sampleGovernanceRequired":  true,
+                           "uiSurface":  "existingBIEReadsOnly"
+                       },
+    "spoilerPolicy":  {
+                          "defaultState":  "sealed",
+                          "postgameEvidenceExposure":  "prohibitedUnlessExplicitlyUnlocked"
+                      },
+    "teams":  [
+                  {
+                      "leagueId":  "479384",
+                      "teamId":  "1851987",
+                      "playerSetYear":  1968,
+                      "season":  "1968",
+                      "active":  false,
+                      "leagueUrl":  "https://365.strat-o-matic.com/league/479384",
+                      "teamUrl":  "https://365.strat-o-matic.com/team/1851987",
+                      "evidenceRole":  "supplemental",
+                      "evidenceScope":  "crossLeague1968",
+                      "provenanceClass":  "verifiedCrossLeague1968",
+                      "eligibility":  {
+                                          "playerSet":  "1968 season",
+                                          "dhRule":  "no",
+                                          "teamCount":  12,
+                                          "aquariumPresent":  false,
+                                          "verificationStatus":  "verified"
+                                      },
+                      "pregameSources":  [
+                                             {
+                                                 "sourceFamily":  "leagueStandings",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueBatting",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leaguePitching",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueLeaders",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueTeamStats",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueTeamFielding",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueManagers",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueAwards",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                                                 "required":  true
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueInjuries",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                                                 "required":  false
+                                             },
+                                             {
+                                                 "sourceFamily":  "leagueTransactions",
+                                                 "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                                                 "required":  false
+                                             }
+                                         ],
+                      "postgameLeagueSources":  [
+                                                    {
+                                                        "sourceFamily":  "leagueStandings",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueBatting",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/batting/{leagueId}/all/ops/1",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leaguePitching",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/players/pitching/{leagueId}/all/era/1",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueLeaders",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/leaders/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueTeamStats",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueTeamFielding",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/teams/fielding/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueManagers",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/managers/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueAwards",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/stats/awards/{leagueId}",
+                                                        "required":  true
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueInjuries",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/injuries/{leagueId}",
+                                                        "required":  false
+                                                    },
+                                                    {
+                                                        "sourceFamily":  "leagueTransactions",
+                                                        "urlTemplate":  "https://365.strat-o-matic.com/league/transactions/{leagueId}",
+                                                        "required":  false
+                                                    }
+                                                ],
+                      "gameSources":  [
+                                          {
+                                              "sourceFamily":  "gameRecap",
+                                              "urlTemplate":  "https://365.strat-o-matic.com/game/{leagueId}/{gameId}",
+                                              "required":  true
+                                          },
+                                          {
+                                              "sourceFamily":  "gamePlayByPlay",
+                                              "urlTemplate":  "https://365.strat-o-matic.com/game/playbyplay/{leagueId}/{gameId}",
+                                              "required":  true
+                                          },
+                                          {
+                                              "sourceFamily":  "gameReplay",
+                                              "urlTemplate":  "https://365.strat-o-matic.com/game/replay/{leagueId}/{gameId}",
+                                              "required":  true
+                                          }
+                                      ]
+                  }
+              ],
+    "validation":  {
+                       "leagueId":  "479384",
+                       "seedTeamId":  "1851987",
+                       "playerSetYear":  1968,
+                       "dhRule":  "no",
+                       "verifiedTeamCount":  12,
+                       "aquariumPresent":  false,
+                       "sourceContractOriginLeagueId":  "479336",
+                       "sourceContractOriginTeamId":  "1851052"
+                   }
+}
