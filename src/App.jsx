@@ -31,6 +31,7 @@ import MusicLibrary from "./MusicLibrary";
 
 import MusicTimeMachine from "./music/components/MusicTimeMachine";
 import MusicDashboard from "./MusicDashboard";
+import { musicPrimaryNavItems } from "./music/musicNavigation";
 
 import BooksView from "./BooksView";
 
@@ -876,10 +877,7 @@ export default function App() {
           title: "Personal Intelligence",
           items: [
             ["IntelligenceHome", "Intelligence Home"],
-            ["MusicDashboard", "Music Dashboard"],
-            ["QueryWorkbench", "Query Workbench"],
-            ["Music", "Music Intelligence"],
-            ["PlaylistIntelligence", "Playlist Intelligence"],
+            ...musicPrimaryNavItems,
             ["Books", "Books"],
             ["Notes", "Notes"],
           ],
