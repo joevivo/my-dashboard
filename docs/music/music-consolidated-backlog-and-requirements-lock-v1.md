@@ -281,8 +281,7 @@ Recent accepted repository work includes:
 
 ### 5.3 Verified implementation checkpoints
 
-The following implementation checkpoints are present at repository state
-`b0c82c6`:
+The following implementation checkpoints are verified in repository history:
 
 - Artist Comparative Standing v1 is implemented end to end:
   - `f43606a Implement Comparative Standing runtime adapters`
@@ -292,6 +291,13 @@ The following implementation checkpoints are present at repository state
   - `3e89912 Add indexed Comparative Standing cache`
 - Music Time Machine structured v1 is mounted at `e661fb8`.
 - Artist Dossier contract alignment is complete at `b0c82c6`.
+- Music navigation ownership isolation is complete at `9562b3e`:
+  - primary Music navigation metadata was extracted from `src/App.jsx` to
+    `src/music/musicNavigation.js`;
+  - existing Music labels, ordering, and routing behavior were preserved;
+  - frontend build and staged diff validation passed;
+  - the `music-intelligence` branch checkpoint was pushed to
+    `origin/music-intelligence`.
 - Period Intelligence remains complete for v1 as recorded in section 5.1.
 - Artist Investigation remains complete for its current v1 behavior as recorded
   in section 5.2.
@@ -312,14 +318,16 @@ Acceptance requires:
 - stale sprint, working-tree, and implementation-priority statements are
   identified;
 - remaining work is assigned an explicit status;
-- the roadmap statement naming Period Intelligence as the next vertical slice is
-  recorded as stale and queued for a separate documentation correction;
+- the roadmap Current Focus is verified as already aligned to the Canonical
+  Artist Summary Contract v1; no separate roadmap correction is required;
 - implementation dependencies are explicit;
 - the revised priority order is approved by Ginto;
 - only this backlog document is committed and pushed in the reconciliation
   checkpoint.
 
-No feature implementation begins before this acceptance.
+No further feature implementation begins before this acceptance. The completed
+Music navigation ownership-isolation checkpoint in section 5.3 is recorded as a
+repository-hygiene exception and does not change the next vertical-slice gate.
 
 ### Implemented contract lock - Artist Comparative Standing
 
@@ -861,14 +869,14 @@ After approval:
 1. commit and push only this reconciled backlog document;
 2. confirm the Music scope and staging area are clean and synchronized while
    preserving explicitly unrelated repository changes;
-3. correct the stale roadmap Current Focus statement in a separate
-   documentation-only checkpoint;
+3. verify the roadmap Current Focus remains aligned to the Canonical Artist
+   Summary Contract v1; no separate roadmap correction is required;
 4. begin the canonical Artist summary contract v1 vertical slice;
 5. do not broaden the slice without updating this backlog.
 
 The recommended next implementation slice is:
 
-`Artist Comparative Standing contract and comparison-population design`
+`Canonical Artist Summary Contract v1`
 
-Feature implementation remains prohibited until the backlog checkpoint is
+Further feature implementation remains prohibited until the backlog checkpoint is
 approved, committed, and pushed.
