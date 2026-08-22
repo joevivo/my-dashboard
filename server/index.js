@@ -857,6 +857,178 @@ function parseStratStandings(html) {
   }));
 }
 
+let stratSeriesPreviewRefreshState = {
+  status: "IDLE",
+  jobId: null,
+  leagueDate: null,
+  startedAt: null,
+  completedAt: null,
+  activeTeamCount: null,
+  failureType: null,
+};
+
+app.get(
+  "/api/strat/series-preview/refresh/status",
+  (req, res) => {
+    res.json({
+      schemaVersion:
+        "bie.strat365.series-preview-refresh-status.v0",
+      ...stratSeriesPreviewRefreshState,
+    });
+  }
+);
+
+app.post("/api/strat/series-preview/refresh", (req, res) => {
+  if (stratSeriesPreviewRefreshState.status === "RUNNING") {
+    return res.status(409).json({
+      error: "Series Preview refresh already running",
+      jobId: stratSeriesPreviewRefreshState.jobId,
+      status: "RUNNING",
+    });
+  }
+
+  const requestedLeagueDate =
+    typeof req.body?.leagueDate === "string"
+      ? req.body.leagueDate.trim()
+      : "";
+
+  if (
+    requestedLeagueDate &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(requestedLeagueDate)
+  ) {
+    return res.status(400).json({
+      error: "Invalid league date",
+      detail: "leagueDate must use YYYY-MM-DD format",
+    });
+  }
+
+  const chicagoLeagueDate =
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+
+  const leagueDate =
+    requestedLeagueDate || chicagoLeagueDate;
+
+  const jobId =
+    `series-preview-refresh-${Date.now()}`;
+
+  const startedAt =
+    new Date().toISOString();
+
+  const scriptPath = path.resolve(
+    "baseball",
+    "automation",
+    "refresh_strat365_active_series_previews_v0.py"
+  );
+
+  stratSeriesPreviewRefreshState = {
+    status: "RUNNING",
+    jobId,
+    leagueDate,
+    startedAt,
+    completedAt: null,
+    activeTeamCount: null,
+    failureType: null,
+  };
+
+  execFile(
+    "python",
+    [
+      scriptPath,
+      "--repo-root",
+      process.cwd(),
+      "--league-date",
+      leagueDate,
+    ],
+    {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        PYTHONUTF8: "1",
+      },
+      maxBuffer: 10 * 1024 * 1024,
+    },
+    (scriptError, stdout, stderr) => {
+      const completedAt =
+        new Date().toISOString();
+
+      if (scriptError) {
+        console.error(
+          "BIE Series Preview refresh error:",
+          scriptError
+        );
+
+        stratSeriesPreviewRefreshState = {
+          status: "FAIL",
+          jobId,
+          leagueDate,
+          startedAt,
+          completedAt,
+          activeTeamCount: null,
+          failureType:
+            scriptError?.name || "RefreshProcessError",
+        };
+
+        return;
+      }
+
+      try {
+        const payload = JSON.parse(stdout);
+
+        stratSeriesPreviewRefreshState = {
+          status:
+            payload?.status === "PASS"
+              ? "PASS"
+              : "FAIL",
+          jobId,
+          leagueDate,
+          startedAt,
+          completedAt,
+          activeTeamCount:
+            Number.isFinite(
+              Number(payload?.activeTeamCount)
+            )
+              ? Number(payload.activeTeamCount)
+              : null,
+          failureType:
+            payload?.status === "PASS"
+              ? null
+              : "RefreshReportedFailure",
+        };
+      } catch (parseError) {
+        console.error(
+          "BIE Series Preview refresh parse error:",
+          parseError
+        );
+
+        stratSeriesPreviewRefreshState = {
+          status: "FAIL",
+          jobId,
+          leagueDate,
+          startedAt,
+          completedAt,
+          activeTeamCount: null,
+          failureType: "RefreshResultParseError",
+        };
+      }
+    }
+  );
+
+  return res.status(202).json({
+    accepted: true,
+    status: "RUNNING",
+    jobId,
+    leagueDate,
+    statusUrl:
+      "/api/strat/series-preview/refresh/status",
+  });
+});
+
 app.get("/api/strat/active-teams", (req, res) => {
   try {
     const aggregateFile =

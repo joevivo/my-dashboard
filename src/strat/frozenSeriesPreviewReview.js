@@ -2,7 +2,7 @@ import preview479336 from "./frozenSeriesPreview.479336.1851052.json";
 import preview479431 from "./frozenSeriesPreview.479431.1853975.json";
 import preview479610 from "./frozenSeriesPreview.479610.1854215.json";
 
-export const FROZEN_STRAT_REVIEW_ENABLED = true;
+export const FROZEN_STRAT_REVIEW_ENABLED = false;
 
 export const FROZEN_STRAT_REVIEW_ID =
   "pre-10pm-20260816-201815";

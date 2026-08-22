@@ -245,6 +245,7 @@ def locate_schedule_table(
 def parse_rows(
     headers: list[str],
     rows: list[list[Cell]],
+    league_id: str,
     as_of: date,
 ) -> list[dict[str, Any]]:
     header_map = {
@@ -301,9 +302,22 @@ def parse_rows(
                 row[number_index].text
             )
 
+        game_prefix = f"/game/{league_id}/"
+        completed = any(
+            game_prefix in href
+            and href.split(game_prefix, 1)[1]
+            .split("/", 1)[0]
+            .split("?", 1)[0]
+            .split("#", 1)[0]
+            .isdigit()
+            for cell in row
+            for href, _ in cell.links
+        )
+
         parsed.append(
             {
                 "scheduleGameNumber": schedule_number,
+                "completed": completed,
                 "scheduledDate": schedule_date.isoformat(),
                 "opponentDisplayName": display_name,
                 "opponentTeamId": opponent_team_id,
@@ -321,10 +335,29 @@ def select_next_series(
     rows: list[dict[str, Any]],
     as_of: date,
 ) -> dict[str, Any]:
+    ordered = sorted(
+        (
+            row
+            for row in rows
+            if row["scheduleGameNumber"] is not None
+        ),
+        key=lambda row: row["scheduleGameNumber"],
+    )
+
+    completed_numbers = [
+        row["scheduleGameNumber"]
+        for row in ordered
+        if row.get("completed")
+    ]
+
+    last_completed_game_number = (
+        max(completed_numbers) if completed_numbers else 0
+    )
+
     future = [
         row
-        for row in rows
-        if date.fromisoformat(row["scheduledDate"]) > as_of
+        for row in ordered
+        if row["scheduleGameNumber"] > last_completed_game_number
     ]
 
     if not future:
@@ -339,28 +372,15 @@ def select_next_series(
         }
 
     first = future[0]
+    first_game_number = first["scheduleGameNumber"]
 
-    identity = (
-        first["scheduledDate"],
-        first["opponentTeamId"],
-        first["opponentDisplayName"],
-        first["homeAway"],
-    )
-
-    series_rows: list[dict[str, Any]] = []
-
-    for row in future:
-        row_identity = (
-            row["scheduledDate"],
-            row["opponentTeamId"],
-            row["opponentDisplayName"],
-            row["homeAway"],
-        )
-
-        if row_identity != identity:
-            break
-
-        series_rows.append(row)
+    series_rows = [
+        row
+        for row in future
+        if row["opponentTeamId"] == first["opponentTeamId"]
+        and row["scheduleGameNumber"] >= first_game_number
+        and row["scheduleGameNumber"] <= first_game_number + 2
+    ]
 
     game_numbers = [
         row["scheduleGameNumber"]
@@ -395,7 +415,7 @@ def build_output(
     parser.feed(text)
 
     headers, rows = locate_schedule_table(parser)
-    parsed_rows = parse_rows(headers, rows, as_of)
+    parsed_rows = parse_rows(headers, rows, league_id, as_of)
     next_series = select_next_series(parsed_rows, as_of)
 
     return {

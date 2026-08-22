@@ -4220,6 +4220,12 @@ export default function SeriesPreview({
   const [series, setSeries] = useState(null);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  const [refreshStatus, setRefreshStatus] =
+    useState("idle");
+  const [refreshError, setRefreshError] =
+    useState("");
+  const [refreshVersion, setRefreshVersion] =
+    useState(0);
 
   const requestUrl = useMemo(() => {
     if (
@@ -4293,7 +4299,125 @@ export default function SeriesPreview({
     return () => {
       cancelled = true;
     };
-  }, [requestUrl]);
+  }, [requestUrl, refreshVersion]);
+
+  const refreshSeriesPreview = async () => {
+    if (refreshStatus === "running") {
+      return;
+    }
+
+    setRefreshStatus("running");
+    setRefreshError("");
+
+    try {
+      const startResponse = await fetch(
+        `${apiBase}/api/strat/series-preview/refresh`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: "{}",
+        },
+      );
+
+      if (
+        !startResponse.ok &&
+        startResponse.status !== 409
+      ) {
+        throw new Error(
+          `Series Preview refresh request failed (${startResponse.status})`
+        );
+      }
+
+      let finalStatus = null;
+
+      for (let attempt = 0; attempt < 120; attempt += 1) {
+        if (attempt > 0) {
+          await new Promise((resolve) => {
+            window.setTimeout(resolve, 2000);
+          });
+        }
+
+        const statusResponse = await fetch(
+          `${apiBase}/api/strat/series-preview/refresh/status`
+        );
+
+        if (!statusResponse.ok) {
+          throw new Error(
+            `Series Preview refresh status failed (${statusResponse.status})`
+          );
+        }
+
+        const statusPayload =
+          await statusResponse.json();
+
+        if (statusPayload?.status === "PASS") {
+          finalStatus = "PASS";
+          break;
+        }
+
+        if (statusPayload?.status === "FAIL") {
+          throw new Error(
+            "Series Preview refresh did not complete successfully."
+          );
+        }
+      }
+
+      if (finalStatus !== "PASS") {
+        throw new Error(
+          "Series Preview refresh timed out."
+        );
+      }
+
+      setRefreshStatus("pass");
+      setRefreshError("");
+      setRefreshVersion((value) => value + 1);
+    } catch (refreshRequestError) {
+      setRefreshStatus("error");
+      setRefreshError(
+        refreshRequestError?.message ||
+          String(refreshRequestError)
+      );
+    }
+  };
+
+  const refreshControl = (
+    <div className="flex items-center gap-2">
+      {refreshStatus === "pass" ? (
+        <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-300">
+          Refreshed
+        </span>
+      ) : null}
+
+      {refreshStatus === "error" ? (
+        <span
+          className="text-[10px] font-bold uppercase tracking-[0.1em] text-rose-300"
+          title={refreshError}
+        >
+          Refresh failed
+        </span>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={refreshSeriesPreview}
+        disabled={refreshStatus === "running"}
+        title={
+          refreshStatus === "error"
+            ? refreshError
+            : "Refresh active Series Preview evidence"
+        }
+        className="rounded-full border border-slate-600 bg-slate-900/80 px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] text-slate-200 transition hover:border-cyan-400 hover:text-cyan-200 disabled:cursor-wait disabled:opacity-60"
+      >
+        {refreshStatus === "running"
+          ? "Refreshing..."
+          : refreshStatus === "error"
+            ? "Retry Refresh"
+            : "Refresh Preview"}
+      </button>
+    </div>
+  );
 
   if (!selection) {
     return (
@@ -4318,6 +4442,10 @@ export default function SeriesPreview({
   if (status === "error") {
     return (
       <div className="p-6">
+        <div className="mb-4 flex justify-end">
+          {refreshControl}
+        </div>
+
         <GatedModule
           title="Series Preview unavailable"
           status="EVIDENCE_GATED"
@@ -4410,7 +4538,7 @@ export default function SeriesPreview({
   if (!payload) {
     return (
       <div className="min-h-full bg-slate-100/70 p-4 sm:p-6 dark:bg-slate-950">
-        <div className="mb-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           {onBack ? (
             <button
               type="button"
@@ -4419,7 +4547,11 @@ export default function SeriesPreview({
             >
               ← Active Teams
             </button>
-          ) : null}
+          ) : (
+            <span />
+          )}
+
+          {refreshControl}
         </div>
 
         <GatedModule
@@ -4505,9 +4637,13 @@ export default function SeriesPreview({
             </p>
           </div>
 
-          <span className="rounded-full border border-slate-700 bg-slate-900/70 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-slate-300">
-            Pregame
-          </span>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <span className="rounded-full border border-slate-700 bg-slate-900/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-300">
+              Pregame
+            </span>
+
+            {refreshControl}
+          </div>
         </div>
 
         <div className="relative overflow-hidden px-5 py-8 sm:px-8 lg:px-10 lg:py-10">

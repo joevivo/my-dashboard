@@ -271,22 +271,66 @@ def build_side(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--league-intelligence", required=True)
-    parser.add_argument("--hitting-streaks", required=True)
+    parser.add_argument("--hitting-streaks")
+    parser.add_argument(
+        "--pregame-safe",
+        action="store_true",
+    )
     parser.add_argument("--team-id", required=True)
     parser.add_argument("--opponent-team-id", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
     intelligence_path = Path(args.league_intelligence)
-    streak_path = Path(args.hitting_streaks)
+    streak_path = (
+        Path(args.hitting_streaks)
+        if args.hitting_streaks
+        else None
+    )
     output_path = Path(args.output)
+
+    if streak_path is None and not args.pregame_safe:
+        raise ValueError(
+            "--hitting-streaks is required unless "
+            "--pregame-safe is used"
+        )
+
+    if streak_path is not None and args.pregame_safe:
+        raise ValueError(
+            "--pregame-safe deliberately excludes "
+            "--hitting-streaks"
+        )
 
     intelligence = json.loads(
         intelligence_path.read_text(encoding="utf-8")
     )
-    streak_evidence = json.loads(
-        streak_path.read_text(encoding="utf-8")
+    streak_evidence = (
+        json.loads(
+            streak_path.read_text(encoding="utf-8")
+        )
+        if streak_path is not None
+        else {}
     )
+
+    league_authorization = (
+        intelligence.get("pregameAuthorization") or {}
+    )
+
+    pregame_authorized = (
+        args.pregame_safe
+        and league_authorization.get(
+            "status"
+        ) == "AUTHORIZED"
+        and league_authorization.get(
+            "scope"
+        ) == "SERIES_PREVIEW"
+    )
+
+    if args.pregame_safe and not pregame_authorized:
+        raise ValueError(
+            "pregame-safe player intelligence requires "
+            "authorized league intelligence"
+        )
 
     teams = intelligence.get("teams") or []
     players = intelligence.get("players") or {}
@@ -337,6 +381,14 @@ def main() -> int:
             "series-preview-player-intelligence",
         "generatedAtUtc":
             datetime.now(timezone.utc).isoformat(),
+        "pregameAuthorization": (
+            {
+                "status": "AUTHORIZED",
+                "scope": "SERIES_PREVIEW",
+            }
+            if pregame_authorized
+            else None
+        ),
         "leagueId": str(intelligence.get("leagueId")),
         "leagueDate": intelligence.get("leagueDate"),
         "team": build_side(
@@ -356,22 +408,38 @@ def main() -> int:
         "sourceEvidence": {
             "leagueIntelligence":
                 str(intelligence_path).replace("\\", "/"),
-            "hittingStreaks":
-                str(streak_path).replace("\\", "/"),
-            "hittingStreakSourceFamily":
-                "leagueLeaders",
-            "leagueLeaders":
-                str(streak_path).replace("\\", "/"),
-            "leagueLeaderSourceFamily":
-                "leagueLeaders",
+            **(
+                {
+                    "hittingStreaks":
+                        str(streak_path).replace("\\", "/"),
+                    "hittingStreakSourceFamily":
+                        "leagueLeaders",
+                    "leagueLeaders":
+                        str(streak_path).replace("\\", "/"),
+                    "leagueLeaderSourceFamily":
+                        "leagueLeaders",
+                }
+                if streak_path is not None
+                else {}
+            ),
         },
         "evidenceGates": {
             "seasonPlayerPerformance": "AVAILABLE",
-            "activeHittingStreaks": "AVAILABLE",
-            "leagueLeaderContext": (
+            "activeHittingStreaks": (
                 "AVAILABLE"
-                if league_leader_payload.get("categoryCount")
-                else "NOT_AVAILABLE"
+                if streak_path is not None
+                else "WITHHELD_PREGAME_SAFETY"
+            ),
+            "leagueLeaderContext": (
+                "WITHHELD_PREGAME_SAFETY"
+                if streak_path is None
+                else (
+                    "AVAILABLE"
+                    if league_leader_payload.get(
+                        "categoryCount"
+                    )
+                    else "NOT_AVAILABLE"
+                )
             ),
             "recentPlayerForm": "NOT_YET_NORMALIZED",
             "injuryAvailability": "NOT_YET_NORMALIZED",

@@ -266,6 +266,154 @@ def parse_team_table(
     return result
 
 
+def parse_team_fielding_x_chances(
+    path: Path,
+) -> dict[str, Any]:
+    tables = parse_tables(path)
+
+    for table in tables:
+        if not table:
+            continue
+
+        header = table[0]
+
+        x_total_indexes = [
+            index
+            for index, value in enumerate(header)
+            if value.strip() == "X Tot"
+        ]
+
+        x_out_indexes = [
+            index
+            for index, value in enumerate(header)
+            if value.strip() == "X Out"
+        ]
+
+        if (
+            not x_total_indexes
+            or not x_out_indexes
+        ):
+            continue
+
+        # Strat's team fielding table exposes
+        # Primary Pos X Tot/X Out first and
+        # All Pos X Tot/X Out later.  Select
+        # the final pair explicitly.
+        x_total_index = x_total_indexes[-1]
+        x_out_index = x_out_indexes[-1]
+
+        for row in table[1:]:
+            if not row:
+                continue
+
+            label = row[0].strip()
+
+            if not is_total_team(label):
+                continue
+
+            if (
+                x_total_index >= len(row)
+                or x_out_index >= len(row)
+            ):
+                continue
+
+            x_total = integer(
+                row[x_total_index]
+            )
+
+            x_out = integer(
+                row[x_out_index]
+            )
+
+            if (
+                x_total is None
+                or x_out is None
+            ):
+                continue
+
+            if x_out > x_total:
+                raise ValueError(
+                    "Team fielding X Outs exceed "
+                    "X Chances: "
+                    f"{path}"
+                )
+
+            return {
+                "xTotal": x_total,
+                "xOut": x_out,
+                "xConversion": ratio(
+                    x_out,
+                    x_total,
+                ),
+                "scope": "ALL_POS_TOTALS",
+            }
+
+    raise ValueError(
+        "Could not locate All Pos X Tot/X Out "
+        f"team total in {path}."
+    )
+
+
+def load_team_fielding_x_chances(
+    *,
+    responses: Path,
+) -> dict[str, dict[str, Any]]:
+    root = (
+        responses
+        / "team-fielding"
+    )
+
+    # Preserve compatibility with historical
+    # capture roots created before the X-chance
+    # physical fanout was introduced.
+    if not root.exists():
+        return {}
+
+    result: dict[
+        str,
+        dict[str, Any],
+    ] = {}
+
+    team_dirs = sorted(
+        [
+            item
+            for item in root.iterdir()
+            if (
+                item.is_dir()
+                and item.name.isdigit()
+            )
+        ],
+        key=lambda item: int(item.name),
+    )
+
+    for team_dir in team_dirs:
+        page = (
+            team_dir
+            / "page-00000.html"
+        )
+
+        if not page.exists():
+            raise ValueError(
+                "Missing team fielding capture: "
+                f"{page}"
+            )
+
+        result[team_dir.name] = (
+            parse_team_fielding_x_chances(
+                page
+            )
+        )
+
+    if len(result) != 12:
+        raise ValueError(
+            "Expected 12 parsed team fielding "
+            "X-chance captures; "
+            f"found {len(result)}."
+        )
+
+    return result
+
+
 def parse_standings(
     table: list[list[str]],
 ) -> dict[str, dict[str, Any]]:
@@ -782,6 +930,12 @@ def build(
         / "league-intelligence"
     )
 
+    team_fielding_x_by_id = (
+        load_team_fielding_x_chances(
+            responses=responses,
+        )
+    )
+
     standings_tables = parse_tables(
         responses
         / "league-standings"
@@ -1050,19 +1204,83 @@ def build(
             "match standings."
         )
 
-    fielding = resolve_alias_collection_globally(
-        fielding,
-        standings,
-        "fielding",
-        fielding_explicit_aliases,
+    # PRESEASON_ZERO_STAT_FIELDING_FALLBACK
+    preseason_zero_stat_baseline = (
+        bool(standings)
+        and all(
+            standing["metrics"]["wins"] == 0
+            and standing["metrics"]["losses"] == 0
+            for standing in standings.values()
+        )
     )
+    try:
+        fielding = resolve_alias_collection_globally(
+            fielding,
+            standings,
+            "fielding",
+            fielding_explicit_aliases,
+        )
+    except ValueError as exc:
+        if (
+            preseason_zero_stat_baseline
+            and str(exc) == (
+                "fielding global resolution did not cover "
+                "every canonical team."
+            )
+        ):
+            # Preserve canonical team identity without
+            # fabricating zero fielding statistics.
+            # Independently captured X-chance evidence
+            # is attached later by canonical team ID.
+            fielding = {
+                canonical_key: {
+                    "teamName": standing["teamName"],
+                    "raw": {},
+                    "evidenceStatus": (
+                        "PRESEASON_IDENTITY_ONLY"
+                    ),
+                }
+                for canonical_key, standing
+                in standings.items()
+            }
+        else:
+            raise
 
-    managers = resolve_alias_collection_globally(
-        managers,
-        standings,
-        "managers",
-        manager_explicit_aliases,
-    )
+    if (
+        preseason_zero_stat_baseline
+        and not managers
+    ):
+        managers = {
+            canonical_key: {
+                "teamName": standing["teamName"],
+                "raw": [],
+                "metrics": {
+                    "stolenBases": None,
+                    "caughtStealing": None,
+                    "stolenBasePct": None,
+                    "sacrifices": None,
+                    "sacrificeAttempts": None,
+                    "squeezes": None,
+                    "squeezeAttempts": None,
+                    "hitAndRuns": None,
+                    "hitAndRunAttempts": None,
+                    "advance": None,
+                    "intentionalWalks": None,
+                },
+                "evidenceStatus": (
+                    "PRESEASON_IDENTITY_ONLY"
+                ),
+            }
+            for canonical_key, standing
+            in standings.items()
+        }
+    else:
+        managers = resolve_alias_collection_globally(
+            managers,
+            standings,
+            "managers",
+            manager_explicit_aliases,
+        )
 
     collections = {
         "standings": standings,
@@ -1134,6 +1352,25 @@ def build(
             {"OSB%", "AVG"},
         )
 
+        x_chances = (
+            team_fielding_x_by_id.get(
+                str(standing["teamId"]),
+                {},
+            )
+        )
+
+        fielding_metrics["xTotal"] = (
+            x_chances.get("xTotal")
+        )
+
+        fielding_metrics["xOut"] = (
+            x_chances.get("xOut")
+        )
+
+        fielding_metrics["xConversion"] = (
+            x_chances.get("xConversion")
+        )
+
         runs = pitching_metrics["R"]
         earned = pitching_metrics["ER"]
 
@@ -1169,6 +1406,9 @@ def build(
                 "fielding": {
                     "raw": fielding_raw,
                     "metrics": fielding_metrics,
+                    "evidenceStatus": fielding[key].get(
+                        "evidenceStatus"
+                    ),
                 },
                 "manager": managers[key],
                 "derived": {
@@ -1249,6 +1489,13 @@ def build(
 
     rank_values(
         teams,
+        lambda team: team["fielding"]["metrics"]["xConversion"],
+        "xConversionRank",
+        True,
+    )
+
+    rank_values(
+        teams,
         lambda team: team["derived"]["unearnedRunsAllowed"],
         "fewestUnearnedRunsAllowedRank",
         False,
@@ -1308,6 +1555,10 @@ def build(
         ),
     )
 
+    pregame_authorized = (
+        str(manifest.get("phase") or "").lower() == "pregame"
+    )
+
     return {
         "schemaVersion": SCHEMA_VERSION,
         "leagueId": str(
@@ -1321,6 +1572,14 @@ def build(
         ),
         "sourceManifestSha256": sha256_file(
             manifest_path
+        ),
+        "pregameAuthorization": (
+            {
+                "status": "AUTHORIZED",
+                "scope": "SERIES_PREVIEW",
+            }
+            if pregame_authorized
+            else None
         ),
         "teamCount": len(teams),
         "batterCount": len(batters),

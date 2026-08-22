@@ -707,6 +707,50 @@ def summarize_league_profile(
         derived.get("ranks")
     )
 
+
+    # SERIES_LATE_INNINGS_SAVE_CONTEXT_V1
+    late_innings_pitching = as_dict(
+        team.get("pitching")
+    )
+    late_innings_metrics = as_dict(
+        late_innings_pitching.get("metrics")
+    )
+    late_innings_raw = as_dict(
+        late_innings_pitching.get("raw")
+    )
+    late_innings_saves_value = (
+        late_innings_metrics.get("S")
+        if late_innings_metrics.get("S") is not None
+        else late_innings_raw.get("S")
+    )
+    late_innings_blown_value = (
+        late_innings_metrics.get("BS")
+        if late_innings_metrics.get("BS") is not None
+        else late_innings_raw.get("BS")
+    )
+    late_innings_saves = int(
+        as_number(late_innings_saves_value)
+    )
+    late_innings_blown_saves = int(
+        as_number(late_innings_blown_value)
+    )
+    late_innings_save_opportunities = (
+        late_innings_saves
+        + late_innings_blown_saves
+    )
+    late_innings_save_conversion = (
+        round(
+            (
+                late_innings_saves
+                / late_innings_save_opportunities
+            )
+            * 100,
+            1,
+        )
+        if late_innings_save_opportunities > 0
+        else None
+    )
+
     return {
         "teamId": str(
             team.get("teamId") or ""
@@ -793,6 +837,10 @@ def summarize_league_profile(
                     ranks.get("whipRank")
                 )
             ),
+            "saves": late_innings_saves,
+            "blownSaves": late_innings_blown_saves,
+            "saveOpportunities": late_innings_save_opportunities,
+            "saveConversion": late_innings_save_conversion,
         },
         "defense": {
             "errors": int(
