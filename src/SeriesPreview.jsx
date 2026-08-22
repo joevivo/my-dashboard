@@ -1532,9 +1532,6 @@ function LeagueEdgeScoreboard({
             League rank
           </p>
 
-          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
-            1st is best
-          </p>
         </div>
 
         <div className="text-right">
@@ -1607,19 +1604,8 @@ function LeagueEdgeScoreboard({
                 {row.context}
               </p>
 
-              <p
-                className={
-                  row.higherBetter
-                    ? "mt-1 text-[9px] font-black uppercase tracking-[0.07em] text-emerald-300"
-                    : "mt-1 text-[9px] font-black uppercase tracking-[0.07em] text-violet-300"
-                }
-              >
-                {row.higherBetter
-                  ? "↑ Higher better"
-                  : "↓ Lower better"}
-              </p>
 
-              <p className="mt-2 text-[10px] font-semibold tabular-nums text-slate-500">
+              <p className="mt-2 text-xs font-semibold tabular-nums text-slate-400">
                 Lg avg {leagueDisplay}
               </p>
             </div>
@@ -1630,7 +1616,7 @@ function LeagueEdgeScoreboard({
                   {teamDisplay}
                 </span>
 
-                <span className="text-[11px] font-black tabular-nums text-slate-300">
+                <span className="text-sm font-black tabular-nums text-slate-200">
                   {rankText(
                     teamRank,
                   )}
@@ -1699,7 +1685,7 @@ function LeagueEdgeScoreboard({
 
             <div className="text-right">
               <div className="flex flex-wrap items-baseline justify-end gap-x-2 gap-y-1">
-                <span className="text-[11px] font-black tabular-nums text-slate-300">
+                <span className="text-sm font-black tabular-nums text-slate-200">
                   {rankText(
                     opponentRank,
                   )}
@@ -2200,6 +2186,38 @@ function SeriesCommandInteractionDeck({
     return "Running pressure is close";
   })();
 
+  const runningEdgeOwner = (() => {
+    if (
+      teamDefenseCs !== null &&
+      opponentDefenseCs !== null &&
+      Math.abs(
+        teamDefenseCs -
+          opponentDefenseCs,
+      ) >= 0.03
+    ) {
+      return teamDefenseCs >
+        opponentDefenseCs
+        ? "TEAM"
+        : "OPPONENT";
+    }
+
+    if (
+      teamRunning.attemptRate !== null &&
+      opponentRunning.attemptRate !== null &&
+      Math.abs(
+        teamRunning.attemptRate -
+          opponentRunning.attemptRate,
+      ) >= 0.04
+    ) {
+      return teamRunning.attemptRate >
+        opponentRunning.attemptRate
+        ? "TEAM"
+        : "OPPONENT";
+    }
+
+    return null;
+  })();
+
   const runningDecision = (() => {
     if (
       teamDefenseCs !== null &&
@@ -2263,6 +2281,41 @@ function SeriesCommandInteractionDeck({
     }
 
     return "Contact shape creates a mixed defensive test";
+  })();
+
+  const contactEdgeOwner = (() => {
+    const teamGb =
+      teamContact.hitterGbFb;
+
+    const opponentGb =
+      opponentContact.hitterGbFb;
+
+    if (
+      teamGb !== null &&
+      opponentGb !== null &&
+      teamDefenseX !== null &&
+      opponentDefenseX !== null
+    ) {
+      if (
+        opponentGb >
+          teamGb + 0.20 &&
+        teamDefenseX <
+          opponentDefenseX - 0.03
+      ) {
+        return "OPPONENT";
+      }
+
+      if (
+        teamGb >
+          opponentGb + 0.20 &&
+        opponentDefenseX <
+          teamDefenseX - 0.03
+      ) {
+        return "TEAM";
+      }
+    }
+
+    return null;
   })();
 
   const contactDecision = (() => {
@@ -2375,13 +2428,39 @@ function SeriesCommandInteractionDeck({
       : "No single interaction dominates the pregame evidence; execution across the three pressure points should decide the series.";
   })();
 
+  const InteractionEdgeBadge = ({
+    owner,
+  }) => {
+    const label =
+      owner === "TEAM"
+        ? "Aquarium edge"
+        : owner === "OPPONENT"
+          ? "Opponent edge"
+          : "No clear edge";
+
+    const classes =
+      owner === "TEAM"
+        ? "border-cyan-700/70 bg-cyan-950/70 text-cyan-200"
+        : owner === "OPPONENT"
+          ? "border-rose-800/70 bg-rose-950/70 text-rose-200"
+          : "border-slate-700 bg-slate-900 text-slate-300";
+
+    return (
+      <span
+        className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] ${classes}`}
+      >
+        {label}
+      </span>
+    );
+  };
+
   const EvidenceStat = ({
     label,
     value,
     detail,
   }) => (
     <div>
-      <p className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-500">
+      <p className="text-[10px] font-black uppercase tracking-[0.09em] text-slate-400">
         {label}
       </p>
 
@@ -2390,7 +2469,7 @@ function SeriesCommandInteractionDeck({
       </p>
 
       {detail ? (
-        <p className="mt-0.5 text-[8px] leading-3 text-slate-500">
+        <p className="mt-1 text-[10px] leading-4 text-slate-500">
           {detail}
         </p>
       ) : null}
@@ -2401,11 +2480,11 @@ function SeriesCommandInteractionDeck({
     children,
   }) => (
     <div className="mt-4 border-t border-slate-800 pt-3">
-      <p className="text-[8px] font-black uppercase tracking-[0.12em] text-slate-500">
+      <p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">
         Series decision
       </p>
 
-      <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-300">
+      <p className="mt-1 text-sm font-semibold leading-5 text-slate-300">
         {children}
       </p>
     </div>
@@ -2426,18 +2505,30 @@ function SeriesCommandInteractionDeck({
           What decides this matchup
         </h2>
 
-        <p className="mt-1 text-[11px] text-slate-400">
+        <p className="mt-1 text-xs leading-5 text-slate-400">
           The three pregame pressures most likely to shape the series.
         </p>
       </div>
 
-      <div className="grid gap-3 p-5 sm:p-6 xl:grid-cols-3">
+      <div
+        className={`grid gap-3 p-5 sm:p-6 ${
+          watchName
+            ? "xl:grid-cols-3"
+            : "xl:grid-cols-2"
+        }`}
+      >
         <article className="flex flex-col rounded-2xl border border-cyan-900/80 bg-cyan-950/25 p-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-cyan-300">
-            Running Pressure
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-cyan-300">
+              Running Pressure
+            </p>
 
-          <h3 className="mt-1 text-lg font-black leading-tight">
+            <InteractionEdgeBadge
+              owner={runningEdgeOwner}
+            />
+          </div>
+
+          <h3 className="mt-2 text-lg font-black leading-tight">
             {runningSignal}
           </h3>
 
@@ -2475,11 +2566,17 @@ function SeriesCommandInteractionDeck({
         </article>
 
         <article className="flex flex-col rounded-2xl border border-emerald-900/80 bg-emerald-950/20 p-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-300">
-            Contact + Defense
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-emerald-300">
+              Contact + Defense
+            </p>
 
-          <h3 className="mt-1 text-lg font-black leading-tight">
+            <InteractionEdgeBadge
+              owner={contactEdgeOwner}
+            />
+          </div>
+
+          <h3 className="mt-2 text-lg font-black leading-tight">
             {contactSignal}
           </h3>
 
@@ -2516,8 +2613,14 @@ function SeriesCommandInteractionDeck({
           </div>
         </article>
 
-        <article className="flex flex-col rounded-2xl border border-rose-900/80 bg-rose-950/25 p-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-rose-300">
+        <article
+          className={`self-start flex flex-col rounded-2xl border border-rose-900/80 bg-rose-950/25 p-4 ${
+            watchName
+              ? ""
+              : "xl:col-span-2"
+          }`}
+        >
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-rose-300">
             Primary Threat
           </p>
 
@@ -2551,31 +2654,25 @@ function SeriesCommandInteractionDeck({
               </div>
             </>
           ) : (
-            <>
-              <h3 className="mt-1 text-lg font-black leading-tight">
+            <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
+              <h3 className="text-lg font-black leading-tight">
                 No single bat separates
               </h3>
 
-              <p className="mt-5 text-sm font-semibold leading-6 text-slate-400">
-                The pregame player-intelligence evidence does not isolate one opponent hitter strongly enough to elevate here.
+              <p className="max-w-3xl text-sm font-semibold leading-6 text-slate-300 xl:text-right">
+                Manage the lineup by situation rather than building the series plan around one hitter.
               </p>
-
-              <div className="mt-auto">
-                <Decision>
-                  Manage the lineup by situation rather than building the series plan around one hitter.
-                </Decision>
-              </div>
-            </>
+            </div>
           )}
         </article>
       </div>
 
       <div className="border-t border-slate-800 bg-slate-900/55 px-5 py-4 sm:px-6">
-        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-slate-500">
+        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
           BIE Read
         </p>
 
-        <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-300">
+        <p className="mt-1 text-sm font-semibold leading-5 text-slate-300">
           {bieRead}
         </p>
       </div>
