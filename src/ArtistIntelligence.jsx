@@ -94,7 +94,12 @@ export default function ArtistIntelligence({ artistName, onBack }) {
     runLookup();
   }, [artistName]);
 
-  const displayArtist = queryResult?.artist || artistName;
+  const canonicalArtist = queryResult?.canonicalArtistSummary || null;
+  const canonicalLibraryEvidence =
+    canonicalArtist?.summary?.libraryEvidence || null;
+
+  const displayArtist =
+    canonicalArtist?.entity?.displayName || queryResult?.artist || artistName;
 
   const selectedArtistRecord = useMemo(() => {
     if (!displayArtist) return null;
@@ -105,26 +110,6 @@ export default function ArtistIntelligence({ artistName, onBack }) {
   }, [musicData, displayArtist]);
 
 
-  const evidenceQuality = useMemo(() => {
-    const years = queryResult?.yearsActive || 0;
-    const footprint = queryResult?.totalPlays || 0;
-
-    if (
-      normalizeText(displayArtist) === normalizeText("Brian Eno")
-    ) {
-      return "Conflicted";
-    }
-
-    if (years >= 8 && footprint >= 50) {
-      return "Strong";
-    }
-
-    if (years >= 4 && footprint >= 10) {
-      return "Partial";
-    }
-
-    return "Weak";
-  }, [displayArtist, queryResult]);
 
   const related = useMemo(() => {
     if (!displayArtist) {
@@ -152,9 +137,9 @@ export default function ArtistIntelligence({ artistName, onBack }) {
     };
   }, [musicData, displayArtist]);
 
-  const songs = queryResult?.topSongs || [];
-  const albums = queryResult?.topAlbums || [];
-  const timeline = queryResult?.timeline || [];
+  const songs = canonicalLibraryEvidence?.topTracks || queryResult?.topSongs || [];
+  const albums = canonicalLibraryEvidence?.topAlbums || queryResult?.topAlbums || [];
+  const timeline = canonicalLibraryEvidence?.timeline || queryResult?.timeline || [];
 
   return (
     <div className="space-y-6">
@@ -202,10 +187,22 @@ export default function ArtistIntelligence({ artistName, onBack }) {
             </p>
 
             <div className="mt-5 grid gap-3 md:grid-cols-4">
-              <StatCard label="Library Footprint" value={queryResult?.totalPlays ?? 0} />
-              <StatCard label="Years Represented" value={queryResult?.yearsActive ?? 0} />
-              <StatCard label="First Library Evidence" value={queryResult?.firstSeen || "?"} />
-              <StatCard label="Latest Library Evidence" value={queryResult?.latestSeen || "?"} />
+              <StatCard
+                label="Library Footprint"
+                value={canonicalLibraryEvidence?.recordCount ?? queryResult?.totalPlays ?? 0}
+              />
+              <StatCard
+                label="Years Represented"
+                value={canonicalLibraryEvidence?.yearsRepresented ?? queryResult?.yearsActive ?? 0}
+              />
+              <StatCard
+                label="First Library Evidence"
+                value={canonicalLibraryEvidence?.firstEvidenceDate || queryResult?.firstSeen || "?"}
+              />
+              <StatCard
+                label="Latest Library Evidence"
+                value={canonicalLibraryEvidence?.latestEvidenceDate || queryResult?.latestSeen || "?"}
+              />
             </div>
 
             {timeline.length ? (
