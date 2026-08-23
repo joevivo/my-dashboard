@@ -2959,47 +2959,35 @@ app.get("/api/music/query/artist", async (req, res) => {
       try {
         const result = JSON.parse(stdout);
 
-          result.family =
-            resolveArtistFamily(String(result.artist || name).trim()) ||
-            resolveArtistFamily(String(name).trim());
+          const canonicalArtistSummary =
+            result.canonicalArtistSummary;
 
-          result.familyMetrics = buildFamilyMetrics(result.family, (memberName) => {
-            const memberOutput = execFileSync(
-              "python",
-              [scriptPath, memberName],
-              {
-                cwd: __dirname,
-                encoding: "utf8",
-                env: {
-                  ...process.env,
-                  PYTHONIOENCODING: "utf-8",
-                  PYTHONUTF8: "1",
-                },
-                maxBuffer: 1024 * 1024 * 10,
-              }
+          if (
+            !canonicalArtistSummary ||
+            typeof canonicalArtistSummary !== "object"
+          ) {
+            throw new Error(
+              "Artist query response missing canonicalArtistSummary"
             );
+          }
 
-            return JSON.parse(memberOutput);
-          });
+          const canonicalCompatibility =
+            canonicalArtistSummary.compatibility &&
+            typeof canonicalArtistSummary.compatibility === "object"
+              ? canonicalArtistSummary.compatibility
+              : {};
 
-          const bridgeScriptPath = "data/music/scripts/bridge/artist_bridge.py";
-          const bridgeOutput = execFileSync(
-            "python",
-            [bridgeScriptPath, String(result.artist || name).trim()],
-            {
-              cwd: path.join(__dirname, ".."),
-              encoding: "utf8",
-              env: {
-                ...process.env,
-                PYTHONIOENCODING: "utf-8",
-                PYTHONUTF8: "1",
-              },
-              maxBuffer: 1024 * 1024 * 10,
-            }
-          );
+          result.family =
+            canonicalCompatibility.family ?? null;
 
-          result.bridge = JSON.parse(bridgeOutput);
-          result.investigation = buildArtistInvestigation(result);
+          result.familyMetrics =
+            canonicalCompatibility.familyMetrics ?? null;
+
+          result.bridge =
+            canonicalCompatibility.bridge ?? null;
+
+          result.investigation =
+            canonicalArtistSummary.investigation ?? null;
 
           res.json(result);
       } catch (parseError) {
