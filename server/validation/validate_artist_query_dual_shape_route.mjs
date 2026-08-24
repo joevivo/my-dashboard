@@ -54,10 +54,15 @@ assert.notEqual(routeStart, -1);
 
 const orderedMarkers = [
   "const result = JSON.parse(stdout);",
+  "const canonicalArtistSummary =",
   "result.family =",
-  "result.familyMetrics = buildFamilyMetrics(",
-  "result.bridge = JSON.parse(bridgeOutput);",
-  "result.investigation = buildArtistInvestigation(result);",
+  "canonicalCompatibility.family ?? null;",
+  "result.familyMetrics =",
+  "canonicalCompatibility.familyMetrics ?? null;",
+  "result.bridge =",
+  "canonicalCompatibility.bridge ?? null;",
+  "result.investigation =",
+  "canonicalArtistSummary.investigation ?? null;",
   "res.json(result);"
 ];
 
@@ -82,6 +87,31 @@ for (const marker of orderedMarkers) {
 
   previousPosition = position;
 }
+
+const routeEnd = serverSource.indexOf(
+  "res.json(result);",
+  routeStart
+);
+
+const artistRouteSource = serverSource.slice(
+  routeStart,
+  routeEnd + "res.json(result);".length
+);
+
+for (const forbiddenMarker of [
+  "resolveArtistFamily(",
+  "buildFamilyMetrics(",
+  "artist_bridge.py",
+  "buildArtistInvestigation(result)",
+]) {
+  assert.equal(
+    artistRouteSource.includes(forbiddenMarker),
+    false,
+    `Duplicate Artist semantic ownership remains: ${forbiddenMarker}`
+  );
+}
+
+console.log("TRANSPORT_ONLY_ARTIST_ROUTE: PASS");
 
 const beforeCanonical = structuredClone(canonical);
 
