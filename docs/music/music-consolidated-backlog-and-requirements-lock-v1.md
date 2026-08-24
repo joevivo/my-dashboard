@@ -306,28 +306,29 @@ These checkpoints supersede backlog or roadmap language that describes Period
 Intelligence or Artist Comparative Standing as the next unimplemented vertical
 slice.
 
-## 6. Active implementation priority order
+## 6. Authoritative implementation priority order
+Direction A / Period Cockpit was approved by Ginto on August 24, 2026 as the
+Music Intelligence Home design target. The design uses first-class
+1 / 7 / 30 / 90 / Custom controls, a headline period read, compact KPIs,
+artwork-led rankings where supported, period movement, composition-oriented
+Listening Shape visuals, historical context, investigation paths, and explicit
+evidence-source separation. Availability after May 26 is source-specific and
+must not be represented by a blanket unavailable statement.
 
-### Priority 1 - Complete backlog reconciliation and approval
+### Completed checkpoint - Backlog reconciliation
 
-Status: Active until this document is reviewed and approved.
+Status: Completed and pushed at `92a413d`.
 
-Acceptance requires:
+### Active 1 - Reconcile the Music branches
 
-- completed work is accurately recorded;
-- stale sprint, working-tree, and implementation-priority statements are
-  identified;
-- remaining work is assigned an explicit status;
-- the roadmap Current Focus is verified as already aligned to the Canonical
-  Artist Summary Contract v1; no separate roadmap correction is required;
-- implementation dependencies are explicit;
-- the revised priority order is approved by Ginto;
-- only this backlog document is committed and pushed in the reconciliation
-  checkpoint.
+`main` contains the transport-only Canonical Artist backend at `b8a615d`.
+`music-intelligence` contains the Music roadmap and frontend work through
+`1087220`. Both branches diverge from `41539d7`, with no overlapping changed
+paths at the verified checkpoint.
 
-No further feature implementation begins before this acceptance. The completed
-Music navigation ownership-isolation checkpoint in section 5.3 is recorded as a
-repository-hygiene exception and does not change the next vertical-slice gate.
+Acceptance requires integration of `main` into `music-intelligence`,
+preservation of unrelated work, and validation of the combined frontend and
+backend.
 
 ### Implemented contract lock - Artist Comparative Standing
 
@@ -377,129 +378,95 @@ Remaining Comparative Standing work is limited to regression coverage,
 representative artist and artist-family validation, and explicitly approved
 extensions. It is not the next feature vertical slice.
 
-### Priority 2 - Define the canonical Artist summary contract
+### Completed contract lock - Canonical Artist summary
 
-Status: Proposed next implementation vertical slice after backlog approval.
+Python owns Artist semantics. Express is transport-only for artist family,
+family metrics, bridge and continuity, comparative standing, and investigation.
 
-Why this is next:
+The backend migration is complete on `main` at `b8a615d`. Artist Intelligence
+canonical-summary alignment is complete on `music-intelligence` at `c7caa09`.
 
-- Artist Dossier already consumes backend-owned artist and journey semantics.
-- Artist Investigation extraction depends on a stable shared Artist contract.
-- Reusable evidence components must render shared contracts rather than recreate
-  source semantics in React.
-- Comparative Standing must enter the shared Artist summary without becoming an
-  unexplained composite score.
+### Active 2 - Complete canonical Artist frontend consumption
 
-The shared Artist summary must support:
-
-- canonical artist identity;
-- known aliases and artist-family identity;
-- artist-only and artist-family scope;
-- Actual Plays;
-- Actual Skips;
-- listening duration;
-- historical relationship span;
-- Library Evidence representation;
-- catalog depth;
-- current Recent Apple signals;
-- historical snapshot observations;
-- comparative standing when supported;
-- evidence coverage;
-- confidence;
-- limitations;
-- provenance;
-- suggested investigations.
-
-Relationship shape may appear only after its governing model is approved.
-
-Dashboard, Query Workbench, Artist Intelligence, and Artist Dossier must consume
-the shared contract rather than independently deriving artist semantics.
-
-Exact slice scope:
-
-1. document the canonical backend-owned Artist summary schema;
-2. define identity, scope, evidence, coverage, comparative, confidence,
-   limitation, provenance, and investigation fields;
-3. preserve explicit distinctions among missing, unsearched, unavailable,
-   unsupported, searched-zero, and observed evidence;
-4. define the concise canonical profile boundary versus full Query Workbench
-   evidence and derivation;
-5. validate representative individual-artist and artist-family scenarios;
-6. align existing consumers without adding frontend semantic reclassification.
-
-Exclusions:
-
-- Music Time Machine quick-range cleanup;
-- new Music evidence sources or ingestion;
-- Comparative Standing expansion;
-- Playlist Intelligence work;
-- broad visual redesign;
-- relationship-model invention;
-- React-only relabeling that changes backend meaning.
-
-Dependencies:
-
-- approval of this reconciled backlog;
-- maintained Period Intelligence coverage semantics;
-- existing backend `artist` and `journey` objects;
-- existing Artist Comparative Standing responses;
-- surface-responsibility boundaries.
-
-Primary risks:
-
-- creating another surface-specific wrapper instead of a shared contract;
-- converting missing evidence into zero;
-- moving backend classification into React;
-- duplicating Query Workbench evidence in concise Artist surfaces;
-- combining artist-only and artist-family evidence without disclosure.
-
-Acceptance criteria:
-
-- one documented canonical Artist summary schema exists;
-- representative artist and artist-family fixtures pass;
-- Artist Intelligence and Artist Dossier consume the same canonical summary;
-- Query Workbench remains the owner of full evidence, provenance, and
-  derivation;
-- frontend relationship-classification logic remains absent;
-- missing and unsearched evidence remain distinct from zero;
-- Comparative Standing retains its disclosed population and coverage basis;
-- structured validation and frontend build pass.
-
-### Priority 3 - Extract Artist Investigation from QueryWorkbench
-
-Status: Blocked until the canonical Artist summary contract is stable.
+`src/QueryWorkbench.jsx` does not yet consume `canonicalArtistSummary`
+directly.
 
 Requirements:
 
-- extract the Artist Investigation result from oversized inline logic in
-  `src/QueryWorkbench.jsx`;
-- preserve current accepted behavior;
+- consume the canonical summary directly for Artist mode;
+- preserve fallback only for non-Artist modes where necessary;
 - preserve current and historical Recent Apple separation;
-- preserve artist-family handling;
-- render backend contracts rather than reimplement domain reasoning;
-- avoid moving the same oversized logic into a differently named component;
-- add focused acceptance coverage before removing the inline implementation.
+- preserve artist-only and artist-family scope;
+- do not create a second frontend semantic model;
+- retain evidence and investigation ownership in Query Workbench.
 
-### Priority 4 - Build reusable evidence components
+### Next 1 - Governed live/current 1 / 7 / 30 / 90 intelligence
 
-Status: Blocked until the shared Artist contract is defined and its first
-consumer boundary is validated.
+Approximately May 26, 2026 is the historical/live source boundary.
 
-Reusable components should render:
+The searched live pipeline contains timestamped Apple surface observations—not
+timestamped listening events. Live observations must not be labeled as plays,
+duration, skips, repeat frequency, or time-of-day listening.
 
-- evidence coverage;
-- source cards;
-- facts;
-- insights;
-- confidence;
-- warnings;
-- limitations;
-- provenance;
-- suggested investigations;
-- comparative standing.
+Supported intelligence, subject to cadence and coverage:
 
-Components must render shared contracts. Source semantics and analytical
-classification logic must not be independently recreated in React components.
+- unique Recent Apple objects observed within a window;
+- persistence, entries, exits, and position movement;
+- breadth and concentration;
+- prior-equivalent-window comparison;
+- separate Heavy Rotation evidence;
+- explicit freshness and coverage.
+
+Window treatment:
+
+- 1 day is conditional;
+- 7 days requires cadence disclosure;
+- 30 days is the first implementation window;
+- 90 days remains partial until sufficient live history exists.
+
+Unavailable or unsearched metrics must never become zero.
+
+### Next 2 - Trust and integration
+
+- Period Intelligence regression fixtures;
+- visible source health and freshness;
+- canonical artist identity in Actual Listening;
+- evidence-specific terminology;
+- cross-surface routing;
+- reusable evidence components.
+
+### Later
+
+- Canonical Album Intelligence, normalization, and Album Dossiers;
+- Song Intelligence and shared Song Investigation evidence;
+- Playlist Intelligence expansion;
+- Artist Journey refinement;
+- session reconstruction;
+- additional Comparative Standing extensions;
+- shared Music Intelligence shell refinement.
+
+### Superseded
+
+- Period Intelligence as the next unimplemented slice;
+- Artist Comparative Standing as the next unimplemented slice;
+- Canonical Artist as the next unimplemented slice;
+- continuous historical Actual Listening beyond May 26;
+- identical metrics for all windows regardless of evidence.
+
+### Parking lot and research
+
+- unresolved and `UNKNOWN` evidence;
+- historical snapshot persistence;
+- Recent Apple and Heavy Rotation interpretation;
+- identity-normalization candidates;
+- relationship-model and composite-score governance;
+- DuckDB or equivalent exploration tooling;
+- later visual refinements.
+
+### Parked Time Machine cleanup
+
+Do not implement automatically. Remove Spring 2020, Summer 2021, 2015, and 2016
+preset ranges. Retain manual start/end inputs and Previous Period / Next Period.
 
 ## 7. Near-term work
 
@@ -853,30 +820,21 @@ Do not:
 
 ## 13. Approval and next-slice gate
 
-This reconciled backlog becomes the requirements lock only after Ginto reviews
-and approves:
+Ginto approved Direction A / Period Cockpit on August 24, 2026.
 
-- the completed-for-v1 record;
-- the verified implementation checkpoints;
-- the active implementation order;
-- the retained Artist Comparative Standing contract;
-- the canonical Artist summary contract slice;
-- the near-term workstreams;
-- blocked and deferred decisions.
+Execution sequence:
 
-After approval:
+1. commit and push this documentation-only reconciliation;
+2. reconcile `main` into `music-intelligence`;
+3. validate the combined Canonical Artist backend and Music frontend;
+4. complete direct canonical consumption in Query Workbench;
+5. implement governed 30-day Recent Apple comparison;
+6. extend to 7-day, conditional 1-day, and partial 90-day treatments;
+7. continue the approved Period Cockpit sequence.
 
-1. commit and push only this reconciled backlog document;
-2. confirm the Music scope and staging area are clean and synchronized while
-   preserving explicitly unrelated repository changes;
-3. verify the roadmap Current Focus remains aligned to the Canonical Artist
-   Summary Contract v1; no separate roadmap correction is required;
-4. begin the canonical Artist summary contract v1 vertical slice;
-5. do not broaden the slice without updating this backlog.
+No step may convert missing evidence into zero, label Recent Apple observations
+as confirmed plays, conflate evidence sources, or disturb unrelated work.
 
-The recommended next implementation slice is:
+The next repository action is:
 
-`Canonical Artist Summary Contract v1`
-
-Further feature implementation remains prohibited until the backlog checkpoint is
-approved, committed, and pushed.
+`Reconcile main into music-intelligence and validate the combined Music scope`
