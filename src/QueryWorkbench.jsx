@@ -182,25 +182,36 @@ export default function QueryWorkbench({
   };
 
 
-  const identity = result?.identity || result?.investigation?.identity || {};
-  const evidence = result?.evidence || {};
-  const activity = result?.activity || {};
-  const derived = result?.derived || {};
-  const bridge = result?.bridge || {};
-  const investigation = result?.investigation || {};
+  const canonicalArtist =
+    result?.resultType === "artist"
+      ? result?.canonicalArtistSummary || null
+      : null;
+  const canonicalSummary = canonicalArtist?.summary || {};
+  const canonicalConfidence = canonicalArtist?.confidence || {};
+  const identity = canonicalArtist?.entity || {};
+  const evidence = canonicalSummary.libraryEvidence || {};
+  const activity = canonicalSummary.actualListening || {};
+  const recentApple = canonicalSummary.recentApple || {};
+  const recentAppleCurrent = recentApple.current || {};
+  const recentAppleHistorical = recentApple.historicalSnapshots || {};
+  const comparativeStanding = canonicalArtist?.comparativeStanding || null;
+  const investigation = canonicalArtist?.investigation || {};
+  const family = canonicalArtist?.family || null;
+  const hasFamily = family?.status === "available";
+  const familyLabel = family?.familyName || null;
+  const familyMembers = family?.members || [];
+  const actualSongs = activity.topSongs || [];
+  const evidenceSongs = evidence.topTracks || [];
+  const albums = evidence.topAlbums || [];
+  const timeline = evidence.timeline || [];
 
-  const actualListeningCoverage =
-    result?.coverage?.find(
-      (item) => item.sourceId === "apple_daily_track_summary"
-    ) || null;
+  const formatEvidenceStatus = (status) =>
+    String(status || "unavailable").replaceAll("_", " ");
 
-  const actualSongs = activity?.actualTopSongs || result?.actualTopSongs || [];
-  const evidenceSongs = evidence?.topSongs || result?.topSongs || [];
-  const albums = evidence?.topAlbums || result?.topAlbums || [];
-  const timeline = evidence?.timeline || result?.timeline || [];
-  const family = result?.family || investigation?.identity?.familyName || null;
-  const familyLabel = typeof family === "string" ? family : family?.familyName || family?.name || family?.family || investigation?.identity?.familyName || null;
-  const familyMembers = result?.family?.members || result?.family?.aliases || investigation?.identity?.familyMembers || [];
+  const formatEvidenceMetric = (value, status, suffix = "") =>
+    value != null
+      ? `${value}${suffix}`
+      : formatEvidenceStatus(status);
   const probeArtists = [
     "Peter Gabriel",
     "Billie Holiday",
@@ -431,7 +442,7 @@ export default function QueryWorkbench({
                 <h3 className="text-2xl font-black">
                   {result.resultType === "song"
                     ? result.label
-                    : result.artist}
+                    : canonicalArtist?.entity?.displayName || canonicalArtist?.query?.original || "-"}
                 </h3>
               ) : null}
 
@@ -444,7 +455,7 @@ export default function QueryWorkbench({
             {result.resultType === "artist" && onOpenArtist ? (
               <button
                 type="button"
-                onClick={() => onOpenArtist(result.artist || query)}
+                onClick={() => onOpenArtist(canonicalArtist?.entity?.displayName || canonicalArtist?.query?.original || query)}
                 className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
               >
                 Open Artist Intelligence
@@ -518,7 +529,7 @@ export default function QueryWorkbench({
               <div>
                 <p className="text-xs text-slate-500">Resolved Entity</p>
                 <p className="text-sm font-black text-slate-900 dark:text-slate-100">
-                  {identity.resolvedArtist || identity.resolvedName || result.artist || "-"}
+                  {identity.displayName || canonicalArtist?.query?.original || "-"}
                 </p>
               </div>
 
@@ -526,7 +537,7 @@ export default function QueryWorkbench({
             </div>
 
             <div className="mt-4">
-              {family ? (
+              {hasFamily ? (
                 <div className="space-y-2">
                   <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                     Family: {familyLabel || "Mapped artist family"}
@@ -563,17 +574,17 @@ export default function QueryWorkbench({
                   Library Evidence
                 </p>
                 <p className="mt-2 text-lg font-black">
-                  {evidence.records ?? result.libraryEvidenceRecords ?? result.totalPlays ?? "-"} records
+                  {formatEvidenceMetric(evidence.recordCount, evidence.status, " records")}
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  {evidence.firstPlayedDate || result.firstPlayedDate || result.firstSeen || "-"} to{" "}
-                  {evidence.latestPlayedDate || result.latestPlayedDate || result.latestSeen || "-"}
-                  {(evidence.latestPlayedDate || result.latestPlayedDate) ? (
-                    <span> | {daysSince(evidence.latestPlayedDate || result.latestPlayedDate)}</span>
+                  {evidence.firstEvidenceDate || "-"} to{" "}
+                  {evidence.latestEvidenceDate || "-"}
+                  {evidence.latestEvidenceDate ? (
+                    <span> | {daysSince(evidence.latestEvidenceDate)}</span>
                   ) : null}
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Confidence: {evidence.confidence || "medium"}
+                  Status: {formatEvidenceStatus(evidence.status)} | Confidence: {canonicalConfidence.libraryEvidence || "unavailable"}
                 </p>
               </div>
 
@@ -582,14 +593,14 @@ export default function QueryWorkbench({
                   Historical Listening
                 </p>
                 <p className="mt-2 text-lg font-black">
-                  {activity.actualPlays ?? result.actualPlays ?? "-"} actual plays
+                  {formatEvidenceMetric(activity.actualPlays, activity.status, " actual plays")}
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  {activity.hoursListened ?? result.hoursListened ?? "-"} hours |{" "}
-                  {activity.actualSkips ?? result.actualSkips ?? "-"} skips
+                  {formatEvidenceMetric(activity.hoursListened, activity.status, " hours")} |{" "}
+                  {formatEvidenceMetric(activity.actualSkips, activity.status, " skips")}
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
-                  Confidence: {activity.confidence || "high"}
+                  Status: {formatEvidenceStatus(activity.status)} | Confidence: {canonicalConfidence.actualListening || "unavailable"}
                 </p>
               </div>
 
@@ -598,15 +609,15 @@ export default function QueryWorkbench({
                   Recent Apple Evidence
                 </p>
                 <p className="mt-2 text-lg font-black">
-                  {bridge.live?.historicalObservationCount ?? 0} snapshot observations
+                  {formatEvidenceMetric(recentAppleHistorical.observationCount, recentAppleHistorical.status, " snapshot observations")}
                 </p>
                 <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                  Across {bridge.live?.historicalSnapshotCount ?? 0} snapshots |{" "}
-                  {bridge.live?.historicalUniqueObjectCount ?? 0} unique objects
+                  Across {formatEvidenceMetric(recentAppleHistorical.snapshotCount, recentAppleHistorical.status, " snapshots")} |{" "}
+                  {formatEvidenceMetric(recentAppleHistorical.uniqueObjectCount, recentAppleHistorical.status, " unique objects")}
                 </p>
                 <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">
-                  Current objects: {bridge.live?.recentObjectCount ?? 0} recent |{" "}
-                  {bridge.live?.heavyRotationCount ?? 0} heavy rotation
+                  Current objects: {formatEvidenceMetric(recentAppleCurrent.recentObjectCount, recentAppleCurrent.status, " recent")} |{" "}
+                  {formatEvidenceMetric(recentAppleCurrent.heavyRotationCount, recentAppleCurrent.status, " heavy rotation")}
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   Snapshot observations are not confirmed plays. Current objects and historical
@@ -616,7 +627,7 @@ export default function QueryWorkbench({
             </div>
           </div>
 
-          {bridge.live?.comparativeStanding ? (
+          {Array.isArray(comparativeStanding?.metrics) && comparativeStanding.metrics.length ? (
             <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -630,17 +641,17 @@ export default function QueryWorkbench({
 
                 <div className="text-xs text-slate-500 sm:text-right">
                   <p>
-                    Identity: {bridge.live.comparativeStanding.displayName || "-"}
+                    Identity: {comparativeStanding.displayName || "-"}
                   </p>
                   <p>
-                    Canonical key: {bridge.live.comparativeStanding.canonicalKey || "unresolved"}
+                    Canonical key: {comparativeStanding.canonicalKey || "unresolved"}
                   </p>
                 </div>
               </div>
 
               <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {Array.isArray(bridge.live.comparativeStanding.metrics)
-                  ? bridge.live.comparativeStanding.metrics.map((metric) => {
+                {Array.isArray(comparativeStanding.metrics)
+                  ? comparativeStanding.metrics.map((metric) => {
                       const metricLabels = {
                         library_evidence_records: "Library Evidence",
                         historical_years_represented: "Years Represented",
@@ -659,15 +670,11 @@ export default function QueryWorkbench({
 
                       const valueText = hasValue
                         ? `${metric.value} ${metric.unit || ""}`.trim()
-                        : metric.status === "unavailable"
-                          ? "Unavailable"
-                          : "No qualifying evidence";
+                        : formatEvidenceStatus(metric.status);
 
                       const explanation = hasRank
                         ? `Rank #${metric.rank} of ${metric.populationSize}`
-                        : metric.status === "unavailable"
-                          ? "Not available from the governed artist-level sources."
-                          : "Not included in this metric's positive-evidence population.";
+                        : `Status: ${formatEvidenceStatus(metric.status)}.`;
 
                       return (
                         <div
@@ -704,10 +711,10 @@ export default function QueryWorkbench({
                   : null}
               </div>
 
-              {bridge.live.comparativeStanding.reviewedFamilyIds?.length ? (
+              {comparativeStanding.reviewedFamilyIds?.length ? (
                 <p className="mt-3 text-xs text-slate-500">
                   Reviewed family membership:{" "}
-                  {bridge.live.comparativeStanding.reviewedFamilyIds.join(", ")}.
+                  {comparativeStanding.reviewedFamilyIds.join(", ")}.
                   Family rankings remain separate from this artist population.
                 </p>
               ) : (
@@ -717,13 +724,13 @@ export default function QueryWorkbench({
               )}
             </div>
           ) : null}
-          {result.investigation?.facts?.length ? (
+          {investigation?.facts?.length ? (
             <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-900 dark:bg-blue-950/30">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
                 Investigation Facts
               </p>
               <ul className="mt-2 list-disc pl-5 text-slate-700 dark:text-slate-200">
-                {result.investigation.facts.map((fact) => (
+                {investigation.facts.map((fact) => (
                   <li key={fact.id || fact.statement}>
                     {fact.statement}
                   </li>
